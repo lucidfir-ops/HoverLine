@@ -1,0 +1,8 @@
+name = "hoverline-board"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hoverline"
+database_id = "PASTE-THE-ID-FROM-wrangler-d1-create"
