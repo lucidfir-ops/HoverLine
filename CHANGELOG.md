@@ -5,6 +5,7 @@
 - Settings opens from the lobby. A race starting closes Settings or Controls opened from there.
 - Leaderboard (main menu): the online boards in the game. This track, Recent and Most raced; pick a track for its top 10, then Race this track. Your board name can be changed there.
 - Leaderboard Worker: new GET /boards for that screen (deploy the new worker.js).
+- Board eras: every time is stored with the game's BOARD_ERA (28: the Prototype 28 tracks and handling), and boards only show times from the same era, so a time on the board is always one you can race for. The 41 times from before Prototype 28 are kept in the database as era 0 but no longer shown (track codes from Prototype 26 build a different road for over half of them, and Prototype 28 moved some split routes and changed the handling). Run leaderboard/migrate-era.sql once on an existing database.
 
 ## Prototype 28
 - Fences: a ship can no longer clip through a fence. Crest air only becomes free flight once the ship is over the fence top, complex tracks have taller fences on their bends, and clearing a fence explodes you and respawns you; the Dart can still glide back in. Open jumps lose their invisible wall.

@@ -8,9 +8,11 @@ CREATE TABLE IF NOT EXISTS runs (
   time_ms INTEGER NOT NULL,          -- race time
   lap_ms  INTEGER NOT NULL,          -- best lap
   created INTEGER NOT NULL,          -- unix ms
-  who     TEXT    NOT NULL           -- salted hash of the sender's IP (never the IP itself)
+  who     TEXT    NOT NULL,          -- salted hash of the sender's IP (never the IP itself)
+  era     INTEGER NOT NULL DEFAULT 0 -- board era (the game's BOARD_ERA); boards only compare times from one era
 );
 CREATE INDEX IF NOT EXISTS runs_board ON runs (track, laps, time_ms);
+CREATE INDEX IF NOT EXISTS runs_era   ON runs (era, track, laps, time_ms);
 CREATE INDEX IF NOT EXISTS runs_who   ON runs (who, created);
 
 -- Shared race data (each finished race's log, sent by players who leave Share race data on)

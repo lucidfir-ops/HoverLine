@@ -440,6 +440,9 @@ const TAU=Math.PI*2, VMAX=150; let W=20, LAPS=3;
 const QS=new URLSearchParams(location.search),BOT=QS.get('bot')==='1',NO_RENDER=QS.get('render')==='0';
 /* Online leaderboard. Paste the address of your deployed worker here (see the leaderboard kit); empty = off. */
 const LB_URL='https://hoverline-board.lucidfir.workers.dev';const LB=(QS.get('lb')||LB_URL).replace(/\/+$/,'');
+/* Board era: times only compare with times from the same era. Raise it to the new prototype number whenever a change
+   makes old times unfair (a track code builds a different road, or handling/speed changes); the boards then start fresh. */
+const BOARD_ERA=28;
 const DIFF={
   W:{name:'Wide',w:26,n:[8,10],rad:[480,260],elev:50,minR:125,ai:0.92,assist:1.8,wall:0.22,band:[0.12,0.22],dmg:0.6},
   S:{name:'Standard',w:20,n:[9,12],rad:[400,380],elev:100,minR:75,ai:0.96,assist:1.0,wall:0.35,band:[0.08,0.15],dmg:0.85},
@@ -3458,10 +3461,10 @@ function lbShow(o,name){const el=$('resBoard');if(!o||!o.rows){el.hidden=true;re
     (o.rank>5&&!mine?`<br><span class="me">${o.rank}. ${esc(name)} · ${fmt(o.best)}</span>`:'')+`<br><span style="opacity:.7">Racing as ${esc(name)} · change your name on the Leaderboard screen</span>`}
 function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb')))return;const el=$('resBoard'),name=lbName();
   el.hidden=false;el.textContent='Online board · sending your time…';
-  const body={track:roadStr(),laps:LAPS,name,ship:build.frame,time:+player.finishT.toFixed(3),lap:+best.toFixed(3),len:Math.round(T.L)};
+  const body={track:roadStr(),laps:LAPS,era:BOARD_ERA,name,ship:build.frame,time:+player.finishT.toFixed(3),lap:+best.toFixed(3),len:Math.round(T.L)};
   fetch(LB+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).then(o=>{
     if(o&&o.error&&o.error!=='slow down')throw new Error(o.error);
-    if(o&&o.error)return fetch(LB+'/top?track='+encodeURIComponent(roadStr())+'&laps='+LAPS).then(r=>r.json()).then(t=>lbShow(t,name));
+    if(o&&o.error)return fetch(LB+'/top?track='+encodeURIComponent(roadStr())+'&laps='+LAPS+'&era='+BOARD_ERA).then(r=>r.json()).then(t=>lbShow(t,name));
     lbShow(o,name);if(o.rank===1&&o.total>1)note('Top of the online board!',2200)}).catch(e=>{el.textContent=inViewer&&/fetch/i.test(String(e.message||e))?'Online board · this Claude page can\'t reach the internet, so times are only sent from the itch.io version':'Online board unavailable ('+String(e.message||e).slice(0,40)+')'})}
 /* Results: Race again, New track and New song. In a room the host's Race again / New track bring everyone who has
    finished back and start the next race; a guest can change the song and go back to the lobby. */
@@ -4649,7 +4652,7 @@ function lbLoad(){const L=$('lbList'),H=$('lbHead'),n=++lbv.req,one=lbv.sel||(lb
   $('lbRace').hidden=!lbv.sel||mp.on;$('lbBack').hidden=!lbv.sel;$('lbRace').textContent=lbv.sel&&lbv.sel.laps!==3?'Load this track':'Race this track';
   L.innerHTML='';if(!LB){H.textContent='The online board is switched off in this build.';return}
   H.textContent='Loading…';
-  fetch(one?LB+'/top?track='+encodeURIComponent(one.track)+'&laps='+one.laps:LB+'/boards?sort='+lbv.mode).then(r=>r.json()).then(o=>{
+  fetch((one?LB+'/top?track='+encodeURIComponent(one.track)+'&laps='+one.laps:LB+'/boards?sort='+lbv.mode)+'&era='+BOARD_ERA).then(r=>r.json()).then(o=>{
     if(n!==lbv.req)return;if(!o||o.error)throw new Error(o&&o.error||'no answer');const me=lbName();
     if(one){H.innerHTML=`Track <b>${esc(one.track)}</b> · ${one.laps} lap${one.laps>1?'s':''} · ${o.total} pilot${o.total===1?'':'s'}`;
       L.innerHTML=o.rows.length?'<table id="lbTop">'+o.rows.map((x,i)=>`<tr class="${x.name===me?'me':''}"><td>${i+1}</td><td>${esc(x.name)}</td><td>${fmt(x.time)}</td><td class="w">${FRAMES[x.ship]?FRAMES[x.ship].name:esc(x.ship)} · best lap ${fmt(x.lap)}</td></tr>`).join('')+'</table>':
