@@ -1,6 +1,8 @@
 // Hoverline online leaderboard — a Cloudflare Worker with a D1 database.
 //   GET  /top?track=CODE&laps=3&era=28   → { rows:[{name,ship,time,lap,at}], total }
-//   GET  /boards?sort=recent|popular&era=28 → { boards:[{track,laps,pilots,best,holder,last}] }   (for the in-game Leaderboard screen)
+//   GET  /boards?sort=recent|popular&era=28 → { boards:[{track,laps,pilots,runs,best,holder,last}] }   (for the in-game Leaderboard screen;
+//                                              popular = most races, then most pilots)
+//   GET  /recent?n=30&era=28                 → { runs:[{track,laps,name,ship,time,lap,at}] }   (latest finishes on every track)
 //   POST /run  {track,laps,name,ship,time,lap,len,era}  → { rank, total, rows }
 //   POST /log  {v, log}                       → { ok, id }            (shared race data; no names)
 //   GET  /logs?key=ADMIN_KEY&since=MS&limit=N → { logs:[{id,created,ver,track,log}], more }
@@ -25,13 +27,18 @@ async function top(db, track, laps, era, n = 10) {
 }
 
 async function boards(db, sort, era) {
-  const order = sort === 'popular' ? 'pilots DESC, last DESC' : 'last DESC';
+  const order = sort === 'popular' ? 'runs DESC, pilots DESC, last DESC' : 'last DESC';
   const r = await db.prepare(
-    `SELECT b.track, b.laps, b.pilots, b.t, b.last,
+    `SELECT b.track, b.laps, b.pilots, b.runs, b.t, b.last,
        (SELECT name FROM runs r WHERE r.track=b.track AND r.laps=b.laps AND r.era=?1 ORDER BY time_ms ASC LIMIT 1) AS holder
-     FROM (SELECT track, laps, COUNT(DISTINCT name) AS pilots, MIN(time_ms) AS t, MAX(created) AS last FROM runs WHERE era=?1 GROUP BY track, laps) b
+     FROM (SELECT track, laps, COUNT(DISTINCT name) AS pilots, COUNT(*) AS runs, MIN(time_ms) AS t, MAX(created) AS last FROM runs WHERE era=?1 GROUP BY track, laps) b
      ORDER BY ${order} LIMIT 30`).bind(era).all();
-  return { boards: r.results.map(x => ({ track: x.track, laps: x.laps, pilots: x.pilots, best: x.t / 1000, holder: x.holder, last: x.last })) };
+  return { boards: r.results.map(x => ({ track: x.track, laps: x.laps, pilots: x.pilots, runs: x.runs, best: x.t / 1000, holder: x.holder, last: x.last })) };
+}
+
+async function recent(db, era, n) {
+  const r = await db.prepare(`SELECT track, laps, name, ship, time_ms, lap_ms, created FROM runs WHERE era=?1 ORDER BY created DESC LIMIT ?2`).bind(era, n).all();
+  return { runs: r.results.map(x => ({ track: x.track, laps: x.laps, name: x.name, ship: x.ship, time: x.time_ms / 1000, lap: x.lap_ms / 1000, at: x.created })) };
 }
 
 async function hash(s) {
@@ -48,6 +55,10 @@ export default {
         const track = u.searchParams.get('track') || '', laps = parseInt(u.searchParams.get('laps') || '3', 10);
         if (!TRACK.test(track) || !(laps >= 1 && laps <= 9)) return json({ error: 'bad track' }, 400);
         return json(await top(env.DB, track.toUpperCase(), laps, eraOf(u.searchParams.get('era'))));
+      }
+      if (req.method === 'GET' && u.pathname === '/recent') {
+        const n = Math.min(50, Math.max(1, parseInt(u.searchParams.get('n') || '30', 10) || 30));
+        return json(await recent(env.DB, eraOf(u.searchParams.get('era')), n));
       }
       if (req.method === 'GET' && u.pathname === '/boards') return json(await boards(env.DB, u.searchParams.get('sort'), eraOf(u.searchParams.get('era'))));
       if (req.method === 'POST' && u.pathname === '/run') {

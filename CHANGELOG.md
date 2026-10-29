@@ -1,5 +1,17 @@
 # Changelog
 
+## Prototype 30
+- Night and Day: a switch in the menu (next to the scenery) for every setting. Night is the default. It changes only the sky and the light, so track codes and times are the same either way.
+- Ocean at night: a dark sea whose shallows and wave tops glow, jellyfish and manta rays glowing under the surface, and stars with an aurora above a dark horizon. Ocean by day is the old daylight look.
+- Climbs: nose up no longer adds top speed going uphill. Instead a climb drags you back, harder the steeper it is, and if the nose isn't up you lose speed three times as fast. The HUD shows CLIMBING or CLIMB DRAG; the Nose guide is rewritten. Downhill streamlining is unchanged.
+- Walls in the air: a ship that lifts off a crest and meets a wall below its top now hits it like a wall on the road (glances off, loses speed, sparks) instead of sliding along it held by something you couldn't see, then shooting across to the other wall when it landed.
+- AI pilots boost on green strips, where boosting is free, and always head for them.
+- Pylons never stand on another piece of road, split routes included.
+- On-screen keyboard (letters, numbers, space) for the name boxes and the room code: the ⌨ button beside the box, or A on the box with a gamepad.
+- Leaderboard: opens on Latest times, every pilot's newest finishes on every track. Most raced lists tracks by number of races; This track is still there. Pick any track for its top 10; Race this track is set apart from the lists. The screen remembers your tab.
+- Leaderboard Worker: new GET /recent and a race count on GET /boards (deploy the new worker.js; until then Latest shows the tracks raced most recently).
+- Board era 30: the climb change makes older times unfair, so boards start fresh (old times are kept, not shown).
+
 ## Prototype 29
 - Ready: everyone in a multiplayer lobby presses Ready, and the race starts once every pilot is ready. Pressing Ready plays an alert (and a buzz on phones and controllers) on every device whose pilot isn't ready yet, including ones in the ship lab or still on the results card. The host can still Start now, which races just the pilots who are ready. Race again from the results takes everyone back to the lobby with the host already ready.
 - Settings opens from the lobby. A race starting closes Settings or Controls opened from there.

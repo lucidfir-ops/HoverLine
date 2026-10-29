@@ -38,6 +38,12 @@ switched off until you paste your worker's address into `LB_URL`.
 
 To try it without editing the file, open the game with `?lb=https://hoverline-board.<you>.workers.dev` on the end of its address.
 
+## Latest times (Prototype 30)
+
+The in-game Leaderboard opens on `GET /recent?n=30&era=N`: the newest finishes on every track. `GET /boards?sort=popular`
+now sorts by races run (`runs`), then pilots. Deploy the new `worker.js` with `npx wrangler deploy` from this folder; a game
+talking to an older Worker falls back to the tracks raced most recently.
+
 ## Board eras (Prototype 29)
 
 Times are stored with the game's `BOARD_ERA`, and each board only shows times from one era, so a new player only ever
