@@ -1,5 +1,11 @@
 # Changelog
 
+## Prototype 29
+- Ready: everyone in a multiplayer lobby presses Ready, and the race starts once every pilot is ready. Pressing Ready plays an alert (and a buzz on phones and controllers) on every device whose pilot isn't ready yet, including ones in the ship lab or still on the results card. The host can still Start now, which races just the pilots who are ready. Race again from the results takes everyone back to the lobby with the host already ready.
+- Settings opens from the lobby. A race starting closes Settings or Controls opened from there.
+- Leaderboard (main menu): the online boards in the game. This track, Recent and Most raced; pick a track for its top 10, then Race this track. Your board name can be changed there.
+- Leaderboard Worker: new GET /boards for that screen (deploy the new worker.js).
+
 ## Prototype 28
 - Fences: a ship can no longer clip through a fence. Crest air only becomes free flight once the ship is over the fence top, complex tracks have taller fences on their bends, and clearing a fence explodes you and respawns you; the Dart can still glide back in. Open jumps lose their invisible wall.
 - Pitch matches the slope: nose up going uphill for traction, nose down going downhill to streamline, each worth up to a fifth more top speed on a steep slope; any pitch on the flat costs a little. New road marks (green V, grey Λ), HUD readout and a rewritten Nose guide (Uphill, Downhill, Flat, Corners, Crests, Jumps, Colours).

@@ -1,5 +1,6 @@
 // Hoverline online leaderboard — a Cloudflare Worker with a D1 database.
 //   GET  /top?track=CODE&laps=3          → { rows:[{name,ship,time,lap,at}], total }
+//   GET  /boards?sort=recent|popular       → { boards:[{track,laps,pilots,best,holder,last}] }   (for the in-game Leaderboard screen)
 //   POST /run  {track,laps,name,ship,time,lap,len}  → { rank, total, rows }
 //   POST /log  {v, log}                       → { ok, id }            (shared race data; no names)
 //   GET  /logs?key=ADMIN_KEY&since=MS&limit=N → { logs:[{id,created,ver,track,log}], more }
@@ -19,6 +20,16 @@ async function top(db, track, laps, n = 10) {
   return { rows: r.results.map(x => ({ name: x.name, ship: x.ship, time: x.t / 1000, lap: x.lap_ms / 1000, at: x.created })), total: c ? c.n : 0 };
 }
 
+async function boards(db, sort) {
+  const order = sort === 'popular' ? 'pilots DESC, last DESC' : 'last DESC';
+  const r = await db.prepare(
+    `SELECT b.track, b.laps, b.pilots, b.t, b.last,
+       (SELECT name FROM runs r WHERE r.track=b.track AND r.laps=b.laps ORDER BY time_ms ASC LIMIT 1) AS holder
+     FROM (SELECT track, laps, COUNT(DISTINCT name) AS pilots, MIN(time_ms) AS t, MAX(created) AS last FROM runs GROUP BY track, laps) b
+     ORDER BY ${order} LIMIT 30`).all();
+  return { boards: r.results.map(x => ({ track: x.track, laps: x.laps, pilots: x.pilots, best: x.t / 1000, holder: x.holder, last: x.last })) };
+}
+
 async function hash(s) {
   const d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(d)].slice(0, 12).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -34,6 +45,7 @@ export default {
         if (!TRACK.test(track) || !(laps >= 1 && laps <= 9)) return json({ error: 'bad track' }, 400);
         return json(await top(env.DB, track.toUpperCase(), laps));
       }
+      if (req.method === 'GET' && u.pathname === '/boards') return json(await boards(env.DB, u.searchParams.get('sort')));
       if (req.method === 'POST' && u.pathname === '/run') {
         const b = await req.json().catch(() => null);
         if (!b) return json({ error: 'bad json' }, 400);

@@ -38,6 +38,11 @@ switched off until you paste your worker's address into `LB_URL`.
 
 To try it without editing the file, open the game with `?lb=https://hoverline-board.<you>.workers.dev` on the end of its address.
 
+## Update it from the command line
+
+`wrangler.toml` already holds the `hoverline` database's id, so after `npx wrangler login` an update is `npx wrangler deploy`
+from this folder.
+
 ## Look after it
 
 - Remove a bad entry with `wrangler d1 execute hoverline --remote --command "DELETE FROM runs WHERE name='Cheater'"`.
@@ -80,6 +85,7 @@ The free plan's 5 GB of D1 storage holds well over 100,000 race logs.
 ## API
 
 - `GET /top?track=CODE&laps=3` returns `{rows:[{name,ship,time,lap,at}], total}`.
+- `GET /boards?sort=recent|popular` returns `{boards:[{track,laps,pilots,best,holder,last}]}` (up to 30), for the in-game Leaderboard screen (Prototype 29).
 - `POST /run` takes `{track,laps,name,ship,time,lap,len}` and returns `{rank, best, rows, total}`. Errors come back as `{error}` with status 400, 422 or 429.
 - `POST /log` takes `{v, log}` (one race log) and returns `{ok, id}`. Errors: 400, 413 (too big) or 429.
 - `GET /logs?key=ADMIN_KEY&since=MS&limit=N` returns `{logs:[{id,created,ver,track,log}], more, next}`; `GET /logs/count?key=ADMIN_KEY` returns `{n, bytes}`.

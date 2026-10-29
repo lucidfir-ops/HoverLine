@@ -150,7 +150,8 @@ td.b{color:var(--amber)}
 .pgrid{display:grid;grid-template-columns:repeat(8,26px);gap:2px;margin:6px 0}.pc{width:26px;height:26px;border:1px solid rgba(255,255,255,.12);padding:0;cursor:pointer;border-radius:2px}
 .swatch[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--amber)}
 .col{display:flex;flex-direction:column;gap:12px}
-#mpList td{padding:3px 12px 3px 0;font-size:14px}#mpList td.w{color:var(--dim);font-size:12px}#mpList td.dim{color:var(--dim);font-size:12px}
+#mpList td{padding:3px 12px 3px 0;font-size:14px}#mpList b.rdy{color:#7dff9a;font-weight:700}#mpReady[aria-pressed="true"]{background:rgba(125,255,154,.18);border-color:#7dff9a}#mpReady.nudge{animation:nudge .5s 3}@keyframes nudge{50%{background:rgba(255,190,60,.45);transform:scale(1.06)}}
+#lbv .card{max-height:100%;overflow-y:auto}#lbv .logo{font-size:clamp(28px,7vmin,52px)}#lbList{gap:6px}button.btn.lbrow{display:flex;justify-content:space-between;gap:12px;width:100%;text-align:left;font:13px var(--mono);letter-spacing:0;text-transform:none;padding:9px 12px}.lbrow span{color:var(--dim)}#lbTop td{padding:3px 12px 3px 0;font-size:14px}#lbTop td.w{color:var(--dim);font-size:12px}#mpList td.w{color:var(--dim);font-size:12px}#mpList td.dim{color:var(--dim);font-size:12px}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
 .small.warn{color:var(--amber)}#mpHint,#mpErr{display:block}#mpStart:disabled{opacity:.45}
 #tags{position:fixed;inset:0;pointer-events:none;overflow:hidden}
@@ -235,12 +236,12 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
 <div id="menu" class="overlay">
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
-    <div class="sub">Prototype 28 · 8 ships · 3 laps</div>
+    <div class="sub">Prototype 29 · 8 ships · 3 laps</div>
     <div class="row" role="group" aria-label="Track width"><button class="chip" data-width="W" aria-pressed="false">Wide</button><button class="chip" data-width="S" aria-pressed="false">Standard</button><button class="chip" data-width="N" aria-pressed="false">Narrow</button>
       <span class="sep"></span><button class="chip" data-layout="S" aria-pressed="false">Simple</button><button class="chip" data-layout="X" aria-pressed="false">Complex</button><button class="chip" data-layout="C" aria-pressed="false">Custom…</button>
       <span class="sep"></span><button class="chip" data-len="Q" aria-pressed="false">Short</button><button class="chip" data-len="M" aria-pressed="false">Medium</button><button class="chip" data-len="L" aria-pressed="false">Long</button></div>
     <div class="row" role="group" aria-label="Scenery for new tracks"><span class="sub">Scenery</span><button class="chip bio" data-bio="U">Urban</button><button class="chip bio" data-bio="O">Ocean</button><button class="chip bio" data-bio="F">Forest</button><button class="chip bio" data-bio="N">Night sky</button></div>
-    <div class="row"><button class="btn go" id="raceBtn">Race</button><button class="btn" id="trialBtn">Time trial</button><button class="btn" id="labBtn">Ship lab</button><button class="btn" id="mpBtn">Multiplayer</button><button class="btn" id="ctlBtn">Controls</button><button class="btn" id="setBtn">Settings</button><button class="btn" id="musBtn">Music</button><button class="btn" id="guideBtn">Nose guide</button><button class="btn" id="newBtn">New track</button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
+    <div class="row"><button class="btn go" id="raceBtn">Race</button><button class="btn" id="trialBtn">Time trial</button><button class="btn" id="labBtn">Ship lab</button><button class="btn" id="mpBtn">Multiplayer</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="ctlBtn">Controls</button><button class="btn" id="setBtn">Settings</button><button class="btn" id="musBtn">Music</button><button class="btn" id="guideBtn">Nose guide</button><button class="btn" id="newBtn">New track</button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open full screen with tilt</a>
     <div class="t best" id="buildSum"></div>
     <div class="code"><label for="seedIn">Track code</label><input id="seedIn" maxlength="34" spellcheck="false" autocomplete="off"><button class="btn" id="loadBtn">Load</button></div>
@@ -301,7 +302,7 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
       <div class="big" id="mpRoom">·····</div>
       <div class="t best" id="mpStatus"></div>
       <table id="mpList"></table>
-      <div class="row"><button class="btn go" id="mpStart">Start race</button><button class="btn" id="mpLab">Ship lab</button><button class="btn" id="mpCtl">Controls</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
+      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Ship lab</button><button class="btn" id="mpCtl">Controls</button><button class="btn" id="mpSet">Settings</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
       <p class="small" id="mpHint"></p>
       <div class="t" id="mpTrack"></div>
       <div id="mpHostRow" class="col">
@@ -365,6 +366,17 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
   </div>
 </div>
 
+<div id="lbv" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">LEADER<b>BOARD</b></div>
+    <div class="sub">Online times from everyone who plays · each pilot's best per track</div>
+    <div class="code"><label for="lbNameIn">Your name</label><input id="lbNameIn" maxlength="12" spellcheck="false" autocomplete="off"></div>
+    <div class="row" role="group" aria-label="Boards"><button class="chip" data-lbs="here">This track</button><button class="chip" data-lbs="recent">Recent</button><button class="chip" data-lbs="popular">Most raced</button></div>
+    <div class="t best" id="lbHead"></div>
+    <div id="lbList" class="col"></div>
+    <div class="row"><button class="btn go" id="lbRace" hidden>Race this track</button><button class="btn" id="lbBack" hidden>All tracks</button><button class="btn" id="lbDone" data-back>Done</button></div>
+  </div>
+</div>
 <div id="gfxm" class="overlay" hidden>
   <div class="card">
     <div class="logo">STY<b>LE</b></div>
@@ -3184,7 +3196,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   (o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,i===0?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:28,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:29,log:logShareable(L)});if(body.length>400000)return;
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
 function logSave(L){let idx=logIndex();idx.push(L.id);while(idx.length>60){store.del?store.del('hoverline.log.'+idx[0]):store.set('hoverline.log.'+idx[0],'');idx.shift()}
@@ -3443,7 +3455,7 @@ function lbShow(o,name){const el=$('resBoard');if(!o||!o.rows){el.hidden=true;re
   const mine=o.rows.some(x=>x.name===name);
   el.innerHTML=`<b>Online · track ${esc(roadStr())} · ${LAPS} lap${LAPS>1?'s':''}</b>`+(o.rank?` · you're <b>#${o.rank}</b> of ${o.total}`:'')+'<br>'+
     o.rows.slice(0,5).map((x,i)=>`<span class="${x.name===name?'me':''}">${i+1}. ${esc(x.name)} · ${fmt(x.time)}</span>`).join('<br>')+
-    (o.rank>5&&!mine?`<br><span class="me">${o.rank}. ${esc(name)} · ${fmt(o.best)}</span>`:'')+`<br><span style="opacity:.7">Racing as ${esc(name)} · change your name on the Multiplayer screen</span>`}
+    (o.rank>5&&!mine?`<br><span class="me">${o.rank}. ${esc(name)} · ${fmt(o.best)}</span>`:'')+`<br><span style="opacity:.7">Racing as ${esc(name)} · change your name on the Leaderboard screen</span>`}
 function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb')))return;const el=$('resBoard'),name=lbName();
   el.hidden=false;el.textContent='Online board · sending your time…';
   const body={track:roadStr(),laps:LAPS,name,ship:build.frame,time:+player.finishT.toFixed(3),lap:+best.toFixed(3),len:Math.round(T.L)};
@@ -3455,14 +3467,13 @@ function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb')))retur
    finished back and start the next race; a guest can change the song and go back to the lobby. */
 function resButtons(){const host=!mp.on||!!(mp.sess&&mp.sess.state.isHost);
   $('againBtn').hidden=!host;$('newBtn2').hidden=!host;$('mpBackBtn').hidden=!mp.on;
-  $('resHint').textContent=mp.on&&!host?'The host can start the next race from here.':'';}
+  $('resHint').textContent=mp.on?(host?'Race again takes everyone back to the lobby; the race starts when every pilot is ready.':'Back to lobby, then press Ready for the next race.'):'';}
 function newSong(){audio.init();music.newTune();music.ensure();music.setMood(S.state==='menu'?'menu':S.state==='done'?'results':S.state==='countdown'?'count':'race');
   /* a new song mid-race gets a one-bar build and drops in; during the countdown the drop still lands on GO */
   if(S.state==='countdown')music.countIn(mp.on&&mp.go!=null?(mp.go-performance.now())/1000:S.count,true);else if(music.phase==='groove'&&(S.state==='race'||S.state==='done'||S.state==='menu'))music.countIn(60/music.bpm*4);tuneUI();syncMusic();note('♪ New song · '+music.code(),1600)}
 $('songBtn').onclick=newSong;
 function mpAgain(fresh){if(!mp.sess||!mp.sess.state.isHost)return;mp.sess.send({t:'again'});mpBackToLobby();if(fresh){newTrack();mpPushInfo()}
-  const t0=performance.now(),go=()=>{const st=mp.sess&&mp.sess.state;if(!st||st.phase!=='lobby'||S.state!=='menu')return;
-    if(st.roster.some(e=>e.id!==st.id&&e.st==='results')&&performance.now()-t0<6000)return setTimeout(go,300);mpEl.mpStart.onclick()};setTimeout(go,700)}
+  mpSetReady(true)} // the race starts once everyone else presses Ready too
 function renderResults(){const rk=ranking(),place=rk.indexOf(player)+1;
   $('resPos').innerHTML=ord(place)+`<small>${fmt(player.finishT)}</small>`;
   $('resTable').innerHTML=rk.map((r,i)=>{const t=r.left?'left':r.finishT!=null?fmt(r.finishT):mp.on&&r.remote?'racing…':'~'+fmt(S.raceT+(LAPS*T.L-r.utot)/Math.max(r.v,60));
@@ -3631,7 +3642,7 @@ let ctlFrom=null;
 function openCtl(from){logUI();ctlFrom=from;goFull();$(from).hidden=true;$('ctl').hidden=false;rebind.on=false;$('bindMsg').textContent='';ctlSync();bindUI()}
 let setFrom=null;
 function openSet(from){logUI();setFrom=from;$(from).hidden=true;$('set').hidden=false;setSync()}
-function closeSet(){$('set').hidden=true;const f=setFrom;setFrom=null;if(f)$(f).hidden=false}
+function closeSet(){$('set').hidden=true;const f=setFrom;setFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}
 function setSync(){for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.value=String(audio[k]);$(id+'V').textContent=audio[k]+'%'}
   $('sndChip').setAttribute('aria-pressed',String(audio.on));
   {const n=GOPT.filter(([k])=>g2(k)).length,st=styleNow();$('gfxNote').textContent=(st?STYLES[st].n+' look':'Your own look')+` · ${n} of ${GOPT.length} parts on.`+(st==='lite'?' The lightest, for older phones.':' Pick Lite if the game stutters.')}}
@@ -3760,7 +3771,7 @@ function gColours(c,w,h){const S=Math.max(36,Math.min(80,w*0.1)),y=h*0.5,cols=[[
     if(m==='dive'){c.moveTo(x-18,yy-8);c.lineTo(x,yy+8);c.lineTo(x+18,yy-8);c.stroke()}else if(m==='grip'){c.moveTo(x-18,yy+8);c.lineTo(x,yy-8);c.lineTo(x+18,yy+8);c.stroke()}else{c.fillRect(x-18,yy-9,36,6);c.fillRect(x-18,yy+3,36,6)}gLabel(c,x,yy+30,txt,GC.dim,'center')})}
 $('guideBtn').onclick=()=>openGuide('menu');$('pauseGuide').onclick=()=>openGuide('pause');$('guideDone').onclick=closeGuide;
 $('guideNext').onclick=()=>guideShow(guide.i+1);$('guidePrev').onclick=()=>guideShow(guide.i-1);
-$('ctlBtn').onclick=()=>openCtl('menu');$('setBtn').onclick=()=>openSet('menu');$('musBtn').onclick=()=>{$('menu').hidden=true;$('mus').hidden=false};$('musDone').onclick=()=>{$('mus').hidden=true;$('menu').hidden=false};$('pauseSet').onclick=()=>openSet('pause');$('setDone').onclick=closeSet;$('pauseCtl').onclick=()=>openCtl('pause');$('mpCtl').onclick=()=>openCtl('mp');$('ctlDone').onclick=closeCtl;
+$('ctlBtn').onclick=()=>openCtl('menu');$('setBtn').onclick=()=>openSet('menu');$('musBtn').onclick=()=>{$('menu').hidden=true;$('mus').hidden=false};$('musDone').onclick=()=>{$('mus').hidden=true;$('menu').hidden=false};$('pauseSet').onclick=()=>openSet('pause');$('setDone').onclick=closeSet;$('pauseCtl').onclick=()=>openCtl('pause');$('mpCtl').onclick=()=>openCtl('mp');$('mpSet').onclick=()=>openSet('mp');$('ctlDone').onclick=closeCtl;
 /* Any real finger touch switches touch controls on, unless the player has explicitly turned them off. */
 addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setDev('touch');if(e.pointerType==='touch'&&!coarse&&store.get('hoverline.touch')!=='0'){coarse=true;applyTouchUI()}},true);
 applyTouchUI();
@@ -4327,7 +4338,7 @@ function createSession(o) {
   const S = {
     code: o.code, id: null, isHost: !!o.host, hostId: null, roster: [], info: o.info || {}, max: o.max || 6,
     phase: 'connecting', race: 0, field: null, loaded: new Set(), goAt: null, offset: 0, rtt: null, busy: false,
-    me: { p: o.profile || {}, st: 'lobby' }, peers: new Set(), link: null, closed: false,
+    me: { p: o.profile || {}, st: 'lobby', rd: false }, peers: new Set(), link: null, closed: false,
   };
   const samples = [];
   let rosterTimer = null, pingTimer = null, noHostTimer = null, loadTimer = null, pings = 0;
@@ -4341,10 +4352,10 @@ function createSession(o) {
     S.roster = S.roster.filter((e) => present(e.id));
     send({ t: 's.roster', host: S.id, list: S.roster, info: S.info, race: S.race, busy: S.phase === 'loading' || S.phase === 'race', max: S.max });
   };
-  const sendHi = () => send({ t: 's.hi', p: S.me.p, st: S.me.st, host: S.isHost, v: 1 });
+  const sendHi = () => send({ t: 's.hi', p: S.me.p, st: S.me.st, rd: !!S.me.rd, host: S.isHost, v: 1 });
   function becomeHost() {
     S.isHost = true; S.hostId = S.id; S.offset = 0;
-    if (!entry(S.id)) S.roster.unshift({ id: S.id, p: S.me.p, st: S.me.st });
+    if (!entry(S.id)) S.roster.unshift({ id: S.id, p: S.me.p, st: S.me.st, rd: !!S.me.rd });
     sendRoster(); o.onHost && o.onHost(S); change();
   }
   function pickHost() {
@@ -4388,8 +4399,8 @@ function createSession(o) {
       let e = entry(from);
       if (!e) {
         if (S.roster.length >= S.max) return send({ t: 's.full', to: from });
-        S.roster.push((e = { id: from, p: m.p, st: m.st }));
-      } else { e.p = m.p; e.st = m.st }
+        S.roster.push((e = { id: from, p: m.p, st: m.st, rd: !!m.rd }));
+      } else { e.p = m.p; e.st = m.st; e.rd = !!m.rd }
       sendRoster(); change();
     } else if (m.t === 's.roster') {
       if (S.isHost) { if (from < S.id) { S.isHost = false; S.hostId = from; sendHi() } else return sendRoster() }
@@ -4429,7 +4440,7 @@ function createSession(o) {
   Promise.resolve(o.openLink(S.code, handlers, o.carrier)).then((link) => {
     if (S.closed) return link.close();
     S.link = link; S.id = link.id;
-    if (S.isHost) { S.hostId = S.id; S.roster = [{ id: S.id, p: S.me.p, st: S.me.st }] }
+    if (S.isHost) { S.hostId = S.id; S.roster = [{ id: S.id, p: S.me.p, st: S.me.st, rd: !!S.me.rd }] }
     rosterTimer = setInterval(() => { if (S.isHost) sendRoster(); else if (S.phase === 'connecting') sendHi() }, 3000);
     // Pings at jittered times: on a fixed interval they would always land at the same point of the link's send batching,
     // and the clock estimate would carry that delay as a fixed error. With jitter the best-of-8 sample is near the truth.
@@ -4445,13 +4456,14 @@ function createSession(o) {
     send(m) { send(m) },
     update(fields) {
       Object.assign(S.me, fields);
-      if (S.isHost) { const e = entry(S.id); if (e) { e.p = S.me.p; e.st = S.me.st } sendRoster() } else sendHi();
+      if (S.isHost) { const e = entry(S.id); if (e) { e.p = S.me.p; e.st = S.me.st; e.rd = !!S.me.rd } sendRoster() } else sendHi();
       change();
     },
     setInfo(info) { if (!S.isHost) return; S.info = info; sendRoster(); change() },
     start(payload) {
       if (!S.isHost) return false;
-      const field = S.roster.filter((e) => present(e.id) && (e.st === 'lobby' || e.id === S.id)).map((e) => e.id);
+      // Pilots race once they have pressed Ready; the host is in whenever they start.
+      const field = S.roster.filter((e) => present(e.id) && ((e.st === 'lobby' && e.rd) || e.id === S.id)).map((e) => e.id);
       const race = S.race + 1;
       send({ t: 's.start', race, field, payload });
       for (const ms of [900, 2200]) setTimeout(() => { if (!S.closed && S.phase === 'loading' && S.goAt == null && S.race === race) send({ t: 's.start', race, field, payload }) }, ms);
@@ -4467,7 +4479,7 @@ function createSession(o) {
         tell();
       }
     },
-    backToLobby() { S.phase = 'lobby'; S.field = null; S.goAt = null; this.update({ st: 'lobby' }) },
+    backToLobby() { S.phase = 'lobby'; S.field = null; S.goAt = null; this.update({ st: 'lobby', rd: false }) },
     close() {
       if (S.closed) return; S.closed = true;
       clearInterval(rosterTimer); clearTimeout(pingTimer); clearTimeout(noHostTimer); clearTimeout(loadTimer);
@@ -4483,10 +4495,10 @@ function createSession(o) {
    at its own speed so it doesn't stutter. Weapons fire as events: every device spawns the same shots; a shot that
    hits a ship only does damage on the device that owns that ship, which then tells the others it exploded. */
 const MAXP=8;
-const mpEl={};for(const id of['mp','mpOut','mpIn','mpName','mpCode','mpCreate','mpJoin','mpBack','mpRoom','mpStatus','mpList','mpTrack','mpHostRow','mpStart','mpLab','mpLeave','mpHint','mpConnRow','mpNew','mpAI','mpErr'])mpEl[id]=$(id);
+const mpEl={};for(const id of['mp','mpOut','mpIn','mpName','mpCode','mpCreate','mpJoin','mpBack','mpRoom','mpStatus','mpList','mpTrack','mpHostRow','mpStart','mpReady','mpLab','mpLeave','mpHint','mpConnRow','mpNew','mpAI','mpErr'])mpEl[id]=$(id);
 mpEl.mpName.value=(store.get('hoverline.name')||('Pilot '+(10+Math.floor(Math.random()*90)))).slice(0,12);
 const mpProfile=()=>({n:mpEl.mpName.value.trim().slice(0,12)||'Pilot',pt:build.paint,lv:build.liv||null,st:{...build.stats},w:[...build.weapons],fr:build.frame});
-const mpSt={lobby:'ready',lab:'in ship lab',loading:'loading',race:'racing',results:'on results'};
+const mpSt={lobby:'not ready',lab:'in ship lab',loading:'loading',race:'racing',results:'on results'};
 let mpConn='internet';
 function mpOpen(){S.state='menu';$('menu').hidden=true;mpEl.mp.hidden=false;mpView();drawPreview('mpPreview','mpStats');
   if(!mpOpen.probed){mpOpen.probed=true;HLNet.relayAvailable().then(ok=>{if(ok){mpEl.mpConnRow.hidden=false;mpConn='wifi';mpSyncConn()}})}}
@@ -4514,11 +4526,28 @@ function mpReconnect(){if(!mp.code)return;const st=mp.sess&&mp.sess.state,host=!
   if(S.state!=='menu'){$('pause').hidden=true;mpBackToLobby()}if(mp.sess){mp.sess.close();mp.sess=null}mpConnect(code,host);
   note(was&&!host?'Rejoining room '+code+' · another pilot takes over as host':'Reconnecting to room '+code+'…',2200)}
 $('mpRe').onclick=mpReconnect;$('pauseRe').onclick=mpReconnect;
-mpEl.mpLab.onclick=()=>{mp.sess&&mp.sess.update({st:'lab'});mpEl.mp.hidden=true;openLab()};
+mpEl.mpLab.onclick=()=>{mp.sess&&mp.sess.update({st:'lab',rd:false});mpEl.mp.hidden=true;openLab()};
 mpEl.mpStart.onclick=()=>{const s=mp.sess;if(!s||!s.state.isHost)return;
-  const humans=s.state.roster.filter(e=>e.st==='lobby'||e.id===s.state.id).length,ai=[];
+  clearTimeout(mp.autoT);mp.autoT=null;
+  const humans=s.state.roster.filter(e=>e.st==='lobby'&&e.rd||e.id===s.state.id).length,ai=[];
   if(mp.fill)for(let k=1;k<=Math.min(ROSTER.length-1,Math.max(0,8-humans));k++)ai.push(k); // AI tops the field up to 8 ships
   s.start({...mpTrackInfo(),ai})};
+/* Ready: every pilot presses Ready in the lobby; the host's device starts the race once everyone in the room is ready
+   (Start now races just the pilots who are). Pressing Ready plays an alert on every device whose pilot isn't ready yet. */
+function mpSetReady(on){const s=mp.sess;if(!s||s.state.phase!=='lobby')return;s.update({rd:on,st:'lobby'});
+  if(on)s.send({t:'rdy',n:mpEl.mpName.value.trim().slice(0,12)||'Pilot'});mpRender()}
+mpEl.mpReady.onclick=()=>{const s=mp.sess;if(s)mpSetReady(!s.state.me.rd)};
+function mpNudge(name){const s=mp.sess;if(!s||s.state.me.rd||S.state==='race'||S.state==='countdown'||S.state==='mpwait')return;
+  const t=performance.now();if(t-(mpNudge.t||0)<1500)return;mpNudge.t=t;
+  audio.init();audio.blip(880,0.14,0.28,'square');setTimeout(()=>audio.blip(1320,0.22,0.28,'square'),150);setTimeout(()=>audio.blip(1760,0.3,0.22,'triangle'),320);
+  try{navigator.vibrate&&navigator.vibrate([120,80,120])}catch(e){}rumble(0.7,0.7,300);
+  note(name+' is ready · '+(S.state==='done'?'go back to the lobby and press Ready':S.state==='lab'?'finish in the ship lab and press Ready':'press Ready'),2600);
+  const b=mpEl.mpReady;b.classList.remove('nudge');void b.offsetWidth;b.classList.add('nudge')}
+function mpAutoStart(st){if(!st.isHost||st.phase!=='lobby'||st.busy||!st.roster.length)return;
+  const all=st.roster.every(e=>e.st==='lobby'&&e.rd);
+  if(!all){if(mp.autoT){clearTimeout(mp.autoT);mp.autoT=null}return}
+  if(mp.autoT)return;note(st.roster.length>1?'Everyone is ready · starting':'Ready · starting',1400);
+  mp.autoT=setTimeout(()=>{mp.autoT=null;const s=mp.sess;if(s&&s.state===st&&st.phase==='lobby'&&st.roster.every(e=>e.st==='lobby'&&e.rd))mpEl.mpStart.onclick()},1200)}
 mpEl.mpNew.onclick=()=>{newTrack();mpPushInfo()};
 document.querySelectorAll('[data-mpw]').forEach(b=>b.onclick=()=>{newTrack(b.dataset.mpw);mpPushInfo()});
 document.querySelectorAll('[data-mpl]').forEach(b=>b.onclick=()=>{if(b.dataset.mpl==='C'){openEd('mp');return}newTrack(null,b.dataset.mpl==='X',null,null);mpPushInfo()});
@@ -4534,6 +4563,7 @@ function mpPaints(list){const used=new Set(),css=new Set(),out={};for(const e of
   if(!PAINTS[pt])pt=0;if(used.has(pt)||css.has(PAINTS[pt].css)){const k=PAINTS.findIndex((q,i)=>!used.has(i)&&!css.has(q.css)),k2=PAINTS.findIndex((q,i)=>!used.has(i));pt=k>=0?k:k2>=0?k2:pt}
   used.add(pt);css.add(PAINTS[pt].css);out[e.id]=pt}return out}
 function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='lobby'&&s.state.busy){mpBackToLobby();note('The race started without this device · you are in the next one',2600);return}
+  if(s)mpAutoStart(s.state);
   if(!s||mpEl.mp.hidden&&S.state!=='menu')return;const st=s.state,me=st.id;
   mpEl.mpRoom.textContent=st.code;
   const paths=st.link&&st.link.paths,carrier=st.link&&st.link.carrier;
@@ -4546,7 +4576,7 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
 
   const pts=mpPaints(st.roster);
   mpEl.mpList.innerHTML=st.roster.map((e,i)=>{const p=e.p||{},col=((p.lv&&parseLiv(p.lv))||PAINTS[pts[e.id]]||PAINTS[0]).css,w=(p.fr&&FRAMES[p.fr]?FRAMES[p.fr].name+' · ':'')+(p.w||[]).map(k=>WDEF[k]?WDEF[k].name:k).join(' + ');
-    return`<tr class="${e.id===me?'me':''}"><td><i class="dot" style="background:${col}"></i>${i+1}</td><td>${(p.n||'Pilot').replace(/[<>&]/g,'')}${e.id===st.hostId?' ★':''}${e.id===me?' (you)':''}</td><td>${mpSt[e.st]||e.st}</td><td class="w">${w}</td></tr>`}).join('')+
+    return`<tr class="${e.id===me?'me':''}"><td><i class="dot" style="background:${col}"></i>${i+1}</td><td>${(p.n||'Pilot').replace(/[<>&]/g,'')}${e.id===st.hostId?' ★':''}${e.id===me?' (you)':''}</td><td>${e.st==='lobby'&&e.rd?'<b class="rdy">ready ✓</b>':mpSt[e.st]||e.st}</td><td class="w">${w}</td></tr>`}).join('')+
     (st.roster.length<MAXP?`<tr><td></td><td class="dim" colspan="3">${MAXP-st.roster.length} open · ${mp.fill?'AI tops the field up to 8':'no AI'}</td></tr>`:'');
   const info=st.isHost?mpTrackInfo():st.info;
   mpEl.mpTrack.textContent=info&&info.seed!=null?`Track ${((info.wk||'S')+(info.cx?'X':'')+(info.lk&&info.lk!=='M'?info.lk:'')+(info.seed>>>0).toString(16).toUpperCase().padStart(6,'0')+(info.sp?'-'+info.sp:''))} · ${(BIOMES[(info.bm||'U')[0]]||BIOMES.U).n} · ${info.laps||3} lap${(info.laps||3)>1?'s':''}`:'';
@@ -4555,11 +4585,16 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
   document.querySelectorAll('[data-mpl]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mpl==='C'?!!spec:!spec&&(b.dataset.mpl==='X')===cplx)));document.querySelectorAll('[data-mplen]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mplen===lenK)));
   document.querySelectorAll('[data-mplaps]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.mplaps===mp.laps)));
   mpEl.mpAI.setAttribute('aria-pressed',String(mp.fill));
-  const ready=st.roster.filter(e=>e.st==='lobby'||e.id===me).length,total=st.roster.length;
-  mpEl.mpStart.hidden=!st.isHost;mpEl.mpStart.disabled=st.phase!=='lobby';
-  mpEl.mpStart.textContent=ready<total?`Start race (${ready} of ${total} ready)`:'Start race';
-  mpEl.mpHint.textContent=st.phase==='full'?'':st.isHost?(total<2?'Share the room code. Players join from Multiplayer → Join on their own device.':'Everyone listed will race. The race starts once every device has loaded the track.'):
-    st.busy?'A race is on. You will be in the next one.':st.phase==='lobby'?'Waiting for the host to start the race.':''}
+  const ready=st.roster.filter(e=>e.st==='lobby'&&e.rd).length,total=st.roster.length,meRd=!!st.me.rd,
+    waiting=st.roster.filter(e=>!(e.st==='lobby'&&e.rd)).map(e=>((e.p&&e.p.n)||'Pilot').replace(/[<>&]/g,''));
+  mpEl.mpReady.disabled=st.phase!=='lobby';mpEl.mpReady.setAttribute('aria-pressed',String(meRd));
+  mpEl.mpReady.textContent=meRd?'Ready ✓':'Ready';
+  mpEl.mpStart.hidden=!st.isHost||total<2||ready===0||ready===total;mpEl.mpStart.disabled=st.phase!=='lobby';
+  mpEl.mpStart.textContent=`Start now (${ready} of ${total} ready)`;
+  mpEl.mpHint.textContent=st.phase==='full'?'':st.busy?'A race is on. You will be in the next one.':st.phase!=='lobby'?'':
+    total<2?(st.isHost?'Share the room code. Players join from Multiplayer → Join on their own device. Press Ready to race the AI on your own.':''):
+    ready===total?'Everyone is ready.':
+    (meRd?'Ready · waiting for '+waiting.join(', ')+'.':'Press Ready when you are set. The race starts when every pilot is ready.')+(st.isHost&&ready?' Start now races just the pilots who are ready.':'')}
 function mpLeaveRoom(){if(mp.sess){mp.sess.close();mp.sess=null}mp.on=false;mp.go=null;mp.auto=false;mpRestore();mpTags(true);mpView()}
 /* Racer objects: the local player plus five more. In a room they become the other pilots (proxies) and AI. */
 function mpRestore(){LAPS=3;for(const r of extras){r.off=true;r.ship.visible=false;r.shadow.visible=false;r.remote=null;r.proxy=false;r.key=null;r.left=false;r.net=null}for(let i=1;i<roster.length;i++){const r=roster[i],c=ROSTER[i];r.name=c.name;r.css=c.css;r.skill=c.skill;setShip(r,c.b,c.paint);Object.assign(r,{isAI:true,remote:null,proxy:false,key:null,left:false,net:null,off:false})}
@@ -4584,7 +4619,7 @@ function mpStart(pl,field){mp.bg=false;
   clearShots();
   racers.forEach((r,k)=>{const row=Math.floor(k/2),col=k%2;freshRacer(r,T.L-14-row*11,-14-row*11,col?W*0.21:-W*0.21);if(r.proxy)r.u=r.utot;r.ship.visible=true});
   S.raceT=-3;S.shake=0;lowWarn=false;
-  ['menu','results','pause','mp','lab'].forEach(i=>$(i).hidden=true);
+  ['menu','results','pause','mp','lab','set','ctl','gfxm','lbv'].forEach(i=>$(i).hidden=true);setFrom=null;ctlFrom=null;rebind.on=false;
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;setHud(true);camInit=false;
   $('bestL').textContent='Best '+fmt(getBest());$('posT').textContent=racers.length;
   logStart();S.state='mpwait';mpWaitNote();
@@ -4605,6 +4640,29 @@ function mpBackToLobby(){
   menuMusic();
   mpEl.mp.hidden=false;if(mp.sess)mp.sess.backToLobby();mpView();drawPreview('mpPreview','mpStats')}
 $('mpBackBtn').onclick=mpBackToLobby;
+/* ---- in-game leaderboard: browse the online boards (GET /boards, GET /top) without leaving the game ---- */
+const lbv={mode:'here',sel:null,req:0};
+function lbOpen(){$('menu').hidden=true;$('lbv').hidden=false;$('lbNameIn').value=lbName();lbv.sel=null;lbLoad()}
+function lbClose(){$('lbv').hidden=true;$('menu').hidden=false;updateMenuBest()}
+function lbLoad(){const L=$('lbList'),H=$('lbHead'),n=++lbv.req,one=lbv.sel||(lbv.mode==='here'?{track:roadStr(),laps:LAPS}:null);
+  document.querySelectorAll('[data-lbs]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lbs===lbv.mode&&!lbv.sel)));
+  $('lbRace').hidden=!lbv.sel||mp.on;$('lbBack').hidden=!lbv.sel;$('lbRace').textContent=lbv.sel&&lbv.sel.laps!==3?'Load this track':'Race this track';
+  L.innerHTML='';if(!LB){H.textContent='The online board is switched off in this build.';return}
+  H.textContent='Loading…';
+  fetch(one?LB+'/top?track='+encodeURIComponent(one.track)+'&laps='+one.laps:LB+'/boards?sort='+lbv.mode).then(r=>r.json()).then(o=>{
+    if(n!==lbv.req)return;if(!o||o.error)throw new Error(o&&o.error||'no answer');const me=lbName();
+    if(one){H.innerHTML=`Track <b>${esc(one.track)}</b> · ${one.laps} lap${one.laps>1?'s':''} · ${o.total} pilot${o.total===1?'':'s'}`;
+      L.innerHTML=o.rows.length?'<table id="lbTop">'+o.rows.map((x,i)=>`<tr class="${x.name===me?'me':''}"><td>${i+1}</td><td>${esc(x.name)}</td><td>${fmt(x.time)}</td><td class="w">${FRAMES[x.ship]?FRAMES[x.ship].name:esc(x.ship)} · best lap ${fmt(x.lap)}</td></tr>`).join('')+'</table>':
+        '<p class="small">No times on this track yet. Finish a race here to set the first one.</p>'}
+    else{const rows=o.boards||[];H.textContent=rows.length?(lbv.mode==='recent'?'Tracks raced most recently':'Tracks with the most pilots')+' · pick one for its top 10':'No times on the board yet.';
+      L.innerHTML=rows.map((b,i)=>`<button class="btn lbrow" data-i="${i}"><b>${esc(b.track)}</b><span>${b.laps} lap${b.laps>1?'s':''} · ${b.pilots} pilot${b.pilots===1?'':'s'} · ${fmt(b.best)} ${esc(b.holder||'')}</span></button>`).join('');
+      L.querySelectorAll('.lbrow').forEach(e=>e.onclick=()=>{lbv.sel=rows[+e.dataset.i];lbLoad();$('lbBack').focus({preventScroll:true})})}
+  }).catch(()=>{if(n!==lbv.req)return;H.textContent=inViewer?'This Claude page can\'t reach the internet · the board works in the itch build.':'Couldn\'t reach the online board · check the connection and try again.'})}
+$('lbBtn').onclick=lbOpen;$('lbDone').onclick=lbClose;$('lbBack').onclick=()=>{lbv.sel=null;lbLoad()};
+document.querySelectorAll('[data-lbs]').forEach(b=>b.onclick=()=>{lbv.mode=b.dataset.lbs;lbv.sel=null;lbLoad()});
+$('lbRace').onclick=()=>{const b=lbv.sel,c=b&&parseCode(b.track);if(!c)return;lbClose();loadTrack(c.seed,c.wk,c.cx,c.lk,c.sp||null);if(b.laps===3)$('raceBtn').click()};
+$('lbNameIn').addEventListener('input',e=>{const v=e.target.value.trim().slice(0,12);if(!v)return;store.set('hoverline.name',v);mpEl.mpName.value=v});
+$('lbNameIn').addEventListener('change',()=>{if(!lbv.sel&&lbv.mode==='here')lbLoad()});
 /* ---- poses ---- */
 const mpFlags=r=>(r.air?1:0)|(r.wreck>0?2:0)|(r.inv>0?4:0)|(r.barrier>0?8:0)|(r.boost>0||r.selfBoost?16:0)|(r.charging==='hp'?32:0)|(r.charging==='ammo'?64:0)|(r.stun>0?128:0)|(r.finishT!=null?256:0)|(r.od>0?512:0)|(r.emp>0?1024:0)|(r.phase>0?2048:0);
 const mpPack=r=>[Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round(r.v*10),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),Math.round(r.brk*100),mpFlags(r),Math.round(r.hp),r.done];
@@ -4635,6 +4693,7 @@ function mpFired(r,w,from){if(!mp.on||!mp.sess||r.proxy)return;
     sh.push([s.nid,s.type,+s.u.toFixed(1),+s.lat.toFixed(2),+(s.v||0).toFixed(1),+s.life.toFixed(2),s.rear?1:s.wait?2:0,s.target&&s.target.key||'',+(s.vl||0).toFixed(2),s.mini?1:0])}
   if(sh.length)mp.sess.send({t:'fire',o:r.key,w,sh,ts:Math.round(S.raceT*1000)})}
 function mpMessage(m,from){
+  if(m.t==='rdy'){mpNudge(String(m.n||'A pilot').replace(/[<>&]/g,'').slice(0,12));return}
   if(m.t==='again'){if(mp.sess&&from===mp.sess.state.hostId&&S.state==='done')mpBackToLobby();return}
   if(m.t==='pose'){mpApply(mp.byKey&&mp.byKey.get(from),m.s,m.ts);
     if(m.a&&mp.sess&&from===mp.sess.state.hostId)for(const a of m.a)mpApply(mp.byKey.get('ai:'+a[0]),a.slice(1),m.ts);return}
