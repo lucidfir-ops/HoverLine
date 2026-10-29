@@ -1,8 +1,12 @@
 // Hoverline online leaderboard — a Cloudflare Worker with a D1 database.
 //   GET  /top?track=CODE&laps=3          → { rows:[{name,ship,time,lap,at}], total }
 //   POST /run  {track,laps,name,ship,time,lap,len}  → { rank, total, rows }
+//   POST /log  {v, log}                       → { ok, id }            (shared race data; no names)
+//   GET  /logs?key=ADMIN_KEY&since=MS&limit=N → { logs:[{id,created,ver,track,log}], more }
+//   GET  /logs/count?key=ADMIN_KEY            → { n, bytes }
 // Times are in seconds on the wire, stored as ms. One row per run; the board shows each pilot's best.
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
+const LOG_MAX = 400000; // bytes of JSON per race log
 const json = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', ...CORS } });
 const TRACK = /^[A-Z0-9-]{4,40}$/i, SHIP = /^[a-z]{2,12}$/;
 const cleanName = n => String(n || '').replace(/[\u0000-\u001f\u007f<>&"]/g, '').trim().slice(0, 12);
@@ -51,6 +55,31 @@ export default {
           .bind(track, laps, best.t).first();
         const board = await top(env.DB, track, laps);
         return json({ rank: ahead.n + 1, best: best.t / 1000, ...board });
+      }
+      if (req.method === 'POST' && u.pathname === '/log') {
+        const txt = await req.text();
+        if (txt.length > LOG_MAX) return json({ error: 'too big' }, 413);
+        let b = null; try { b = JSON.parse(txt) } catch (e) { }
+        const L = b && b.log;
+        if (!L || typeof L !== 'object' || !Array.isArray(L.s) || !L.track) return json({ error: 'bad log' }, 400);
+        const who = await hash((req.headers.get('CF-Connecting-IP') || 'local') + (env.SALT || 'hoverline'));
+        const now = Date.now();
+        const recent = await env.DB.prepare(`SELECT COUNT(*) AS n FROM logs WHERE who=?1 AND created>?2`).bind(who, now - 3600000).first();
+        if (recent && recent.n >= 40) return json({ error: 'slow down' }, 429);
+        const track = String(L.track.code || '').slice(0, 40), ver = (b.v | 0) || 0;
+        const r = await env.DB.prepare(`INSERT INTO logs (created,who,ver,track,data) VALUES (?1,?2,?3,?4,?5)`).bind(now, who, ver, track, JSON.stringify(L)).run();
+        return json({ ok: true, id: r.meta ? r.meta.last_row_id : null });
+      }
+      if (req.method === 'GET' && (u.pathname === '/logs' || u.pathname === '/logs/count')) {
+        if (!env.ADMIN_KEY || u.searchParams.get('key') !== env.ADMIN_KEY) return json({ error: 'key' }, 403);
+        if (u.pathname === '/logs/count') {
+          const c = await env.DB.prepare(`SELECT COUNT(*) AS n, SUM(LENGTH(data)) AS bytes FROM logs`).first();
+          return json({ n: c ? c.n : 0, bytes: c ? c.bytes || 0 : 0 });
+        }
+        const since = parseInt(u.searchParams.get('since') || '0', 10) || 0, limit = Math.min(200, parseInt(u.searchParams.get('limit') || '100', 10) || 100);
+        const r = await env.DB.prepare(`SELECT id, created, ver, track, data FROM logs WHERE created>?1 ORDER BY created ASC LIMIT ?2`).bind(since, limit + 1).all();
+        const rows = r.results.slice(0, limit).map(x => { let log = null; try { log = JSON.parse(x.data) } catch (e) { } return { id: x.id, created: x.created, ver: x.ver, track: x.track, log } });
+        return json({ logs: rows, more: r.results.length > limit, next: rows.length ? rows[rows.length - 1].created : since });
       }
       return json({ error: 'not found' }, 404);
     } catch (e) { return json({ error: 'server', detail: String(e).slice(0, 200) }, 500) }

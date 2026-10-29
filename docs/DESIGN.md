@@ -1,6 +1,6 @@
 # Hoverline Design Document
 
-Oct 27, 2026 · Eric
+Oct 28, 2026 · Eric
 
 The live, editable copy of this document is the Hoverline Design Document in Claude: https://claude.ai/artifact/W5mcmFeVZPiUPGRH76veyh
 
@@ -20,12 +20,13 @@ The three builds are kept as files in the repo's `reference/` folder so they can
 
 Hoverline is a WipEout-style anti-grav racer for itch.io: phone first, also tablet, desktop and Steam Deck, with 8 ships and 3 laps a race.
 
-- **Tracks:** procedural, from a shareable track code. Wide, Standard or Narrow; Simple, Complex or Custom (the track editor); Short, Medium or Long.
-- **Ships:** the Ship lab sets frame, five stats and two weapon slots. Frames include Blade, Tether, Skiff, Orb, Roller (hover car) and Monowheel.
+- **Tracks:** procedural, from a shareable track code. Wide, Standard or Narrow; Simple, Complex or Custom (the track editor); Short, Medium or Long; and one scenery setting: Urban, Ocean, Forest or Night sky.
+- **Routes (Prototype 28):** a split puts the long route on either side, and about 1 in 3 is a crossover, where the long route passes over the short one on a bridge. About 1 long track in 5 has a pit lane near halfway: a narrow lane off one edge with fast repair and ammo strips and a speed limiter (about 0.7 s slower). About 1 track in 12 has a cut: a narrow lane off the inside of a big bend, with a sharp entry, two boost pads and no sign.
+- **Ships:** the Ship lab sets frame, five stats and two weapon slots. Frames are Blade, Tether, Skiff, Hauler, Dart, Orb, Roller (hover car) and Monowheel. The AI field flies one of each frame, never yours; in a room anyone can fly anything. The paint shop sets main, second and trim colours and a pattern, or one you draw on an 8×8 grid, as a short livery code that travels with ghosts and to other pilots.
 - **Modes:** Race against 7 AI; Time trial against the ghost of your best run; Multiplayer for up to 8 pilots online or over Wi-Fi.
-- **Controls:** always accelerating. Steer, brake, boost, two weapons and nose pitch, by tilt, sliders, buttons, stick, keyboard or gamepad.
+- **Controls:** always accelerating. Steer, brake, boost, two weapons and nose pitch, by tilt, sliders, buttons, stick, keyboard or gamepad. Every menu, results included, works with a gamepad or the keys (B or Escape is Back).
 - **Rivals:** after two races a few AI ships loosely copy your pace and habits.
-- **Data:** every race is logged and can be downloaded from Settings for tuning. Times go to an online board when the game runs from itch.
+- **Data:** every race is logged and can be downloaded from Settings for tuning. Times go to an online board when the game runs from itch, and with Share race data on (the default) each log also goes to the same server, with other humans' names replaced, so balance can use everyone's races.
 
 ## Music baseline (Prototype 25)
 
@@ -119,15 +120,15 @@ Ships should feel pinned to the track, quick to steer, and dangerous to each oth
 **Hover and pitch**
 
 - The ship floats 1.05 m over the road. Over a crest it holds on at 4 times gravity, so it only lifts off at speed on a sharp crest, or with the nose up.
-- Nose down builds a dive: top speed rises by up to about a fifth, while steering falls away. Green chevrons on the road mark where to dive.
-- Nose up gives much sharper steering at the cost of drag, shown by the grey shell. Amber bars before dips say level out; grey chevrons before jumps say lift the nose.
+- Pitch matches the slope (Prototype 28): nose up going uphill for traction, nose down going downhill to streamline. Either is worth up to a fifth more top speed on a steep slope, less on a gentle one; the wrong way round, or any pitch on the flat, costs a little. Green V on the road marks a descent, grey Λ a climb.
+- Nose up also gives much sharper steering, shown by the grey shell. Grey chevrons before tight corners and jumps say lift the nose; the Nose guide shows each case.
 - In the air the ship carries straight on, so on a bend it drifts to the outside. Low walls can be flown over; tall walls stand at crests next to bends.
 
-**Jumps and steep track (Prototype 26)**
+**Jumps and spires (Prototype 27)**
 
-- Climbs and drops can rise or fall at about 70 degrees. Cyan mag-lock strips along their edges hold the ship to the road, so steep crests don't launch it.
-- About half the jumps have rails across the gap. The rest are open, and you can fly off the side.
-- Off the edge you keep flying and can steer back onto the road. Drop 12 m below road level, or stray 40 m out, and you respawn.
+- The one vertical set piece is the spire, on about 1 track in 6: the road eases out to one side, climbs one and a half turns round a ring, takes a half turn in to the middle, goes over the edge and drops straight down the middle, then pulls out underneath the ring. Every change of direction eases in and out. Cyan mag-lock strips hold the ship on the drop. The 70-degree climbs of Prototype 26 are gone: they came with no curve to lead into them.
+- About half the jumps have rails across the gap, and every jump whose gap or landing is on a bend has them. The rest are open, and you can fly off the side.
+- Fences never let a ship through: you only leave the road by flying over the top, and complex tracks have taller fences on their bends. Clear a fence and you explode and respawn, unless you fly a glider (the Dart), which can steer back in if it stays within 12 m below and 40 m out. Open jumps have no invisible wall.
 - The Monowheel rolls on the road. It falls faster off crests and in free flight, but keeps normal gravity over jumps so it clears them.
 - Wall scrapes cost speed and very little shield.
 
@@ -137,6 +138,9 @@ Ships should feel pinned to the track, quick to steer, and dangerous to each oth
 - Green strips at the end of each lap recharge the shield. Boosting from the shield costs 8% of it per second.
 - Hits deal 80% of their listed damage. Slower builds hit harder and recharge faster.
 - The Quake rolls up the track with one gap in it. It used to cause 8 of the player's 20 wrecks, before it had a gap.
+- Smoke leaves a rolling cloud of dark cubes. Fly into it and dark cubes stream past the camera until it clears.
+- A hit that spins you out (rockets, missiles, the Hunter, Bouncer, mines) spins longer and slows you more, and a spinning ship passes through other ships, as in Mario Kart.
+- Balance (Prototype 28) comes from races with equal AI pilots plus the race logs, and nothing is weakened: what kept losing got a small boost. Hauler pick-up and top speed, Roller pick-up and Dart shield went up a little. Smoke is wider, blinds longer and costs a little speed. EMP lasts 3.5 s and slows more. Bouncer, Cannon, Hunter and Shockwave hit a little harder. Overdrive and Barrier still win the most.
 
 **Defence:** Barrier blocks everything for 6 s. Phase lets weapons and ships pass through for 1.5 s. Decoy pulls homing shots away for 3 s. The screen edge glows where a hit is coming from.
 
@@ -146,31 +150,31 @@ Ships should feel pinned to the track, quick to steer, and dangerous to each oth
 
 The look is a neon night city drawn in glowing lines and simple blocks, with 3D pixel art for the things that move. Every visual must leave the track markings and the ship's pitch easy to read.
 
-**Colour language:** amber for the track edges and signs; cyan for boost; green for shield strips and dive chevrons; purple for ammo strips; orange for the Quake; red for damage.
+**Colour language:** amber for the track edges and signs; cyan for boost; green for shield strips and the nose-down V; purple for ammo strips; orange for the Quake; red for damage.
 
 **Keepers, chosen by the player:**
 
-- Pixel flames: 12 by 40 pixel, 6-frame flames that flicker and sputter out at the tip.
-- The blue boost jet: a pulsing cone with rings racing down it.
+- The cube exhaust: shrinking cubes pouring from every engine, on in every look. It replaced the flat pixel flames.
+- The blue boost jet: a pulsing cone with rings racing down it. It stays level with the road whatever the nose and bank do, so it never dips into the road.
 - Shadows that match each ship's footprint.
 - Overhead split signs showing what each side holds.
 - Edge-of-screen glows warning of incoming hits.
 
-**Rejected:** permanent speed streaks, because they hide the cues for pitching the nose down.
+**Rejected:** permanent speed streaks, because they hide the cues for pitching the nose down; a random mix of settings along a lap; small cube trees; water on a raised platform; anything built close to the road.
 
-**Enhanced graphics** means real rendering upgrades, each switched on by itself in Settings, then Graphics options: glow, speed blur, colour fringing, vignette, colour grade, smooth edges, film grain, scanlines, boost jets, cube exhaust, debris, reflections, light pools, a starry sky, atmosphere, floating particles, moving scenery and lights on the beat. The player tries them and decides which belong in the Enhanced set.
+**Style:** the look is a style choice, not a graphics setting, in Settings, then Style options. Lite (for older phones) has everything off but the cube exhaust. Clean, the default, adds colour grade, boost jets, debris, reflections, moving scenery and lights on the beat. Arcade adds scanlines, a starry sky, atmosphere and floating particles to that, and Everything switches every part on. Any part can be switched on or off by itself, and an FPS counter can be shown. Scanlines and the vignette are drawn over the page, so they cost nothing; the other screen effects need a full-screen pass, which skips multisampling on phones and tablets.
 
-**Environments:** built from cubes in the same style. Each lap is cut into stretches of 700 to 1100 m, each a city, forest, waterfall cliffs, lava or shoreline. They add waterfalls of blue cubes, lava falls of orange, red and black cubes, giant trees and wave-cube bays, plus buildings and rock tunnels the road runs through and towers inside every helix.
+**Scenery:** minimal and brutalist with a little flavour, one setting for the whole track. Urban is the neon blocks over a grid, with one or two water or lava falls pouring out of a rare block, usually a long tunnel or two and sometimes a geyser. Ocean is daylight: a blue sky with the sun and a few clouds built from white blocks, over a flat sea with sandy islands, turquoise shallows, a few lighthouses and whitecaps. It always has its own sky, never the starry one. Forest is giant cyber trees, taller than any building, that the road weaves between. Night sky has stars above and below, and a few floating slabs so speed still reads. New tracks pick from the settings ticked in the menu. The editor sets the scenery and four dials: how much scenery, falls, geysers and tunnels. Tunnels run 280 to 600 m and are built from the road's own frame, so they follow every bend. Nothing is built within a wide margin of any part of the road. Every spiral has a centrepiece (tower, tree, lighthouse or monolith), and every spire has an open frame round its drop.
 
 ## Performance and platforms
 
 Low-end phones come first: every heavy effect is optional, and the default look must run smoothly on an older Android phone.
 
-- **One file:** the whole game is a single HTML page, about 1.24 MB, of which about 240 KB is instrument samples. Three.js r128 loads from cdnjs.
+- **One file:** the whole game is a single HTML page, about 1.29 MB, of which about 240 KB is instrument samples. Three.js r128 loads from cdnjs.
 - **Test devices:** a Samsung Galaxy S22, a Doogee E3 Tab Max tablet, a Steam Deck and a desktop PC.
-- **Defaults:** every graphics option off except Moving scenery, and full music. Each graphics effect, and simple music, is a choice in Settings.
-- **Offline play:** single-player races need no network. Multiplayer uses a small relay online, or the Wi-Fi host pack on a local network.
-- **Builds:** the Hoverline page in Claude, an itch.io zip, and a Wi-Fi host pack with its own small server.
+- **Defaults:** the Clean look and full music. Lite, and simple music, are one tap away in Settings.
+- **Offline play:** single-player races need no network. Multiplayer uses a small relay online, or the Wi-Fi host pack on a local network. Reconnect (in the lobby and the pause menu) rejoins the same room. The start messages repeat, so one lost message can't leave a pilot stuck in the lobby.
+- **Builds:** the Hoverline page in Claude, an itch.io zip, an offline file with Three.js inside, and a Wi-Fi host pack with its own small server (it now carries the offline page, so it needs no internet at all).
 - **Target audience:** to be posted on r/lowendgaming, so sound quality per byte and per CPU cycle matters more than raw spectacle.
 
 ## How to change things safely

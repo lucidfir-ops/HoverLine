@@ -12,3 +12,15 @@ CREATE TABLE IF NOT EXISTS runs (
 );
 CREATE INDEX IF NOT EXISTS runs_board ON runs (track, laps, time_ms);
 CREATE INDEX IF NOT EXISTS runs_who   ON runs (who, created);
+
+-- Shared race data (each finished race's log, sent by players who leave Share race data on)
+CREATE TABLE IF NOT EXISTS logs (
+  id      INTEGER PRIMARY KEY AUTOINCREMENT,
+  created INTEGER NOT NULL,          -- unix ms
+  who     TEXT    NOT NULL,          -- salted hash of the sender's IP (never the IP itself)
+  ver     INTEGER NOT NULL,          -- game prototype number
+  track   TEXT    NOT NULL,          -- track code
+  data    TEXT    NOT NULL           -- the race log as JSON (other humans' names already replaced)
+);
+CREATE INDEX IF NOT EXISTS logs_time ON logs (created);
+CREATE INDEX IF NOT EXISTS logs_who  ON logs (who, created);
