@@ -1,6 +1,6 @@
 # Hoverline
 
-A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight ships, three laps, procedural tracks from shareable codes in four settings (urban, ocean, forest, night sky), live-synthesised music, and multiplayer for up to 8 pilots online or over Wi-Fi.
+A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight ships, three laps, procedural tracks from shareable codes in five settings (urban, ocean, forest, Stratos and an underwater reef, each by night or by day), live-synthesised music, and multiplayer for up to 8 pilots online or on one Wi-Fi with no internet.
 
 **Play:** open `index.html` in a browser, or upload `dist/hoverline-itch.zip` to itch.io as an HTML game. `dist/hoverline-offline.html` is one file that plays with no internet at all.
 
@@ -12,7 +12,7 @@ A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet
 | `index.html` | The playable page, built from the source. |
 | `tools/build.py` | Rebuilds `index.html`, the offline file and the zips in `dist/`. |
 | `vendor/three.min.js` | Three.js r128 (MIT), put inside the offline file and the Wi-Fi pack. |
-| `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. |
+| `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. (Since Prototype 31 any copy of the game can also do this on its own: Multiplayer, Wi-Fi, no internet.) |
 | `leaderboard/` | The online leaderboard and shared race data: a Cloudflare Worker and D1 database. |
 | `reference/` | Builds kept for comparison: Prototype 25 (the music and announcer baseline), Prototype 24 (clown music to avoid), Prototype 21, Prototype 26 (the mixed scenery that was rolled back) and Prototype 27. |
 | `docs/DESIGN.md` | The design document: what is locked, what is tuned, and how to change things safely. |

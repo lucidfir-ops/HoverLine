@@ -1,5 +1,18 @@
 # Changelog
 
+## Prototype 31
+- No more road through road. Every track is checked as it is built for parts of the lap passing through or nearly touching each other (spirals and spires included, at the road's edges, allowing for bank), kinks, and slopes over 42 degrees. If six layouts all fail, the features at fault are left out until the road is clean (before, the least bad layout was kept). Cause of the forest clash (SX813E2C): a spiral built on a steep descent came back over its own entry only 3.4 m up.
+- No more right angles. The base loop eases any bend tighter than the width allows (Wide 29, Standard 38, Narrow 44 degrees in any 30 m) and any sharp change of slope. Rises, drops and lifts move the road straight up (a tilted "up" made spiral exits step backwards, up to 175 degrees in 12 m). Spirals and spires start and end at the road's own slope. A spire rejoins the road by a smooth curve chosen for the gentlest bend (it used to shift the old line up to 250 m sideways, which folded the road and threw it 90 m up and down). Climbs are at most about 31 degrees, and less on a slope. Loops are coaster loops now: the bend builds from gentle at the foot to tightest at the top. Over 500 random tracks: no clashes, at most 26 degrees in any 12 m and 51 in any 30 m (was up to 179), steepest 40 degrees (was 90).
+- Board era 31: the track changes make older times unfair, so boards start fresh (old times are kept).
+- Wi-Fi, no internet (Multiplayer, Connection): race on one Wi-Fi from any copy of the game, itch.io included, with no server. The host shows a QR code; each pilot scans it (Join a Wi-Fi room) and shows a reply for the host to scan; a device without a camera types the code. The host relays the race, so the host must stay in the room. The Wi-Fi host pack still works as before.
+- Ultra low look (Style options): Lite at half resolution with Low detail, for the slowest tablets. New Resolution (Full, three quarters, half, a third) and Low detail (no ship shadows, thinner scenery) controls. Every look races the same, so times count whichever you pick.
+- Lighter for every look: each racing ship's parts are merged (about 40 draw calls a ship down to 8), and the pylons are one instanced mesh (a long Ocean track went from 341 draw calls a frame to 92).
+- Reef: a new underwater setting. By day: sunlit water, sand, coral, swaying kelp, shoals of fish, shafts of light, pale jellyfish. At night: neon jellyfish at every depth, glowing fish and coral. Bubble vents instead of geysers. Code letter R.
+- Night sky is now Stratos (by day it's above the clouds, at night out among the stars). Codes still use N.
+- Night and Day can both be ticked: each new track then picks one.
+- Track types for New track: Wide, Standard and Narrow, Simple, Complex and Custom, and Short, Medium and Long can each be ticked together, like the scenery; New track picks among the ticked ones. Ticking a type makes a track of it at once. Custom uses your editor counts; Edit… opens the editor.
+- Race logs (v2) carry the device (browser, cores, memory, graphics chip, screen, how big the game drew, look, sky), a frame rate with every sample, and a perf summary (average frame rate, the slowest 5% and 1%, frames over 50 ms, draw calls, triangles, a frame-time histogram). Shared logs are sent as version 31.
+
 ## Prototype 30
 - Night and Day: a switch in the menu (next to the scenery) for every setting. Night is the default. It changes only the sky and the light, so track codes and times are the same either way.
 - Ocean at night: a dark sea whose shallows and wave tops glow, jellyfish and manta rays glowing under the surface, and stars with an aurora above a dark horizon. Ocean by day is the old daylight look.

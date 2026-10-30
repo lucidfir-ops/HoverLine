@@ -27,7 +27,7 @@ body{font-family:var(--display);padding-left:max(16px,env(safe-area-inset-left,0
 .lap small{color:var(--dim)}
 .t{font-family:var(--mono);font-size:clamp(14px,2.6vmin,17px);font-variant-numeric:tabular-nums;margin-top:2px}
 .t.best{font-size:13px;color:var(--dim)}
-#gfxm .card{width:min(900px,94vw);max-width:none}.chip.bio.cur::before{content:'● ';color:var(--amber)}
+#gfxm .card{width:min(900px,94vw);max-width:none}.chip.bio.cur::before,.chip.pool.cur::before{content:'● ';color:var(--amber)}#lanQR{background:#fff;border-radius:10px;width:min(330px,70vw);height:auto;image-rendering:pixelated}#lanCam{width:min(330px,70vw);border-radius:10px;background:#000}.lanrow{align-items:flex-start;gap:14px}.lancol{flex:1;min-width:220px}#lanTxt{word-break:break-all;font-family:ui-monospace,monospace;user-select:all;opacity:.8}@media (max-height:480px){#lanBox .small,#mpConnHint{display:block}#lanTxt{font-size:11px}}
 .gopt{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin:10px 0}.gopt button{text-align:left;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.03);color:var(--ink);font:600 14px var(--display);cursor:pointer}.gopt button[aria-pressed=true]{border-color:var(--amber);background:rgba(255,176,0,.12)}.gopt small{display:block;font:400 12px var(--display);color:var(--dim);margin-top:3px}.gopt em{float:right;font:500 10px var(--mono);font-style:normal;opacity:.7;text-transform:uppercase}
 .slrow{display:flex;align-items:center;gap:12px;margin:8px 0}.slrow label{min-width:8.5em;font:600 14px var(--display)}.slrow input{flex:1;accent-color:var(--amber);min-height:28px}.slrow span{min-width:3em;text-align:right;font-family:var(--mono);color:var(--dim)}
 #resBoard{margin-top:6px;line-height:1.5}#resBoard b{color:var(--ink,#fff)}#resBoard .me{color:#7df9ff}
@@ -238,11 +238,11 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
 <div id="menu" class="overlay">
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
-    <div class="sub">Prototype 30 · 8 ships · 3 laps</div>
-    <div class="row" role="group" aria-label="Track width"><button class="chip" data-width="W" aria-pressed="false">Wide</button><button class="chip" data-width="S" aria-pressed="false">Standard</button><button class="chip" data-width="N" aria-pressed="false">Narrow</button>
-      <span class="sep"></span><button class="chip" data-layout="S" aria-pressed="false">Simple</button><button class="chip" data-layout="X" aria-pressed="false">Complex</button><button class="chip" data-layout="C" aria-pressed="false">Custom…</button>
-      <span class="sep"></span><button class="chip" data-len="Q" aria-pressed="false">Short</button><button class="chip" data-len="M" aria-pressed="false">Medium</button><button class="chip" data-len="L" aria-pressed="false">Long</button></div>
-    <div class="row" role="group" aria-label="Scenery for new tracks"><span class="sub">Scenery</span><button class="chip bio" data-bio="U">Urban</button><button class="chip bio" data-bio="O">Ocean</button><button class="chip bio" data-bio="F">Forest</button><button class="chip bio" data-bio="N">Night sky</button><span class="sep"></span><button class="chip" data-tod="night">Night</button><button class="chip" data-tod="day">Day</button></div>
+    <div class="sub">Prototype 31 · 8 ships · 3 laps</div>
+    <div class="row" role="group" aria-label="Track types for new tracks"><button class="chip pool" data-width="W" aria-pressed="false">Wide</button><button class="chip pool" data-width="S" aria-pressed="false">Standard</button><button class="chip pool" data-width="N" aria-pressed="false">Narrow</button>
+      <span class="sep"></span><button class="chip pool" data-layout="S" aria-pressed="false">Simple</button><button class="chip pool" data-layout="X" aria-pressed="false">Complex</button><button class="chip pool" data-layout="C" aria-pressed="false">Custom</button><button class="chip" id="edBtn">Edit…</button>
+      <span class="sep"></span><button class="chip pool" data-len="Q" aria-pressed="false">Short</button><button class="chip pool" data-len="M" aria-pressed="false">Medium</button><button class="chip pool" data-len="L" aria-pressed="false">Long</button></div>
+    <div class="row" role="group" aria-label="Scenery for new tracks"><span class="sub">Scenery</span><button class="chip bio" data-bio="U">Urban</button><button class="chip bio" data-bio="O">Ocean</button><button class="chip bio" data-bio="F">Forest</button><button class="chip bio" data-bio="N">Stratos</button><button class="chip bio" data-bio="R">Reef</button><span class="sep"></span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
     <div class="row"><button class="btn go" id="raceBtn">Race</button><button class="btn" id="trialBtn">Time trial</button><button class="btn" id="labBtn">Ship lab</button><button class="btn" id="mpBtn">Multiplayer</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="ctlBtn">Controls</button><button class="btn" id="setBtn">Settings</button><button class="btn" id="musBtn">Music</button><button class="btn" id="guideBtn">Nose guide</button><button class="btn" id="newBtn">New track</button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open full screen with tilt</a>
     <div class="t best" id="buildSum"></div>
@@ -263,7 +263,7 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
     <div class="row" role="group" aria-label="Width and length"><button class="chip" data-edw="W">Wide</button><button class="chip" data-edw="S">Standard</button><button class="chip" data-edw="N">Narrow</button><span class="sep"></span><button class="chip" data-edlen="Q">Short</button><button class="chip" data-edlen="M">Medium</button><button class="chip" data-edlen="L">Long</button></div>
     <div class="row" role="group" aria-label="Layout"><span class="sub">Layout</span><button class="chip" data-edb="0">Smooth</button><button class="chip" data-edb="1">Normal</button><button class="chip" data-edb="2">Twisty</button><button class="chip" data-edb="3">Figure 8</button></div>
     <div id="edFeats" class="efeats"></div>
-    <div class="row" role="group" aria-label="Scenery"><span class="sub">Scenery</span><button class="chip" data-edbio="U">Urban</button><button class="chip" data-edbio="O">Ocean</button><button class="chip" data-edbio="F">Forest</button><button class="chip" data-edbio="N">Night sky</button></div>
+    <div class="row" role="group" aria-label="Scenery"><span class="sub">Scenery</span><button class="chip" data-edbio="U">Urban</button><button class="chip" data-edbio="O">Ocean</button><button class="chip" data-edbio="F">Forest</button><button class="chip" data-edbio="N">Stratos</button><button class="chip" data-edbio="R">Reef</button></div>
     <div id="edScene" class="efeats"></div>
     <p id="edFit"></p>
     <div class="row"><button class="btn go" id="edRace">Race it</button><button class="btn" id="edDone" data-back>Done</button><button class="btn" id="edShuffle">Reshuffle</button><button class="btn" id="edClear">Clear</button></div>
@@ -293,10 +293,10 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
     <div id="mpOut" class="col">
       <div class="sub">One device each · up to 8 pilots · empty places fill with AI</div>
       <div class="code"><label for="mpName">Name</label><input id="mpName" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="mpName" aria-label="On-screen keyboard">⌨</button></div>
-      <div class="row" id="mpConnRow" hidden><span class="sub">Connection</span><button class="chip" data-conn="internet" aria-pressed="false">Internet</button><button class="chip" data-conn="wifi" aria-pressed="true">Same Wi-Fi host</button></div>
-      <div class="row"><button class="btn go" id="mpCreate">Create room</button></div>
-      <div class="code"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard">⌨</button><button class="btn" id="mpJoin">Join</button></div>
-      <p class="small">The host creates a room and reads out its code; everyone else types it in on their own phone, tablet, Steam Deck or computer. Works across any networks over the internet.</p>
+      <div class="row" id="mpConnRow"><span class="sub">Connection</span><button class="chip" data-conn="internet" aria-pressed="true">Internet</button><button class="chip" data-conn="lan" aria-pressed="false">Wi-Fi, no internet</button><button class="chip" data-conn="wifi" aria-pressed="false" hidden>Wi-Fi host</button></div>
+      <div class="row"><button class="btn go" id="mpCreate">Create room</button><button class="btn" id="lanJoin" hidden>Join a Wi-Fi room</button></div>
+      <div class="code" id="mpCodeRow"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard">⌨</button><button class="btn" id="mpJoin">Join</button></div>
+      <p class="small" id="mpConnHint"></p>
       <div class="row"><button class="btn" id="mpBack" data-back>Back</button></div>
     </div>
     <div id="mpIn" class="col" hidden>
@@ -304,14 +304,22 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
       <div class="big" id="mpRoom">·····</div>
       <div class="t best" id="mpStatus"></div>
       <table id="mpList"></table>
-      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Ship lab</button><button class="btn" id="mpCtl">Controls</button><button class="btn" id="mpSet">Settings</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
+      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Ship lab</button><button class="btn" id="mpCtl">Controls</button><button class="btn" id="mpSet">Settings</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
       <p class="small" id="mpHint"></p>
       <div class="t" id="mpTrack"></div>
       <div id="mpHostRow" class="col">
         <div class="row"><button class="chip" data-mpw="W">Wide</button><button class="chip" data-mpw="S">Standard</button><button class="chip" data-mpw="N">Narrow</button><span class="sep"></span><button class="chip" data-mpl="S">Simple</button><button class="chip" data-mpl="X">Complex</button><button class="chip" data-mpl="C">Custom…</button><span class="sep"></span><button class="chip" data-mplen="Q">Short</button><button class="chip" data-mplen="M">Medium</button><button class="chip" data-mplen="L">Long</button><button class="chip" id="mpNew">New track</button></div>
-        <div class="row"><span class="sub">Scenery</span><button class="chip bio" data-mpbio="U">Urban</button><button class="chip bio" data-mpbio="O">Ocean</button><button class="chip bio" data-mpbio="F">Forest</button><button class="chip bio" data-mpbio="N">Night sky</button></div>
+        <div class="row"><span class="sub">Scenery</span><button class="chip bio" data-mpbio="U">Urban</button><button class="chip bio" data-mpbio="O">Ocean</button><button class="chip bio" data-mpbio="F">Forest</button><button class="chip bio" data-mpbio="N">Stratos</button><button class="chip bio" data-mpbio="R">Reef</button></div>
         <div class="row"><span class="sub">Laps</span><button class="chip" data-mplaps="1">1</button><button class="chip" data-mplaps="2">2</button><button class="chip" data-mplaps="3">3</button><button class="chip" data-mplaps="5">5</button><span class="sep"></span><button class="chip" id="mpAI" aria-pressed="true">Fill with AI</button></div>
       </div>
+    </div>
+    <div id="lanBox" class="col" hidden>
+      <div class="sub" id="lanTitle"></div>
+      <div class="row lanrow"><canvas id="lanQR" width="330" height="330" hidden></canvas><video id="lanCam" playsinline muted hidden></video>
+        <div class="col lancol"><p class="small" id="lanSteps"></p>
+          <div class="row"><button class="btn go" id="lanScan">Scan a code</button><button class="btn" id="lanCopy" hidden>Copy code</button><button class="btn" id="lanCancel">Cancel</button></div>
+          <div class="code"><input id="lanIn" spellcheck="false" autocomplete="off" placeholder="or type or paste a code" data-osk="code"><button class="btn kb" data-osk-for="lanIn" aria-label="On-screen keyboard">⌨</button><button class="btn" id="lanUse">Use</button></div>
+          <p class="small" id="lanTxt"></p><p class="small warn" id="lanMsg"></p></div></div>
     </div>
     <p class="small warn" id="mpErr"></p>
   </div>
@@ -383,8 +391,11 @@ table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table
   <div class="card">
     <div class="logo">STY<b>LE</b></div>
     <div class="sub">Pick a look, then switch any part on or off · the cube exhaust is always on · try them in a race from the pause menu</div>
-    <div class="row" role="group" aria-label="Looks"><button class="chip" data-sty="lite">Lite · for older phones</button><button class="chip" data-sty="clean">Clean</button><button class="chip" data-sty="arcade">Arcade</button><button class="chip" data-sty="all">Everything</button></div>
+    <div class="row" role="group" aria-label="Looks"><button class="chip" data-sty="ultra">Ultra low · slowest tablets</button><button class="chip" data-sty="lite">Lite · for older phones</button><button class="chip" data-sty="clean">Clean</button><button class="chip" data-sty="arcade">Arcade</button><button class="chip" data-sty="all">Everything</button></div>
     <div class="gopt" id="goptList"></div>
+    <div class="row" role="group" aria-label="Resolution"><span class="sub">Resolution</span><button class="chip" data-res="1">Full</button><button class="chip" data-res="0.75">¾</button><button class="chip" data-res="0.5">Half</button><button class="chip" data-res="0.35">Third</button>
+      <span class="sep"></span><button class="chip" id="lowBtn" aria-pressed="false">Low detail</button></div>
+    <div class="sub">Half resolution draws a quarter of the pixels, the biggest saving on a slow tablet. Low detail drops the ship shadows and thins the scenery (from the next track). Every look races the same, so times count on the boards whichever you pick.</div>
     <div class="row"><button class="chip" id="fpsBtn" aria-pressed="false">FPS counter</button></div>
     <div class="row"><button class="btn go" id="gDone" data-back>Done</button></div>
   </div>
@@ -452,11 +463,13 @@ const QS=new URLSearchParams(location.search),BOT=QS.get('bot')==='1',NO_RENDER=
 const LB_URL='https://hoverline-board.lucidfir.workers.dev';const LB=(QS.get('lb')||LB_URL).replace(/\/+$/,'');
 /* Board era: times only compare with times from the same era. Raise it to the new prototype number whenever a change
    makes old times unfair (a track code builds a different road, or handling/speed changes); the boards then start fresh. */
-const BOARD_ERA=30;
+const BOARD_ERA=31;
 const DIFF={
-  W:{name:'Wide',w:26,n:[8,10],rad:[480,260],elev:50,minR:125,ai:0.92,assist:1.8,wall:0.22,band:[0.12,0.22],dmg:0.6},
-  S:{name:'Standard',w:20,n:[9,12],rad:[400,380],elev:100,minR:75,ai:0.96,assist:1.0,wall:0.35,band:[0.08,0.15],dmg:0.85},
-  N:{name:'Narrow',w:15,n:[11,15],rad:[340,480],elev:150,minR:40,ai:1.0,assist:0.5,wall:0.45,band:[0.06,0.09],dmg:1}};
+  W:{name:'Wide',w:26,n:[8,10],rad:[480,260],elev:50,minR:125,sharp:0.5,pitchy:0.42,steep:0.3,ai:0.92,assist:1.8,wall:0.22,band:[0.12,0.22],dmg:0.6},
+  S:{name:'Standard',w:20,n:[9,12],rad:[400,380],elev:100,minR:75,sharp:0.66,pitchy:0.42,steep:0.38,ai:0.96,assist:1.0,wall:0.35,band:[0.08,0.15],dmg:0.85},
+  N:{name:'Narrow',w:15,n:[11,15],rad:[340,480],elev:150,minR:40,sharp:0.76,pitchy:0.42,steep:0.45,ai:1.0,assist:0.5,wall:0.45,band:[0.06,0.09],dmg:1}};
+/* minR: the tightest bend averaged over 60 m; sharp: the most the heading may turn in any 30 m, and pitchy the most the
+   pitch may change in any 30 m (radians); steep: the steepest slope of the base loop (features add their own). */
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const wrapA=a=>{while(a>Math.PI)a-=TAU;while(a<-Math.PI)a+=TAU;return a};
 function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -470,8 +483,13 @@ let coarse=touchSaved==='1'?true:touchSaved==='0'?false:touchCapable;
 
 /* ---------- renderer ---------- */
 const canvas=$('c');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:(devicePixelRatio||1)<1.5,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+/* Resolution and Low detail (Style options; the Ultra low look sets both, Prototype 31): k is the share of the screen's
+   pixels the game draws (the browser scales the picture up), low drops the ship shadows and thins the scenery. Neither
+   touches the race, so times set with them count like any other. */
+const RES={k:clamp(+(store.get('hoverline.res')||1)||1,0.25,1),low:store.get('hoverline.low')==='1'};
+const resRatio=()=>Math.min(devicePixelRatio||1,2)*RES.k;
+const renderer=new THREE.WebGLRenderer({canvas,antialias:(devicePixelRatio||1)<1.5&&RES.k>=1&&!RES.low,powerPreference:'high-performance'});
+renderer.setPixelRatio(resRatio());
 const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x090b10);
 scene.fog=new THREE.Fog(0x090b10,160,1100);
@@ -481,7 +499,7 @@ const sun=new THREE.DirectionalLight(0xfff1d6,0.7);sun.position.set(300,500,200)
 /* A soft light that rides with the camera, on for complex tracks so ships stay lit upside down in loops. */
 scene.add(camera);const headL=new THREE.DirectionalLight(0xfff1d6,0.5),headT=new THREE.Object3D();headL.position.set(0,6,3);headT.position.set(0,0,-25);camera.add(headL);camera.add(headT);headL.target=headT;headL.visible=false;
 let cw=0,ch=0;
-function fit(){const w=canvas.clientWidth||innerWidth,h=canvas.clientHeight||innerHeight;if(w!==cw||h!==ch){cw=w;ch=h;renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}}
+function fit(){const w=canvas.clientWidth||innerWidth,h=canvas.clientHeight||innerHeight;if(w!==cw||h!==ch){cw=w;ch=h;renderer.setPixelRatio(resRatio());renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}}
 
 /* ---------- graphics ----------
    Standard draws straight to the screen (the light path, for low-end devices). Enhanced draws into a buffer and adds
@@ -503,18 +521,20 @@ const GOPT=[
  ['debris','Debris','Explosions throw sparks and cubes that bounce along the road.','medium'],
  ['reflect','Reflections','Ships, the road and the sea reflect the world around them.','medium'],
  ['pools','Light pools','Engines cast coloured light on the road under each ship.','light'],
- ['sky','Starry sky','Stars and an aurora above the city and the forest at night (Night sky and Ocean always have their own sky, and by day every setting has a daylight sky).','light'],
+ ['sky','Starry sky','Stars and an aurora above the city and the forest at night (Stratos, Ocean and Reef always have their own sky, and by day every setting has a daylight sky).','light'],
  ['haze','Atmosphere','A coloured haze that thickens with distance.','light'],
  ['motes','Floating particles','Dust, spray, fireflies or star dust drifting in the air.','light'],
  ['anim','Moving scenery','Falls pour, geysers burst and whitecaps roll.','medium'],
  ['pulse','Lights on the beat','Track edges pulse with the kick drum.','light']];
-/* Looks: Lite is for older phones (the cube exhaust is always on, even there); Clean is the default; Arcade adds the
-   sky, haze, particles and scanlines. Every part can still be switched on or off by itself. */
-const STYLES={lite:{n:'Lite',on:[]},clean:{n:'Clean',on:['grade','jets','debris','reflect','anim','pulse']},arcade:{n:'Arcade',on:['grade','scan','jets','debris','reflect','sky','haze','motes','anim','pulse']},all:{n:'Everything',on:GOPT.map(o=>o[0])}};
+/* Looks: Ultra low is Lite at half resolution with Low detail, for the slowest tablets; Lite is for older phones (the cube
+   exhaust is always on, even there); Clean is the default; Arcade adds the sky, haze, particles and scanlines. Every part
+   can still be switched on or off by itself. */
+const STYLES={ultra:{n:'Ultra low',on:[],res:0.5,low:1},lite:{n:'Lite',on:[]},clean:{n:'Clean',on:['grade','jets','debris','reflect','anim','pulse']},arcade:{n:'Arcade',on:['grade','scan','jets','debris','reflect','sky','haze','motes','anim','pulse']},all:{n:'Everything',on:GOPT.map(o=>o[0])}};
 const G2=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.style')||'null')}catch(e){}
   if(!o||typeof o!=='object'){o={};for(const k of STYLES.clean.on)o[k]=1}return o})();
 const g2=k=>!!G2[k],g2Save=()=>store.set('hoverline.style',JSON.stringify(G2));
-const styleNow=()=>{for(const[k,st]of Object.entries(STYLES))if(GOPT.every(([g])=>g2(g)===st.on.includes(g)))return k;return null};
+const styleNow=()=>{for(const[k,st]of Object.entries(STYLES))if(GOPT.every(([g])=>g2(g)===st.on.includes(g))&&(st.res||1)===RES.k&&!!st.low===RES.low)return k;return null};
+const resSave=()=>{store.set('hoverline.res',String(RES.k));store.set('hoverline.low',RES.low?'1':'0');cw=0};
 /* Scanlines and the vignette are drawn by the page over the picture, so on their own they cost nothing; any of the other
    screen effects needs the full-screen pass (on phones and tablets that pass skips multisampling, which is the slow part). */
 const postOn=()=>g2('bloom')||g2('blur')||g2('aberr')||g2('grade')||g2('fxaa')||g2('grain');
@@ -543,9 +563,9 @@ function gfxSize(w,h){GFX.w=w;GFX.h=h;for(const k of['rt','b1','b2','b3','b4'])i
   const hw=Math.max(1,w>>1),hh=Math.max(1,h>>1),qw=Math.max(1,w>>2),qh=Math.max(1,h>>2);
   GFX.b1=new THREE.WebGLRenderTarget(hw,hh,opt);GFX.b2=new THREE.WebGLRenderTarget(hw,hh,opt);GFX.b3=new THREE.WebGLRenderTarget(qw,qh,opt);GFX.b4=new THREE.WebGLRenderTarget(qw,qh,opt)}
 function gfxPass(mat,target){GFX.quad.material=mat;renderer.setRenderTarget(target);renderer.render(GFX.qs,GFX.qc)}
-function gfxRender(sc,cam){if(!postOn()||!GFX.ok){renderer.render(sc,cam);return}
+function gfxRender(sc,cam){const inf=renderer.info.render;if(!postOn()||!GFX.ok){renderer.render(sc,cam);GFX.calls=inf.calls;GFX.tris=inf.triangles;return}
   try{const dpr=renderer.getPixelRatio(),w=Math.max(2,Math.floor(cw*dpr)),h=Math.max(2,Math.floor(ch*dpr));if(w!==GFX.w||h!==GFX.h)gfxSize(w,h);
-    renderer.setRenderTarget(GFX.rt);renderer.render(sc,cam);const bloom=g2('bloom');
+    renderer.setRenderTarget(GFX.rt);renderer.render(sc,cam);GFX.calls=inf.calls;GFX.tris=inf.triangles;const bloom=g2('bloom');
     if(bloom){GFX.bright.uniforms.t.value=GFX.rt.texture;gfxPass(GFX.bright,GFX.b1);
       const B=GFX.blur.uniforms;B.t.value=GFX.b1.texture;B.d.value.set(1/GFX.b1.width,0);gfxPass(GFX.blur,GFX.b2);B.t.value=GFX.b2.texture;B.d.value.set(0,1/GFX.b1.height);gfxPass(GFX.blur,GFX.b1);
       GFX.copy.uniforms.t.value=GFX.b1.texture;gfxPass(GFX.copy,GFX.b3);
@@ -590,17 +610,21 @@ const LENS={Q:{name:'Short',f:0.68,dn:-1},M:{name:'Medium',f:1,dn:0},L:{name:'Lo
 const BIOMES={U:{k:'U',n:'Urban',bg:0x090b10,fog:[160,1100],haze:0x16213a,mote:0x9fd8ff,edge:0xffb000},
   O:{k:'O',n:'Ocean',bg:0x02060c,fog:[220,1700],haze:0x061a2a,mote:0x6ff6e6,edge:0x3ff0ff,hemi:[0x5a7fa8,0x02080c,0.7],sun:[0xa8c0ff,0.45]},
   F:{k:'F',n:'Forest',bg:0x050d08,fog:[150,1150],haze:0x0f2a1c,mote:0xc8ff8a,edge:0x46ff8c},
-  N:{k:'N',n:'Night sky',bg:0x010207,fog:[500,2500],haze:0x0b1024,mote:0xd8e0ff,edge:0x3ff0ff}};
+  N:{k:'N',n:'Stratos',bg:0x010207,fog:[500,2500],haze:0x0b1024,mote:0xd8e0ff,edge:0x3ff0ff},
+  R:{k:'R',n:'Reef',bg:0x01101a,fog:[90,1000],haze:0x04263a,mote:0x7ff8ff,edge:0x3ff0ff,hemi:[0x2f7f9f,0x01070c,0.8],sun:[0x7fdcff,0.35]}};
 const BIOMES_DAY={U:{k:'U',n:'Urban',day:true,bg:0x9cbad6,fog:[280,1900],haze:0xb4c8dc,mote:0xffffff,edge:0xffb000,hemi:[0xdde8f4,0x3a3c44,1.1],sun:[0xfff1d6,1.0],sky:['#3f78c0','#7fb0e2','#b0cfe8','#9cbad6','#7f95a8','#4f5c68']},
   O:{k:'O',n:'Ocean',day:true,bg:0xa9d6f2,fog:[320,2100],haze:0xbfe0f4,mote:0xffffff,edge:0xe8f4ff,hemi:[0xd8ecff,0x2a4a5c,1.15],sun:[0xfff4dc,1.1],sky:['#2a6fc9','#5ea6ea','#9ccdf0','#a9d6f2','#8cc0e2','#2d6f9c']},
   F:{k:'F',n:'Forest',day:true,bg:0xa8cfb8,fog:[240,1700],haze:0xbcdcc4,mote:0xf4ffd8,edge:0x46ff8c,hemi:[0xe4f2dc,0x24382a,1.05],sun:[0xfff4d6,0.95],sky:['#3a7cc0','#78b4dc','#b4dcd0','#a8cfb8','#6f9a7c','#2e4a36']},
-  N:{k:'N',n:'Day sky',day:true,bg:0x9ccff4,fog:[600,2800],haze:0xbfe2fa,mote:0xffffff,edge:0x3ff0ff,hemi:[0xe8f4ff,0x8fb8dc,1.15],sun:[0xfff6e0,1.0],sky:['#2a6fc9','#5ea6ea','#a4d4f6','#c4e4fa','#a4d4f6','#6aa8e0']}};
+  R:{k:'R',n:'Reef',day:true,bg:0x1f86a6,fog:[70,1100],haze:0x3aa6c4,mote:0xe8ffff,edge:0x3ff0ff,hemi:[0xc8f6ff,0x1e5a6a,1.05],sun:[0xeafcff,0.85]},
+  N:{k:'N',n:'Stratos',day:true,bg:0x9ccff4,fog:[600,2800],haze:0xbfe2fa,mote:0xffffff,edge:0x3ff0ff,hemi:[0xe8f4ff,0x8fb8dc,1.15],sun:[0xfff6e0,1.0],sky:['#2a6fc9','#5ea6ea','#a4d4f6','#c4e4fa','#a4d4f6','#6aa8e0']}};
 let tod=store.get('hoverline.tod')==='day'?'day':'night';const lookOf=k=>(tod==='day'?BIOMES_DAY:BIOMES)[k]||BIOMES.U;
+/* Night and Day can both be ticked (Prototype 31): then every new track picks one of them. */
+let todOn=(()=>{const v=(store.get('hoverline.tods')||tod).split(',').filter(x=>x==='night'||x==='day');return v.length?v:[tod]})();
 /* The scenery dials (name, what it means, most): how much scenery, falls, geysers, tunnels. */
 const BDIAL=[['Scenery','towers, trees, islands or slabs · 0 to 3',3],['Falls','water or lava from a block',4],['Geysers','bursts of water or steam',4],['Tunnels','long ones, built round the road',3]];
 /* What a generated track gets: the city has one or two falls, usually a tunnel or two and sometimes a geyser; the sea a
-   geyser or two; the forest and the night sky just their own scenery. */
-function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='O'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
+   geyser or two, the reef a bubble vent or two; the forest and Stratos just their own scenery. */
+function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
 /* feature kinds built into the road shape (splits are added afterwards, beside it) */
 const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire'];
 function buildTrack(seed,wk,cx,lk,sp,bm){
@@ -610,24 +634,45 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   /* About a quarter of tracks (or the editor's Figure 8) are a figure of eight: the circuit crosses itself once, the two
      passes 30-50 m apart in height, so one goes over the other on a bridge. */
   const r8=rng((seed^0xF18E8)>>>0),fig8=sp?sp.b===3:r8()<0.25,H8=15+r8()*10;
-  for(let attempt=0;attempt<16;attempt++){
-    r=rng(seed+attempt*7919);
-    const n0=Math.max(6,D.n[0]-(cx?1:0)+LN.dn)+Math.floor(r()*(D.n[1]-D.n[0]+1)),n=!sp||sp.b===1||sp.b===3?n0:sp.b===0?Math.max(5,D.n[0]-2+LN.dn):D.n[1]+2+LN.dn,pts=[];
-    const sx=0.8+r()*0.45,sz=0.8+r()*0.45;
-    if(fig8){const n8=Math.round(n*1.7),base=(D.rad[0]+(0.35+0.4*r())*D.rad[1])*LN.f*1.3,p1=r()*TAU,p2=r()*TAU,a1=0.1+0.08*r(),a2=0.06*r();
-      for(let i=0;i<n8;i++){const a=Math.PI/2+i/n8*TAU,rad=base*(1+a1*Math.sin(a+p1)+a2*Math.sin(2*a+p2));
-        pts.push(new THREE.Vector3(Math.sin(a)*rad*sx,H8*Math.cos(a)+(r()-.5)*D.elev*(cx?0.4:0.6)*Math.abs(Math.sin(a)),Math.sin(a)*Math.cos(a)*rad*sz*1.4))}}
-    else for(let i=0;i<n;i++){const a=i/n*TAU+(r()-.5)*0.35;const rad=(D.rad[0]+r()*D.rad[1])*LN.f;pts.push(new THREE.Vector3(Math.cos(a)*rad*sx,(r()-.5)*D.elev*(cx?0.8:1),Math.sin(a)*rad*sz))}
-    const curve=new THREE.CatmullRomCurve3(pts,true,'centripetal',0.5);
+  /* The loop through the control points: even 2 m samples, tangents, headings and curvature (C), curvature averaged over
+     60 m (Cs, which sets minR), and the sharpest spots: the most the heading turns in any 30 m (sharp) and the most the
+     pitch changes in any 30 m (pitchy). */
+  let pts=null,mxI=0,sharp=0,sharpI=0,pitchy=0,pitchyI=0,steep=0,steepI=0;
+  const loopOf=()=>{const curve=new THREE.CatmullRomCurve3(pts,true,'centripetal',0.5);
     L=curve.getLength();N=Math.round(L/2);ds=L/N;
     P=curve.getSpacedPoints(N);P.length=N;
     Tg=[];H=new Float32Array(N);C=new Float32Array(N);Cs=new Float32Array(N);
     for(let i=0;i<N;i++){const t=new THREE.Vector3().subVectors(P[(i+1)%N],P[(i-1+N)%N]).normalize();Tg.push(t);H[i]=Math.atan2(t.x,t.z)}
     for(let i=0;i<N;i++)C[i]=wrapA(H[(i+1)%N]-H[(i-1+N)%N])/(2*ds);
     const K=Math.max(1,Math.round(30/ds));let mx=0;
-    for(let i=0;i<N;i++){let s=0;for(let k=-K;k<=K;k++)s+=C[(i+k+N)%N];Cs[i]=s/(2*K+1);mx=Math.max(mx,Math.abs(Cs[i]))}
+    for(let i=0;i<N;i++){let s=0;for(let k=-K;k<=K;k++)s+=C[(i+k+N)%N];Cs[i]=s/(2*K+1);if(Math.abs(Cs[i])>mx){mx=Math.abs(Cs[i]);mxI=i}}
     minR=1/Math.max(mx,1e-4);
+    const k15=Math.max(1,Math.round(15/ds));sharp=pitchy=steep=0;
+    for(let i=0;i<N;i++){let s=0;for(let k=-k15;k<k15;k++)s+=C[(i+k+N)%N];s=Math.abs(s)*ds;if(s>sharp){sharp=s;sharpI=i}
+      const pv=Math.abs(Math.asin(Tg[(i+k15)%N].y)-Math.asin(Tg[(i-k15+N)%N].y));if(pv>pitchy){pitchy=pv;pitchyI=i}
+      const st=Math.abs(Math.asin(Tg[i].y));if(st>steep){steep=st;steepI=i}}};
+  for(let attempt=0;attempt<16;attempt++){
+    r=rng(seed+attempt*7919);
+    const n0=Math.max(6,D.n[0]-(cx?1:0)+LN.dn)+Math.floor(r()*(D.n[1]-D.n[0]+1)),n=!sp||sp.b===1||sp.b===3?n0:sp.b===0?Math.max(5,D.n[0]-2+LN.dn):D.n[1]+2+LN.dn;pts=[];
+    const sx=0.8+r()*0.45,sz=0.8+r()*0.45;
+    if(fig8){const n8=Math.round(n*1.7),base=(D.rad[0]+(0.35+0.4*r())*D.rad[1])*LN.f*1.3,p1=r()*TAU,p2=r()*TAU,a1=0.1+0.08*r(),a2=0.06*r();
+      for(let i=0;i<n8;i++){const a=Math.PI/2+i/n8*TAU,rad=base*(1+a1*Math.sin(a+p1)+a2*Math.sin(2*a+p2));
+        pts.push(new THREE.Vector3(Math.sin(a)*rad*sx,H8*Math.cos(a)+(r()-.5)*D.elev*(cx?0.4:0.6)*Math.abs(Math.sin(a)),Math.sin(a)*Math.cos(a)*rad*sz*1.4))}}
+    else for(let i=0;i<n;i++){const a=i/n*TAU+(r()-.5)*0.35;const rad=(D.rad[0]+r()*D.rad[1])*LN.f;pts.push(new THREE.Vector3(Math.cos(a)*rad*sx,(r()-.5)*D.elev*(cx?0.8:1),Math.sin(a)*rad*sz))}
+    loopOf();
     if(minR>=D.minR)break}
+  /* No right angles (Prototype 31). Where the loop still bends tighter than the width allows (over 60 m, or in any 30 m),
+     the control point nearest the tightest spot eases towards its neighbours, and where the pitch changes too sharply in
+     any 30 m its height does the same; repeat until smooth. A loop that was already smooth is left exactly as it was. */
+  for(let fix=0;fix<60;fix++){const hz=minR<D.minR*0.9||sharp>D.sharp,vt=pitchy>D.pitchy||steep>D.steep;if(!hz&&!vt)break;
+    const m=pts.length,ease=(i,f)=>{const at=P[i],dd=q=>(q.x-at.x)**2+(q.z-at.z)**2;let c=0,cd=1e18;pts.forEach((q,k)=>{const d=dd(q);if(d<cd){cd=d;c=k}});
+      const a=pts[(c-1+m)%m],b=pts[(c+1)%m];f(pts[c],a,b,dd(a)<dd(b)?a:b)};
+    if(hz)ease(minR<D.minR*0.9&&D.minR*0.9/minR>sharp/D.sharp?mxI:sharpI,(q,a,b)=>{q.x+=((a.x+b.x)/2-q.x)*0.3;q.z+=((a.z+b.z)/2-q.z)*0.3});
+    /* a sharp change of pitch eases the nearest height towards its neighbours; a slope that is simply too steep brings the
+       two heights either side of it closer together */
+    if(vt){if(pitchy/D.pitchy>=steep/D.steep)ease(pitchyI,(q,a,b)=>{q.y+=((a.y+b.y)/2-q.y)*0.4});
+      else ease(steepI,(q,a,b,o)=>{const d=(o.y-q.y)*0.15;q.y+=d;o.y-=d})}
+    loopOf()}
   let R=[],U=[];
   {const B=new Float32Array(N);for(let i=0;i<N;i++)B[i]=clamp(-Cs[i]*60,-0.5,0.5);
    for(let i=0;i<N;i++){const t=Tg[i],h=H[i];const right=new THREE.Vector3(-Math.cos(h),0,Math.sin(h));const back=t.clone().negate();const up=new THREE.Vector3().crossVectors(back,right).normalize();
@@ -648,11 +693,18 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   /* Custom tracks (the editor): exactly the features asked for, as many as fit. */
   if(sp)fopt=FKG.some(k=>sp.n[k]>0)?{r,lf:LN.f,want:sp.n,avoid}:null;
   let dropped={};
-  if(fopt){let best=null;
-    for(let att=0;att<6;att++){const o={...fopt,dropped:undefined};if(att>=4&&!o.want){o.pool=(o.pool||[]).filter(([k])=>k!=='helix'&&k!=='spire');if(!o.pool.length)delete o.pool;o.extra=null;o.count=o.count?Math.max(2,Math.round(o.count*0.65)):0}
-      const f=addFeatures({P,R,U,Tg,Cs,N,ds},att?rng((seed^Math.imul(0x9E3779B1,att))>>>0):fopt.r,W,o),c=trackClash(f.P,f.feats,f.N,f.ds,W);
-      if(!best||c<best.c){best={f,c,o}}if(!c)break}
-    const f=best.f;Object.assign(fopt,{dropped:best.o.dropped});dropped=fopt.dropped||{};({P,R,U,Tg,H,N,ds,L,kind,gap,feats,jumps}=f);drops=f.drops||[];Kg=f.K;Cs=new Float32Array(N);
+  if(fopt){let best=null;const ban={};
+    /* Try up to six layouts and keep the first with no faults (see trackFaults). If none is clean, leave out one of each
+       kind of feature the remaining faults sit in and try again, until the road is clean; never keep a road that passes
+       through itself (Prototype 31; before, the least bad layout was kept). */
+    for(let att=0;att<16;att++){const o={...fopt,dropped:undefined};if(att>=4&&!o.want){o.pool=(o.pool||[]).filter(([k])=>k!=='helix'&&k!=='spire');if(!o.pool.length)delete o.pool;o.extra=null;o.count=o.count?Math.max(2,Math.round(o.count*0.65)):0}
+      if(att>=6){if(o.want){o.want={...o.want};for(const k in ban)o.want[k]=Math.max(0,(o.want[k]||0)-ban[k])}
+        else{o.pool=(o.pool||FPOOL).filter(([k])=>!ban[k]);o.extra=(o.extra||[]).filter(k=>!ban[k]);if(!o.pool.length||att>=14){o.pool=[['sweep',1]];o.count=0}}}
+      const f=addFeatures({P,R,U,Tg,Cs,N,ds},att?rng((seed^Math.imul(0x9E3779B1,att))>>>0):fopt.r,W,o),fl=trackFaults(f,W),c=fl.length;
+      if(!best||c<best.c){best={f,c,o,fl}}if(!c)break;
+      if(att>=5){const seen=new Set();for(const x of fl)for(const k of x.in)if(!seen.has(k)){seen.add(k);ban[k]=(ban[k]||0)+1}if(!seen.size&&att>=6)att=13}}
+    const f=best.f;if(best.o.want)for(const k of FKG){const cut=(fopt.want[k]||0)-(best.o.want[k]||0);if(cut>0)best.o.dropped[k]=(best.o.dropped[k]||0)+cut}
+    Object.assign(fopt,{dropped:best.o.dropped});dropped=fopt.dropped||{};({P,R,U,Tg,H,N,ds,L,kind,gap,feats,jumps}=f);drops=f.drops||[];Kg=f.K;Cs=new Float32Array(N);
     const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let s=0;for(let k=-K;k<=K;k++)s+=Kg[(i+k+N)%N];Cs[i]=s/(2*K+1)}}
   /* ---- splits: the road divides into a long route and a short one, then joins again ----
      The long route swings 70-140 m out to one side over a hill and carries two boost pads, an ammo strip and a shield
@@ -878,10 +930,11 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   let minY=1e9,maxY=-1e9,minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;for(const p of P){minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minZ=Math.min(minZ,p.z);maxZ=Math.max(maxZ,p.z)}
   /* ---------- scenery ----------
      One setting for the whole track: Urban (neon-edged blocks over a grid), Ocean (a flat sea, sandy islands, whitecaps),
-     Forest (giant cyber trees the road weaves between) or Night sky (stars above and below, a few floating slabs). Dials
+     Forest (giant cyber trees the road weaves between) or Stratos (high above everything: stars above and below at night,
+     clouds below by day, a few floating slabs; called Night sky before Prototype 31). Dials
      set how much scenery there is, and how many falls (water or lava pouring out of a rare block), geysers and tunnels.
      Nothing is built within a wide margin of any part of the road. */
-  const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens,nFall,nGey,nTun]=dial,LK=lookOf(bk),day=!!LK.day;
+  const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall,nGey,nTun]=dial,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
   const er=rng((seed^0xE7A1)>>>0),floorY=bk==='O'?minY-24:minY-70,cxT=(minX+maxX)/2,czT=(minZ+maxZ)/2;
   const lnA=new THREE.LineBasicMaterial({color:0xffb000}),lnB=new THREE.LineBasicMaterial({color:0x2b3d52}),lnBio=new THREE.LineBasicMaterial({color:LK.edge});
   const lam=(c,e)=>new THREE.MeshLambertMaterial({color:c,emissive:e||0}),BOX=new THREE.BoxGeometry(1,1,1);
@@ -909,14 +962,20 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   let water=null;
   if(bk==='U'){const grid=new THREE.GridHelper(6000,150,0x1f2c38,0x131a22);grid.position.y=floorY;group.add(grid)}
   else if(bk==='F'){const gm=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),lam(0x0a130c,0x020604));gm.rotation.x=-Math.PI/2;gm.position.set(cxT,floorY-0.3,czT);group.add(gm);const grid=new THREE.GridHelper(6000,120,0x1f5a32,0x0e2a17);grid.position.y=floorY;group.add(grid)}
+  else if(bk==='R'){const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c0a06):lam(0x071216,0x010405));sb.rotation.x=-Math.PI/2;sb.position.set(cxT,floorY-0.2,czT);group.add(sb);
+    /* by day the surface is overhead, bright where the sun comes through */
+    if(day){const sf=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),new THREE.MeshBasicMaterial({color:0xaef0fa,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));sf.rotation.x=-Math.PI/2;sf.position.set(cxT,maxY+170,czT);group.add(sf)}}
   else if(bk==='O'){water=new THREE.Mesh(new THREE.PlaneGeometry(16000,16000),day?lam(0x0f4f78,0x052036):Object.assign(lam(0x04121e,0x010710),{transparent:true,opacity:0.6}));water.rotation.x=-Math.PI/2;water.position.set(cxT,floorY,czT);group.add(water)}
   if(bk!=='N'){const pyM=lam(bk==='O'?0x18232c:0x12151b);
     /* a pylon never stands on another piece of road: not the main line (outside splits and gaps, where it isn't drawn) and
        not either route of any split, so a crossover's legs can't stand in the road it passes over */
     const under=(p,i)=>{for(let j=0;j<N;j+=3){if(spl[j]||gap[j])continue;const dj=Math.min(Math.abs(j-i),N-Math.abs(j-i));if(dj<60/ds)continue;const q=P[j];if(q.y<p.y-3&&(q.x-p.x)**2+(q.z-p.z)**2<(W/2+6)**2)return true}
       for(const S0 of splits)for(const q of S0.pts)if(q.y<p.y-3&&(q.x-p.x)**2+(q.z-p.z)**2<(W/2+9)**2)return true;return false};
-    for(let i=0;i<N;i+=Math.round(110/ds)){if(kind[i]||gap[i]||spl[i]||U[i].y<0.85||under(P[i],i))continue;const p=P[i],h=p.y-1.8-floorY;const py=new THREE.Mesh(new THREE.BoxGeometry(2.2,h,2.2),pyM);py.position.set(p.x,floorY+h/2,p.z);group.add(py)}
-    for(const S0 of splits)for(const B of S0.b)for(let k=Math.round(55/ds);k<S0.n;k+=Math.round(110/ds)){const i=S0.i0+k,p=P[i].clone().addScaledVector(R[i],B.c[k]).addScaledVector(U[i],B.h[k]),h=p.y-1.8-floorY;if(under(p,i))continue;const py=new THREE.Mesh(new THREE.BoxGeometry(2.2,h,2.2),pyM);py.position.set(p.x,floorY+h/2,p.z);group.add(py)}}
+    /* all the pylons are one instanced mesh: one draw call instead of one each */
+    const pyl=[];
+    for(let i=0;i<N;i+=Math.round(110/ds)){if(kind[i]||gap[i]||spl[i]||U[i].y<0.85||under(P[i],i))continue;const p=P[i],h=p.y-1.8-floorY;pyl.push({x:p.x,y:floorY+h/2,z:p.z,sx:2.2,sy:h,sz:2.2})}
+    for(const S0 of splits)for(const B of S0.b)for(let k=Math.round(55/ds);k<S0.n;k+=Math.round(110/ds)){const i=S0.i0+k,p=P[i].clone().addScaledVector(R[i],B.c[k]).addScaledVector(U[i],B.h[k]),h=p.y-1.8-floorY;if(under(p,i))continue;pyl.push({x:p.x,y:floorY+h/2,z:p.z,sx:2.2,sy:h,sz:2.2})}
+    IM(pyM,pyl)}
 
   /* spires: an open frame round the drop, four pillars and beams, with gaps where the road goes in at the top and out at the bottom */
   const frames=[];
@@ -944,6 +1003,7 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
     else if(bk==='F')tree(cx0,cz0,Math.min(44,rt*0.5),Math.max(top+170,floorY+320));
     else if(bk==='O'){const g=new THREE.CylinderGeometry(rt*0.85,rt*0.95,5,24),m=new THREE.Mesh(g,lam(0xd6c28a,0x1a160c));m.position.set(cx0,floorY+2.5,cz0);group.add(m);
       helixB.push({x:cx0,y:floorY+5+(top+40-floorY)/2,z:cz0,sx:10,sy:top+40-floorY,sz:10,c:0xe4e0d6});helixL.push(helixB[helixB.length-1])}
+    else if(bk==='R'){const h=top+50-floorY;helixB.push({x:cx0,y:floorY+h/2,z:cz0,sx:rt*0.6,sy:h,sz:rt*0.6,ry:er()*3,c:day?0x5a5646:0x101a1e});helixL.push(helixB[helixB.length-1])}
     else{const h=top+90-(minY-200);helixB.push({x:cx0,y:minY-200+h/2,z:cz0,sx:rt*0.7,sy:h,sz:rt*0.7,ry:er()*3,c:0x0d0f16});helixL.push(helixB[helixB.length-1])}}
   if(helixB.length){IM(lam(0xffffff,0x0a0b10),helixB);lines(helixL,lnBio)}
 
@@ -969,7 +1029,7 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   if(vents.length){IM(lam(0xffffff,bk==='O'?0x5a6a70:0x050608),vents);if(bk!=='O')lines(vents,lnBio)}
 
   /* the rest of each setting */
-  const cityB=[],isl=[],shoal=[],lights=[],lamps=[],caps=[],slabs=[],jel=[],mantas=[];let skyM=null;
+  const cityB=[],isl=[],shoal=[],lights=[],lamps=[],caps=[],slabs=[],jel=[],mantas=[],kelp=[],fish=[],schools=[];let skyM=null;
   if(bk==='U'){const want=[40,90,140,200][dens];
     for(let a=0;a<2400&&cityB.length<want;a++){const x=minX-350+er()*(maxX-minX+700),z=minZ-350+er()*(maxZ-minZ+700),big=er()<0.07,w=big?50+er()*50:12+er()*40,d=big?50+er()*50:12+er()*40,R0=Math.hypot(w,d)/2;
       if(near(x,z,R0+W/2+50)||!free(x,z,R0+6))continue;const h=big?260+er()*220:40+er()*er()*280;cityB.push({x,y:floorY+h/2,z,sx:w,sy:h,sz:d,amber:er()<0.15});claim(x,z,R0)}
@@ -992,7 +1052,33 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
         const y=floorY-2-er()*4,c=[0xff5ad8,0x5ff0ff,0xb98cff][Math.floor(er()*3)],sz=4+er()*4,ph=er()*TAU,w=0.5+er()*0.5;
         jel.push({x,y,z,sx:sz,sy:sz*0.55,sz:sz,ry:er()*3,c,ph,w,dx:0,dz:0});for(let k=0;k<4;k++){const a=k*TAU/4+0.4;jel.push({x,y:y-sz*0.9,z,sx:0.25,sy:sz*1.3,sz:0.25,ry:0,c,ph,w,dx:Math.cos(a)*sz*0.3,dz:Math.sin(a)*sz*0.3,tent:1})}jel.push({x,y:y+sz*0.05,z,sx:sz*0.45,sy:sz*0.35,sz:sz*0.45,ry:0,c:0xffffff,ph,w,dx:0,dz:0})}
       for(let k=0;k<[1,2,3,4][dens];k++){const cx=minX+er()*(maxX-minX),cz=minZ+er()*(maxZ-minZ),R0=60+er()*120;mantas.push({cx,cz,R:R0,y:floorY-3-er()*3,ph:er()*TAU,w:(0.05+er()*0.05)*(er()<0.5?-1:1),s:10+er()*8})}}}
-  else{/* night sky: floating slabs so speed reads (the stars all the way round are drawn with the sky, below) */
+  else if(bk==='R'){/* the reef (Prototype 31): rocks and coral on the sea bed, kelp that sways, shoals of fish swimming
+       round, and jellyfish at every depth. By day the water is sunlit, with shafts of light from the surface; at night
+       only the creatures and the coral glow. Nothing comes near the road. */
+    const rock=[],coral=[],rays=[],nR=[14,26,40,60][dens];
+    for(let t=0;t<1500&&rock.length<nR;t++){const x=minX-400+er()*(maxX-minX+800),z=minZ-400+er()*(maxZ-minZ+800),w=20+er()*60,d=20+er()*60,h=8+er()*40,R0=Math.hypot(w,d)/2;
+      const nr=near(x,z,R0+W/2+40);if(nr&&nr.lo<floorY+h+40||!free(x,z,R0+8))continue;rock.push({x,y:floorY+h/2,z,sx:w,sy:h,sz:d,ry:er()*3,c:day?0x5a5646:0x101a1e});
+      const nc=3+Math.floor(er()*6);for(let k=0;k<nc;k++){const a=er()*TAU,rr=R0*(0.3+er()*0.9),cx=x+Math.cos(a)*rr,cz=z+Math.sin(a)*rr,ch=4+er()*14,cw=2+er()*5,col=(day?[0xff6f61,0xffb347,0xff8fd0,0xb06cff,0x4fe0c0]:[0xff3fd0,0x3ff0ff,0xb05cff,0x46ff8c,0xffb000])[Math.floor(er()*5)];
+        coral.push({x:cx,y:floorY+ch/2,z:cz,sx:cw,sy:ch,sz:cw,ry:er()*3,c:col});if(er()<0.6)coral.push({x:cx+(er()-.5)*cw*2,y:floorY+ch*0.8,z:cz+(er()-.5)*cw*2,sx:cw*1.6,sy:cw*0.6,sz:cw*1.6,ry:er()*3,c:col})}
+      claim(x,z,R0)}
+    IM(lam(0xffffff,day?0x080806:0x020506),rock);IM(day?lam(0xffffff,0x1a1010):new THREE.MeshBasicMaterial({color:0xffffff}),coral);if(!day)lines(rock.filter((o,k)=>k%2===0),lnBio);
+    /* kelp: columns of blocks, swaying more towards the top, never up into a road */
+    const nK=[30,60,100,150][dens];for(let t=0;t<3000&&kelp.length<nK*8;t++){const x=minX-300+er()*(maxX-minX+600),z=minZ-300+er()*(maxZ-minZ+600);if(near(x,z,W/2+26)||!free(x,z,4))continue;
+      const hN=near(x,z,60),room=(hN?hN.lo-22:maxY+100)-floorY;if(room<30)continue;const h=Math.min(room,40+er()*90),seg=h/8,ph=er()*TAU,w=0.5+er()*0.5,col=(day?[0x3f8f3a,0x5aa83f,0x2f7a4a]:[0x0e4a34,0x0b3a3a,0x1a5a2a])[Math.floor(er()*3)];
+      for(let k=0;k<8;k++)kelp.push({x,z,y0:floorY,k,seg,ph,w,amp:(k/8)**1.5*h*0.09,sx:2.4-k*0.16,c:col})}
+    /* shoals: fish circling a centre, each at its own spot in the shoal; well under (or over) any road they pass */
+    const nSh=[3,5,8,12][dens];for(let q=0;q<nSh*4&&schools.length<nSh;q++){const cx=minX+er()*(maxX-minX),cz=minZ+er()*(maxZ-minZ),R0=50+er()*130,hN=near(cx,cz,R0+40);
+      let y=hN?hN.lo-26-er()*20:floorY+20+er()*60;if(y<floorY+12){if(!hN)continue;y=hN.hi+26+er()*20}
+      const n=22+Math.floor(er()*22),col=(day?[0xdfe8f0,0xffd84a,0x5ab0ff,0xff9a4a]:[0x5ff0ff,0xff5ad8,0xb98cff,0x46ff8c])[schools.length%4],si=schools.length;
+      schools.push({cx,cz,y,R:R0,w:(0.1+er()*0.08)*(er()<0.5?-1:1),ph:er()*TAU});for(let k=0;k<n;k++)fish.push({si,off:er()*0.6,r:(er()-.5)*16,h:(er()-.5)*9,s:0.8+er()*0.5,c:col})}
+    /* jellyfish at every depth (pale and few by day, neon at night) */
+    const nJ=(day?[2,4,6,8]:[8,14,20,28])[dens];for(let t=0;t<1500&&jel.length<nJ*6;t++){const x=minX-300+er()*(maxX-minX+600),z=minZ-300+er()*(maxZ-minZ+600);if(near(x,z,W/2+34)||!free(x,z,8))continue;
+      const y=floorY+14+er()*(maxY-floorY+60),c=day?[0xffd6ec,0xe8f4ff,0xd8c8ff][Math.floor(er()*3)]:[0xff5ad8,0x5ff0ff,0xb98cff,0x46ff8c][Math.floor(er()*4)],sz=4+er()*5,ph=er()*TAU,w=0.5+er()*0.5;
+      jel.push({x,y,z,sx:sz,sy:sz*0.55,sz:sz,ry:er()*3,c,ph,w,dx:0,dz:0});for(let k=0;k<4;k++){const a=k*TAU/4+0.4;jel.push({x,y:y-sz*0.9,z,sx:0.25,sy:sz*1.3,sz:0.25,ry:0,c,ph,w,dx:Math.cos(a)*sz*0.3,dz:Math.sin(a)*sz*0.3,tent:1})}jel.push({x,y:y+sz*0.05,z,sx:sz*0.45,sy:sz*0.35,sz:sz*0.45,ry:0,c:0xffffff,ph,w,dx:0,dz:0})}
+    /* shafts of sunlight from the surface */
+    if(day){const nL=[8,14,20,28][dens];for(let k=0;k<nL;k++){const x=minX-300+er()*(maxX-minX+600),z=minZ-300+er()*(maxZ-minZ+600),top=maxY+170,L=top-floorY;rays.push({x,y:top-L/2,z,sx:6+er()*12,sy:L,sz:2+er()*3,ry:er()*3,c:0xffffff})}
+      IM(new THREE.MeshBasicMaterial({color:0xd8fbff,transparent:true,opacity:0.07,blending:THREE.AdditiveBlending,depthWrite:false}),rays)}}
+  else{/* Stratos: floating slabs so speed reads (the stars all the way round are drawn with the sky, below) */
     const nS=[10,22,36,56][dens];for(let t=0;t<1500&&slabs.length<nS;t++){const x=minX-500+er()*(maxX-minX+1000),z=minZ-500+er()*(maxZ-minZ+1000),w=6+er()*18,dd=6+er()*18,h=40+er()*150,y=minY-260+er()*(maxY-minY+420),R0=Math.hypot(w,dd)/2;
       const nr=near(x,z,R0+W/2+60);if(nr&&nr.hi>y-h/2-45&&nr.lo<y+h/2+45)continue;if(!free(x,z,R0+10))continue;slabs.push({x,y,z,sx:w,sy:h,sz:dd,ry:er()*3,c:0xffffff});claim(x,z,R0)}
     IM(day?lam(0x3a4352,0x0a0d12):lam(0x0b0d14,0x020306),slabs);lines(slabs.filter((o,k)=>k%3===0),lnA);lines(slabs.filter((o,k)=>k%3===1),new THREE.LineBasicMaterial({color:0x3ff0ff}));lines(slabs.filter((o,k)=>k%3===2),new THREE.LineBasicMaterial({color:0xb05cff}))}
@@ -1000,7 +1086,13 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
      track (and below it too in the open sky). At night: stars and an aurora, all the way round in the night sky, above
      a dark horizon at sea; the city and forest keep the optional Starry sky effect. */
   const dome=sc=>{skyM=new THREE.Mesh(new THREE.SphereGeometry(2600,64,32),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(sc),depthWrite:false,fog:false,side:THREE.BackSide}));skyM.renderOrder=-10;group.add(skyM)};
-  if(day){const sc=document.createElement('canvas');sc.width=1024;sc.height=512;const g=sc.getContext('2d'),gr=g.createLinearGradient(0,0,0,512),c6=LK.sky;
+  if(bk==='R'){const sc=document.createElement('canvas');sc.width=1024;sc.height=512;const g=sc.getContext('2d'),gr=g.createLinearGradient(0,0,0,512),rr=rng((seed^0x5EA)>>>0);
+    for(const[f,c]of day?[[0,'#d4fbff'],[0.18,'#86dcee'],[0.42,'#33a4c4'],[0.5,'#1f86a6'],[0.62,'#145e7e'],[1,'#062238']]:[[0,'#0e3a4e'],[0.3,'#062330'],[0.5,'#01101a'],[1,'#000306']])gr.addColorStop(f,c);
+    g.fillStyle=gr;g.fillRect(0,0,1024,512);
+    if(day){const sx=0.407*1024,sg=g.createRadialGradient(sx,40,0,sx,40,150);sg.addColorStop(0,'rgba(255,255,240,.9)');sg.addColorStop(1,'rgba(255,255,240,0)');g.fillStyle=sg;g.fillRect(sx-160,0,320,200)}
+    else for(let k=0;k<700;k++){g.fillStyle=['rgba(95,240,255,','rgba(255,90,216,','rgba(70,255,140,'][k%3]+(0.2+rr()*0.5)+')';g.fillRect(rr()*1024,rr()*512,1,1)}
+    dome(sc)}
+  else if(day){const sc=document.createElement('canvas');sc.width=1024;sc.height=512;const g=sc.getContext('2d'),gr=g.createLinearGradient(0,0,0,512),c6=LK.sky;
     gr.addColorStop(0,c6[0]);gr.addColorStop(0.3,c6[1]);gr.addColorStop(0.47,c6[2]);gr.addColorStop(0.5,c6[3]);gr.addColorStop(0.53,c6[4]);gr.addColorStop(1,c6[5]);g.fillStyle=gr;g.fillRect(0,0,1024,512);
     const sx=0.407*1024,sy=0.2*512,sg=g.createRadialGradient(sx,sy,0,sx,sy,120);sg.addColorStop(0,'rgba(255,252,236,1)');sg.addColorStop(0.08,'rgba(255,248,220,.95)');sg.addColorStop(0.3,'rgba(255,240,200,.28)');sg.addColorStop(1,'rgba(255,240,200,0)');g.fillStyle=sg;g.fillRect(sx-130,sy-130,260,260);dome(sc);
     const cr=rng((seed^0xC10D)>>>0),cl=[],nCl=[8,12,16,20][dens];
@@ -1034,7 +1126,7 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
         for(let k=0;k<n&&ok;k+=3){const a=P[(i0+k)%N];for(let j=0;j<N;j+=3){if(((j-own0)%N+N)%N<=ownL)continue;const b=P[j],dx=a.x-b.x,dz=a.z-b.z;if(dx*dx+dz*dz<(ow+W/2+16)**2&&(grounded?b.y<a.y+Ht+roof+26:Math.abs(a.y-b.y)<Ht+roof+26)){ok=false;break}}}
         if(ok)best={i0,n}}
       if(!best)continue;tunnels.push(best);for(let k=0;k<best.n;k++)tun[(best.i0+k)%N]=1;mk(best.i0,-Math.round(300/ds),best.n+Math.round(300/ds))}
-    const TC={U:[0x1a1e25,0x05060a,0xffb000],O:[0xd9dde2,0x1a2026,0x9fe8ff],F:[0x22180f,0x070402,0x46ff8c],N:[0x0c0e16,0x020308,0x3ff0ff]}[bk];
+    const TC={U:[0x1a1e25,0x05060a,0xffb000],O:[0xd9dde2,0x1a2026,0x9fe8ff],F:[0x22180f,0x070402,0x46ff8c],N:[0x0c0e16,0x020308,0x3ff0ff],R:[0x0f2a33,0x03121a,0x3ff0ff]}[bk];
     const innerM=new THREE.MeshLambertMaterial({color:TC[0],emissive:TC[1],side:THREE.DoubleSide}),ribM=new THREE.MeshBasicMaterial({color:TC[2],side:THREE.DoubleSide}),edgeL=new THREE.LineBasicMaterial({color:TC[2]});
     const ceilM=new THREE.MeshBasicMaterial({map:lightTex.clone(),side:THREE.DoubleSide});ceilM.map.needsUpdate=true;ceilM.map.repeat.set(1,1/12);
     for(const tn of tunnels){const i0=tn.i0,i1=tn.i0+tn.n,o={from:i0,to:i1},base=grounded?i=>floorY-P[i%N].y:-6;
@@ -1062,36 +1154,56 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   const fallItems=[],lavaItems=[],gItems=[];
   for(const f of fallsL){const n=f.lava?100:120,H=f.top-f.bot,ca=Math.cos(f.dir),sa=Math.sin(f.dir);for(let k=0;k<n;k++){const lx=(er()-.5)*f.w,ox=er()*3;
     (f.lava?lavaItems:fallItems).push({x:f.x+lx*ca+ox*sa,z:f.z-lx*sa+ox*ca,top:f.top,H,ph:er()*H,spd:f.lava?12+er()*8:32+er()*22,sz:f.lava?1.6+er()*2.4:1.2+er()*2.2,c:f.lava?[0xff6a1f,0xff3a10,0xffb000,0x1a0c08][k%4]:[0x3fa9ff,0x7fd0ff,0xe0f6ff,0x2f8fd8][k%4]})}}
-  for(const g of geys)for(let k=0;k<96;k++)gItems.push({g,tau:er()*2.6,v0:Math.sqrt(2*24*g.h)*(0.8+er()*0.2),a:er()*TAU,sp:0.6+er()*2.6,sz:2+er()*2.6,c:bk==='N'?[0xffffff,0x9ff6ff,0x3ff0ff][k%3]:bk==='O'?[0xffffff,0xd8f4ff,0x9fdcff][k%3]:[0xffffff,0xe8eef6,0xc8d8e8][k%3]});
+  for(const g of geys)for(let k=0;k<96;k++)gItems.push({g,tau:er()*2.6,v0:Math.sqrt(2*24*g.h)*(0.8+er()*0.2),a:er()*TAU,sp:0.6+er()*2.6,sz:2+er()*2.6,c:bk==='N'||bk==='R'?[0xffffff,0x9ff6ff,0x3ff0ff][k%3]:bk==='O'?[0xffffff,0xd8f4ff,0x9fdcff][k%3]:[0xffffff,0xe8eef6,0xc8d8e8][k%3]});
   const mkAnim=(items,mat)=>{if(!items.length)return null;const m=new THREE.InstancedMesh(BOX,mat,items.length);m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);const C=new THREE.Color();items.forEach((o,k)=>m.setColorAt(k,C.setHex(o.c||0xffffff)));m.frustumCulled=false;group.add(m);return m};
   const env={k:bk,floorY,last:-1,falls:mkAnim(fallItems,lam(0xffffff,0x0a2a48)),fallItems,lava:mkAnim(lavaItems,new THREE.MeshBasicMaterial({color:0xffffff})),lavaItems,
     gey:mkAnim(gItems,lam(0xffffff,0x3a4650)),gItems,caps:mkAnim(caps,new THREE.MeshBasicMaterial({color:day?0xe8f6ff:0x6ff6e6})),capItems:caps,capY:floorY+0.14,sky:skyM,n:0,
-    jel:mkAnim(jel,new THREE.MeshBasicMaterial({color:0xffffff,fog:false})),jelItems:jel,manta:mkAnim(mantas.flatMap(m=>[{m,part:0,c:0x0b2a3a},{m,part:1,c:0x5ff0ff},{m,part:2,c:0x5ff0ff}]),new THREE.MeshBasicMaterial({color:0xffffff,fog:false})),mantas};
+    jel:mkAnim(jel,new THREE.MeshBasicMaterial(bk==='R'&&day?{color:0xffffff,transparent:true,opacity:0.5,depthWrite:false}:{color:0xffffff,fog:false})),jelItems:jel,
+    kelp:mkAnim(kelp,day?lam(0xffffff,0x0a1a0a):lam(0xffffff,0x041810)),kelpItems:kelp,fish:mkAnim(fish,day?lam(0xffffff,0x202428):new THREE.MeshBasicMaterial({color:0xffffff})),fishItems:fish,schools,manta:mkAnim(mantas.flatMap(m=>[{m,part:0,c:0x0b2a3a},{m,part:1,c:0x5ff0ff},{m,part:2,c:0x5ff0ff}]),new THREE.MeshBasicMaterial({color:0xffffff,fog:false})),mantas};
   env.update=(t,anim)=>{if(!anim&&env.last>=0)return;env.last=t;env.n++;const M4=_em,Q=_eq,Sv=_es,Pv=_ep;
     const fl=(m,items)=>{if(!m)return;items.forEach((o,k)=>{const y=o.top-((anim?t*o.spd:0)+o.ph)%o.H;Pv.set(o.x,y,o.z);Q.identity();Sv.set(o.sz,o.sz*1.4,o.sz);M4.compose(Pv,Q,Sv);m.setMatrixAt(k,M4)});m.instanceMatrix.needsUpdate=true};
     fl(env.falls,env.fallItems);fl(env.lava,env.lavaItems);
     if(env.gey){env.gItems.forEach((o,k)=>{const g=o.g,fT=2*o.v0/24;let s=((t+g.ph)%g.per)-o.tau;if(!anim)s=fT*(0.2+0.6*((k*0.618)%1));Q.identity();
-      if(s>0&&s<fT){const rr=o.sp*s,z=o.sz*(1-0.55*s/fT);Pv.set(g.x+Math.cos(o.a)*rr,g.base+o.v0*s-12*s*s,g.z+Math.sin(o.a)*rr);Sv.set(z,z,z)}else{Pv.set(g.x,g.base-60,g.z);Sv.set(0,0,0)}M4.compose(Pv,Q,Sv);env.gey.setMatrixAt(k,M4)});env.gey.instanceMatrix.needsUpdate=true}
+      if(s>0&&s<fT){const rr=o.sp*s,z=o.sz*(1-0.55*s/fT);Pv.set(g.x+Math.cos(o.a)*rr+(env.k==='R'?Math.sin(s*5+o.a)*1.2:0),env.k==='R'?g.base+o.v0*0.4*s+5*s*s:g.base+o.v0*s-12*s*s,g.z+Math.sin(o.a)*rr);Sv.set(z,z,z)}else{Pv.set(g.x,g.base-60,g.z);Sv.set(0,0,0)}M4.compose(Pv,Q,Sv);env.gey.setMatrixAt(k,M4)});env.gey.instanceMatrix.needsUpdate=true}
     if(env.jel){env.jelItems.forEach((o,k)=>{const b=anim?Math.sin(t*o.w+o.ph):0,p=anim?Math.sin(t*o.w*2.2+o.ph):0;Q.setFromAxisAngle(AX_Y,o.ry);
       Pv.set(o.x+o.dx*(1+0.25*p),o.y+b*1.6,o.z+o.dz*(1+0.25*p));Sv.set(o.sx*(o.tent?1:1+0.12*p),o.sy*(o.tent?1-0.15*p:1-0.12*p),o.sz*(o.tent?1:1+0.12*p));M4.compose(Pv,Q,Sv);env.jel.setMatrixAt(k,M4)});env.jel.instanceMatrix.needsUpdate=true}
     if(env.manta){env.mantas.forEach((m,k)=>{const a=m.ph+(anim?t*m.w:0),x=m.cx+Math.cos(a)*m.R,z=m.cz+Math.sin(a)*m.R,hd=Math.atan2(-Math.sin(a)*Math.sign(m.w),Math.cos(a)*Math.sign(m.w)),fl=anim?Math.sin(t*1.4+m.ph)*0.12:0;
       /* a dark diamond body, a glowing wingspan that flaps, and a glowing line nose to tail */
       for(let q=0;q<3;q++){Q.setFromEuler(_eu.set(0,q===0?hd+Math.PI/4:hd,q===1?fl:0));Pv.set(x,m.y+(q?0.3:0),z);if(q===0)Sv.set(m.s*0.7,0.5,m.s*0.7);else if(q===1)Sv.set(m.s,0.2,0.35);else Sv.set(0.35,0.2,m.s*0.9);M4.compose(Pv,Q,Sv);env.manta.setMatrixAt(k*3+q,M4)}});env.manta.instanceMatrix.needsUpdate=true}
+    if(env.kelp){env.kelpItems.forEach((o,k)=>{const sw=Math.sin((anim?t*o.w:0)+o.ph+o.k*0.45);Q.setFromAxisAngle(AX_Z,sw*0.12*o.k/8);Pv.set(o.x+sw*o.amp,o.y0+(o.k+0.5)*o.seg,o.z);Sv.set(o.sx,o.seg*1.08,0.7);M4.compose(Pv,Q,Sv);env.kelp.setMatrixAt(k,M4)});env.kelp.instanceMatrix.needsUpdate=true}
+    if(env.fish){env.fishItems.forEach((o,k)=>{const sh=env.schools[o.si],sg=Math.sign(sh.w),a=sh.ph+(anim?t*sh.w:0)-o.off*sg,rr=sh.R+o.r,wig=anim?Math.sin(t*9+k)*0.15:0;
+      Q.setFromAxisAngle(AX_Y,Math.atan2(-Math.sin(a)*sg,Math.cos(a)*sg)+wig);Pv.set(sh.cx+Math.cos(a)*rr,sh.y+o.h+(anim?Math.sin(t*1.7+o.off*9)*0.8:0),sh.cz+Math.sin(a)*rr);Sv.set(0.5*o.s,0.6*o.s,2.2*o.s);M4.compose(Pv,Q,Sv);env.fish.setMatrixAt(k,M4)});env.fish.instanceMatrix.needsUpdate=true}
     if(env.caps&&(!anim||env.n%2===0)){env.capItems.forEach((o,k)=>{const f=anim?((t+o.ph)%o.per)/o.per:0.5,c=Math.sin(Math.PI*f)**2;Q.setFromAxisAngle(AX_Y,o.ry);Pv.set(o.x,env.capY,o.z);Sv.set(o.sx*(0.15+0.85*c),0.12,o.sz*(0.4+0.6*c));M4.compose(Pv,Q,Sv);env.caps.setMatrixAt(k,M4)});env.caps.instanceMatrix.needsUpdate=true}};
   env.update(0,false);
   const nLava=fallsL.filter(f=>f.lava).length,nWater=fallsL.length-nLava,tKm=tunnels.reduce((a,t)=>a+t.n*ds,0)/1000,pl=(n,w)=>n+' '+w+(n===1?'':'s');
-  const bmInfo=[LK.n,nWater?pl(nWater,'waterfall'):'',nLava?pl(nLava,'lava fall'):'',geys.length?pl(geys.length,'geyser'):'',tunnels.length?pl(tunnels.length,'tunnel')+' ('+tKm.toFixed(1)+' km)':''].filter(Boolean).join(' · ');
+  const bmInfo=[LK.n,nWater?pl(nWater,'waterfall'):'',nLava?pl(nLava,'lava fall'):'',geys.length?pl(geys.length,bk==='R'?'bubble vent':'geyser'):'',tunnels.length?pl(tunnels.length,'tunnel')+' ('+tKm.toFixed(1)+' km)':''].filter(Boolean).join(' · ');
   headL.visible=!!cx;hemi.color.setHex(LK.hemi?LK.hemi[0]:0x9fb4d0);hemi.groundColor.setHex(LK.hemi?LK.hemi[1]:0x15120c);hemi.intensity=LK.hemi?LK.hemi[2]:0.85;sun.color.setHex(LK.sun?LK.sun[0]:0xfff1d6);sun.intensity=LK.sun?LK.sun[1]:0.7;
   for(const S0 of splits)for(const q of S0.pts){minX=Math.min(minX,q.x);maxX=Math.max(maxX,q.x);minZ=Math.min(minZ,q.z);maxZ=Math.max(maxZ,q.z)}
   T={env,tun,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY}};
   try{VFX.hz=null}catch(e){}
 }
 /* Contiguous index runs that are not jump gaps (the last run wraps past the start line). */
-/* Places where two separate parts of the course pass closer than a road width sideways and under 9 m apart in height.
-   A feature's own geometry (a loop's sides, a corkscrew's roll) doesn't count. */
-function trackClash(P,feats,N,ds,W){const sk=Math.ceil(80/ds),own=feats.filter(f=>f.kind==='loop'||f.kind==='corkscrew'||f.kind==='twist'||f.kind==='helix'||f.kind==='spire'),w2=(W+4)**2;let n=0;
-  const mine=(i,j)=>{const a=i*ds,b=j*ds;for(const f of own){const x0=f.u0-80,x1=f.u1+(f.kind==='loop'?240:f.kind==='helix'||f.kind==='spire'?120:80);if(a>=x0&&a<=x1&&b>=x0&&b<=x1)return true}return false};
-  for(let i=0;i<N;i+=3)for(let j=i+sk;j<N;j+=3){if(N-(j-i)<sk)continue;const a=P[i],b=P[j],dx=a.x-b.x,dz=a.z-b.z;if(dx*dx+dz*dz<w2&&Math.abs(a.y-b.y)<9&&!mine(i,j))n++}return n}
+/* What a road must never have (Prototype 31): two parts of the lap passing through each other or nearly touching (closer than
+   a road width side by side and under 9.5 m apart in height at the edges, spirals and spires included), a kink (the direction turning more
+   than 30 degrees in 12 m or 55 in 30 m), or a slope steeper than 42 degrees. Loops, corkscrews and twists keep their own
+   shape, and so does a spire's drop. Each fault lists the features it sits in, so they can be left out. */
+function trackFaults(f,W){const{P,R,Tg,feats,N,ds,gap}=f,own=feats.filter(x=>x.kind==='loop'||x.kind==='corkscrew'||x.kind==='twist'),out=[],seen=new Set();
+  const inF=u=>feats.filter(x=>u>=x.u0-60&&u<=x.u1+60).map(x=>x.kind);
+  const mine=(a,b)=>own.some(x=>{const x0=x.u0-60,x1=x.u1+(x.kind==='loop'?160:60);return a>=x0&&a<=x1&&b>=x0&&b<=x1});
+  const add=(k,u,u2)=>{const key=k+Math.round(u/40)+':'+Math.round((u2||0)/40);if(seen.has(key))return;seen.add(key);out.push({k,u,in:u2==null?inF(u):[...inF(u),...inF(u2)]})};
+  const g=new Map(),cs=24,key=(x,z)=>(x*73856093)^(z*19349663),w2=(W+4)**2,sep=Math.ceil(80/ds);
+  for(let i=0;i<N;i+=2){if(gap[i])continue;const p=P[i],k=key(Math.floor(p.x/cs),Math.floor(p.z/cs));let a=g.get(k);if(!a)g.set(k,a=[]);a.push(i)}
+  for(let i=0;i<N;i+=2){if(gap[i])continue;const p=P[i],cx=Math.floor(p.x/cs),cz=Math.floor(p.z/cs);
+    for(let dx=-1;dx<=1;dx++)for(let dz=-1;dz<=1;dz++){const a=g.get(key(cx+dx,cz+dz));if(!a)continue;
+      for(const j of a){const dj=j-i;if(dj<sep||N-dj<sep)continue;const q=P[j],ex=p.x-q.x,ez=p.z-q.z;if(ex*ex+ez*ez<w2&&Math.abs(p.y-q.y)-(Math.abs(R[i].y)+Math.abs(R[j].y))*W/2<9.5&&!mine(i*ds,j*ds))add('clash',i*ds,j*ds)}}}
+  const skip=new Uint8Array(N);for(const x of own)for(let k=Math.floor((x.u0+10)/ds);k<=Math.ceil((x.u1-10)/ds);k++)skip[((k%N)+N)%N]=1;
+  for(const d of f.drops||[])for(let k=Math.floor(d.u0/ds)-2;k<=Math.ceil(d.u1/ds)+2;k++)skip[((k%N)+N)%N]=1;
+  const k6=Math.max(1,Math.round(6/ds)),k15=Math.max(1,Math.round(15/ds)),ang=(a,b)=>Math.acos(clamp(a.dot(b),-1,1));
+  for(let i=0;i<N;i++){if(skip[i]||gap[i]||gap[(i+k15)%N]||gap[(i-k15+N)%N])continue;
+    if(ang(Tg[(i-k6+N)%N],Tg[(i+k6)%N])>0.52||ang(Tg[(i-k15+N)%N],Tg[(i+k15)%N])>0.96)add('kink',i*ds);
+    else if(Math.abs(Tg[i].y)>0.67)add('steep',i*ds)}
+  return out}
+const FPOOL=[['sweep',3.5],['loop',2],['jump',2],['twist',1.4],['corkscrew',1.4],['dive',1.5],['climb',1.4],['helix',0.8]];
 const TTHEMES=[
   {n:'Stunt',pool:[['loop',3],['jump',3],['twist',2],['corkscrew',2]]},
   {n:'Coaster',pool:[['sweep',1.5],['dive',1.5],['climb',1.5],['corkscrew',2],['loop',1.2],['helix',1.6],['spire',1.2]]},
@@ -1109,31 +1221,32 @@ const gapC=(t,G)=>t<=0?1.2:t>=1?0:1.2*(2*t*t*t-3*t*t+1)+0.1*G*(t*t*t-2*t*t+t);
 function addFeatures(b,r,W,opt={}){
   const{P,R,U,Tg,Cs,N,ds}=b;const V=THREE.Vector3;
   const jumpG=45+0.6*W,lr=24,rc=10+0.15*W;
-  /* Rises and drops move the road straight up/down (not along the banked "up"), so banking in a corner can't kink the road sideways. */
-  const VU=i=>{const t=Tg[i];return new V(-t.x*t.y,1-t.y*t.y,-t.z*t.y).normalize()};
+  /* Rises and drops move the road straight up and down (world up, not the banked or tilted "up"), so banking in a corner
+     can't kink the road sideways and a lift on a slope can't push it back along itself. */
+  const Y1=new V(0,1,0),RH=i=>new V().crossVectors(Tg[i],Y1).normalize();
   /* Not every track gets everything: 2-5 features drawn from a weighted pool. Sweeps (long rolling rises and drops) are the
      most common, because their crests are where nose-down vs nose-up matters most. */
-  const POOL=opt.pool||[['sweep',3.5],['loop',2],['jump',2],['twist',1.4],['corkscrew',1.4],['dive',1.5],['climb',1.4],['helix',0.8]],tw=POOL.reduce((a,p)=>a+p[1],0);
+  const POOL=opt.pool||FPOOL,tw=POOL.reduce((a,p)=>a+p[1],0);
   const pickW=()=>{let t=r()*tw;for(const[k,w]of POOL)if((t-=w)<0)return k;return'sweep'};
   const mkSite=kd=>{const s={kind:kd};
     if(kd==='sweep'){s.lam=460+r()*140;s.n=2+Math.floor(r()*2);s.sg=[1];for(let k=1;k<s.n;k++)s.sg.push(r()<0.5?-1:1);s.amp=s.sg.map(()=>(20+r()*10)*(0.85+0.3*r()));s.len=s.n*s.lam}
     else if(kd==='dive'){s.D=40+r()*20;s.len=600+r()*200}
-    else if(kd==='climb'){s.Hh=45+r()*40;s.Lr=150+r()*60;s.Lp=120+r()*200;s.sg=1;s.len=2*s.Lr+s.Lp}
+    else if(kd==='climb'){s.Hh=45+r()*40;s.Lr=Math.max(150+r()*60,s.Hh*2.6);s.Lp=120+r()*200;s.sg=1;s.len=2*s.Lr+s.Lp}
     else if(kd==='helix'){s.Rh=175+r()*55;s.Hh=17+r()*9;s.dir=r()<0.5?-1:1;s.len=0}
     /* spire: out to one side, one and a half turns up round a ring, a half turn in to the middle, then over the edge and
        straight down the middle, pulling out underneath the ring and back onto the line */
     else if(kd==='spire'){s.Rs=clamp(104+W*1.4,120,145);s.Hs=122+r()*22;s.dpt=34;s.dir=r()<0.5?-1:1;s.Lc=2.45*s.Rs;s.len=0}
     else s.len={loop:0,twist:200,corkscrew:240,jump:lr+jumpG+12}[kd];
     if(kd==='sweep'&&opt.dense&&s.n>1){s.n=1;s.sg=[1];s.amp=[s.amp[0]];s.len=s.lam}
-    s.foot=(kd==='loop'?170:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;return s};
-  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:210,twist:240,corkscrew:280,jump:140,helix:560,spire:700})[kd]||200;
+    s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;return s};
+  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700})[kd]||200;
   const avoidN=(opt.avoid||[]).reduce((a,[x,y])=>a+(y-x),0)*ds;
   const usable=(0.82-0.08)*N*ds-avoidN,count=opt.count!=null?opt.count:2+Math.floor(r()*((opt.lf||1)>1.2?5:4)),sites=[],cap=opt.dense?{sweep:1,dive:1,loop:3,jump:3,twist:3,corkscrew:3,climb:1,helix:1,spire:1}:{sweep:2,dive:1,loop:2,jump:2,twist:2,corkscrew:2,climb:1,helix:1,spire:1};let used=0;
   if(opt.want){/* the editor's counts: shorten the long features first, then drop from whichever kind there is most of */
     for(const k of FKG)for(let c=0;c<(opt.want[k]||0);c++)sites.push(mkSite(k));
     const room=usable*0.86,tot=()=>sites.reduce((a,x)=>a+x.foot,0);
     for(const x of sites){if(tot()<=room)break;if(x.kind==='sweep'&&x.n>1){x.n=1;x.sg=[1];x.amp=[x.amp[0]];x.len=x.lam;x.foot=x.len+40}}
-    for(const x of sites){if(tot()<=room)break;if(x.kind==='dive'){x.len=520;x.foot=560}else if(x.kind==='climb'){x.Lr=Math.min(x.Lr,130);x.Lp=Math.min(x.Lp,100);x.len=2*x.Lr+x.Lp;x.foot=x.len+40}}
+    for(const x of sites){if(tot()<=room)break;if(x.kind==='dive'){x.len=520;x.foot=560}else if(x.kind==='climb'){x.Lr=Math.min(x.Lr,Math.max(130,x.Hh*2.6));x.Lp=Math.min(x.Lp,100);x.len=2*x.Lr+x.Lp;x.foot=x.len+40}}
     const dropped={};while(sites.length&&tot()>room){const cnt={};for(const x of sites)cnt[x.kind]=(cnt[x.kind]||0)+1;
       const big=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||mkFoot(b)-mkFoot(a))[0],j=sites.map(x=>x.kind).lastIndexOf(big);sites.splice(j,1);dropped[big]=(dropped[big]||0)+1}
     opt.dropped=dropped;used=tot()}
@@ -1166,24 +1279,33 @@ function addFeatures(b,r,W,opt={}){
   const oP=[],oU=[],marks=[];let blend=null,blendH=null;
   const shiftAt=()=>{if(!blend)return 0;const len=Math.max(170,Math.abs(blend.dx)*5),v=blend.dx*(1-ss01(blend.d/len));blend.d+=ds;if(blend.d>len)blend=null;return v};
   /* after a spiral the road is still up at the spiral's height and comes back down over the next 460 m */
-  const liftAt=()=>{if(!blendH)return 0;const v=blendH.dh*(1-ss01(blendH.d/460));blendH.d+=ds;if(blendH.d>460)blendH=null;return v};
+  const liftAt=()=>{if(!blendH)return 0;const v=blendH.dh*(1-ss01(blendH.d/blendH.len));blendH.d+=ds;if(blendH.d>blendH.len)blendH=null;return v};
+  const lift=dh=>({dh,d:0,len:Math.max(460,Math.abs(dh)*7)});
   const emit=(p,u)=>{oP.push(p);oU.push(u)};
   let si=0,i=0;
   while(i<N){const site=sites[si];
     if(site&&i>=site.i){si++;const kd=site.kind,F=Tg[i].clone(),Up=U[i].clone(),Rt=R[i].clone(),start=oP.length;
-      /* start from where the road actually is: still shifted sideways by an earlier loop, or still up after a spiral */
-      const s0=blend?blend.dx*(1-ss01(blend.d/Math.max(170,Math.abs(blend.dx)*5))):0,h0=blendH?blendH.dh*(1-ss01(blendH.d/460)):0,O=P[i].clone().addScaledVector(Rt,s0).addScaledVector(VU(i),h0);
-      if(kd==='loop'){const Rl=30+0.3*W,dx=W+4,n=Math.ceil(TAU*Rl/ds);
-        for(let k=0;k<n;k++){const th=TAU*k/n;emit(O.clone().addScaledVector(F,Rl*Math.sin(th)).addScaledVector(Up,Rl*(1-Math.cos(th))).addScaledVector(Rt,dx*ss01(k/n)),Up.clone().multiplyScalar(Math.cos(th)).addScaledVector(F,-Math.sin(th)))}
-        blend={dx:s0+dx,d:0};marks.push({kind:kd,a:start,b:oP.length})}
+      /* start from where the road actually is: still shifted sideways by an earlier loop, or still up after a spiral; s0 is
+         the road's slope here (rise per metre), which a spiral or spire starts and ends with so the pitch never snaps */
+      const s0=blend?blend.dx*(1-ss01(blend.d/Math.max(170,Math.abs(blend.dx)*5))):0,h0=blendH?blendH.dh*(1-ss01(blendH.d/blendH.len)):0,O=P[i].clone().addScaledVector(RH(i),s0).addScaledVector(Y1,h0),sl0=F.y/Math.max(0.2,Math.hypot(F.x,F.z));
+      /* an eased loop (Prototype 31): the bend builds from gentle at the foot to tightest at the top and eases off again,
+         the way a coaster loop does, so the road sweeps up into it instead of turning at once. The exit lands about 90 m
+         further on, beside the entry, and the road blends back onto the line from there. */
+      if(kd==='loop'){const Rl=30+0.3*W,dx=W+4,S=1.15*TAU*Rl,n=Math.ceil(S/ds),a=0.15,c=TAU/(S*(a+(1-a)/2)),d=S/n;let th=0,X=0,Yv=0;
+        for(let k=0;k<n;k++){emit(O.clone().addScaledVector(F,X).addScaledVector(Up,Yv).addScaledVector(Rt,dx*ss01(k/n)),Up.clone().multiplyScalar(Math.cos(th)).addScaledVector(F,-Math.sin(th)));
+          const kk=c*(a+(1-a)*(1-Math.cos(TAU*(k+0.5)/n))/2);th+=kk*d/2;X+=Math.cos(th)*d;Yv+=Math.sin(th)*d;th+=kk*d/2}
+        const end=O.clone().addScaledVector(F,X).addScaledVector(Up,Yv).addScaledVector(Rt,dx);let j=i,jd=1e18;
+        for(let k=i;k<Math.min(N-1,i+Math.ceil(2*X/ds));k++){const e=P[k].distanceToSquared(end);if(e<jd){jd=e;j=k}}
+        const dl=end.clone().sub(P[j]);dl.addScaledVector(Tg[j],-dl.dot(Tg[j]));i=j;blend={dx:dl.dot(RH(j)),d:0};blendH=Math.abs(dl.y)>0.05?lift(dl.y):null;
+        marks.push({kind:kd,a:start,b:oP.length})}
       else if(kd==='helix'){const{Rh,Hh,dir}=site,n=Math.ceil(TAU*Rh/ds),Y=new V(0,1,0),Fh=new V(F.x,0,F.z).normalize(),Rx=new V().crossVectors(Fh,Y).normalize(),C0=O.clone().addScaledVector(Rx,dir*Rh),bk=0.3;
-        for(let k=0;k<n;k++){const th=TAU*k/n,p=C0.clone().addScaledVector(Rx,-dir*Rh*Math.cos(th)).addScaledVector(Fh,Rh*Math.sin(th));p.y=O.y+Hh*ss01(k/n);
+        for(let k=0;k<n;k++){const th=TAU*k/n,p=C0.clone().addScaledVector(Rx,-dir*Rh*Math.cos(th)).addScaledVector(Fh,Rh*Math.sin(th));const x=k/n;p.y=O.y+Hh*ss01(x)+sl0*TAU*Rh*x*(2*x-1)*(x-1);
           const inw=C0.clone().sub(p);inw.y=0;inw.normalize();emit(p,Y.clone().multiplyScalar(Math.cos(bk*ss01(Math.min(1,k/n*6))*ss01(Math.min(1,(n-k)/n*6)))).addScaledVector(inw,Math.sin(bk*ss01(Math.min(1,k/n*6))*ss01(Math.min(1,(n-k)/n*6)))).normalize())}
-        blendH={dh:h0+Hh,d:0};marks.push({kind:kd,a:start,b:oP.length})}
+        blendH=lift(h0+Hh);marks.push({kind:kd,a:start,b:oP.length})}
       else if(kd==='spire'){const{Rs,Hs,dpt,dir,Lc}=site,Y=new V(0,1,0),Fh=new V(F.x,0,F.z).normalize(),Lv=new V().crossVectors(Fh,Y).normalize().multiplyScalar(dir),C0=O.clone().addScaledVector(Fh,Lc),rho=Rs/2,top=O.y+Hs,bk=0.28;
         const tilt=(p,c,b)=>{const inw=c.clone().sub(p);inw.y=0;inw.normalize();return Y.clone().multiplyScalar(Math.cos(b)).addScaledVector(inw,Math.sin(b)).normalize()};
         /* ease out to the side and onto the ring */
-        const nS=Math.ceil(Lc/ds);for(let k=0;k<nS;k++){const x=k/nS;emit(O.clone().addScaledVector(Fh,Lc*x).addScaledVector(Lv,Rs*ss01(x)),Y.clone())}
+        const nS=Math.ceil(Lc/ds);for(let k=0;k<nS;k++){const x=k/nS;emit(O.clone().addScaledVector(Fh,Lc*x).addScaledVector(Lv,Rs*ss01(x)).addScaledVector(Y,sl0*Lc*x*(1-x)*(1-x)),Y.clone())}
         /* one and a half turns up, banked in */
         const TH=3*Math.PI,nR=Math.ceil(TH*Rs/ds);
         for(let k=0;k<nR;k++){const x=k/nR,th=TH*x,p=C0.clone().addScaledVector(Fh,Rs*Math.sin(th)).addScaledVector(Lv,Rs*Math.cos(th));p.y=O.y+Hs*ss01(x);emit(p,tilt(p,C0,bk*ss01(Math.min(1,x*8))*ss01(Math.min(1,(1-x)*8))))}
@@ -1203,19 +1325,35 @@ function addFeatures(b,r,W,opt={}){
         for(let k=0;k<nQ;k++){const a=Math.PI/2*ss01(k/nQ);emit(q.clone(),Fh.clone().multiplyScalar(Math.cos(a)).addScaledVector(Y,Math.sin(a)));q.addScaledVector(Y,-Math.cos(a)*Lq/nQ).addScaledVector(Fh,Math.sin(a)*Lq/nQ)}
         marks.push({kind:'sdrop',a:d0,b:oP.length});
         marks.push({kind:kd,a:start,b:oP.length,data:{c:[C0.x,C0.z],ax:[ax.x,ax.z],fh:[Fh.x,Fh.z],top,bot,Rs,v1,v2}});
-        /* back onto the base line: skip the base samples the set piece covered, and blend out what is left over */
-        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds));i=Math.min(N-1,i+adv);
-        const dl=q.clone().sub(P[i]);blend={dx:dl.dot(R[i]),d:0};blendH={dh:dl.y,d:0}}
+        /* back onto the base line by a smooth curve (Prototype 31): pick the point on the line ahead that the run-out can
+           reach with the least turning and a gentle slope, and join it, matching direction at both ends. The base samples
+           the set piece covered are skipped. (Shifting the old line sideways onto the run-out could fold the road back on
+           itself, or throw it up and down on a banked bend.) */
+        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds)),A0=q.clone();
+        const herm=(E,m1,ch,x)=>{const x2=x*x,x3=x2*x;return A0.clone().multiplyScalar(2*x3-3*x2+1).addScaledVector(Fh,ch*(x3-2*x2+x)).addScaledVector(E,3*x2-2*x3).addScaledVector(m1,ch*(x3-x2))};
+        /* score a join by how sharply it would bend (the most it turns per metre anywhere along it) and how steep it is */
+        let bj=-1,bc=1e9;
+        for(let j=i+Math.round(adv*0.5);j<=Math.min(N-1,i+Math.round((site.foot+260)/ds));j+=2){const ch=P[j].distanceTo(q);if(ch<90)continue;
+          let prev=herm(P[j],Tg[j],ch,0),pd=null,kmax=0,smax=0;for(let k=1;k<=16;k++){const p=herm(P[j],Tg[j],ch,k/16),d=p.clone().sub(prev),l=d.length();d.divideScalar(l);
+            if(pd)kmax=Math.max(kmax,Math.acos(clamp(d.dot(pd),-1,1))/l);smax=Math.max(smax,Math.abs(d.y));pd=d;prev=p}
+          const c=kmax*120+Math.max(0,smax-0.3)*6+ch/5000;if(c<bc){bc=c;bj=j}}
+        if(bj<0)bj=Math.min(N-1,i+adv);
+        {const E=P[bj],ch=Math.max(60,E.distanceTo(q)),nC=Math.ceil(ch*1.15/ds);
+          for(let k=0;k<nC;k++){const x=k/nC;emit(herm(E,Tg[bj],ch,x),Y.clone().lerp(U[bj],ss01(x)).normalize())}}
+        i=bj;blend=null;blendH=null}
       else{const n=Math.ceil(site.len/ds);
-        for(let j=0;j<n&&i<N;j++,i++){const x=j/n,xm=j*ds,s=shiftAt(),p=P[i].clone().addScaledVector(R[i],s).addScaledVector(VU(i),liftAt()),u=U[i].clone();
+        /* on a sloping stretch a rise or drop is made smaller, so together they stay under about 35 degrees */
+        if(kd==='climb'||kd==='dive'||kd==='sweep'){let sb=0;for(let k=0;k<n;k+=2){const t=Tg[Math.min(N-1,i+k)];sb=Math.max(sb,Math.abs(t.y)/Math.max(0.2,Math.hypot(t.x,t.z)))}const room=Math.max(0.12,0.7-sb);
+          if(kd==='climb')site.Hh=Math.min(site.Hh,room*2*site.Lr/Math.PI);else if(kd==='dive')site.D=Math.min(site.D,room*site.len/Math.PI);else site.amp=site.amp.map(a=>Math.min(a,room*site.lam/Math.PI))}
+        for(let j=0;j<n&&i<N;j++,i++){const x=j/n,xm=j*ds,s=shiftAt(),p=P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),u=U[i].clone();
           if(kd==='twist'){const ph=TAU*ss01(x);emit(p,u.clone().multiplyScalar(Math.cos(ph)).addScaledVector(R[i],Math.sin(ph)))}
           else if(kd==='corkscrew'){const ph=TAU*ss01(x);emit(p.addScaledVector(U[i],rc*(1-Math.cos(ph))).addScaledVector(R[i],-rc*Math.sin(ph)),u.clone().multiplyScalar(Math.cos(ph)).addScaledVector(R[i],Math.sin(ph)))}
-          else if(kd==='dive'){emit(p.addScaledVector(VU(i),-site.D*(1-Math.cos(TAU*x))/2),u)}
-          else if(kd==='climb'){const{Hh,Lr,Lp}=site,y=(site.sg||1)*xm<Lr?Hh*(1-Math.cos(Math.PI*xm/Lr))/2:xm<Lr+Lp?Hh:Hh*(1+Math.cos(Math.PI*Math.min(1,(xm-Lr-Lp)/Lr)))/2;emit(p.addScaledVector(VU(i),y),u)}
-          else if(kd==='sweep'){const k=Math.min(site.n-1,Math.floor(xm/site.lam)),xx=xm/site.lam-k;emit(p.addScaledVector(VU(i),site.sg[k]*site.amp[k]*(1-Math.cos(TAU*xx))/2),u)}
-          else{emit(p.addScaledVector(VU(i),xm<lr?1.2*(xm/lr)**2:gapC((xm-lr)/jumpG,jumpG)),u);if(Math.abs(xm-lr)<ds/2)marks.push({kind:'lip',a:oP.length-1});if(Math.abs(xm-lr-jumpG)<ds/2)marks.push({kind:'land',a:oP.length-1})}}
+          else if(kd==='dive'){emit(p.addScaledVector(Y1,-site.D*(1-Math.cos(TAU*x))/2),u)}
+          else if(kd==='climb'){const{Hh,Lr,Lp}=site,y=(site.sg||1)*xm<Lr?Hh*(1-Math.cos(Math.PI*xm/Lr))/2:xm<Lr+Lp?Hh:Hh*(1+Math.cos(Math.PI*Math.min(1,(xm-Lr-Lp)/Lr)))/2;emit(p.addScaledVector(Y1,y),u)}
+          else if(kd==='sweep'){const k=Math.min(site.n-1,Math.floor(xm/site.lam)),xx=xm/site.lam-k;emit(p.addScaledVector(Y1,site.sg[k]*site.amp[k]*(1-Math.cos(TAU*xx))/2),u)}
+          else{emit(p.addScaledVector(Y1,xm<lr?1.2*(xm/lr)**2:gapC((xm-lr)/jumpG,jumpG)),u);if(Math.abs(xm-lr)<ds/2)marks.push({kind:'lip',a:oP.length-1});if(Math.abs(xm-lr-jumpG)<ds/2)marks.push({kind:'land',a:oP.length-1})}}
         marks.push({kind:kd,a:start,b:oP.length});continue}}
-    const s=shiftAt();emit(P[i].clone().addScaledVector(R[i],s).addScaledVector(VU(i),liftAt()),U[i].clone());i++}
+    const s=shiftAt();emit(P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),U[i].clone());i++}
   // even resampling of the closed polyline
   const M=oP.length,cum=new Float64Array(M+1);for(let k=1;k<=M;k++)cum[k]=cum[k-1]+oP[k%M].distanceTo(oP[k-1]);
   const L=cum[M],N2=Math.round(L/2),ds2=L/N2,P2=[],U2=[],map=new Float64Array(M);for(let k=0;k<M;k++)map[k]=cum[k];
@@ -1691,7 +1829,34 @@ const ROSTER=[
   {name:'Rook',paint:{body:0x2c3328,stripe:0x7fe04a},css:'#7fe04a',skill:0.91,b:{stats:{speed:3,thrust:3,handling:3,shield:3,ammo:3},weapons:['quake','smoke'],frame:'roller'}},
   {name:'Pell',paint:{body:0xf2ede0,stripe:0xffd24a},css:'#ffd24a',skill:0.935,b:{stats:{speed:3,thrust:3,handling:3,shield:4,ammo:2},weapons:['missile','decoy'],frame:'orb'}},
   {name:'Wisp',paint:{body:0x232733,stripe:0xff5fa8},css:'#ff5fa8',skill:0.92,b:{stats:{speed:4,thrust:3,handling:3,shield:2,ammo:3},weapons:['rockets','phase'],frame:'mono'}}];
-function setShip(r,b,paint){if(r.ship){scene.remove(r.ship);disposeObj(r.ship)}r.build=b;r.d=derive(b.stats,b.frame);r.weapons=[...b.weapons];r.scoop=r.weapons.includes('scoopS')?'hp':r.weapons.includes('scoopA')?'ammo':null;r.ship=makeShip(paint,b.stats,b.frame);scene.add(r.ship);fitShadow(r)}
+function setShip(r,b,paint){if(r.ship){scene.remove(r.ship);disposeObj(r.ship)}r.build=b;r.d=derive(b.stats,b.frame);r.weapons=[...b.weapons];r.scoop=r.weapons.includes('scoopS')?'hp':r.weapons.includes('scoopA')?'ammo':null;r.ship=makeShip(paint,b.stats,b.frame);fitShadow(r);mergeShip(r.ship);scene.add(r.ship)}
+/* A racing ship is about 40 small meshes; drawn one by one, eight ships were over half of every frame's draw calls. Every
+   part that never moves on its own is merged with the others of the same material into one mesh (Prototype 31): it looks
+   exactly the same and costs a handful of draw calls. Moving parts (flaps, jets, flames, spinners, the shield) stay apart.
+   The ship lab's ship isn't merged, because it lights up single parts. */
+function mergeShip(g){const ud=g.userData,keep=new Set([ud.shield,...(ud.trails||[]),...((ud.extra&&ud.extra.spin)||[]).map(q=>q.o),...(ud.jets||[]).flatMap(j=>j.userData.rings||[])]);
+  /* parts group by how their material looks (most parts make their own copy of the same colour); a material that animates
+     (engine glow, flames, arcs, fields) or that reflections use keeps its own group */
+  const live=new Set([ud.glowM,ud.trailM,ud.extra&&ud.extra.arc,ud.extra&&ud.extra.field].filter(Boolean)),refl=new Set(ud.mats||[]);
+  const vcOK=m=>!live.has(m)&&!refl.has(m)&&!m.map&&!m.vertexColors&&(m.type==='MeshLambertMaterial'||m.type==='MeshBasicMaterial');
+  /* plain colours can share one mesh, the colour going into the vertices */
+  const sig=m=>live.has(m)?m.uuid:[m.type,vcOK(m)?'vc':m.color&&m.color.getHex(),m.emissive&&m.emissive.getHex(),m.map&&m.map.uuid,m.transparent,m.opacity,m.side,m.blending,m.depthWrite,m.vertexColors,m.flatShading,refl.has(m)].join('|');
+  /* every group in the ship merges its own still parts (a spinning wheel's parts merge with each other and spin as one) */
+  const nm=new THREE.Matrix3(),v=new THREE.Vector3(),nodes=[];g.traverse(o=>{if(o.children.length>1)nodes.push(o)});
+  for(const node of nodes){const by=new Map();
+  for(const o of node.children){if(!o.isMesh||keep.has(o)||!o.visible||Array.isArray(o.material)||!o.geometry.attributes.position)continue;const k=sig(o.material);let a=by.get(k);if(!a)by.set(k,a=[]);a.push(o)}
+  for(const list of by.values()){if(list.length<2)continue;let mat=list[0].material;let nv=0,ni=0;for(const o of list){const G=o.geometry;nv+=G.attributes.position.count;ni+=G.index?G.index.count:G.attributes.position.count}
+    const vc=vcOK(mat)&&list.some(o=>!o.material.color.equals(mat.color)),col=vc?new Float32Array(nv*3):null;
+    const pos=new Float32Array(nv*3),nor=new Float32Array(nv*3),uv=new Float32Array(nv*2),idx=new(nv>65535?Uint32Array:Uint16Array)(ni);let o0=0,i0=0;
+    for(const o of list){o.updateMatrix();const m=o.matrix,G=o.geometry,P=G.attributes.position,Nn=G.attributes.normal,U=G.attributes.uv,flip=m.determinant()<0;nm.getNormalMatrix(m);
+      for(let k=0;k<P.count;k++){v.fromBufferAttribute(P,k).applyMatrix4(m);pos[(o0+k)*3]=v.x;pos[(o0+k)*3+1]=v.y;pos[(o0+k)*3+2]=v.z;
+        if(Nn){v.fromBufferAttribute(Nn,k).applyMatrix3(nm).normalize();nor[(o0+k)*3]=v.x;nor[(o0+k)*3+1]=v.y;nor[(o0+k)*3+2]=v.z}if(U){uv[(o0+k)*2]=U.getX(k);uv[(o0+k)*2+1]=U.getY(k)}
+        if(col){const c=o.material.color;col[(o0+k)*3]=c.r;col[(o0+k)*3+1]=c.g;col[(o0+k)*3+2]=c.b}}
+      const n=G.index?G.index.count:P.count,at=k=>(G.index?G.index.getX(k):k)+o0;for(let k=0;k<n;k+=3){idx[i0++]=at(k);idx[i0++]=at(flip?k+2:k+1);idx[i0++]=at(flip?k+1:k+2)}
+      o0+=P.count;node.remove(o);G.dispose();if(o.material!==mat&&!vc)o.material.dispose()}
+    if(vc){const m0=mat;mat=m0.clone();mat.color.set(0xffffff);mat.vertexColors=true;for(const o of list)o.material.dispose()}
+    const MG=new THREE.BufferGeometry();MG.setAttribute('position',new THREE.BufferAttribute(pos,3));MG.setAttribute('normal',new THREE.BufferAttribute(nor,3));MG.setAttribute('uv',new THREE.BufferAttribute(uv,2));if(col)MG.setAttribute('color',new THREE.BufferAttribute(col,3));MG.setIndex(new THREE.BufferAttribute(idx,1));
+    node.add(new THREE.Mesh(MG,mat))}}}
 function makeRacer(c,isAI=true){const shadow=new THREE.Mesh(shadowGeo,shadowMat);scene.add(shadow);
   const r={name:c.name,css:c.css||paintOf(build).css,isAI,skill:c.skill||1,ship:null,shadow,u:0,utot:0,lat:0,yaw:0,v:0,steerS:0,brk:0,boost:0,stun:0,spin:0,
     hp:100,ammo:100,cd:[0,0],aiT:[0,0],wreck:0,inv:0,barrier:0,charging:null,pitch:0,air:false,h:1.05,hb:1.05,vh:0,respawnU:null,laps:[],lapStart:0,done:0,finishT:null,bias:0};
@@ -3204,15 +3369,21 @@ const HOVER=1.05,GRAV=32,HOLD=4.0,WLOCK=0; /* no weapons lock: everyone starts w
    pads, routes, laps, tunes). The last 60 are kept in this browser (fewer if storage fills up); Controls and the results screen download them as
    JSON. Your profile (pace against the AI and your habits) feeds the rival AIs. */
 const LOG={on:store.get('hoverline.logrec')!=='0',cur:null,src:null,by:null,wallT:0,lastSrc:null};
+/* The device, so slow devices can be tuned for (Prototype 31): browser, cores, memory, graphics chip, screen. Each log adds
+   how big the game drew, the look, a frame rate with every sample, and a frame-time summary (perf). */
+const DEVICE=(()=>{const d={ua:String(navigator.userAgent||'').slice(0,220),cores:navigator.hardwareConcurrency||null,mem:navigator.deviceMemory||null,dpr:+(devicePixelRatio||1).toFixed(2),screen:[screen.width,screen.height],webgl2:!!renderer.capabilities.isWebGL2};
+  try{const gl=renderer.getContext(),x=gl.getExtension('WEBGL_debug_renderer_info');d.gpu=String(x?gl.getParameter(x.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER)).slice(0,140)}catch(e){}return d})();
+function logFrame(raw){const L=LOG.cur;if(!L||S.state!=='race'||!(raw>0))return;L.fN++;L.fh[Math.min(100,Math.round(raw*1000))]++}
 const r1=x=>Math.round(x*10)/10,r2=x=>Math.round(x*100)/100;
 function logStart(){if(!LOG.on){LOG.cur=null;return}const fc={};for(const f of T.feats)fc[f.kind]=(fc[f.kind]||0)+1;
-  LOG.cur={v:1,game:'Hoverline '+($('menu').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:S.trial?'trial':mp.on?'room':'race',
+  LOG.cur={v:2,game:'Hoverline '+($('menu').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:S.trial?'trial':mp.on?'room':'race',
     track:{code:codeStr(),name:T.D.name,complex:!!T.cx,len:Math.round(T.L),laps:LAPS,feats:fc,splits:T.splits.length,fig8:!!T.fig8,marks:(T.marks||[]).length},
     ship:{frame:build.frame,stats:{...build.stats},weapons:[...build.weapons]},
     input:{dev:lastDev,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode},
-    music:{style:music.style,code:music.code(),evolving:music.evo,shuffle:music.shuffle,lite:music.lite},gfx:Object.keys(G2).filter(k=>G2[k]).join(',')||'none',
+    music:{style:music.style,code:music.code(),evolving:music.evo,shuffle:music.shuffle,lite:music.lite,vol:audio.volM,sfx:audio.volS},gfx:Object.keys(G2).filter(k=>G2[k]).join(',')||'none',
+    device:{...DEVICE,view:[cw,ch],draw:[canvas.width,canvas.height],res:RES.k,low:RES.low,style:styleNow()||'own',sky:tod},
     field:racers.map(r=>({name:r.name,ai:!!r.isAI,ghost:!!r.isGhost,rival:!!r.rival,frame:r.build?r.build.frame:null,skill:r.skill?r2(r.skill):null,weapons:r.weapons?[...r.weapons]:[]})),
-    cols:['t','u','lat','v','pitch','dive','steer','brake','boost','hp','ammo','place','air','h'],s:[],ev:[],
+    cols:['t','u','lat','v','pitch','dive','steer','brake','boost','hp','ammo','place','air','h','fps'],s:[],ev:[],fN:0,fT:0,fh:new Array(101).fill(0),
     acc:{boostT:0,selfBoostT:0,diveT:0,downT:0,upT:0,airT:0,crestAirT:0,scrapeT:0,emptyT:0,lowT:0,vSum:0,vN:0,vMax:0,shots:{},hitsOn:{},hitsBy:{},dmg:{},wall:0,wallDmg:0,wrecks:0,falls:0,offs:0,clips:0,pads:0,routes:{long:0,short:0}},
     nextS:0,brS:null}}
 function logEv(type,o){const L=LOG.cur;if(!L||L.ev.length>4000)return;L.ev.push({t:r2(S.raceT),e:type,...(o||{})})}
@@ -3220,14 +3391,17 @@ function logTick(dt){const L=LOG.cur;if(!L||S.state!=='race')return;const p=play
   if(p.boost>0)A.boostT+=dt;if(p.selfBoost)A.selfBoostT+=dt;if((p.dive||0)>0.3)A.diveT+=dt;if(p.pitch<-0.3)A.downT+=dt;if(p.pitch>0.3)A.upT+=dt;if(p.air)A.airT+=dt;if(p.air===true)A.crestAirT+=dt;if(p.scrape>0)A.scrapeT+=dt;
   if(S.raceT>=WLOCK&&p.weapons.every(w=>WDEF[w].passive||p.ammo<WDEF[w].cost))A.emptyT+=dt;if(p.hp<p.d.hp*0.25)A.lowT+=dt;A.vSum+=p.v;A.vN++;A.vMax=Math.max(A.vMax,p.v);
   if(p.brS!==L.brS){L.brS=p.brS;if(p.brS&&p.brS.b&&p.br!=null){const lg=!!p.brS.b[p.br].long;A.routes[lg?'long':'short']++;logEv('route',{long:lg})}}
-  if(S.raceT>=L.nextS){L.nextS=S.raceT+0.25;L.s.push([r2(S.raceT),Math.round(p.utot),r1(p.lat),Math.round(p.v),r2(p.pitch),r2(p.dive||0),r2(p.steerS),r2(p.brk),p.boost>0||p.selfBoost?1:0,Math.round(p.hp),Math.round(p.ammo),rankOf(p)+1,p.air?(p.air===true?1:2):0,r1(p.air?p.h:HOVER)])}}
+  if(S.raceT>=L.nextS){L.nextS=S.raceT+0.25;const now=performance.now(),fps=L.fT?Math.round(L.fN*1000/Math.max(1,now-L.fT)):null;L.fT=now;L.fN=0;L.s.push([r2(S.raceT),Math.round(p.utot),r1(p.lat),Math.round(p.v),r2(p.pitch),r2(p.dive||0),r2(p.steerS),r2(p.brk),p.boost>0||p.selfBoost?1:0,Math.round(p.hp),Math.round(p.ammo),rankOf(p)+1,p.air?(p.air===true?1:2):0,r1(p.air?p.h:HOVER),fps])}}
 function logEnd(how){const L=LOG.cur;if(!L)return;LOG.cur=null;const p=player,A=L.acc,rk=ranking();
   L.result={how,place:rk.indexOf(p)+1,finishT:p.finishT,laps:p.laps.map(r2),raceT:r2(S.raceT),
     field:rk.map((r,i)=>({name:r.name,place:i+1,finishT:r.finishT!=null?r2(r.finishT):null,laps:(r.laps||[]).map(r2),wrecks:r.stat?r.stat.wrecks:null,dmgTaken:r.stat?Math.round(r.stat.dmg):null,hitsGiven:r.stat?r.stat.given:null,boostT:r.stat?r1(r.stat.boostT):null,rival:!!r.rival}))};
   L.summary={boostT:r1(A.boostT),selfBoostT:r1(A.selfBoostT),diveT:r1(A.diveT),noseDownT:r1(A.downT),noseUpT:r1(A.upT),airT:r1(A.airT),crestAirT:r1(A.crestAirT),scrapeT:r1(A.scrapeT),
     noAmmoT:r1(A.emptyT),lowShieldT:r1(A.lowT),avgSpeed:A.vN?Math.round(A.vSum/A.vN):0,maxSpeed:Math.round(A.vMax),shots:A.shots,hitsOn:A.hitsOn,hitsBy:A.hitsBy,dmgTaken:Object.fromEntries(Object.entries(A.dmg).map(([k,v])=>[k,r1(v)])),
     wallHits:A.wall,wallDmg:r1(A.wallDmg),wrecks:A.wrecks,falls:A.falls,offs:A.offs,clips:A.clips,pads:A.pads,routes:A.routes};
-  delete L.acc;delete L.nextS;delete L.brS;
+  /* frame times: the average frame rate, the rate the slowest 5% and 1% of frames ran at, and frames over 50 ms */
+  {const h=L.fh,n=h.reduce((a,b)=>a+b,0),pct=q=>{let c=0;for(let k=100;k>=0;k--){c+=h[k];if(c>=n*q)return Math.round(1000/Math.max(1,k))}return null};let tot=0;h.forEach((c,k)=>tot+=c*Math.max(1,k));
+    L.perf={frames:n,fps:n?Math.round(n*1000/tot):null,fps5:n?pct(0.05):null,fps1:n?pct(0.01):null,slow:h.slice(51).reduce((a,b)=>a+b,0),calls:GFX.calls||null,tris:GFX.tris||null,hist:h.map((c,k)=>c?k+':'+c:'').filter(Boolean).join(' ')}}
+  delete L.acc;delete L.nextS;delete L.brS;delete L.fN;delete L.fT;delete L.fh;
   if(L.s.length<8&&how!=='finish')return; /* nothing worth keeping */
   logSave(L);logShare(L);if(how==='finish'&&L.mode==='race')profileAdd(L);LOG.last=L}
 /* Shared race data: with Share race data on, each saved race log also goes to the leaderboard server (POST /log) so the
@@ -3236,7 +3410,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   (o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,i===0?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:30,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:31,log:logShareable(L)});if(body.length>400000)return;
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
 function logSave(L){let idx=logIndex();idx.push(L.id);while(idx.length>60){store.del?store.del('hoverline.log.'+idx[0]):store.set('hoverline.log.'+idx[0],'');idx.shift()}
@@ -3430,11 +3604,11 @@ const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spli
 const specStr=sp=>String(sp.b)+FK.map(k=>sp.n[k]||0).join('');
 const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,3})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
 const specCx=sp=>FKG.some(k=>sp.n[k]>0);
-/* Scenery: a letter after a dash (O ocean, F forest, N night sky; urban needs none), then optionally four digits for the
+/* Scenery: a letter after a dash (O ocean, F forest, N Stratos, once called Night sky, R reef; urban needs none), then optionally four digits for the
    dials (scenery amount, falls, geysers, tunnels), e.g. S1A2B3C-O or SX1A2B3C-U2102. Scenery doesn't change the road, so
    best laps, ghosts and the online board go by the code without it. */
-const parseBio=str=>{const m=/^([UOFN])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?([0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,3})?))?(?:-([UOFN](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+const parseBio=str=>{const m=/^([UOFNR])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?([0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,3})?))?(?:-([UOFNR](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
   return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0xFFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
 let seed=saved?saved.seed:Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
@@ -3447,7 +3621,7 @@ const bestKey=()=>'hoverline.best.'+roadStr();
 function getBest(){const v=parseFloat(store.get(bestKey())||'');return isFinite(v)?v:null}
 /* sp: undefined keeps the current editor counts, null drops them (back to generated tracks), an object sets them. */
 function loadTrack(s,wk,cx,lk,sp,bm){seed=(s&0xFFFFFF)||1;if(wk)wid=wk;if(sp!==undefined)spec=sp;if(spec)cplx=specCx(spec);else if(cx!=null)cplx=cx;if(lk)lenK=lk;if(bm!==undefined)bio=bm||{k:'U',d:null};store.set('hoverline.code',codeStr());buildTrack(seed,wid,cplx,lenK,spec,bio);bioSync();setField(false);music.fromTrack(seed);miniBase=null;$('seedIn').value=codeStr();resetGrid();updateMenuBest();drawPreview();S.fly=0;camInit=false;
-  document.querySelectorAll('[data-width]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.width===wid)));document.querySelectorAll('[data-layout]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.layout==='C'?!!spec:!spec&&(b.dataset.layout==='X')===cplx)));document.querySelectorAll('[data-len]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.len===lenK)))}
+  poolSync();todSync()}
 function freshRacer(r,u,utot,lat){r.stat={wrecks:0,dmg:0,given:0,boostT:0};Object.assign(r,{u,utot,lat,yaw:0,v:0,steerS:0,brk:0,boost:0,stun:0,spin:0,hp:r.d.hp,ammo:0,cd:[0,0],aiT:[0.5+Math.random(),0.5+Math.random()],
   wreck:0,dive:0,draft:0,inv:0,barrier:0,charging:null,pitch:0,air:false,h:HOVER,hb:HOVER,vh:0,respawnU:null,laps:[],lapStart:0,done:0,finishT:null,scrape:0,bias:(Math.random()-.5)*2,spinD:0,rollA:0,hopY:0});if(r===player)finCam.t0=null}
 function resetGrid(){clearShots();
@@ -3521,7 +3695,7 @@ function renderResults(){const rk=ranking(),place=rk.indexOf(player)+1;
     return`<tr class="${r===player?'me':''}"><td>${i+1}</td><td>${esc(r.name)}${r.remote?' ◆':''}${r.rival?' ≈':''}</td><td>${t}</td></tr>`}).join('')}
 function togglePause(){
   /* In a room the race can't stop for one pilot: the pause menu opens and the ship flies itself until you resume. */
-  if(mp.on&&(S.state==='race'||S.state==='countdown'||S.state==='done')){mp.auto=!$('pause').hidden?false:true;$('pause').hidden=!mp.auto;$('restartBtn').hidden=true;$('pauseRe').hidden=false;$('quitBtn').textContent='Leave race';return}
+  if(mp.on&&(S.state==='race'||S.state==='countdown'||S.state==='done')){mp.auto=!$('pause').hidden?false:true;$('pause').hidden=!mp.auto;$('restartBtn').hidden=true;$('pauseRe').hidden=!!(mp.sess&&mp.sess.state.link&&mp.sess.state.link.carrier==='lan');$('quitBtn').textContent='Leave race';return}
   if(S.state==='race'||S.state==='countdown'){S.prev=S.state;S.state='paused';$('pause').hidden=false;$('restartBtn').hidden=false;$('pauseRe').hidden=true;$('quitBtn').textContent='Menu';music.setMood('pause');touch.steer=touch.pitch=touch.psl=touch.brake=touch.boost=touch.f1=touch.f2=0;pslShow(0)}
   else if(S.state==='paused'){S.state=S.prev;$('pause').hidden=true;audio.init();music.setMood(S.prev==='race'?'race':'count');
     if(S.prev==='countdown'){S.count=Math.max(S.count,1.5);S.goAt=performance.now()+S.count*1000;music.countIn(S.count,true)}}}
@@ -3530,23 +3704,49 @@ function toMenu(){if(LOG.cur)logEnd('quit');setField(false);S.state='menu';menuM
 $('raceBtn').onclick=()=>{S.trial=false;startRace()};$('againBtn').onclick=()=>{if(mp.on)mpAgain(false);else startRace()};$('restartBtn').onclick=startRace;
 const rndSeed=()=>Math.floor(Math.random()*0xFFFFFF)+1;
 /* Scenery for new tracks: any of the ticked biomes (urban counts double); a track keeps its own until you change it. */
-let bioOn=(()=>{const v=(store.get('hoverline.biomes')||'UOFN').replace(/[^UOFN]/g,'');return v||'U'})();
+/* the Reef joins the ticked settings once, for anyone who had every setting ticked before it existed */
+let bioOn=(()=>{let v=(store.get('hoverline.biomes')||'UOFNR').replace(/[^UOFNR]/g,'');if(v==='UOFN'&&!store.get('hoverline.bioR'))v+='R';store.set('hoverline.bioR','1');return v||'U'})();
 const pickBio=()=>{const a=[...bioOn].flatMap(k=>k==='U'?['U','U']:[k]);return{k:a[Math.floor(Math.random()*a.length)]||'U',d:null}};
-const newTrack=(wk,cx,lk,sp)=>loadTrack(rndSeed(),wk,cx,lk,sp,pickBio());
+/* Track types for New track (Prototype 31): any of the ticked widths, layouts and lengths, as with the scenery. Ticking a
+   type makes a new track of it at once; unticking the type in use swaps to another ticked one; clicking the only one ticked
+   makes another of it. Custom uses your editor counts (kept from the last track you built in the editor). */
+const pick=s=>s[Math.floor(Math.random()*s.length)];
+const TPOOL=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.pools')||'null')}catch(e){}if(!o||typeof o!=='object')o={};
+  const ok=(v,all,d)=>[...String(v||'')].filter(c=>all.includes(c)).join('')||d;
+  return{w:ok(o.w,'WSN',wid),l:ok(o.l,'SXC',spec?'C':cplx?'X':'S'),n:ok(o.n,'QML',lenK)}})();
+let mySpec=parseSpec(store.get('hoverline.spec')||'')||(spec?{b:spec.b,n:{...spec.n}}:null);
+const poolSave=()=>store.set('hoverline.pools',JSON.stringify(TPOOL));
+const layNow=()=>spec?'C':cplx?'X':'S';
+function poolSync(){for(const[a,key,cur]of[['data-width','w',wid],['data-layout','l',layNow()],['data-len','n',lenK]])
+  document.querySelectorAll(`[${a}]`).forEach(b=>{const v=b.getAttribute(a);b.setAttribute('aria-pressed',String(TPOOL[key].includes(v)));b.classList.toggle('cur',v===cur)})}
+/* explicit values win; anything left out comes from the ticked types (and the ticked skies) */
+const newTrack=(wk,cx,lk,sp)=>{wk=wk||pick(TPOOL.w);lk=lk||pick(TPOOL.n);
+  if(cx==null&&sp===undefined){const l=pick(TPOOL.l);if(l==='C'&&mySpec)sp={b:mySpec.b,n:{...mySpec.n}};else{sp=null;cx=l==='X'}}
+  if(todOn.length>1)tod=pick(todOn);loadTrack(rndSeed(),wk,cx,lk,sp,pickBio())};
+/* a chip of one kind (key: w, l or n): tick or untick it, and make a new track when the track in use should change */
+function poolChip(key,v,cur){const P=TPOOL[key];
+  if(!P.includes(v)){TPOOL[key]=P+v;poolSave();return true}
+  if(P.length>1){TPOOL[key]=P.replace(v,'');poolSave();if(cur===v)return'other';poolSync();return false}
+  return true}
 /* Night or Day: only the sky and the light, for every setting; the track rebuilds with the new sky straight away */
-function todSync(){document.querySelectorAll('[data-tod]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tod===tod)))}
-document.querySelectorAll('[data-tod]').forEach(b=>b.onclick=()=>{if(b.dataset.tod===tod)return;tod=b.dataset.tod;store.set('hoverline.tod',tod);todSync();loadTrack(seed)});todSync();
+function todSync(){document.querySelectorAll('[data-tod]').forEach(b=>{b.setAttribute('aria-pressed',String(todOn.includes(b.dataset.tod)));b.classList.toggle('cur',b.dataset.tod===tod)})}
+/* ticking a sky shows it on this track; unticking the one in use swaps to the other */
+document.querySelectorAll('[data-tod]').forEach(b=>b.onclick=()=>{const k=b.dataset.tod,on=todOn.includes(k);
+  if(on&&todOn.length===1){if(tod===k)return}else todOn=on?todOn.filter(x=>x!==k):[...todOn,k];
+  const nt=!on?k:tod===k?todOn[0]:tod;store.set('hoverline.tods',todOn.join(','));if(nt!==tod){tod=nt;store.set('hoverline.tod',tod);loadTrack(seed)}else todSync()});todSync();
 function bioSync(){document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>{const k=b.dataset.bio||b.dataset.mpbio;b.setAttribute('aria-pressed',String(bioOn.includes(k)));b.classList.toggle('cur',k===bio.k)})}
-document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>b.onclick=()=>{const k=b.dataset.bio||b.dataset.mpbio;let v=bioOn.includes(k)?bioOn.replace(k,''):bioOn+k;if(!v)v=k;bioOn='UOFN'.split('').filter(c=>v.includes(c)).join('');store.set('hoverline.biomes',bioOn);
+document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>b.onclick=()=>{const k=b.dataset.bio||b.dataset.mpbio;let v=bioOn.includes(k)?bioOn.replace(k,''):bioOn+k;if(!v)v=k;bioOn='UOFNR'.split('').filter(c=>v.includes(c)).join('');store.set('hoverline.biomes',bioOn);
   /* ticking a biome shows it on this road; unticking the one in use swaps to another ticked one */
   if(!bioOn.includes(bio.k)||(bioOn.includes(k)&&k!==bio.k))loadTrack(seed,null,null,null,undefined,{k:bioOn.includes(k)?k:pickBio().k,d:null});
   if(b.dataset.mpbio)mpPushInfo();bioSync()});
 $('newBtn').onclick=()=>newTrack();
 $('newBtn2').onclick=()=>{if(mp.on){mpAgain(true);return}newTrack();startRace()};
 $('loadBtn').onclick=()=>{const c=parseCode($('seedIn').value);if(c)loadTrack(c.seed,c.wk,c.cx,c.lk,c.sp||null,c.bm);else $('seedIn').value=codeStr()};
-document.querySelectorAll('[data-width]').forEach(b=>b.onclick=()=>newTrack(b.dataset.width));
-document.querySelectorAll('[data-layout]').forEach(b=>b.onclick=()=>{if(b.dataset.layout==='C')openEd('menu');else newTrack(null,b.dataset.layout==='X',null,null)});
-document.querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>newTrack(null,null,b.dataset.len));
+document.querySelectorAll('[data-width]').forEach(b=>b.onclick=()=>{const v=b.dataset.width,r=poolChip('w',v,wid);if(r)newTrack(r==='other'?null:v)});
+document.querySelectorAll('[data-layout]').forEach(b=>b.onclick=()=>{const v=b.dataset.layout;if(v==='C'&&!mySpec){openEd('menu');return}
+  const r=poolChip('l',v,layNow());if(!r)return;const l=r==='other'?pick(TPOOL.l):v;if(l==='C')newTrack(null,null,null,{b:mySpec.b,n:{...mySpec.n}});else newTrack(null,l==='X',null,null)});
+document.querySelectorAll('[data-len]').forEach(b=>b.onclick=()=>{const v=b.dataset.len,r=poolChip('n',v,lenK);if(r)newTrack(null,null,r==='other'?null:v)});
+$('edBtn').onclick=()=>openEd('menu');
 /* ---------- track editor ----------
    Counts for each feature, plus width, length and how bendy the base circuit is. Every change rebuilds the track at
    once (same seed, so the circuit keeps its rough shape); Reshuffle tries a new layout with the same counts. What does
@@ -3558,7 +3758,7 @@ function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d|
   goFull();$(from).hidden=true;$('ed').hidden=false;edUI();drawPreview('edPreview','edStats')}
 function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild();$('ed').hidden=true;
   if(ed.from==='mp'){$('mp').hidden=false;mpPushInfo();mpView&&mpView()}else{$('menu').hidden=false;drawPreview();if(race)startRace()}}
-function edBuild(newSeed){ed.dirty=false;loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
+function edBuild(newSeed){ed.dirty=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
 function edChange(newSeed){ed.dirty=true;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(newSeed),newSeed?0:160)}
 function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
@@ -3689,7 +3889,7 @@ function openSet(from){logUI();setFrom=from;$(from).hidden=true;$('set').hidden=
 function closeSet(){$('set').hidden=true;const f=setFrom;setFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}
 function setSync(){for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.value=String(audio[k]);$(id+'V').textContent=audio[k]+'%'}
   $('sndChip').setAttribute('aria-pressed',String(audio.on));
-  {const n=GOPT.filter(([k])=>g2(k)).length,st=styleNow();$('gfxNote').textContent=(st?STYLES[st].n+' look':'Your own look')+` · ${n} of ${GOPT.length} parts on.`+(st==='lite'?' The lightest, for older phones.':' Pick Lite if the game stutters.')}}
+  {const n=GOPT.filter(([k])=>g2(k)).length,st=styleNow();$('gfxNote').textContent=(st?STYLES[st].n+' look':'Your own look')+` · ${n} of ${GOPT.length} parts on.`+(RES.k<1?` Resolution ${Math.round(RES.k*100)}%.`:'')+(RES.low?' Low detail.':'')+(st==='ultra'?' The lightest of all.':st==='lite'?' Light, for older phones; Ultra low is lighter still.':' Pick Lite, or Ultra low, if the game stutters.')}}
 for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.addEventListener('input',()=>{audio[k]=+el.value;store.set('hoverline.'+k,el.value);$(id+'V').textContent=el.value+'%';audio.applyVol()});
   el.addEventListener('change',()=>{audio.init();audio.applyVol();if(k==='volS')audio.blip(660,0.12,0.12,'triangle')})}
 $('sndChip').onclick=()=>{audio.init();audio.setOn(!audio.on);setSync()};
@@ -4355,6 +4555,7 @@ function localLink(code, handlers) {
 
 async function openLink(code, handlers, carrier) {
   carrier ||= await chooseCarrier();
+  if (carrier === 'lan') return LAN.link(code, handlers);
   if (carrier === 'relay') return relayLink(code, handlers);
   if (carrier === 'local') return localLink(code, handlers);
   return netLink(code, handlers);
@@ -4362,6 +4563,123 @@ async function openLink(code, handlers, carrier) {
 
 return{openLink,chooseCarrier,roomCode,normaliseCode,relayAvailable,relayInfo,APP_ID,NET,WIFI_UNAVAILABLE};
 })();
+
+/* ---------- Wi-Fi with no internet (Prototype 31) ----------
+   Phones, tablets and computers on one Wi-Fi race each other directly over WebRTC data channels, with no server at all,
+   so it works from itch.io, the offline file, anywhere. With no server the two ends swap their connection details by
+   hand, once each way: the host shows a code (a QR code, or text), a pilot scans it and shows a reply code, the host scans
+   that, and they are connected. The host relays everything (a star), so the host must stay in the room.
+   A code carries the room, a tag naming the host's offer, the ICE username and password, the DTLS fingerprint and the
+   device's local addresses; everything else in the session description is the same for every connection, so it is
+   rebuilt from a template at the other end. */
+/* QR codes (byte mode, error correction level M, versions 1-20), after Project Nayuki's QR Code generator (MIT).
+   qr(text) gives a square array of rows of booleans (true = dark), without the quiet zone. */
+const QR=(()=>{
+  const ECC=[-1,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26],BLK=[-1,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16];
+  const mul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^((z>>>7)*0x11D);z^=((y>>>i)&1)*x}return z};
+  const divisor=n=>{const r=new Array(n).fill(0);r[n-1]=1;let root=1;for(let i=0;i<n;i++){for(let j=0;j<n;j++){r[j]=mul(r[j],root);if(j+1<n)r[j]^=r[j+1]}root=mul(root,2)}return r};
+  const remainder=(data,div)=>{const r=div.map(()=>0);for(const b of data){const f=b^r.shift();r.push(0);div.forEach((c,i)=>r[i]^=mul(c,f))}return r};
+  const rawModules=v=>{let r=(16*v+128)*v+64;if(v>=2){const na=Math.floor(v/7)+2;r-=(25*na-10)*na-55;if(v>=7)r-=36}return r};
+  const dataCodewords=v=>Math.floor(rawModules(v)/8)-ECC[v]*BLK[v];
+  const alignPos=v=>{if(v===1)return[];const na=Math.floor(v/7)+2,size=v*4+17,step=Math.floor((v*8+na*3+5)/(na*4-4))*2,r=[6];for(let p=size-7;r.length<na;p-=step)r.splice(1,0,p);return r};
+  return function qr(text,forceMask){
+    const bytes=[...new TextEncoder().encode(text)];let v=1;
+    for(;v<=20;v++){if(4+(v<10?8:16)+bytes.length*8<=dataCodewords(v)*8)break}if(v>20)throw new Error('too long for a QR code');
+    const bits=[],put=(val,n)=>{for(let i=n-1;i>=0;i--)bits.push((val>>>i)&1)};
+    put(4,4);put(bytes.length,v<10?8:16);for(const b of bytes)put(b,8);
+    const cap=dataCodewords(v)*8;put(0,Math.min(4,cap-bits.length));put(0,(8-bits.length%8)%8);for(let p=0xEC;bits.length<cap;p^=0xEC^0x11)put(p,8);
+    const data=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let k=0;k<8;k++)b=(b<<1)|bits[i+k];data.push(b)}
+    /* error correction blocks, interleaved */
+    const nb=BLK[v],el=ECC[v],raw=Math.floor(rawModules(v)/8),nShort=nb-raw%nb,shortLen=Math.floor(raw/nb),div=divisor(el),blocks=[];
+    for(let i=0,k=0;i<nb;i++){const d=data.slice(k,k+shortLen-el+(i<nShort?0:1));k+=d.length;const e=remainder(d,div);if(i<nShort)d.push(0);blocks.push(d.concat(e))}
+    const cw=[];for(let i=0;i<blocks[0].length;i++)blocks.forEach((b,j)=>{if(i!==shortLen-el||j>=nShort)cw.push(b[i])});
+    /* the modules: function patterns first */
+    const size=v*4+17,M=[],F=[];for(let y=0;y<size;y++){M.push(new Array(size).fill(false));F.push(new Array(size).fill(false))}
+    const set=(x,y,d)=>{M[y][x]=d;F[y][x]=true};
+    for(let i=0;i<size;i++){set(6,i,i%2===0);set(i,6,i%2===0)}
+    for(const[cx,cy]of[[3,3],[size-4,3],[3,size-4]])for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const x=cx+dx,y=cy+dy,d=Math.max(Math.abs(dx),Math.abs(dy));if(x>=0&&x<size&&y>=0&&y<size)set(x,y,d!==2&&d!==4)}
+    const ap=alignPos(v),na=ap.length;for(let i=0;i<na;i++)for(let j=0;j<na;j++){if(i===0&&j===0||i===0&&j===na-1||i===na-1&&j===0)continue;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)set(ap[i]+dx,ap[j]+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}
+    const format=mask=>{const d=(0<<3)|mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const b=((d<<10)|r)^0x5412,g=i=>((b>>>i)&1)===1;
+      for(let i=0;i<=5;i++)set(8,i,g(i));set(8,7,g(6));set(8,8,g(7));set(7,8,g(8));for(let i=9;i<15;i++)set(14-i,8,g(i));
+      for(let i=0;i<8;i++)set(size-1-i,8,g(i));for(let i=8;i<15;i++)set(8,size-15+i,g(i));set(8,size-8,true)};
+    format(0);
+    if(v>=7){let r=v;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const b=(v<<12)|r;for(let i=0;i<18;i++){const d=((b>>>i)&1)===1,a=size-11+i%3,c=Math.floor(i/3);set(a,c,d);set(c,a,d)}}
+    /* the data, in the zigzag */
+    let i=0;for(let right=size-1;right>=1;right-=2){if(right===6)right=5;for(let vert=0;vert<size;vert++)for(let j=0;j<2;j++){const x=right-j,up=((right+1)&2)===0,y=up?size-1-vert:vert;
+      if(!F[y][x]&&i<cw.length*8){M[y][x]=((cw[i>>>3]>>>(7-(i&7)))&1)===1;i++}}}
+    /* the mask with the lowest penalty (runs, blocks and balance) */
+    const inv=(m,x,y)=>[(x+y)%2,y%2,x%3,(x+y)%3,(Math.floor(x/3)+Math.floor(y/2))%2,x*y%2+x*y%3,(x*y%2+x*y%3)%2,((x+y)%2+x*y%3)%2][m]===0;
+    const apply=m=>{for(let y=0;y<size;y++)for(let x=0;x<size;x++)if(!F[y][x]&&inv(m,x,y))M[y][x]=!M[y][x]};
+    const penalty=()=>{let p=0,dark=0;for(let a=0;a<2;a++)for(let y=0;y<size;y++){let run=1;for(let x=1;x<=size;x++){const c=x<size&&(a?M[x][y]:M[y][x])===(a?M[x-1][y]:M[y][x-1]);if(c)run++;else{if(run>=5)p+=run-2;run=1}}}
+      for(let y=0;y<size-1;y++)for(let x=0;x<size-1;x++){const c=M[y][x];if(c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1])p+=3}
+      for(const row of M)for(const c of row)if(c)dark++;return p+10*Math.floor(Math.abs(dark*20-size*size*10)/(size*size))};
+    let best=forceMask,bp=1e9;if(best==null)for(let m=0;m<8;m++){apply(m);format(m);const pp=penalty();if(pp<bp){bp=pp;best=m}apply(m)}
+    apply(best);format(best);return M}})();
+
+const LAN=(()=>{
+  const B32='0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  const b32=bytes=>{let o='',v=0,n=0;for(const b of bytes){v=(v<<8|b)&0xFFFF;n+=8;while(n>=5){o+=B32[(v>>>(n-5))&31];n-=5}}if(n)o+=B32[(v<<(5-n))&31];return o};
+  const unb32=t=>{const o=[];let v=0,n=0;for(const c of t.toUpperCase().replace(/O/g,'0').replace(/[IL]/g,'1')){const k=B32.indexOf(c);if(k<0)continue;v=(v<<5|k)&0xFFFF;n+=5;if(n>=8){o.push((v>>>(n-8))&255);n-=8}}return o};
+  const uuidRe=/^([0-9a-f]{8})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{4})-([0-9a-f]{12})\.local$/i;
+  /* the parts of a session description that differ between connections */
+  function fromSdp(sdp){const g=re=>(sdp.match(re)||[])[1]||'',o={uf:g(/a=ice-ufrag:(\S+)/),pw:g(/a=ice-pwd:(\S+)/),fp:g(/a=fingerprint:sha-256 (\S+)/i),cands:[]};
+    for(const m of sdp.matchAll(/a=candidate:\S+ 1 udp \d+ (\S+) (\d+) typ host/gi)){const a=m[1],port=+m[2];if(/^\d+\.\d+\.\d+\.\d+$/.test(a)||uuidRe.test(a))if(!o.cands.some(c=>c.a===a))o.cands.push({a,port})}
+    o.cands.sort((x,y)=>(uuidRe.test(x.a)?1:0)-(uuidRe.test(y.a)?1:0));o.cands=o.cands.slice(0,2);return o}
+  function toSdp(o,setup){return['v=0','o=- '+(1e9+Math.floor(Math.random()*1e9))+' 2 IN IP4 127.0.0.1','s=-','t=0 0','a=group:BUNDLE 0','a=msid-semantic: WMS','m=application 9 UDP/DTLS/SCTP webrtc-datachannel','c=IN IP4 0.0.0.0',
+    ...o.cands.map((c,i)=>`a=candidate:${i+1} 1 udp ${2122260223-i*256} ${c.a} ${c.port} typ host generation 0`),'a=ice-ufrag:'+o.uf,'a=ice-pwd:'+o.pw,'a=ice-options:trickle','a=fingerprint:sha-256 '+o.fp,
+    'a=setup:'+setup,'a=mid:0','a=sctp-port:5000','a=max-message-size:262144',''].join('\r\n')}
+  /* a code: HL, then base 32 of [version, kind (0 host, 1 reply), room (5 letters), tag (2 bytes), ufrag, password,
+     fingerprint (32 bytes), addresses (4 bytes, or an mDNS name's 16, and a port)] */
+  function pack(o){const B=[1,o.kind],str=t=>{const e=[...new TextEncoder().encode(t)];B.push(e.length,...e)};
+    for(const c of o.code.padEnd(5,'?').slice(0,5))B.push(c.charCodeAt(0));B.push(o.tag>>8&255,o.tag&255);str(o.uf);str(o.pw);
+    const fp=o.fp.split(':').map(h=>parseInt(h,16));if(fp.length!==32||fp.some(x=>!(x>=0)))throw new Error('This browser gave an unusual connection fingerprint.');B.push(...fp);
+    B.push(o.cands.length);for(const c of o.cands){const u=uuidRe.exec(c.a);if(u){B.push(16);const hx=u.slice(1).join('');for(let i=0;i<32;i+=2)B.push(parseInt(hx.substr(i,2),16))}else B.push(4,...c.a.split('.').map(Number));B.push(c.port>>8&255,c.port&255)}
+    return'HL'+b32(B)}
+  function unpack(text){const t=String(text||'').toUpperCase().replace(/[^0-9A-Z]/g,'');if(!t.startsWith('HL'))return null;const B=unb32(t.slice(2));let i=0;const rd=()=>{if(i>=B.length)throw 0;return B[i++]};
+    try{if(rd()!==1)return null;const o={kind:rd(),code:'',cands:[]};for(let k=0;k<5;k++)o.code+=String.fromCharCode(rd());o.code=o.code.replace(/\?/g,'');o.tag=rd()<<8|rd();
+      const str=()=>{const n=rd(),e=[];for(let k=0;k<n;k++)e.push(rd());return new TextDecoder().decode(new Uint8Array(e))};o.uf=str();o.pw=str();
+      const fp=[];for(let k=0;k<32;k++)fp.push(rd().toString(16).toUpperCase().padStart(2,'0'));o.fp=fp.join(':');
+      const nc=rd();for(let k=0;k<nc;k++){const ty=rd();let a;if(ty===16){let h='';for(let q=0;q<16;q++)h+=rd().toString(16).padStart(2,'0');a=`${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}.local`}else{const q=[];for(let z=0;z<4;z++)q.push(rd());a=q.join('.')}o.cands.push({a,port:rd()<<8|rd()})}
+      return o}catch(e){return null}}
+  const gather=pc=>new Promise(res=>{if(pc.iceGatheringState==='complete')return res();const t=setTimeout(res,3000);pc.addEventListener('icegatheringstatechange',()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);res()}})});
+  const newId=()=>Array.from(crypto.getRandomValues(new Uint8Array(8)),n=>(n%36).toString(36)).join('');
+  const L={role:null,code:null,id:null,handlers:null,guests:new Map(),pending:new Map(),host:null,onChange:null};
+  const send=(ch,d)=>{if(ch&&ch.readyState==='open')try{ch.send(JSON.stringify(d))}catch(e){}};
+  const bcast=(d,except)=>{for(const[id,ch]of L.guests)if(id!==except)send(ch,d)};
+  /* host: a fresh offer for the next pilot (a few stay valid, so a pilot who scanned an older one can still be added) */
+  async function offer(){const pc=new RTCPeerConnection({iceServers:[]}),ch=pc.createDataChannel('hl',{ordered:true}),tag=crypto.getRandomValues(new Uint16Array(1))[0];let gid=null;
+    ch.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch(x){return}
+      if(d.t==='_hi'&&!gid){gid=String(d.id).slice(0,16);L.guests.set(gid,ch);send(ch,{t:'_hello',host:L.id,peers:[...L.guests.keys()].filter(x=>x!==gid)});bcast({t:'_join',id:gid},gid);L.handlers&&L.handlers.onPeer&&L.handlers.onPeer(gid);L.onChange&&L.onChange('joined')}
+      else if(d.t==='_m'&&gid){L.handlers&&L.handlers.onMessage&&L.handlers.onMessage(d.m,gid);bcast({t:'_m',m:d.m,from:gid},gid)}};
+    const gone=()=>{if(!gid||L.guests.get(gid)!==ch)return;L.guests.delete(gid);bcast({t:'_leave',id:gid});L.handlers&&L.handlers.onLeave&&L.handlers.onLeave(gid);L.onChange&&L.onChange('left')};
+    ch.onclose=gone;pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'||pc.connectionState==='closed')gone()};
+    await pc.setLocalDescription(await pc.createOffer());await gather(pc);
+    const o=fromSdp(pc.localDescription.sdp);L.pending.set(tag,{pc});for(const[k,p]of L.pending)if(L.pending.size>4&&k!==tag){try{p.pc.close()}catch(e){}L.pending.delete(k)}
+    return pack({...o,kind:0,code:L.code,tag})}
+  async function accept(text){const o=unpack(text);if(!o)throw new Error('That isn\'t a Hoverline Wi-Fi code.');if(o.kind!==1)throw new Error('That is a host code: scan the reply on the pilot\'s screen instead.');
+    if(o.code!==L.code)throw new Error('That reply is for room '+o.code+'.');const p=L.pending.get(o.tag);if(!p)throw new Error('That reply is for an old code. Ask the pilot to scan the code on screen now.');
+    L.pending.delete(o.tag);await p.pc.setRemoteDescription({type:'answer',sdp:toSdp(o,'active')})}
+  /* pilot: answer the host's code; open resolves once the link to the host is up */
+  async function answer(text){const o=unpack(text);if(!o)throw new Error('That isn\'t a Hoverline Wi-Fi code.');if(o.kind!==0)throw new Error('That is a reply code: scan the code on the host\'s screen.');
+    if(L.host)try{L.host.pc.close()}catch(e){}
+    const pc=new RTCPeerConnection({iceServers:[]}),g={pc,ch:null,code:o.code};
+    g.open=new Promise((res,rej)=>{pc.ondatachannel=e=>{g.ch=e.channel;g.ch.onopen=()=>res(g)};pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed')rej(new Error('The connection to the host failed. Check both are on the same Wi-Fi, then scan again.'))}});
+    await pc.setRemoteDescription({type:'offer',sdp:toSdp(o,'actpass')});await pc.setLocalDescription(await pc.createAnswer());await gather(pc);
+    L.host=g;return{reply:pack({...fromSdp(pc.localDescription.sdp),kind:1,code:o.code,tag:o.tag}),code:o.code,open:g.open}}
+  /* the room link the session uses (the same shape as the other carriers) */
+  function link(code,handlers){L.code=code;L.handlers=handlers;
+    if(L.role==='host'){L.id=L.id||newId();setTimeout(()=>handlers.onOpen&&handlers.onOpen(),0);
+      return{carrier:'lan',id:L.id,get paths(){return{pilots:L.guests.size}},send:m=>bcast({t:'_m',m,from:L.id}),
+        close(){for(const ch of L.guests.values())try{ch.close()}catch(e){}for(const p of L.pending.values())try{p.pc.close()}catch(e){}L.guests.clear();L.pending.clear();L.handlers=null;L.role=null;L.id=null}}}
+    const g=L.host,id=newId(),peers=new Set();if(!g||!g.ch||g.ch.readyState!=='open'){setTimeout(()=>handlers.onError&&handlers.onError('Not connected to a Wi-Fi host.'),0);return{carrier:'lan',id,send(){},close(){}}}
+    g.ch.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch(x){return}
+      if(d.t==='_hello'){peers.add(d.host);for(const q of d.peers||[])peers.add(q);handlers.onOpen&&handlers.onOpen();for(const q of peers)handlers.onPeer&&handlers.onPeer(q)}
+      else if(d.t==='_join'){peers.add(d.id);handlers.onPeer&&handlers.onPeer(d.id)}else if(d.t==='_leave'){peers.delete(d.id);handlers.onLeave&&handlers.onLeave(d.id)}
+      else if(d.t==='_m')handlers.onMessage&&handlers.onMessage(d.m,d.from)};
+    let closed=false;g.ch.onclose=()=>{if(closed)return;for(const q of peers)handlers.onLeave&&handlers.onLeave(q);peers.clear();handlers.onError&&handlers.onError('The Wi-Fi link to the host closed.')};
+    send(g.ch,{t:'_hi',id});
+    return{carrier:'lan',id,send:m=>send(g.ch,{t:'_m',m}),close(){closed=true;try{g.ch.close();g.pc.close()}catch(e){}if(L.host===g)L.host=null}}}
+  return{L,offer,accept,answer,link,pack,unpack,fromSdp,toSdp,qr:QR,ok:typeof RTCPeerConnection!=='undefined'}})();
 
 /* ---------- multiplayer session: lobby, host, load check, synchronised start ----------
    Game-agnostic layer on top of a room link ({id, send, close, paths}) from the transport.
@@ -4543,27 +4861,65 @@ const mpEl={};for(const id of['mp','mpOut','mpIn','mpName','mpCode','mpCreate','
 mpEl.mpName.value=(store.get('hoverline.name')||('Pilot '+(10+Math.floor(Math.random()*90)))).slice(0,12);
 const mpProfile=()=>({n:mpEl.mpName.value.trim().slice(0,12)||'Pilot',pt:build.paint,lv:build.liv||null,st:{...build.stats},w:[...build.weapons],fr:build.frame});
 const mpSt={lobby:'not ready',lab:'in ship lab',loading:'loading',race:'racing',results:'on results'};
-let mpConn='internet';
-function mpOpen(){S.state='menu';$('menu').hidden=true;mpEl.mp.hidden=false;mpView();drawPreview('mpPreview','mpStats');
-  if(!mpOpen.probed){mpOpen.probed=true;HLNet.relayAvailable().then(ok=>{if(ok){mpEl.mpConnRow.hidden=false;mpConn='wifi';mpSyncConn()}})}}
-function mpSyncConn(){document.querySelectorAll('[data-conn]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.conn===mpConn)))}
-document.querySelectorAll('[data-conn]').forEach(b=>b.onclick=()=>{mpConn=b.dataset.conn;mpSyncConn()});
+let mpConn=store.get('hoverline.conn')==='lan'?'lan':'internet';
+function mpOpen(){S.state='menu';$('menu').hidden=true;mpEl.mp.hidden=false;mpView();drawPreview('mpPreview','mpStats');mpSyncConn();
+  if(!mpOpen.probed){mpOpen.probed=true;HLNet.relayAvailable().then(ok=>{if(ok){document.querySelector('[data-conn="wifi"]').hidden=false;mpConn='wifi';mpSyncConn()}})}}
+const CONN_HINT={internet:'The host creates a room and reads out its code; everyone else types it in on their own phone, tablet, Steam Deck or computer. Works across any networks over the internet, and on one Wi-Fi.',
+  lan:'For one Wi-Fi with no internet, from any copy of the game. The host creates a room and shows a code; each pilot taps Join a Wi-Fi room, scans it with the camera and shows a reply for the host to scan. A device without a camera can type the code instead. The host relays the race, so keep the host\'s device in the room.',
+  wifi:'This page comes from the Wi-Fi host pack: the host creates a room and reads out its code; everyone on this Wi-Fi opens the same address and types it in.'};
+function mpSyncConn(){document.querySelectorAll('[data-conn]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.conn===mpConn)));const lan=mpConn==='lan';
+  $('lanJoin').hidden=!lan;$('mpCodeRow').hidden=lan;$('mpConnHint').textContent=CONN_HINT[mpConn]+(lan&&!LAN.ok?' This browser has no WebRTC, so it can\'t use it.':'')}
+document.querySelectorAll('[data-conn]').forEach(b=>b.onclick=()=>{mpConn=b.dataset.conn;if(mpConn!=='wifi')store.set('hoverline.conn',mpConn);mpSyncConn()});
 function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidden=!inRoom;if(inRoom)mpRender()}
 function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill}}
 function mpConnect(code,host){
   audio.init();store.set('hoverline.name',mpEl.mpName.value.trim().slice(0,12));mpEl.mpErr.textContent='';
-  const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':'net';
+  const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':mpConn==='lan'?'lan':'net';
   mp.on=true;mp.code=code;mp.left=new Set();mp.go=null;
   mp.sess=createSession({code,host,max:MAXP,profile:mpProfile(),info:host?mpTrackInfo():{},carrier,openLink:HLNet.openLink,
     onChange:mpRender,onInfo:mpApplyInfo,onStart:mpStart,onGo:mpGo,onLeave:mpPeerLeft,onHost:mpBecameHost,
     onFull:()=>{mpEl.mpErr.textContent='That room is full ('+MAXP+' pilots).'},
-    onError:t=>{mpEl.mpErr.textContent=t+' Tap Reconnect to try again.';if(S.state==='race'||S.state==='countdown'||S.state==='mpwait')note('Connection trouble · pause and tap Reconnect',2600)},onMessage:mpMessage});
+    onError:t=>{mpEl.mpErr.textContent=t+(carrier==='lan'?' Leave the room and join again.':' Tap Reconnect to try again.');if(S.state==='race'||S.state==='countdown'||S.state==='mpwait')note('Connection trouble · pause and tap Reconnect',2600)},onMessage:mpMessage});
   mpView()}
-mpEl.mpCreate.onclick=()=>mpConnect(HLNet.roomCode(),true);
+mpEl.mpCreate.onclick=async()=>{if(mpConn==='lan'){if(!LAN.ok){mpEl.mpErr.textContent='This browser can\'t do Wi-Fi rooms (no WebRTC).';return}
+    /* with the camera allowed, the browser shares this device's real Wi-Fi address in the codes (otherwise a private name
+       that some networks can't look up), and the host needs the camera to scan replies anyway */
+    LAN.L.role='host';LAN.L.id=null;await lanCamProbe();mpConnect(HLNet.roomCode(),true);lanHostNext();return}
+  mpConnect(HLNet.roomCode(),true)};
+$('lanJoin').onclick=()=>{if(!LAN.ok){mpEl.mpErr.textContent='This browser can\'t do Wi-Fi rooms (no WebRTC).';return}lan.mode='guest';lanUI('Join a Wi-Fi room','Scan the code on the host\'s screen, or type it in below.',null);lanShow(true)};
 mpEl.mpJoin.onclick=()=>{const c=HLNet.normaliseCode(mpEl.mpCode.value);if(c.length<4){mpEl.mpErr.textContent='Room codes have 5 letters and numbers.';return}mpConnect(c,false)};
 mpEl.mpCode.addEventListener('keydown',e=>{if(e.key==='Enter')mpEl.mpJoin.click()});
 mpEl.mpBack.onclick=()=>{mpEl.mp.hidden=true;toMenu()};
 mpEl.mpLeave.onclick=()=>mpLeaveRoom();
+/* Wi-Fi, no internet: swapping codes (see LAN). The host's box shows the code for the next pilot and scans their replies;
+   a pilot's box scans the host's code, then shows the reply until the host has scanned it. */
+const lan={mode:null,stream:null,scanning:false,code:null};
+function lanShow(on){$('lanBox').hidden=!on;if(!on){lanCamOff();$('lanMsg').textContent=''}}
+function lanStop(){lanShow(false);lan.mode=null;lan.code=null}
+function lanUI(title,steps,code){$('lanTitle').textContent=title;$('lanSteps').textContent=steps;lan.code=code;$('lanTxt').textContent=code?'Code: '+code.replace(/(.{5})/g,'$1 ').trim():'';$('lanCopy').hidden=!code;
+  const c=$('lanQR');c.hidden=!code;if(code){const M=LAN.qr(code),n=M.length+8,k=Math.max(2,Math.floor(c.width/n)),g=c.getContext('2d'),o=Math.floor((c.width-k*M.length)/2);g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.fillStyle='#000';
+    M.forEach((row,y)=>row.forEach((d,x)=>{if(d)g.fillRect(o+x*k,o+y*k,k,k)}))}}
+const lanSay=t=>{$('lanMsg').textContent=t};
+async function lanCamProbe(){try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});st.getTracks().forEach(t=>t.stop())}catch(e){}}
+function lanCamOff(){lan.scanning=false;if(lan.stream){lan.stream.getTracks().forEach(t=>t.stop());lan.stream=null}const v=$('lanCam');v.hidden=true;v.srcObject=null;$('lanQR').hidden=!lan.code}
+async function lanScan(){if(lan.scanning){lanCamOff();return}
+  if(!('BarcodeDetector' in window)){lanSay('This browser can\'t read QR codes: type the code in instead.');return}
+  let det;try{det=new BarcodeDetector({formats:['qr_code']})}catch(e){lanSay('This browser can\'t read QR codes: type the code in instead.');return}
+  try{lan.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})}catch(e){lanSay('No camera here (or it was not allowed): type the code in instead.');return}
+  const v=$('lanCam');v.srcObject=lan.stream;$('lanQR').hidden=true;v.hidden=false;try{await v.play()}catch(e){}lan.scanning=true;lanSay('Point the camera at the code…');
+  while(lan.scanning){try{const r=await det.detect(v);const hit=r.find(x=>/^HL/i.test(x.rawValue||''));if(hit){lanCamOff();lanSay('');lanUse(hit.rawValue);return}}catch(e){}await new Promise(r=>setTimeout(r,180))}}
+async function lanUse(text){text=String(text||'').trim();if(!text)return;$('lanIn').value='';
+  try{if(lan.mode==='host'){lanSay('Connecting the pilot…');await LAN.accept(text);setTimeout(()=>{if($('lanMsg').textContent==='Connecting the pilot…')lanSay('Still connecting… check the pilot is on this Wi-Fi.')},8000)}
+    else if(lan.mode==='guest'){lanSay('Making your reply…');const res=await LAN.answer(text);
+      lanUI('Show this to the host','The host taps Scan a code and points their camera at this (or types it in). You join the room as soon as they have.',res.reply);lanSay('');
+      res.open.then(()=>{if(lan.mode!=='guest')return;lanStop();mpConnect(res.code,false)},e=>lanSay(String(e.message||e)))}}
+  catch(e){lanSay(String(e&&e.message||e))}}
+async function lanHostNext(){lan.mode='host';lanShow(true);lanUI('Add pilots','Each pilot taps Join a Wi-Fi room, scans this code and shows you a reply; then tap Scan a code and scan their reply. Repeat for every pilot.',null);
+  try{const c=await LAN.offer();if(lan.mode==='host')lanUI('Add pilots','Each pilot taps Join a Wi-Fi room, scans this code and shows you a reply; then tap Scan a code and scan their reply. Repeat for every pilot.',c)}catch(e){lanSay('Could not make a code: '+(e&&e.message||e))}}
+LAN.L.onChange=what=>{if(lan.mode!=='host')return;if(what==='joined'){lanSay('A pilot joined.');lanHostNext()}mpRender()};
+$('lanScan').onclick=lanScan;$('lanAdd').onclick=()=>lanHostNext();$('lanUse').onclick=()=>lanUse($('lanIn').value);$('lanIn').addEventListener('keydown',e=>{if(e.key==='Enter')lanUse($('lanIn').value)});
+$('lanCopy').onclick=async()=>{try{await navigator.clipboard.writeText(lan.code);lanSay('Copied.')}catch(e){lanSay('Select the code above and copy it.')}};
+$('lanCancel').onclick=()=>{if(lan.mode==='host'){lanShow(false);return}lanStop();if(LAN.L.host)try{LAN.L.host.pc.close()}catch(e){}LAN.L.host=null};
 /* Reconnect: close the link and join the same room again. A host on their own opens it again as host; a host with others
    rejoins as a guest (someone still there takes over, as when a host leaves); a guest rejoins as a guest. */
 function mpReconnect(){if(!mp.code)return;const st=mp.sess&&mp.sess.state,host=!st||!!(st.isHost&&!st.roster.some(e=>e.id!==st.id)),was=!!(st&&st.isHost),code=mp.code;
@@ -4593,9 +4949,9 @@ function mpAutoStart(st){if(!st.isHost||st.phase!=='lobby'||st.busy||!st.roster.
   if(mp.autoT)return;note(st.roster.length>1?'Everyone is ready · starting':'Ready · starting',1400);
   mp.autoT=setTimeout(()=>{mp.autoT=null;const s=mp.sess;if(s&&s.state===st&&st.phase==='lobby'&&st.roster.every(e=>e.st==='lobby'&&e.rd))mpEl.mpStart.onclick()},1200)}
 mpEl.mpNew.onclick=()=>{newTrack();mpPushInfo()};
-document.querySelectorAll('[data-mpw]').forEach(b=>b.onclick=()=>{newTrack(b.dataset.mpw);mpPushInfo()});
-document.querySelectorAll('[data-mpl]').forEach(b=>b.onclick=()=>{if(b.dataset.mpl==='C'){openEd('mp');return}newTrack(null,b.dataset.mpl==='X',null,null);mpPushInfo()});
-document.querySelectorAll('[data-mplen]').forEach(b=>b.onclick=()=>{newTrack(null,null,b.dataset.mplen);mpPushInfo()});
+document.querySelectorAll('[data-mpw]').forEach(b=>b.onclick=()=>{newTrack(b.dataset.mpw,cplx,lenK,spec?{b:spec.b,n:{...spec.n}}:null);mpPushInfo()});
+document.querySelectorAll('[data-mpl]').forEach(b=>b.onclick=()=>{if(b.dataset.mpl==='C'){openEd('mp');return}newTrack(wid,b.dataset.mpl==='X',lenK,null);mpPushInfo()});
+document.querySelectorAll('[data-mplen]').forEach(b=>b.onclick=()=>{newTrack(wid,cplx,b.dataset.mplen,spec?{b:spec.b,n:{...spec.n}}:null);mpPushInfo()});
 document.querySelectorAll('[data-mplaps]').forEach(b=>b.onclick=()=>{mp.laps=+b.dataset.mplaps;mpPushInfo()});
 mpEl.mpAI.onclick=()=>{mp.fill=!mp.fill;mpPushInfo()};
 function mpPushInfo(){if(mp.sess&&mp.sess.state.isHost)mp.sess.setInfo(mpTrackInfo());drawPreview('mpPreview','mpStats');mpRender()}
@@ -4614,6 +4970,8 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
   let status=st.phase==='connecting'?(st.isHost?'Opening the room…':'Looking for the host…'):st.phase==='full'?'Room full':'In the lobby';
   if(carrier==='net')status+=paths&&paths.broker?` · online via ${paths.broker} relay${paths.broker>1?'s':''}`:' · connecting to relays…';
   else if(carrier==='relay')status+=' · same Wi-Fi host';else if(carrier==='local')status+=' · this device (test)';
+  else if(carrier==='lan')status+=' · Wi-Fi, no internet'+(st.isHost?` · ${paths?paths.pilots:0} pilot${paths&&paths.pilots===1?'':'s'} connected`:'');
+  $('mpRe').hidden=carrier==='lan';$('lanAdd').hidden=!(carrier==='lan'&&st.isHost);$('pauseRe').hidden=$('pauseRe').hidden||carrier==='lan';if(lan.mode==='host'&&!st.isHost)lanShow(false);
   if(!st.isHost&&st.rtt!=null)status+=` · ${st.rtt} ms to host`;
   mpEl.mpStatus.textContent=status;
   if(st.phase==='lobby'&&(carrier!=='net'||paths&&(paths.broker||paths.direct)))mpEl.mpErr.textContent='';
@@ -4639,7 +4997,7 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
     total<2?(st.isHost?'Share the room code. Players join from Multiplayer → Join on their own device. Press Ready to race the AI on your own.':''):
     ready===total?'Everyone is ready.':
     (meRd?'Ready · waiting for '+waiting.join(', ')+'.':'Press Ready when you are set. The race starts when every pilot is ready.')+(st.isHost&&ready?' Start now races just the pilots who are ready.':'')}
-function mpLeaveRoom(){if(mp.sess){mp.sess.close();mp.sess=null}mp.on=false;mp.go=null;mp.auto=false;mpRestore();mpTags(true);mpView()}
+function mpLeaveRoom(){lanStop();if(mp.sess){mp.sess.close();mp.sess=null}mp.on=false;mp.go=null;mp.auto=false;mpRestore();mpTags(true);mpView()}
 /* Racer objects: the local player plus five more. In a room they become the other pilots (proxies) and AI. */
 function mpRestore(){LAPS=3;for(const r of extras){r.off=true;r.ship.visible=false;r.shadow.visible=false;r.remote=null;r.proxy=false;r.key=null;r.left=false;r.net=null}for(let i=1;i<roster.length;i++){const r=roster[i],c=ROSTER[i];r.name=c.name;r.css=c.css;r.skill=c.skill;setShip(r,c.b,c.paint);Object.assign(r,{isAI:true,remote:null,proxy:false,key:null,left:false,net:null,off:false})}
   player.key=null;setField(false);resetGrid()}
@@ -4804,9 +5162,12 @@ document.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>setCam(+b.datas
 {const list=$('goptList');list.innerHTML='';
   for(const[k,name,desc,cost]of GOPT){const b=document.createElement('button');b.dataset.g=k;b.innerHTML=`<em>${cost}</em>${name}<small>${desc}</small>`;b.setAttribute('aria-pressed',String(g2(k)));
     b.onclick=()=>{G2[k]=g2(k)?0:1;GFX.ok=true;g2Save();b.setAttribute('aria-pressed',String(g2(k)));if(k==='reflect')VFX.applyEnv();audio.blip(g2(k)?880:440,0.06,0.05);syncSty()};list.append(b)}
-  const syncSty=()=>{const st=styleNow();document.querySelectorAll('[data-sty]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sty===st)))};
+  const syncSty=()=>{const st=styleNow();document.querySelectorAll('[data-sty]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sty===st)));
+    document.querySelectorAll('[data-res]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.res===RES.k)));$('lowBtn').setAttribute('aria-pressed',String(RES.low))};
+  document.querySelectorAll('[data-res]').forEach(b=>b.onclick=()=>{RES.k=+b.dataset.res;resSave();syncSty();audio.blip(660,0.06,0.05)});
+  $('lowBtn').onclick=()=>{RES.low=!RES.low;resSave();syncSty();audio.blip(RES.low?880:440,0.06,0.05)};
   const sync=()=>{list.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(g2(b.dataset.g))));syncSty()};
-  document.querySelectorAll('[data-sty]').forEach(b=>b.onclick=()=>{const on=STYLES[b.dataset.sty].on;for(const[k]of GOPT)G2[k]=on.includes(k)?1:0;GFX.ok=true;g2Save();sync();VFX.applyEnv();audio.blip(660,0.06,0.05)});
+  document.querySelectorAll('[data-sty]').forEach(b=>b.onclick=()=>{const st=STYLES[b.dataset.sty],on=st.on;for(const[k]of GOPT)G2[k]=on.includes(k)?1:0;RES.k=st.res||1;RES.low=!!st.low;resSave();GFX.ok=true;g2Save();sync();VFX.applyEnv();audio.blip(660,0.06,0.05)});
   const fpsSync=()=>{$('fpsBtn').setAttribute('aria-pressed',String(FPS.on));$('fps').hidden=!FPS.on};fpsSync();
   $('fpsBtn').onclick=()=>{FPS.on=!FPS.on;store.set('hoverline.fps',FPS.on?'1':'0');FPS.n=FPS.acc=0;$('fps').textContent='… FPS';fpsSync();audio.blip(FPS.on?880:440,0.06,0.05)};
   $('gfxOpen').onclick=()=>{$('set').hidden=true;$('gfxm').hidden=false;sync()};$('gDone').onclick=()=>{$('gfxm').hidden=true;$('set').hidden=false;setSync()}}
@@ -4885,7 +5246,7 @@ function step(dt){
   S.shake=Math.max(0,S.shake-dt*2.5);
   audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:player.v,player.boost);
   audio.charge(S.state==='race'&&player.wreck<=0?player.charging:null,player.charging==='hp'?player.hp/player.d.hp:player.ammo/player.d.ammo);
-  for(const r of racers){placeShip(r,S.t);if(r.isGhost)r.shadow.visible=false}
+  for(const r of racers){placeShip(r,S.t);if(r.isGhost||RES.low)r.shadow.visible=false}
   trimStep(dt);inkStep(dt);
   if(S.state==='done'){finCam.vel=(finCam.vel||new V3()).copy(pT).multiplyScalar(player.v)}else if(finCam.vel)finCam.vel.set(0,0,0);
   if(S.state!=='paused')updateFx(dt);
@@ -5010,7 +5371,7 @@ const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_v
 function fpsTick(d){const ov=(g2('scan')?'s':'')+(g2('vig')?'v':'');if(ov!==FPS.ov){FPS.ov=ov;$('scrS').hidden=!g2('scan');$('scrV').hidden=!g2('vig');$('scrS').style.setProperty('--sl',(4/Math.min(devicePixelRatio||1,2)).toFixed(2)+'px')}
   if(!FPS.on||!(d>0))return;FPS.n++;FPS.acc+=d;if(FPS.acc>=0.5){$('fps').textContent=Math.round(FPS.n/FPS.acc)+' FPS';FPS.n=0;FPS.acc=0}}
 function frame(now){
-  const rawDt=(now-lastT)/1000,dt=Math.min(0.05,rawDt);lastT=now;fit();fpsTick(rawDt);
+  const rawDt=(now-lastT)/1000,dt=Math.min(0.05,rawDt);lastT=now;fit();fpsTick(rawDt);logFrame(rawDt);
   greenTex.offset.y-=dt*1.6;purpleTex.offset.y-=dt*1.6;
   if(S.state==='lab'){S.t+=dt;readInput();labFrame(dt);GFX.fx=0;gfxRender(labScene,labCam)}
   else{if(S.state!=='paused')step(dt);else readInput();
