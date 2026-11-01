@@ -1,6 +1,6 @@
 # Hoverline Design Document
 
-Oct 29, 2026 · Eric
+Nov 1, 2026 · Eric
 
 The live, editable copy of this document is the Hoverline Design Document in Claude: https://claude.ai/artifact/W5mcmFeVZPiUPGRH76veyh
 
@@ -23,7 +23,9 @@ Hoverline is a WipEout-style anti-grav racer for itch.io: phone first, also tabl
 - **Tracks:** procedural, from a shareable track code. Wide, Standard or Narrow; Simple, Complex or Custom (the track editor); Short, Medium or Long; and one scenery setting: Urban, Ocean, Forest, Stratos (called Night sky before Prototype 31) or Reef. Any number of widths, layouts and lengths can be ticked together, like the settings, and New track picks among them (Prototype 31); Custom uses the last counts built in the editor.
 - **Routes (Prototype 28):** a split puts the long route on either side, and about 1 in 3 is a crossover, where the long route passes over the short one on a bridge. About 1 long track in 5 has a pit lane near halfway: a narrow lane off one edge with fast repair and ammo strips and a speed limiter (about 0.7 s slower). About 1 track in 12 has a cut: a narrow lane off the inside of a big bend, with a sharp entry, two boost pads and no sign.
 - **Ships:** the Ship lab sets frame, five stats and two weapon slots. Frames are Blade, Tether, Skiff, Hauler, Dart, Orb, Roller (hover car) and Monowheel. The AI field flies one of each frame, never yours; in a room anyone can fly anything. The paint shop sets main, second and trim colours and a pattern, or one you draw on an 8×8 grid, as a short livery code that travels with ghosts and to other pilots.
-- **Modes:** Race against 7 AI; Time trial against the ghost of your best run; Multiplayer for up to 8 pilots online, or on one Wi-Fi with no internet from any copy of the game (Prototype 31: a QR code swapped each way per pilot, the host relays), or through the Wi-Fi host pack. In a room every pilot presses Ready and the race starts when all are ready (Prototype 29); Ready pings anyone who isn't with a sound. The main menu's Leaderboard shows the online boards in the game. **Board era:** `BOARD_ERA` in the source (now 31, for the Prototype 31 track rules). Raise it to the new prototype number whenever a track code would build a different road or handling and speed change enough that old times aren't fair; the boards then start fresh and old times stay stored.
+- **Modes:** Career (Prototype 32, below); Race against 7 AI; Time trial against the ghost of your best run; Multiplayer for up to 8 pilots online, or on one Wi-Fi with no internet from any copy of the game (Prototype 31: a QR code swapped each way per pilot, the host relays), or through the Wi-Fi host pack. In a room every pilot presses Ready and the race starts when all are ready (Prototype 29); Ready pings anyone who isn't with a sound. The main menu's Leaderboard shows the online boards in the game. **Board era:** `BOARD_ERA` in the source (now 33: Prototype 33 keeps splits, pit lanes and cuts out of the green repair strips, so about 3 track codes in 100 build a different road). Raise it to the new prototype number whenever a track code would build a different road or handling and speed change enough that old times aren't fair; the boards then start fresh and old times stay stored.
+- **Career (Prototype 32):** four tiers of four races against the AI, each race a fixed track code picked from generated tracks. Rookie runs at 70% speed on wide tracks with no climbs, drops or jumps; Club at 80% adds climbs, dives and a spire; Pro at 90% the first complex tracks; Elite full speed on narrow complex tracks. The speed class scales every ship's top speed, and gravity on a jump by its square, so jumps keep their shape. The AI is a little slower relative to you early on (90%, 94%, 97%, then equal). A top-three finish clears a race, opens the next and unlocks one weapon (start: Missile, Cannon, Turbo; then Mines, Rockets, Barrier, Decoy, Smoke, Shockwave, Bouncer, Shield scoop, Phase, Swarm, Ammo scoop, Autopilot, EMP, Hunter, Quake, Overdrive); the AI only fires unlocked weapons. Any finish pays credits (600 to 70 by place, times 1, 1.25, 1.5 or 2 by tier); credits buy upgrade points for the career ship, which starts with 10 of the 15-point budget (400, 700, 1,000, 1,400, 1,900). The career ship is its own build; career times stay off the boards, ghosts and best laps.
+- **Menus (Prototype 32):** the title has only Race, Options, Leaderboard and a small music player (Drum & bass, Trance, Race music, Next, song details). Race opens Career, Race, Time trial, Multiplayer and Ship lab; Race and Time trial open the track page (types, scenery, Night/Day, New track, code, map, Start). Options holds Music, Settings, Controls and the Nose guide, and opens from the title, the pause menu and a lobby. Layouts were checked on phones in both orientations, tablets, the Steam Deck and desktops up to 2560 wide.
 - **Controls:** always accelerating. Steer, brake, boost, two weapons and nose pitch, by tilt, sliders, buttons, stick, keyboard or gamepad. Every menu, results included, works with a gamepad or the keys (B or Escape is Back).
 - **Rivals:** after two races a few AI ships loosely copy your pace and habits.
 - **Data:** every race is logged and can be downloaded from Settings for tuning. Since Prototype 31 a log also says what it ran on (browser, cores, memory, graphics chip, screen, the size drawn, the look) and how smoothly (a frame rate with every sample, and the average, slowest 5% and 1%, and frames over 50 ms). Times go to an online board when the game runs from itch, and with Share race data on (the default) each log also goes to the same server, with other humans' names replaced, so balance can use everyone's races.
@@ -76,6 +78,10 @@ The final lap cuts to a short breakdown and a drop that lasts to the line.
 **Levels:** drops sit around -19 dB RMS and breakdowns around -27 dB, with peaks under 0.45 and no clipping. In breakdowns the keys sit about 3 dB under everything else.
 
 **Simple music mode:** for low-end devices it uses fewer synth voices and none of the instrument samples.
+
+## Sound effects (Prototype 32)
+
+Like the music, the effects are real recordings, all public domain (CC0): Kenney's Interface Sounds, Digital Audio, Sci-Fi Sounds and Impact Sounds (kenney.nl), rubberduck's CC0 packs on OpenGameArt.org, and the Sonic Pi pack. 34 short mono MP3s (22 kHz, 40 kbps, about 124 KB), trimmed, faded and normalised, a few layered (landings, heavy hits, wrecks, the missile, mines, the shockwave, boost). Rockets and Hunter play the Missile recording faster and slower, Turbo the boost. Each effect's level is set so it is as loud (peak 30 ms RMS) as the synth sound it replaced, so the mix with the music is unchanged; the synth sounds remain as the fallback while the recordings decode. Wall hits play at most every 0.15 s. The "no" (deny) sound is the negative cue for a refused boost or an unaffordable shot.
 
 ## Clown music: what to avoid
 
@@ -131,6 +137,16 @@ Ships should feel pinned to the track, quick to steer, and dangerous to each oth
 - Loops ease in: the bend builds from about a 170 m radius at the foot to about 24 m at the top and eases off again, so the exit lands about 90 m on, beside the entry.
 - Every layout is checked as it is built: no two parts of the lap closer than a road width side by side and under 9.5 m apart at the edges, no turn over 30 degrees in 12 m or 55 in 30 m, no slope over 42 degrees (loops, corkscrews, twists and a spire's drop keep their own shapes). A layout that fails is replaced, and after six failures the features at fault are left out until the road is clean. Over 500 random tracks: no clashes, at most 26 degrees in any 12 m and 51 in any 30 m.
 
+**Nothing built through the road (Prototype 33)**
+
+Checked by a playtest script over about 3,000 random tracks of every width, layout, length and scenery: every road surface (the main road and both routes of every split, pit lane and cut) against every other, against the scenery, the signs and the gantries, plus renders of each kind of fault found.
+- Splits, pit lanes and cuts end, their exit run included, before the green repair strips start, so no route's walls stand in the strips (before, about 1 track in 20 had a lane rejoining across them, which from the cockpit looks like a road crossing the road).
+- A split sign stands on plain road: not in a loop, twist, corkscrew, helix, spire or jump, not inside another split (where the main road isn't drawn), not on the start grid, banked at most about 15 degrees and sloped at most about 28, with no other road through it. It moves to find such a spot (500 m: 350 to 700, 250 m: 150 to 340, 80 m: 60 to 110) and says the real distance, or is left out. The 80 m sign is always there.
+- Gantries follow the same rule (banked no more than the road's own bends) and keep 30 m from the signs; the search runs to the next fifth of the lap, so a long helix or spire can no longer hold one.
+- Pylons stay out of every route of every split, so a crossover's legs never stand in its own short route.
+- The piece in the middle of a spiral (a tower, tree, lighthouse, column or monolith) keeps 6 m clear of any other part of the lap that passes through the middle, and is left out if there's no room.
+- Roads still never come within 10 m of each other in height where they overlap (outside a loop's own legs and a split's forks).
+
 **Jumps and spires (Prototype 27)**
 
 - The one vertical set piece is the spire, on about 1 track in 6: the road eases out to one side, climbs one and a half turns round a ring, takes a half turn in to the middle, goes over the edge and drops straight down the middle, then pulls out underneath the ring. Every change of direction eases in and out. Cyan mag-lock strips hold the ship on the drop. The 70-degree climbs of Prototype 26 are gone: they came with no curve to lead into them.
@@ -142,7 +158,7 @@ Ships should feel pinned to the track, quick to steer, and dangerous to each oth
 **Weapons and ammo**
 
 - Everyone starts with empty weapon pods. Purple strips refill them: 7 a lap (6 on Narrow), with one early in the lap.
-- Green strips at the end of each lap recharge the shield. Boosting from the shield costs 8% of it per second.
+- Green strips at the end of each lap recharge the shield (no split, pit lane or cut reaches them, since Prototype 33). Boosting from the shield costs 8% of it per second.
 - Hits deal 80% of their listed damage. Slower builds hit harder and recharge faster.
 - The Quake rolls up the track with one gap in it. It used to cause 8 of the player's 20 wrecks, before it had a gap.
 - Smoke leaves a rolling cloud of dark cubes. Fly into it and dark cubes stream past the camera until it clears.
@@ -164,8 +180,11 @@ The look is a neon night city drawn in glowing lines and simple blocks, with 3D 
 - The cube exhaust: shrinking cubes pouring from every engine, on in every look. It replaced the flat pixel flames.
 - The blue boost jet: a pulsing cone with rings racing down it. It stays level with the road whatever the nose and bank do, so it never dips into the road.
 - Shadows that match each ship's footprint.
+- Light pools under the ships (Style option): since Prototype 32 a 3 by 5 grid laid on the road surface itself, so they never tip into the road with the ship's roll and pitch or sink under loops and twists; they fade as a ship rises off the road and hide over jump gaps.
 - Overhead split signs showing what each side holds.
 - Edge-of-screen glows warning of incoming hits.
+
+**Cues, not words (Prototype 32):** in a race the HUD speaks in icons and pulses rather than notes. Weapons, Boost, shield and ammo have line icons. A refused boost shakes the shield gauge and Boost with a "no" sound; a shot without the ammo shakes the ammo gauge and the weapon; the ammo gauge glows purple while no shot is affordable; hits flash the shield gauge; a wreck flashes both gauges red; EMP flickers the weapons and Boost blue; a new lap swells the lap counter (amber on the last lap) and shows the lap time under the clock. Slipstream is the little lines round your ship in pale blue (green is nose-down streamlining). Notes remain only for things outside the race itself (time trial and rival notices, tilt calibration, multiplayer, saving logs).
 
 **Rejected:** permanent speed streaks, because they hide the cues for pitching the nose down; a random mix of settings along a lap; small cube trees; water on a raised platform; anything built close to the road.
 
@@ -179,10 +198,10 @@ The look is a neon night city drawn in glowing lines and simple blocks, with 3D 
 
 Low-end phones come first: every heavy effect is optional, and the default look must run smoothly on an older Android phone.
 
-- **One file:** the whole game is a single HTML page, about 1.29 MB, of which about 240 KB is instrument samples. Three.js r128 loads from cdnjs.
+- **One file:** the whole game is a single HTML page, about 1.50 MB, of which about 240 KB is instrument samples and 124 KB sound effects. Three.js r128 loads from cdnjs.
 - **Test devices:** a Samsung Galaxy S22, a Doogee E3 Tab Max tablet, a Steam Deck and a desktop PC.
 - **Defaults:** the Clean look and full music. Lite, and simple music, are one tap away in Settings.
-- **Ultra low (Prototype 31):** Lite at half resolution with Low detail (no ship shadows, thinner scenery), for tablets like the Doogee that ran about 20 frames a second on Lite. Resolution (Full, three quarters, half, a third) and Low detail can also be set on their own. The look never touches the race, so times count whichever look is used.
+- **Ultra low (Prototype 31):** Lite at the lowest resolution (a third since Prototype 32; it was half) with Low detail (no ship shadows, thinner scenery), for tablets like the Doogee that ran about 20 frames a second on Lite. Resolution (Full, three quarters, half, a third) and Low detail can also be set on their own. The look never touches the race, so times count whichever look is used.
 - **Draw calls:** a racing ship's still parts are merged by material, with plain colours in the vertices (about 40 draw calls a ship down to 8), and pylons are instanced. A long track has about half again as many triangles as a short one but no more draw calls; resolution and draw calls matter far more than track length.
 - **Offline play:** single-player races need no network. Multiplayer uses a small relay online; on a Wi-Fi with no internet, either Wi-Fi, no internet (any copy of the game, phones connect directly by WebRTC after swapping QR codes; the host relays) or the Wi-Fi host pack. Reconnect (in the lobby and the pause menu) rejoins the same room. The start messages repeat, so one lost message can't leave a pilot stuck in the lobby.
 - **Builds:** the Hoverline page in Claude, an itch.io zip, an offline file with Three.js inside, and a Wi-Fi host pack with its own small server (it now carries the offline page, so it needs no internet at all).
