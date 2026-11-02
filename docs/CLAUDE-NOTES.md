@@ -41,6 +41,10 @@ Prototype 33 playtested about 3,000 to 5,000 random track builds. To rebuild tha
 - To see a spot from the cockpit: start a race with `?bot=1`, set `S.state='paused'`, hide the racers and place `camera` behind `sampleAt(u)`.
 - To decide on `BOARD_ERA`, compare road fingerprints (L, a hash of P, the splits) before and after a change to count how many track codes changed.
 
+## Balance study
+
+`tools/sim/` races the real game code headless, 8 equal AI pilots a race (README there). Prototype 34 ran about 1,170 races before its changes and the same seeds after, and its report gives values per stat point, frame and module win rates and what winners carry. Re-run it after any change to stats, frames or modules, with the same offsets, and compare. The AI under-rates handling, so check against the designer's race logs.
+
 ## Handing over a build
 
 - `dist/` is not in git. On the Deck, each handoff goes into a local `exports/<YYYY-MM-DD>-<topic>/` folder: the three dist files, a `.sha256` file beside each, and a short START-HERE.txt saying what each file is, what's new, and whether the leaderboard era changed or a Worker deploy is needed. If you can't hand files to the designer directly, say what to build and where it is, and say that plainly.

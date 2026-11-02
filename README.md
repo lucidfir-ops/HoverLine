@@ -1,6 +1,6 @@
 # Hoverline
 
-A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight ships, three laps, procedural tracks from shareable codes in five settings (urban, ocean, forest, Stratos and an underwater reef, each by night or by day), live-synthesised music, and multiplayer for up to 8 pilots online or on one Wi-Fi with no internet.
+A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight ships, three laps, procedural tracks from shareable codes in five settings, a career, a training mode with drill tracks, (urban, ocean, forest, Stratos and an underwater reef, each by night or by day), live-synthesised music, and multiplayer for up to 8 pilots online or on one Wi-Fi with no internet.
 
 **Play:** open `index.html` in a browser, or upload `dist/hoverline-itch.zip` to itch.io as an HTML game. `dist/hoverline-offline.html` is one file that plays with no internet at all.
 
@@ -29,6 +29,7 @@ python3 tools/build.py
 
 - 3D: [Three.js](https://threejs.org) r128 (MIT), loaded from cdnjs (inside the offline file).
 - Drum hits and effects: the Sonic Pi sample pack (freesound.org recordings, CC0).
-- Instruments: the [Versilian Community Sample Library](https://github.com/sgossner/VCSL) (CC0): grand piano, FM electric piano, harp, timpani, cymbal, claps, shaker.
+- Instruments: the [Versilian Community Sample Library](https://github.com/sgossner/VCSL) (CC0): grand piano, FM electric piano, harp, timpani, cymbal, claps, shaker; and since Prototype 34 marimba, vibraphone, glockenspiel, kalimba, harpsichord, pipe organ, tenor sax, dan tranh, strumstick, balafon, alto recorder, tubular bell, bongos, congas, cajon, darbuka, tambourine, cowbell, agogo, woodblock, triangle, guiro, cabasa, frame drum, hi-hat and snare.
+- More drums and electronic sounds (Prototype 34): the Sonic Pi sample pack (CC0): kicks, snares, hats, electronic percussion, bass hits, tabla, pads, glitches, loop_amen and loop_breakbeat.
 - Announcer and sung chops: the open Kokoro speech model (Apache-2.0).
 - Sound effects (Prototype 32): public-domain (CC0) recordings from Kenney's Interface Sounds, Digital Audio, Sci-Fi Sounds and Impact Sounds packs ([kenney.nl](https://kenney.nl)), rubberduck's CC0 SFX packs on [OpenGameArt.org](https://opengameart.org/users/rubberduck) (50 CC0 Sci-Fi SFX, 50 CC0 retro / synth SFX, 25 CC0 bang / firework SFX, 100 CC0 SFX #2, 75 CC0 breaking / falling / hit sfx) and the Sonic Pi sample pack, trimmed, some layered, and re-encoded.
