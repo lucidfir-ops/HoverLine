@@ -1,5 +1,22 @@
 # Changelog
 
+## Prototype 35
+- Fixed the camera leaving your ship under a bridge (SL9D6FDD-R). Where a split's long route crosses over the short one, a ship on the short route was drawn up on the bridge for a moment (the bridge's line was nearer), 17 m above where it really was, and the camera went with it. Ships are now drawn on the route they are on; the light pools under them too. Ghosts and other players' ships in a room keep to the route they took.
+- Both music styles at once. Drum & bass and Trance are now switches (both can be on; Off is on the Music page; the last style on stays on), on the menu and the Music page alike. With both on, the Music page offers:
+  - Blend (the default): each tune is a mix of the two. Drum & bass or breakcore drums and basslines under a trance melody side: trance hooks and library lines, the lead carried through the breakdowns, harp runs, bells, claps, plucks answering, the trance instruments and supersaw arps. A blend is 174 bpm (trance & bass) or 138 bpm (breakbeat under trance), and the tune memory nudges them to take turns. Blend codes start with M (174) or N (138).
+  - Random: each new tune is drum & bass or trance at random.
+  - In turn: drum & bass and trance take turns, tune by tune.
+  - With one style on, every track and tune code plays exactly the tune it did before.
+- Frame rate cap, in Graphics: 15 to 360 fps, or no cap, where the game runs at the screen's own rate however high (the default, except Ultra low). A device that can't hold its screen's rate runs steadily at the cap instead of jumping between rates, and saves battery.
+- Ultra low now draws at 20% (it was 25%) and caps at 30 fps. Anyone on Ultra low, or on their own look that is as light (everything off, Low detail, 25% or less), moves to it once (their own resolution is kept if it's already lower).
+- Style is now called Graphics (the Settings section, its button and the page's title), and the looks are just Ultra low, Lite, Clean, Arcade and Everything (no "slowest tablets" or "for older phones").
+- The game reads the screen size only when it changes, not every frame (the read made the browser lay the page out again each frame).
+- From the logs (on Prototype 34: Steam Deck, 30 races and 8 drills; Doogee, 3 races):
+  - The Deck held 60 fps in every race.
+  - The Doogee, at 20% resolution with every part off, ran at 50 to 60 fps but dipped to 17 to 35 fps for 5 to 10 seconds at a time, at no particular place on the track but with the pack around you. At 20% the pixels aren't what slows it (draw calls and the processor are), so lower resolution won't help; the 30 fps cap holds it steady.
+  - Road width is the difficulty, by design (Wide is easy: slower AI, more steering assist, softer walls; Narrow is hard). On the Deck you won most Wide races by a distance (often nobody else had finished when the results came up) and finished 5th to 8th on Narrow tracks, 8 to 36% behind the winner, with 100 to 175 wall touches a race. Left as it is for now.
+- Shared logs are sent as version 35. The board era stays 34: nothing here changes the tracks or how the ships handle.
+
 ## Prototype 34
 - Race page in a new order: Race (picked first), Multiplayer, Career, Time trial, Training, Ship lab.
 - Training (Race, then Training): short tracks that repeat one thing, lap after lap. Seven drills: Hills (rolling hills down both straights, sized so a level nose takes off over the sharper crests and a dipped nose holds on), Chicanes (flat S-bends both ways), Hairpins (two tight hairpins, tighter than any race track's corners, so they need the brake), Jumps, Spirals, Loops & rolls, and Mixed (hills one side, S-bends the other). Wide, Standard or Narrow; 3, 5 or 10 laps; alone on the road with a ghost of your best run. Fly the Training cube, a plain stock ship that is the average of all eight frames with every stat at 3 and no special traits, or your own ship (Ship lab edits your own ship). Best laps and ghosts are kept per drill, width and ship; nothing goes to the online board, your profile or the career. Results offer Next drill. Training logs say mode training and the track code names the drill (for example T-HILLS-S). Crests on drill tracks can lift you off like on a complex track (simple race tracks never do).

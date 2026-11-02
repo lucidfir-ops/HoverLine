@@ -30,6 +30,7 @@ body{font-family:var(--display);padding-left:max(16px,env(safe-area-inset-left,0
 #gfxm .card{width:min(900px,94vw);max-width:none}.chip.bio.cur::before,.chip.pool.cur::before{content:'● ';color:var(--amber)}#lanQR{background:#fff;border-radius:10px;width:min(330px,70vw);height:auto;image-rendering:pixelated}#lanCam{width:min(330px,70vw);border-radius:10px;background:#000}.lanrow{align-items:flex-start;gap:14px}.lancol{flex:1;min-width:220px}#lanTxt{word-break:break-all;font-family:ui-monospace,monospace;user-select:all;opacity:.8}@media (max-height:480px){#lanBox .small,#mpConnHint{display:block}#lanTxt{font-size:11px}}
 .gopt{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin:10px 0}.gopt button{text-align:left;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.03);color:var(--ink);font:600 14px var(--display);cursor:pointer}.gopt button[aria-pressed=true]{border-color:var(--amber);background:rgba(255,176,0,.12)}.gopt small{display:block;font:400 12px var(--display);color:var(--dim);margin-top:3px}.gopt em{float:right;font:500 10px var(--mono);font-style:normal;opacity:.7;text-transform:uppercase}
 .slrow{display:flex;align-items:center;gap:12px;margin:8px 0}.slrow label{min-width:8.5em;font:600 14px var(--display)}.slrow input{flex:1;accent-color:var(--amber);min-height:28px}.slrow span{min-width:3em;text-align:right;font-family:var(--mono);color:var(--dim)}
+#gfxm .slrow span{min-width:4.6em}
 #resBoard{margin-top:6px;line-height:1.5}#resBoard b{color:var(--ink,#fff)}#resBoard .me{color:#7df9ff}
 #tuneHud{text-transform:none;letter-spacing:.02em}
 .spd{font-family:var(--mono);font-size:clamp(30px,6vmin,46px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
@@ -314,7 +315,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
   /* Nose guide: Back / Next / Done on one line in the narrow text column */
   .gtext>.row:last-child{flex-wrap:nowrap}
   .gtext>.row:last-child .btn{flex:1 1 auto;padding-left:8px;padding-right:8px}
-  /* Style page: the wide card reaches the clear side of the gradient */
+  /* Graphics page: the wide card reaches the clear side of the gradient */
   #gfxm{background:rgba(9,11,16,.9)}
 }
 /* ---------- optional: finger-sized chips on portrait touch screens ---------- */
@@ -363,7 +364,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 <div id="title" class="overlay">
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
-    <div class="sub">Prototype 34 · 8 ships · 3 laps</div>
+    <div class="sub">Prototype 35 · 8 ships · 3 laps</div>
     <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open full screen with tilt</a>
     <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip" data-music="dnb" aria-pressed="false">Drum &amp; bass</button><button class="chip" data-music="trance" aria-pressed="false">Trance</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button></div>
@@ -547,8 +548,8 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
     <div class="slrow"><label for="volMus">Music</label><input type="range" id="volMus" min="0" max="100" step="1"><span id="volMusV"></span></div>
     <div class="slrow"><label for="volSfx">Sound effects</label><input type="range" id="volSfx" min="0" max="100" step="1"><span id="volSfxV"></span></div>
     <div class="row"><button class="chip" id="annChip" aria-pressed="true">Announcer</button><button class="chip" id="sndChip" aria-pressed="true">Sound</button></div>
-    <div class="sub">Style</div>
-    <div class="row"><button class="btn" id="gfxOpen">Style options</button></div>
+    <div class="sub">Graphics</div>
+    <div class="row"><button class="btn" id="gfxOpen">Graphics options</button></div>
     <p class="small" id="gfxNote"></p>
     <div class="sub">Race data</div>
     <p class="small" id="logInfo"></p>
@@ -573,13 +574,14 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 </div>
 <div id="gfxm" class="overlay" hidden>
   <div class="card">
-    <div class="logo">STY<b>LE</b></div>
+    <div class="logo">GRAPH<b>ICS</b></div>
     <div class="sub">Pick a look, then switch any part on or off · the cube exhaust is always on · try them in a race from the pause menu</div>
-    <div class="row" role="group" aria-label="Looks"><button class="chip" data-sty="ultra">Ultra low · slowest tablets</button><button class="chip" data-sty="lite">Lite · for older phones</button><button class="chip" data-sty="clean">Clean</button><button class="chip" data-sty="arcade">Arcade</button><button class="chip" data-sty="all">Everything</button></div>
+    <div class="row" role="group" aria-label="Looks"><button class="chip" data-sty="ultra">Ultra low</button><button class="chip" data-sty="lite">Lite</button><button class="chip" data-sty="clean">Clean</button><button class="chip" data-sty="arcade">Arcade</button><button class="chip" data-sty="all">Everything</button></div>
     <div class="gopt" id="goptList"></div>
     <div class="slrow"><label for="resR">Resolution</label><input type="range" id="resR" min="10" max="100" step="5"><span id="resV"></span></div>
+    <div class="slrow"><label for="fcapR">Frame rate cap</label><input type="range" id="fcapR" min="0" max="19" step="1"><span id="fcapV"></span></div>
     <div class="row"><button class="chip" id="lowBtn" aria-pressed="false">Low detail</button></div>
-    <div class="sub">Lower resolution is the biggest saving on a slow phone or tablet: 50% draws a quarter of the pixels, 25% (Ultra low) a sixteenth, and it goes down to 10%. Low detail drops the ship shadows, thins the scenery and leaves out the falls and geysers (from the next track). Lite audio, in Music, saves a little more. Every look races the same, so times count on the boards whichever you pick.</div>
+    <div class="sub">Lower resolution is the biggest saving on a slow phone or tablet: 50% draws a quarter of the pixels, 20% (Ultra low) a twenty-fifth, and it goes down to 10%. A frame rate cap keeps a device that can't hold its screen's rate steady (Ultra low caps at 30), and saves battery; with no cap the game runs at the screen's own rate, however high. Low detail drops the ship shadows, thins the scenery and leaves out the falls and geysers (from the next track). Lite audio, in Music, saves a little more. Every look races the same, so times count on the boards whichever you pick.</div>
     <div class="row"><button class="chip" id="fpsBtn" aria-pressed="false">FPS counter</button></div>
     <div class="row"><button class="btn go" id="gDone" data-back>Done</button></div>
   </div>
@@ -589,6 +591,8 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
     <div class="logo">MU<b>SIC</b></div>
     <div class="sub">The style, how the race music behaves, and tunes you have kept · every tune has a code you can share</div>
     <div class="row" role="group" aria-label="Music"><button class="chip" data-music="dnb" aria-pressed="false">Drum &amp; bass</button><button class="chip" data-music="trance" aria-pressed="false">Trance</button><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
+    <div id="bothRow" hidden><div class="sub">With both styles on</div><div class="row" role="group" aria-label="With both styles on"><button class="chip" data-both="blend" aria-pressed="false">Blend</button><button class="chip" data-both="random" aria-pressed="false">Random</button><button class="chip" data-both="turn" aria-pressed="false">In turn</button></div>
+    <p class="small" id="bothNote"></p></div>
     <div class="code"><label for="tuneIn">Tune</label><input id="tuneIn" maxlength="15" spellcheck="false" autocomplete="off"><button class="btn" id="tuneLoad">Load</button><button class="btn" id="tuneNew">New</button><button class="btn" id="tuneKeep">Keep</button></div>
     <div class="t best" id="tuneInfo"></div>
     <div class="row" id="tuneList"></div>
@@ -669,10 +673,14 @@ let coarse=touchSaved==='1'?true:touchSaved==='0'?false:touchCapable;
 
 /* ---------- renderer ---------- */
 const canvas=$('c');
-/* Resolution and Low detail (Style options; the Ultra low look sets both, Prototype 31): k is the share of the screen's
+/* Resolution and Low detail (Graphics options; the Ultra low look sets both, Prototype 31): k is the share of the screen's
    pixels the game draws (the browser scales the picture up), low drops the ship shadows and thins the scenery. Neither
    touches the race, so times set with them count like any other. */
 const RES={k:clamp(+(store.get('hoverline.res')||1)||1,0.1,1),low:store.get('hoverline.low')==='1'};
+/* Frame rate cap (Prototype 35): 0 is no cap (the screen's own rate, whatever it is); otherwise frames are drawn no
+   faster than v a second, on the screen's own beat. Ultra low caps at 30. */
+const FCAPS=[15,20,24,30,36,40,45,50,60,72,75,90,100,120,144,165,180,240,360,0];
+const FCAP={v:Math.max(0,+(store.get('hoverline.fcap')||0)||0),due:0};
 const resRatio=()=>Math.min(devicePixelRatio||1,2)*RES.k;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:(devicePixelRatio||1)<1.5&&RES.k>=1&&!RES.low,powerPreference:'high-performance'});
 renderer.setPixelRatio(resRatio());
@@ -684,8 +692,9 @@ const hemi=new THREE.HemisphereLight(0x9fb4d0,0x15120c,0.85);scene.add(hemi);
 const sun=new THREE.DirectionalLight(0xfff1d6,0.7);sun.position.set(300,500,200);scene.add(sun);
 /* A soft light that rides with the camera, on for complex tracks so ships stay lit upside down in loops. */
 scene.add(camera);const headL=new THREE.DirectionalLight(0xfff1d6,0.5),headT=new THREE.Object3D();headL.position.set(0,6,3);headT.position.set(0,0,-25);camera.add(headL);camera.add(headT);headL.target=headT;headL.visible=false;
-let cw=0,ch=0;
-function fit(){const w=canvas.clientWidth||innerWidth,h=canvas.clientHeight||innerHeight;if(w!==cw||h!==ch){cw=w;ch=h;renderer.setPixelRatio(resRatio());renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}}
+let cw=0,ch=0,fitDirty=true;const fitRO=typeof ResizeObserver!=='undefined';
+addEventListener('resize',()=>{fitDirty=true});if(fitRO)try{new ResizeObserver(()=>{fitDirty=true}).observe(canvas)}catch(e){}
+function fit(){if(fitRO&&!fitDirty&&cw)return;fitDirty=false;const w=canvas.clientWidth||innerWidth,h=canvas.clientHeight||innerHeight;if(w!==cw||h!==ch){cw=w;ch=h;renderer.setPixelRatio(resRatio());renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}}
 
 /* ---------- graphics ----------
    Standard draws straight to the screen (the light path, for low-end devices). Enhanced draws into a buffer and adds
@@ -712,17 +721,19 @@ const GOPT=[
  ['motes','Floating particles','Dust, spray, fireflies or star dust drifting in the air.','light'],
  ['anim','Moving scenery','Falls pour, geysers burst and whitecaps roll.','medium'],
  ['pulse','Lights on the beat','Track edges pulse with the kick drum.','light']];
-/* Looks: Ultra low is Lite at the lowest resolution (a third, since Prototype 32; it was half) with Low detail, for the slowest tablets; Lite is for older phones (the cube
+/* Looks: Ultra low is Lite at the lowest resolution (a third, since Prototype 32; it was half) with Low detail, for slow tablets; Lite is lighter than Clean (the cube
    exhaust is always on, even there); Clean is the default; Arcade adds the sky, haze, particles and scanlines. Every part
    can still be switched on or off by itself. */
-const STYLES={ultra:{n:'Ultra low',on:[],res:0.25,low:1},lite:{n:'Lite',on:[]},clean:{n:'Clean',on:['grade','jets','debris','reflect','anim','pulse']},arcade:{n:'Arcade',on:['grade','scan','jets','debris','reflect','sky','haze','motes','anim','pulse']},all:{n:'Everything',on:GOPT.map(o=>o[0])}};
+const STYLES={ultra:{n:'Ultra low',on:[],res:0.2,low:1,fcap:30},lite:{n:'Lite',on:[]},clean:{n:'Clean',on:['grade','jets','debris','reflect','anim','pulse']},arcade:{n:'Arcade',on:['grade','scan','jets','debris','reflect','sky','haze','motes','anim','pulse']},all:{n:'Everything',on:GOPT.map(o=>o[0])}};
 const G2=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.style')||'null')}catch(e){}
   if(!o||typeof o!=='object'){o={};for(const k of STYLES.clean.on)o[k]=1}return o})();
 const g2=k=>!!G2[k],g2Save=()=>store.set('hoverline.style',JSON.stringify(G2));
 /* anyone on the old Ultra low (half resolution) moves to the new one once */
 if(RES.k===0.5&&RES.low&&GOPT.every(([g])=>!g2(g))&&!store.get('hoverline.ultra32')){RES.k=0.35;store.set('hoverline.res','0.35');renderer.setPixelRatio(resRatio())}store.set('hoverline.ultra32','1');
 if(RES.k===0.35&&RES.low&&GOPT.every(([g])=>!g2(g))&&!store.get('hoverline.ultra34')){RES.k=0.25;store.set('hoverline.res','0.25');renderer.setPixelRatio(resRatio())}store.set('hoverline.ultra34','1');
-const styleNow=()=>{for(const[k,st]of Object.entries(STYLES))if(GOPT.every(([g])=>g2(g)===st.on.includes(g))&&(st.res||1)===RES.k&&!!st.low===RES.low)return k;return null};
+/* Prototype 35: Ultra low draws at 20% and caps at 30 fps; anyone on it (or on their own look as light as it) moves once */
+if(RES.low&&RES.k<=0.25&&GOPT.every(([g])=>!g2(g))&&!store.get('hoverline.ultra35')){if(RES.k===0.25){RES.k=0.2;store.set('hoverline.res','0.2');renderer.setPixelRatio(resRatio())}if(store.get('hoverline.fcap')==null){FCAP.v=30;store.set('hoverline.fcap','30')}}store.set('hoverline.ultra35','1');
+const styleNow=()=>{for(const[k,st]of Object.entries(STYLES))if(GOPT.every(([g])=>g2(g)===st.on.includes(g))&&(st.res||1)===RES.k&&!!st.low===RES.low&&(st.fcap||0)===FCAP.v)return k;return null};
 const resSave=()=>{store.set('hoverline.res',String(RES.k));store.set('hoverline.low',RES.low?'1':'0');cw=0};
 /* Scanlines and the vignette are drawn by the page over the picture, so on their own they cost nothing; any of the other
    screen effects needs the full-screen pass (on phones and tablets that pass skips multisampling, which is the slow part). */
@@ -1611,11 +1622,11 @@ const idxAt=u=>Math.floor((((u%T.L)+T.L)%T.L)/T.ds)%T.N;
 /* Where the road is at distance u and lateral position lat. Outside a split: the main road (height 0, walls at ±W/2).
    Inside: the route you are on (a racer keeps the route it chose at the fork; anything else takes the nearer one). */
 const SF={h:0,sl:0,kv:0,yb:0,lo:0,hi:0,c:0,sp:null,b:-1};
-function surf(u,lat,r){const k=T.spl[idxAt(u)];SF.h=SF.sl=SF.kv=SF.yb=SF.c=0;SF.g=1;SF.lo=-W/2;SF.hi=W/2;SF.sp=null;SF.b=-1;
+function surf(u,lat,r,ro){const k=T.spl[idxAt(u)];SF.h=SF.sl=SF.kv=SF.yb=SF.c=0;SF.g=1;SF.lo=-W/2;SF.hi=W/2;SF.sp=null;SF.b=-1;
   if(!k){if(r&&r.brS){r.brS=null;r.br=null}return SF}
   const SP=T.splits[k-1],uu=((u%T.L)+T.L)%T.L,f=clamp((uu-SP.u0)/T.ds,0,SP.n),j=Math.min(SP.n-1,Math.floor(f)),a=f-j,near=()=>{let bi=0,bd=1e9;SP.b.forEach((B,i)=>{const c=B.c[j]+(B.c[j+1]-B.c[j])*a,w=B.w[j]+(B.w[j+1]-B.w[j])*a,d=Math.abs(lat-c)-w;if(d<bd){bd=d;bi=i}});return bi};
   const ad=!!(SP.adj&&(SP.adj[j]||SP.adj[j+1]));
-  let b;if(r){if(r.brS!==SP){r.brS=SP;r.br=near()}else if(ad&&r.u!=null&&Math.abs(wrapU(u-r.u))<4)r.br=near();b=r.br}else b=near();
+  let b;if(r&&ro)b=r.brS===SP&&r.br!=null?r.br:near();else if(r){if(r.brS!==SP){r.brS=SP;r.br=near()}else if(ad&&r.u!=null&&Math.abs(wrapU(u-r.u))<4)r.br=near();b=r.br}else b=near();
   const B=SP.b[b],L=A=>A[j]+(A[j+1]-A[j])*a,c=L(B.c),w=L(B.w);SF.h=L(B.h);SF.sl=L(B.sl);SF.kv=L(B.kv);SF.yb=-Math.atan(L(B.dc));SF.lo=c-w;SF.hi=c+w;SF.c=c;SF.sp=SP;SF.b=b;if(B.g)SF.g=L(B.g);
   if(ad&&SP.b.length===2){const O=SP.b[1-b],oc=L(O.c),ow=L(O.w);SF.lo=Math.min(SF.lo,oc-ow);SF.hi=Math.max(SF.hi,oc+ow)}return SF}
 const clampLat=(u,lat,m,o)=>{const f=surf(u,lat,o);return clamp(lat,f.lo+m,f.hi-m)};
@@ -2239,7 +2250,12 @@ const THEMES=[
 /* Flavours inside each side. Drum & bass: rollers (the original), breakcore (busy breaks and edits) and metal (distorted
    riffs, double kicks). Trance: classic and psytrance (rolling bass, acid lead, phrygian harmony). */
 const FLAV={dnb:['dnb','brk','metal'],trance:['trance','psy']},FLAVN={dnb:'drum & bass',brk:'breakcore',metal:'metal',trance:'trance',psy:'psytrance'};
-const flavOf=st=>{const L=FLAV[st.style?'trance':'dnb'];return L[(st.flav||0)%L.length]};
+/* Blend (Prototype 35): a tune with both styles in it. The rhythm section is drum & bass (or breakcore) and the melody
+   side is trance: trance hooks and library lines, the anthem lead plan, harp, bells, claps, plucks answering. st.style
+   still picks the tempo: 174 (trance & bass) or 138 (breakbeat under trance, trance breaks). */
+const MIXF=['dnb','brk'],flavList=st=>st.mx?MIXF:FLAV[st.style?'trance':'dnb'];
+const flavOf=st=>{const L=flavList(st);return L[(st.flav||0)%L.length]};
+const libSide=st=>st.style||st.mx?1:0,libFk=st=>st.mx?'trance':flavOf(st);
 /* Call and response (Goldie's favourite): who answers the lead, by flavour. */
 const RESP={dnb:['stab','reese','stab'],brk:['stab','reese','stab'],metal:['chug','vox','chug'],trance:['pluck','stab','pluck'],psy:['zap','pluck','zap']},RESPN={vox:'vocal',stab:'stab',reese:'reese bass',pluck:'pluck',zap:'zap',chug:'rhythm guitar'};
 /* Alternate progressions by mode (index 0 of a tune's prog field means the theme's own harmony). */
@@ -2434,12 +2450,12 @@ const PADX=[['x_tbd_pad_1',7],['x_tbd_pad_3',2],['x_ambi_drone',0],['x_ambi_glas
    candidates: a theme, progression, library melody, blueprint, groove, sound, key, kit, instrument or percussion
    heard recently counts against it, the more recently the more. In a room the track alone decides, so everyone
    hears the same. */
-const mFeat=st=>{const kx=st.kx||0,L=st.lib?LIBS[st.style?1:0]:null,e=L&&L.length?LIB[L[(st.lib-1)%L.length]]:null;return{th:st.theme,pr:st.prog,lb:e?libSig(e):0,bp:st.bp||0,gr:st.groove,tb:st.timbre,k:st.key,fl:st.flav||0,kt:kx&7,ic:kx>>3&7,pc:kx>>6&1}};
+const mFeat=st=>{const kx=st.kx||0,L=st.lib?LIBS[libSide(st)]:null,e=L&&L.length?LIB[L[(st.lib-1)%L.length]]:null;return{th:st.theme,pr:st.prog,lb:e?libSig(e):0,bp:st.bp||0,gr:st.groove,tb:st.timbre,k:st.key,fl:st.flav||0,kt:kx&7,ic:kx>>3&7,pc:kx>>6&1,sy:(st.style?1:0)+(st.mx?2:0)}};
 const MHIST={get(){try{const a=JSON.parse(store.get('hoverline.mhist')||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x==='object'):[]}catch(e){return[]}},
   add(st){const a=this.get(),f=mFeat(st);if(a[0]&&JSON.stringify(a[0])===JSON.stringify(f))return;a.unshift(f);store.set('hoverline.mhist',JSON.stringify(a.slice(0,16)))}};
 function mPenalty(st,H){const f=mFeat(st);let p=0;H.forEach((h,i)=>{const w=Math.pow(0.82,i);
   if(h.th===f.th)p+=3*w;if(f.lb&&h.lb===f.lb)p+=4*w;if(f.bp&&h.bp===f.bp)p+=2*w;if(h.pr===f.pr)p+=1.2*w;if(h.gr===f.gr)p+=0.6*w;if(h.tb===f.tb)p+=0.8*w;
-  if(h.k===f.k)p+=0.5*w;if(h.fl===f.fl)p+=0.4*w;if(h.kt===f.kt)p+=0.9*w;if(f.ic&&h.ic===f.ic)p+=1*w;if(f.pc&&h.pc===f.pc)p+=0.3*w});return p}
+  if(h.k===f.k)p+=0.5*w;if(h.fl===f.fl)p+=0.4*w;if(h.kt===f.kt)p+=0.9*w;if(f.ic&&h.ic===f.ic)p+=1*w;if(f.pc&&h.pc===f.pc)p+=0.3*w;if(h.sy===f.sy)p+=0.6*w});return p}
 function mFresh(mk,n){const H=MHIST.get();let best=null,bp=1e9;for(let i=0;i<n;i++){const st=mk(i),p=mPenalty(st,H)+i*0.001;if(p<bp){bp=p;best=st}}return best}
 const LIB=[[0,1,174,5,1,"bass","jump","main",0,[0,0,12,10,8,7,0],"dancefloor glide bass"],[0,2,175,5,1,"lead","hsaw","main",0,[0,3,7,5,3,2,0],"dancefloor supersaw lead"],[0,3,174,2,1,"lead","warm","main",0,[0,0,3,5,6,5,3,0],"dancefloor warm analog lead"],[0,4,174,7,1,"lead","snap","main",0,[0,3,7,5,3,2,0],"dancefloor snappy lead"],[0,5,175,3,1,"lead","warm","main",0,[0,3,7,5,3,2,0],"dancefloor warm analog lead"],[0,6,174,0,1,"bass","square","main",0,[0,3,7,5,3,2,0],"dancefloor square bass"],[0,7,174,6,1,"arp","arp12","main",0,[0,3,7,5,3,2,0],"dancefloor arpeggio"],[0,8,175,9,1,"lead","soft","main",0,[0,3,7,5,3,2,0],"dancefloor soft sine lead"],[0,9,174,4,1,"lead","clip","main",0,[0,3,7,5,3,2,0],"dancefloor clipped lead"],[0,10,174,10,1,"bass","reese","main",0,[0,0,3,5,7,5,3],"dancefloor reese bass"],[0,11,175,11,1,"bass","fm","main",0,[0,3,7,5,3,2,0],"dancefloor FM bass"],[0,12,174,5,1,"lead","vox","main",0,[0,7,8,7,5,3,0],"dancefloor vocal lead"],[0,13,175,2,1,"lead","hsaw","main",0,[0,3,7,5,3,2,0],"dancefloor supersaw lead"],[0,14,174,7,1,"bass","fold","main",0,[0,0,3,7,5,3,0],"dancefloor folded-sine bass"],[0,15,175,0,1,"lead","dip","main",0,[0,3,5,7,8,7,3],"dancefloor pitch-dip pluck"],[0,16,172,6,1,"bass","neuro","neuro",0,[0,0,3,2,0,6,5],"neurofunk wobbling reese"],[0,17,172,2,1,"bass","sub808","neuro",0,[0,0,3,2,0,6,5],"neurofunk 808 sub"],[0,18,173,5,1,"bass","fm","neuro",0,[0,3,0,6,5,3,0],"neurofunk FM bass"],[0,19,172,4,1,"bass","comb","neuro",0,[0,0,3,2,0,6,5],"neurofunk foghorn reese"],[0,20,174,0,1,"bass","reese","neuro",0,[0,3,0,6,5,3,0],"neurofunk reese bass"],[0,21,172,7,1,"bass","ring","neuro",0,[0,3,0,6,5,3,0],"neurofunk ring-mod bass"],[0,22,173,9,1,"bass","reese","neuro",0,[0,3,0,6,5,3,0],"neurofunk reese bass"],[0,23,172,11,1,"bass","talk","neuro",0,[0,3,0,6,5,3,0],"neurofunk talking bass"],[0,24,174,3,1,"bass","reese","neuro",0,[0,3,0,6,5,3,0],"neurofunk reese bass"],[0,25,172,1,1,"bass","neuro","neuro",0,[0,3,0,6,5,3,0],"neurofunk wobbling reese"],[0,26,173,2,1,"bass","reese","neuro",0,[0,3,5,6,5,3,0],"neurofunk reese bass"],[0,27,172,5,1,"bass","techstep","neuro",0,[0,0,3,6,5,0],"neurofunk techstep bass"],[0,28,174,8,1,"bass","shift","neuro",0,[0,3,0,6,5,3,0],"neurofunk metallic stab"],[0,29,172,10,1,"bass","talk","neuro",0,[0,3,0,6,5,3,0],"neurofunk talking bass"],[0,30,173,4,1,"bass","neuro","neuro",0,[0,3,5,6,5,3,0],"neurofunk wobbling reese"],[0,31,175,3,0,"keys","ep","liquid",0,[0,4,7,9,7,4,0,2],"liquid electric piano"],[0,32,174,8,0,"keys","pad","liquid",0,[0,4,7,9,7,4,0],"liquid pad"],[0,33,175,1,0,"lead","soft","liquid",0,[0,4,7,9,7,4,0],"liquid soft sine lead"],[0,34,174,5,0,"lead","pluck","liquid",0,[0,4,7,9,7,4,0],"liquid pluck"],[0,35,175,10,0,"keys","ep","liquid",0,[0,4,7,9,7,4,0],"liquid electric piano"],[0,36,174,7,0,"arp","arp12","liquid",0,[0,4,7,9,7,4,0],"liquid arpeggio"],[0,37,175,0,0,"lead","soft","liquid",0,[0,4,7,9,7,4,0],"liquid soft sine lead"],[0,38,174,2,0,"lead","brass","liquid",0,[0,4,7,9,7,4,0],"liquid synth brass"],[0,39,175,5,1,"keys","pad","liquid",0,[0,3,7,8,7,3,0],"liquid pad"],[0,40,174,9,0,"lead","bell","liquid",0,[0,4,7,9,7,4,0],"liquid FM bell"],[0,41,175,10,1,"lead","warm","liquid",0,[0,3,7,8,7,3,0],"liquid warm analog lead"],[0,42,174,3,0,"lead","warm","liquid",0,[0,7,9,12,11,9,7],"liquid warm analog lead"],[0,43,175,7,1,"lead","saw","liquid",0,[0,3,7,8,7,3,0],"liquid saw lead"],[0,44,174,0,1,"lead","saw","liquid",0,[0,3,7,8,7,3,0],"liquid saw lead"],[0,45,175,5,0,"lead","soft","liquid",0,[0,7,9,12,11,9,7],"liquid soft sine lead"],[0,46,174,5,1,"bass","fm","jump",0,[0,0,2,3,2,0,-5],"jump-up FM bass"],[0,47,175,7,1,"bass","laser","jump",0,[0,0,3,5,3,0,-5],"jump-up laser bass"],[0,48,174,4,1,"bass","wobble","jump",0,[0,0,3,5,3,0,-5],"jump-up wobble bass"],[0,49,175,9,1,"bass","sub808","jump",0,[0,0,3,5,3,0,-5],"jump-up 808 sub"],[0,50,174,2,1,"bass","talk","jump",0,[0,0,3,5,3,0,-5],"jump-up talking bass"],[0,51,175,0,1,"bass","fm","jump",0,[0,0,3,5,3,0,-5],"jump-up FM bass"],[0,52,174,6,1,"bass","talk","jump",0,[0,0,3,5,3,0,-5],"jump-up talking bass"],[0,53,175,10,1,"bass","comb","jump",0,[0,0,3,5,3,0,-5],"jump-up foghorn reese"],[0,54,174,11,1,"bass","reese","jump",0,[0,0,3,5,3,0,-5],"jump-up reese bass"],[0,55,175,3,1,"bass","talk","jump",0,[0,0,3,5,3,0,-5],"jump-up talking bass"],[0,56,165,9,1,"bass","reese","jungle",0,[0,3,5,7,5,3,0],"jungle reese bass"],[0,57,168,4,1,"bass","sub808","jungle",0,[0,3,5,7,5,3,0],"jungle 808 sub"],[0,58,165,2,1,"bass","hoover","jungle",0,[0,3,5,7,5,3,0],"jungle hoover stab"],[0,59,166,7,1,"bass","square","jungle",0,[0,3,5,7,5,3,0],"jungle square bass"],[0,60,165,0,1,"bass","reese","jungle",0,[0,3,5,7,5,3,0],"jungle reese bass"],[0,61,172,5,1,"bass","sub808","half",1,[0,0,8,7,3,0],"halftime 808 sub"],[0,62,170,2,1,"bass","fm","half",1,[0,3,6,5,3,0],"halftime FM bass"],[0,63,172,4,1,"bass","crush","half",0,[0,0,6,5,3,0],"halftime bitcrushed bass"],[0,64,170,7,1,"bass","sub808","half",0,[0,3,6,5,3,0],"halftime 808 sub"],[0,65,172,0,1,"bass","sub808","half",0,[0,3,6,5,3,0],"halftime 808 sub"],[0,66,174,2,1,"lead","saw","main",0,[0,3,7,5,3,2,0],"Heavy Saw Lead"],[0,67,175,5,1,"bass","jump","main",0,[0,0,12,10,8,7,0],"Glide Bass Line"],[0,68,174,7,1,"bass","sub808","main",0,[0,3,7,5,3,2,0],"Sub-Bass Pluck"],[0,69,172,6,1,"bass","neuro","neuro",0,[0,3,2,0,6,5,0],"Neuro Reese"],[0,70,175,3,0,"lead","pluck","liquid",0,[0,4,7,9,7,4,0],"Liquid Pluck"],[0,71,174,0,1,"lead","saw","main",0,[0,3,7,5,3,2,0],"Mainline Lead"],[0,72,174,9,1,"bass","reese","main",0,[0,3,7,5,3,2,0],"Deep Roller"],[0,73,175,4,1,"bass","techstep","neuro",0,[0,3,7,5,3,2,0],"Techstep Bass"],[0,74,174,10,1,"bass","reese","main",0,[0,3,7,5,3,2,0],"Dancefloor Saw"],[0,75,172,2,1,"bass","reese","neuro",0,[0,3,2,0,6,5,0],"Resampled Reese"],[0,76,175,8,0,"keys","ep","liquid",0,[0,4,7,9,7,4,0],"Liquid Keys"],[0,77,174,5,1,"bass","fm","jump",0,[0,3,7,5,3,2,0],"Jump-Up Screech"],[0,78,175,7,1,"lead","hsaw","main",0,[0,3,7,5,3,2,0],"Euphoric Lead"],[0,79,174,0,1,"bass","reese","neuro",0,[0,3,7,5,3,2,0],"Grinding Mid"],[0,80,172,4,1,"bass","ring","neuro",0,[0,3,2,0,6,5,0],"Modular Neuro"],[0,81,175,1,0,"lead","pluck","liquid",0,[0,4,7,9,7,4,0],"Ambient Pluck"],[0,82,174,11,1,"bass","reese","main",0,[0,3,7,5,3,2,0],"Driving Staccato"],[0,83,175,6,1,"bass","talk","jump",0,[0,3,7,5,3,2,0],"Jump-Up Donk"],[0,84,174,2,1,"lead","clip","main",0,[0,3,7,5,3,0,-2],"Power Saw Lead"],[0,85,172,5,1,"bass","fm","neuro",0,[0,3,6,5,3,0,-2],"FM Neuro Bass"],[0,86,175,5,0,"lead","warm","liquid",0,[0,4,7,9,7,4,0],"Warm Liquid Synth"],[0,87,174,9,1,"bass","jump","jungle",0,[0,3,5,7,5,3,0],"Jungle Bass Hit"],[0,88,175,7,1,"bass","laser","jump",0,[0,3,5,7,5,3,0],"Laser Bass Stab"],[0,89,174,0,1,"lead","hsaw","main",0,[0,3,5,7,5,3,0],"Supersaw Lead"],[0,90,172,8,1,"bass","shift","neuro",0,[0,3,6,5,3,0,-2],"Frequency Shifted"],[0,91,175,10,0,"keys","ep","liquid",0,[0,4,7,9,7,4,0],"Rhodes Layer"],[0,92,174,4,1,"bass","wobble","jump",0,[0,3,5,7,5,3,0],"Wobble Bass"],[0,93,175,3,1,"lead","pluck","main",0,[0,3,7,5,3,2,0],"Staccato Pluck"],[0,94,172,10,1,"bass","talk","neuro",0,[0,3,6,5,3,0,-2],"Vocal Table Bass"],[0,95,174,7,0,"arp","arp12","liquid",0,[0,4,7,9,7,4,0],"Arp Sequence"],[0,96,175,2,1,"bass","hoover","jungle",0,[0,3,5,7,5,3,0],"Mentasm Stab"],[0,97,174,5,1,"lead","vox","main",0,[0,3,7,5,3,2,0],"Vocal Synth Lead"],[0,98,172,1,1,"bass","reese","neuro",0,[0,3,6,5,3,0,-2],"Mid Growl"],[0,99,175,0,0,"lead","soft","liquid",0,[0,4,7,9,7,4,0],"Soft Sine Lead"],[0,100,174,5,1,"bass","jump","main",0,[0,0,12,10,8,7,0],"Modern DnB Hook"],[0,101,174,5,1,"bass","talk","neuro",0,[0,0,3,0,5,3,0],"funk talk bass"],[0,102,174,5,1,"bass","reese","jump",0,[0,0,3,0,7,5,0],"house horn bass"],
 [0,103,174,2,1,"keys","ep","liquid",0,[0,3,7,10,7,3,0],"jazzy minor-seventh keys"],[0,104,174,7,1,"bass","reese","half",1,[0,7,15,14,12,7,0],"wide reese drop line"],[0,105,174,9,1,"bass","crush","main",0,[0,0,3,7,5,3,0],"bitcrushed saw bass"],[1,1,138,11,1,"arp","pluck16","up",0,[0,0,0,0,0,3,0,0,0,0,0,5,0,3],"uplifting 16th pluck sequence"],[1,2,140,10,1,"lead","stadium","up",0,[0,2,3,5,7,3,5,2],"uplifting stadium supersaw"],[1,3,138,6,1,"lead","stadium","up",0,[0,-5,-4,-7,-5,-9,-7,-12],"uplifting stadium supersaw"],[1,4,138,0,1,"lead","reso","up",0,[0,3,7,5,3,2,0,-5],"uplifting resonant stab"],[1,5,140,7,1,"lead","stadium","up",0,[0,3,7,12,10,7,3,2],"uplifting stadium supersaw"],[1,6,138,3,0,"lead","octsine","up",0,[0,2,4,7,5,4,2,0],"uplifting octave sine lead"],[1,7,139,9,1,"lead","glide","up",0,[0,3,7,12,10,7,3,2],"uplifting glide lead"],[1,8,138,2,1,"lead","stadium","up",0,[0,3,7,5,3,2,0,-5],"uplifting stadium supersaw"],[1,9,140,5,1,"lead","stadium","up",0,[0,3,7,12,10,7,3,2],"uplifting stadium supersaw"],[1,10,138,8,0,"arp","pluck16","up",0,[0,4,7,12,11,7,4,2],"uplifting 16th pluck sequence"],[1,11,132,9,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"progressive progressive pluck"],[1,12,130,5,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"progressive progressive pluck"],[1,13,134,0,1,"lead","euro","prog",0,[0,3,7,5,3,2,0],"progressive euro pluck"],[1,14,128,2,1,"bass","square","prog",0,[0,3,7,5,3,2,0],"progressive square bass"],[1,15,132,7,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"progressive progressive pluck"],[1,16,137,5,1,"lead","euro","euro",0,[3,2,-2,0,-5,-2,3,2],"euro-trance euro pluck"],[1,17,135,6,1,"keys","piano","euro",0,[0,-5,-4,-7,-5,-9,-7,-12],"euro-trance dream piano"],[1,18,138,7,1,"lead","stadium","euro",0,[0,3,7,12,10,7,3,2],"euro-trance stadium supersaw"],[1,19,136,0,1,"lead","euro","euro",0,[0,3,7,12,10,7,3,2],"euro-trance euro pluck"],[1,20,138,2,1,"lead","organ","euro",0,[0,3,7,12,10,7,3,2],"euro-trance pulse organ lead"],[1,21,140,5,1,"lead","techstab","tech",0,[0,0,0,3,0,0,7,0],"tech trance drive stab"],[1,22,142,6,1,"style","psyroll","tech",0,[0,0,0,0],"tech trance rolling bass"],[1,23,140,7,1,"lead","reso","tech",0,[0,0,3,0,5,0,6,5],"tech trance resonant stab"],[1,24,143,4,1,"style","psyroll","tech",0,[0,0,0,0],"tech trance rolling bass"],[1,25,140,0,1,"lead","fm","tech",0,[0,0,3,0,5,0,6,5],"tech trance FM lead"],[1,26,138,11,1,"lead","pluck","up",0,[0,3,7,5,3,2,0],"Driving Pluck"],[1,27,140,10,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Stadium Lead"],[1,28,138,6,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Anthem Supersaw"],[1,29,136,0,1,"lead","euro","euro",0,[0,3,7,5,3,2,0],"Euro Pluck"],[1,30,138,7,1,"arp","arp12","up",0,[0,3,7,5,3,2,0],"Classic Arp"],[1,31,132,9,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"Progressive Pluck"],[1,32,140,2,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Soaring Lead"],[1,33,138,3,0,"lead","stadium","up",0,[0,4,7,5,4,2,0],"Uplifting Hook"],[1,34,140,5,1,"lead","techstab","tech",0,[0,3,7,5,3,2,0],"Tech Stab"],[1,35,135,6,1,"keys","piano","euro",0,[0,-5,-4,-7,-5,-9,-7],"Piano & Pad"],[1,36,138,8,0,"lead","euro","euro",0,[0,4,7,5,4,2,0],"Euro Pluck"],[1,37,142,6,1,"style","psyroll","tech",0,[0,0,0,0,0,0,0],"Psy Rolling Bass"],[1,38,138,0,1,"lead","techstab","tech",0,[0,3,7,5,3,2,0],"Tech Drive"],[1,39,140,4,1,"arp","arp12","up",0,[0,3,7,5,3,2,0],"Fast Arpeggio"],[1,40,134,7,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"Progressive Lead"],[1,41,138,10,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Epic Saw Lead"],[1,42,140,2,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Anthem Lead"],[1,43,138,5,1,"arp","arp12","up",0,[0,3,7,5,3,2,0],"Uplifting Arp"],[1,44,136,9,1,"lead","euro","euro",0,[0,3,7,5,3,2,0],"Euro Lead"],[1,45,138,0,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Soaring Saw"],[1,46,140,7,1,"lead","techstab","tech",0,[0,3,7,5,3,2,0],"Tech Stab"],[1,47,132,2,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"Deep Progressive"],[1,48,138,3,0,"lead","pluck","up",0,[0,4,7,5,4,2,0],"Bright Pluck"],[1,49,140,6,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Stadium Saw"],[1,50,138,11,1,"arp","pluck16","up",0,[0,3,7,5,3,2,0],"16th Pluck"],[1,51,143,4,1,"style","psyroll","tech",0,[0,0,0,0,0,0,0],"Psy KBBB Bass"],[1,52,138,8,0,"lead","euro","euro",0,[0,-1,-5,-3,-8,-5,0],"Classic Vocal Pluck"],[1,53,140,0,1,"lead","techstab","tech",0,[0,0,3,0,5,0,6],"Industrial Tech"],[1,54,135,6,1,"keys","piano","euro",0,[0,-5,-4,-7,-5,-9,-7],"Dream Piano Hook"],[1,55,138,7,1,"lead","saw","euro",0,[0,3,7,12,10,7,3],"90s JP8000 Lead"],[1,56,130,5,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"Warm Progressive"],[1,57,140,10,1,"lead","stadium","up",0,[0,2,3,5,7,3,5],"Stadium Anthem"],[1,58,138,2,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Dual Saw Lead"],[1,59,136,0,1,"lead","euro","euro",0,[0,3,7,12,10,7,3],"Euro-Trance Hook"],[1,60,140,5,1,"lead","techstab","tech",0,[0,0,0,3,0,0,7],"Tech Drive Sequence"],[1,61,138,9,1,"lead","glide","up",0,[0,3,7,12,10,7,3],"High Glide Lead"],[1,62,132,9,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"Deep Pluck"],[1,63,140,4,1,"arp","arp12","up",0,[0,3,7,5,3,2,0],"Uplifting Arp"],[1,64,138,7,1,"lead","saw","up",0,[0,3,7,5,3,2,0],"Classic Saw Lead"],[1,65,134,0,1,"lead","euro","euro",0,[0,3,7,5,3,2,0],"Vocal Trance Pluck"],[1,66,138,3,0,"lead","octsine","up",0,[0,2,4,7,5,4,2],"Octave Sine Lead"],[1,67,140,2,1,"lead","organ","up",0,[0,3,7,12,10,7,3],"Pulse PWM Lead"],[1,68,138,5,1,"lead","stadium","up",0,[0,3,7,12,10,7,3],"16-Voice Supersaw"],[1,69,140,7,1,"lead","reso","tech",0,[0,0,3,0,5,0,6],"Tech Resonance Stab"],[1,70,138,8,0,"lead","pluck","up",0,[0,4,7,12,11,7,4],"Euphoric Pluck"],[1,71,132,7,1,"arp","arp12","prog",0,[0,3,7,5,3,2,0],"Progressive Arp"],[1,72,138,11,1,"arp","pluck16","up",0,[0,0,0,0,0,3,0],"16th Pedal Sequence"],[1,73,140,10,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Soaring Stadium"],[1,74,138,6,1,"lead","stadium","up",0,[0,-5,-4,-7,-5,-9,-7],"Anthem Hook"],[1,75,136,0,1,"lead","euro","euro",0,[0,3,7,5,3,2,0],"Classic Euro Pluck"],[1,76,138,7,1,"lead","stadium","up",0,[0,3,7,12,10,7,3],"Uplifting Lead"],[1,77,140,2,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Dual Saw Anthem"],[1,78,138,3,0,"lead","pluck","up",0,[0,4,7,5,4,2,0],"Soaring Pluck"],[1,79,140,5,1,"lead","techstab","tech",0,[0,3,7,5,3,2,0],"Tech Drive Hook"],[1,80,135,6,1,"keys","piano","euro",0,[0,-5,-4,-7,-5,-9,-7],"Dream Piano Theme"],[1,81,138,8,0,"lead","euro","euro",0,[0,-1,-5,-3,-8,-5,0],"Vocal Euro Pluck"],[1,82,142,6,1,"style","psyroll","tech",0,[0,0,0,0,0,0,0],"Psy Rolling Line"],[1,83,138,0,1,"lead","techstab","tech",0,[0,3,7,5,3,2,0],"Tech Drive Stab"],[1,84,140,4,1,"arp","arp12","up",0,[0,3,7,5,3,2,0],"Fast Trance Arp"],[1,85,134,7,1,"lead","prog","prog",0,[0,3,7,5,3,2,0],"Deep Prog Lead"],[1,86,138,10,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Epic Lead Line"],[1,87,140,2,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Mainstage Saw"],[1,88,138,5,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Uplifting Hook"],[1,89,136,9,1,"lead","euro","euro",0,[0,3,7,5,3,2,0],"Euro Lead Sequence"],[1,90,138,0,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Soaring Saw Lead"],[1,91,140,7,1,"lead","techstab","tech",0,[0,3,7,5,3,2,0],"Tech Trance Stab"],[1,92,132,2,1,"bass","square","prog",0,[0,3,7,5,3,2,0],"Progressive Bass"],[1,93,138,3,0,"arp","arp12","up",0,[0,4,7,5,4,2,0],"Bright Pluck Arp"],[1,94,140,6,1,"lead","stadium","up",0,[0,3,7,5,3,2,0],"Stadium Lead Saw"],[1,95,138,11,1,"arp","pluck16","up",0,[0,3,7,5,3,2,0],"16th Note Sequence"],[1,96,143,4,1,"style","psyroll","tech",0,[0,0,0,0,0,0,0],"Psy Bassline"],[1,97,138,8,0,"lead","euro","euro",0,[0,-1,-5,-3,-8,-5,0],"Euro Vocal Pluck"],[1,98,140,0,1,"lead","fm","tech",0,[0,0,3,0,5,0,6],"Tech FM Stab"],[1,99,135,6,1,"keys","piano","euro",0,[0,-5,-4,-7,-5,-9,-7],"Dream Piano Lead"],[1,100,138,11,1,"arp","pluck16","up",0,[0,0,0,0,0,3,0],"Classic Trance Arp"],[1,101,140,2,0,"lead","stadium","euro",0,[0,4,7,12,11,9,7,4],"eurobeat brass lead"],[1,102,138,11,1,"lead","techstab","up",0,[0,0,0,0,0,3,0],"staccato repeat lead"]];
@@ -2457,9 +2473,10 @@ const libBp=(side,k)=>{const L=LIBS[side];if(!L.length)return null;const i=L[(k-
   return libCache[side][i]={n:(side?'TR ':'DnB ')+String(e[1]).padStart(3,'0')+' '+e[10],role,mode:e[4]?'minor':'major',bpm:e[2],patch:e[6],sub:e[7],half:!!e[8],p:e[9],r:libRhythm(role,e[9].length,e[1],!!e[8]),cycle:role==='arp',tonic:e[3],lib:true}};
 /* pick a library entry that suits the flavour (1-based position within its side) */
 const libSig=e=>e[5]+':'+e[9].join(',');
-const pickLib=(r,side,fk)=>{const subs=LIBSUB[fk]||[],L=LIBS[side],g=new Map();L.forEach((i,k)=>{if(subs.includes(LIB[i][7])){const sg=libSig(LIB[i]);if(!g.has(sg))g.set(sg,[]);g.get(sg).push(k+1)}});
+const LIBMEL=['lead','arp','keys'];
+const pickLib=(r,side,fk,mel)=>{const subs=LIBSUB[fk]||[],L=LIBS[side],g=new Map();L.forEach((i,k)=>{if(subs.includes(LIB[i][7])&&(!mel||LIBMEL.includes(LIB[i][5]))){const sg=libSig(LIB[i]);if(!g.has(sg))g.set(sg,[]);g.get(sg).push(k+1)}});
   if(!g.size)return 0;const G=[...g.values()],a=G[Math.floor(r()*G.length)];return a[Math.floor(r()*a.length)]};
-const bpOf=st=>st.lib?libBp(st.style?1:0,st.lib):st.bp?BLUEPRINTS[(st.style?5:0)+(st.bp-1)%5]:null;
+const bpOf=st=>st.lib?libBp(libSide(st),st.lib):st.bp?BLUEPRINTS[(libSide(st)?5:0)+(st.bp-1)%5]:null;
 const bpLine=bp=>{const out=[];let s0=0;bp.p.forEach((p,i)=>{if(p!=null)out.push({s:s0,p,d:bp.r[i]});s0+=bp.r[i]});return{line:out,len:s0}};
 /* semitones above a minor-key root as scale steps, so arp lines stay inside the scale over every chord */
 const MSTEP={0:0,1:1,2:1,3:2,4:2,5:3,6:3,7:4,8:5,9:5,10:6,11:6,12:7};
@@ -2478,9 +2495,9 @@ function makeBpHook(bp,scale,hscale,roots){
 function packState(st){return((st.style&1)|(st.theme&7)<<1|(st.key&15)<<4|(st.prog&7)<<8|(st.groove&3)<<11|(st.mut[0]&7)<<13|(st.mut[1]&7)<<16|(st.mut[2]&7)<<19|(st.timbre&7)<<22|(st.rng&127)<<25)>>>0}
 function unpackState(v){v=v>>>0;return{style:v&1,theme:v>>1&7,key:(v>>4&15)%12,prog:v>>8&7,groove:v>>11&3,mut:[v>>13&7,v>>16&7,v>>19&7],timbre:v>>22&7,rng:v>>25&127}}
 const packHi=st=>((st.theme>>3)&3)|((st.flav||0)&3)<<2|((st.hook||0)&1)<<4|((st.resp||0)&3)<<5|((st.bp||0)&7)<<7|((st.lib||0)&127)<<10|((st.kx||0)&127)<<17;
-const codeOf=st=>{const lo=packState(st).toString(16).toUpperCase().padStart(8,'0'),hi=packHi(st);return(st.style?'T':'D')+(hi>65535?hi.toString(16).toUpperCase().padStart(6,'0'):hi>255?hi.toString(16).toUpperCase().padStart(4,'0'):hi?hi.toString(16).toUpperCase().padStart(2,'0'):'')+lo};
-const parseTune=str=>{const m=/^([DT])((?:[0-9A-F]{2}){0,3}[0-9A-F]{8})$/.exec((str||'').toUpperCase().replace(/[^DT0-9A-F]/g,''));if(!m)return null;const h=m[2].length>8?parseInt(m[2].slice(0,m[2].length-8),16):0,st=unpackState(parseInt(m[2].slice(-8),16));
-  st.style=m[1]==='T'?1:0;st.theme=(st.theme|(h&3)<<3)%THEMES.length;st.flav=(h>>2&3)%FLAV[st.style?'trance':'dnb'].length;st.hook=h>>4&1;st.resp=h>>5&3;st.bp=Math.min(5,h>>7&7);st.lib=Math.min(127,h>>10&127);st.kx=h>>17&127;return st};
+const codeOf=st=>{const lo=packState(st).toString(16).toUpperCase().padStart(8,'0'),hi=packHi(st);return(st.mx?(st.style?'N':'M'):st.style?'T':'D')+(hi>65535?hi.toString(16).toUpperCase().padStart(6,'0'):hi>255?hi.toString(16).toUpperCase().padStart(4,'0'):hi?hi.toString(16).toUpperCase().padStart(2,'0'):'')+lo};
+const parseTune=str=>{const m=/^([DTMN])((?:[0-9A-F]{2}){0,3}[0-9A-F]{8})$/.exec((str||'').toUpperCase().replace(/[^DTMN0-9A-F]/g,''));if(!m)return null;const h=m[2].length>8?parseInt(m[2].slice(0,m[2].length-8),16):0,st=unpackState(parseInt(m[2].slice(-8),16));
+  st.style=m[1]==='T'||m[1]==='N'?1:0;st.mx=m[1]==='M'||m[1]==='N'?1:0;st.theme=(st.theme|(h&3)<<3)%THEMES.length;st.flav=(h>>2&3)%flavList(st).length;st.hook=h>>4&1;st.resp=h>>5&3;st.bp=Math.min(5,h>>7&7);st.lib=Math.min(127,h>>10&127);st.kx=h>>17&127;return st};
 /* ---------- evolving composer: ambient menu, layer-by-layer build, mutating groove ----------
    Every instrument plays into its own layer fader (pad, tex, kick, snare, hat, bass, lead, arp). Faders move with linear ramps
    that last one bar, so layers fade in and out bar by bar instead of switching on. Phases:
@@ -2646,7 +2663,7 @@ class HLMono extends AudioWorkletProcessor{
     return true}}
 registerProcessor('hl-mono',HLMono);`;
 
-const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v==='1':(navigator.deviceMemory||4)<=2})(),shuffle:store.get('hoverline.shuffle')!=='0',nextShuffle:0,kit:null,gtr:null,voicesOn:false,style:store.get('hoverline.music')||'dnb',evo:store.get('hoverline.mevo')!=='0',gOff:0,ctx:null,st:null,base:null,pos:0,nextT:0,timer:null,_final:false,finalPending:false,pinned:false,movement:0,
+const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v==='1':(navigator.deviceMemory||4)<=2})(),shuffle:store.get('hoverline.shuffle')!=='0',nextShuffle:0,kit:null,gtr:null,voicesOn:false,style:store.get('hoverline.music')||'dnb',both:store.get('hoverline.mboth')||'blend',evo:store.get('hoverline.mevo')!=='0',gOff:0,ctx:null,st:null,base:null,pos:0,nextT:0,timer:null,_final:false,finalPending:false,pinned:false,movement:0,
   phase:'ambient',want:null,pb:0,hb:0,gb:0,sec:null,mi:0,queue:[],lvT:{},gate:{},stage:{},padUntil:0,revealAt:-1,themeChanged:false,leadEv:null,leadGrid:0,echo:false,leadCache:{},
   amb:{deg:0,left:0,n:0,cc:0,dens:0.14,walk:3,mode:'spark',tim:0,tonic:false,omen:false},
   live:{steer:0,brake:0,boost:0,rank:0.5,speed:0},drift:1,lastDrift:1,glitch:0,fillAt:-1,mood:'menu',moodCut:5200,buildT0:-1,cutT:0,lastLead:null,onChange:null,
@@ -2756,44 +2773,49 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   playS(buf,t,v,dest,dur=0,rate=1){const c=this.ctx,src=c.createBufferSource(),g=c.createGain();src.buffer=buf;if(rate!==1)src.playbackRate.value=rate;g.gain.value=v;src.connect(g);g.connect(dest);src.start(t);
     if(dur){g.gain.setValueAtTime(v,t+Math.max(0.005,dur-0.015));g.gain.linearRampToValueAtTime(0,t+dur);src.stop(t+dur+0.02)}src.onended=()=>{try{g.disconnect()}catch(e){}};return g},
   ensureEchoes(){if(this.dly16||!this.mkEcho)return;this.dly16=this.mkEcho(0.55,0.4,3500);this.dly8t=this.mkEcho(0.35,-0.4,2800);const b=this.bpm;this.dly16.delayTime.value=60/b/4;this.dly8t.delayTime.value=60/b/3},
-  get bpm(){return this.bp?this.bp.bpm:this.st&&this.st.style?138:174},
+  get bpm(){return this.bp&&!(this.st&&this.st.mx)?this.bp.bpm:this.st&&this.st.style?138:174},
   /* ---- tunes: state, codes ---- */
-  randomState(r,trance){const theme=Math.floor(r()*THEMES.length),x=r();return{style:trance?1:0,theme,key:THEMES[theme].key,prog:r()<0.1?0:1+Math.floor(r()*7),groove:Math.floor(r()*4),mut:[0,0,0],timbre:Math.floor(r()*8),rng:Math.floor(r()*128),
-    flav:trance?(x<0.3?1:0):(x<0.7?0:x<0.85?2:1),hook:1,resp:r()<0.92?0:1+Math.floor(r()*3),bp:r()<0.5?1+Math.floor(r()*5):0,lib:0,kx:Math.floor(r()*8)|(r()<0.7?1+Math.floor(r()*7):0)<<3|(r()<0.5?64:0)}},
+  randomState(r,k){const trance=k&&typeof k==='object'?!!k.style:!!k,mx=k&&typeof k==='object'&&k.mx?1:0,theme=Math.floor(r()*THEMES.length),x=r();return{style:trance?1:0,mx,theme,key:THEMES[theme].key,prog:r()<0.1?0:1+Math.floor(r()*7),groove:Math.floor(r()*4),mut:[0,0,0],timbre:Math.floor(r()*8),rng:Math.floor(r()*128),
+    flav:mx?(x<0.6?0:1):trance?(x<0.3?1:0):(x<0.7?0:x<0.85?2:1),hook:1,resp:r()<0.92?0:1+Math.floor(r()*3),bp:r()<0.5?1+Math.floor(r()*5):0,lib:0,kx:Math.floor(r()*8)|(r()<0.7?1+Math.floor(r()*7):0)<<3|(r()<0.5?64:0)}},
+  /* Which kind of tune comes next: one style, or with both on a blend (either tempo), either style at random, or the
+     other style from the one playing. A single style draws nothing from r, so its tunes are the same as before. */
+  kind(r,room){const s=this.style;if(s==='trance')return true;if(s!=='both')return false;const b=this.both;
+    if(b==='blend')return{style:r()<0.5?1:0,mx:1};const p=this.st;
+    if(b==='turn'&&p&&!room)return{style:p.style?0:1,mx:0};return{style:r()<0.5?1:0,mx:0}},
   /* attach a library entry (in its own key) to a fresh state */
-  withLib(st,r){if(r()<0.3){const fk=flavOf(st);st.lib=pickLib(r,st.style?1:0,fk);if(st.lib){st.bp=0;const b=bpOf(st);if(b)st.key=b.tonic}}return st},
-  fromTrack(seed){this.tSeed=seed;if(this.pinned)return;const tr=this.style==='trance';let room=false;try{room=!!mp.on}catch(e){}
-    this.setState(mFresh(i=>{const r=rng((((seed^0x5EED)>>>0)+Math.imul(i,0x9E3779B1)>>>0)||1);return this.withLib(this.randomState(r,tr),r)},room?1:12))},
+  withLib(st,r){if(r()<0.3){st.lib=pickLib(r,libSide(st),libFk(st),!!st.mx);if(st.lib){st.bp=0;const b=bpOf(st);if(b)st.key=b.tonic}}return st},
+  fromTrack(seed){this.tSeed=seed;if(this.pinned)return;let room=false;try{room=!!mp.on}catch(e){}
+    this.setState(mFresh(i=>{const r=rng((((seed^0x5EED)>>>0)+Math.imul(i,0x9E3779B1)>>>0)||1);return this.withLib(this.randomState(r,this.kind(r,room)),r)},room?1:12))},
   newTune(){this.pinned=false;this.setState(this.freshTune())},
-  freshTune(){const tr=this.style==='trance';return mFresh(()=>{const r=rng((Math.random()*4294967296)>>>0);return this.withLib(this.randomState(r,tr),r)},12)},
-  load(code){const st=parseTune(code);if(!st)return false;this.pinned=true;this.style=st.style?'trance':'dnb';store.set('hoverline.music',this.style);this.setState(st);return true},
+  freshTune(){return mFresh(()=>{const r=rng((Math.random()*4294967296)>>>0);return this.withLib(this.randomState(r,this.kind(r)),r)},12)},
+  load(code){const st=parseTune(code);if(!st)return false;this.pinned=true;if(st.mx){this.style='both';this.both='blend';store.set('hoverline.mboth','blend')}else if(this.style!=='both')this.style=st.style?'trance':'dnb';store.set('hoverline.music',this.style);this.setState(st);return true},
   code(){return this.st?codeOf(this.st):''},
   info(){const st=this.st;if(!st)return'';const th=THEMES[st.theme],muts=st.mut.filter(m=>m).map(m=>MUT_NAMES[m]),fk=flavOf(st);
-    return`${FLAVN[fk]} · ${KEYS[st.key]} ${fk==='psy'?'phrygian':this.minor?'minor':'major'} · ${fk==='metal'?'guitar':this.leadPatch?{clip:'clipped saw lead',hsaw:'supersaw lead',epiano:'electric piano',stadium:'stadium supersaw',euro:'pluck lead',pluck:'pluck lead',prog:'progressive pluck',fm:'FM lead',bell:'FM bell',vox:'vocal lead',soft:'soft triangle lead',brass:'brass lead',pwm:'pulse lead',organ:'pulse organ',snap:'snapping lead',dip:'dipping lead',octsine:'octave lead',warm:'warm saw lead',glide:'glide lead',techstab:'drive stab',reso:'resonant stab'}[this.leadPatch]||'synth lead':TIMBRES[st.timbre].n+' lead'}${this.respK?' · '+RESPN[this.respK]+' answers':''}${muts.length?' · '+muts.join(', '):''}${this.bp?' · blueprint: '+this.bp.n.toLowerCase():''}${this.hookIdx!=null?' · hook '+this.hookIdx.toLocaleString('en')+' of 68,719,476,736':''}${this.keysI?' · '+(INSTX[this.keysI]?INSTX[this.keysI].n:this.keysI==='pn'?'piano':'electric piano'):''}${(st.kx&7)&&KITX[st.kx&7]&&(fk!=='metal'||(st.kx&7)===6)?' · '+KITX[st.kx&7].n:''}${this.percX?' · '+this.percX.n:''}${this.vocal?' · vocals':''}${this.evo?' · evolving':' · steady'}`},
+    return`${st.mx?(st.style?'trance breaks':'trance & bass'):FLAVN[fk]} · ${KEYS[st.key]} ${fk==='psy'?'phrygian':this.minor?'minor':'major'} · ${fk==='metal'?'guitar':this.leadPatch?{clip:'clipped saw lead',hsaw:'supersaw lead',epiano:'electric piano',stadium:'stadium supersaw',euro:'pluck lead',pluck:'pluck lead',prog:'progressive pluck',fm:'FM lead',bell:'FM bell',vox:'vocal lead',soft:'soft triangle lead',brass:'brass lead',pwm:'pulse lead',organ:'pulse organ',snap:'snapping lead',dip:'dipping lead',octsine:'octave lead',warm:'warm saw lead',glide:'glide lead',techstab:'drive stab',reso:'resonant stab'}[this.leadPatch]||'synth lead':TIMBRES[st.timbre].n+' lead'}${this.respK?' · '+RESPN[this.respK]+' answers':''}${muts.length?' · '+muts.join(', '):''}${this.bp?' · blueprint: '+this.bp.n.toLowerCase():''}${this.hookIdx!=null?' · hook '+this.hookIdx.toLocaleString('en')+' of 68,719,476,736':''}${this.keysI?' · '+(INSTX[this.keysI]?INSTX[this.keysI].n:this.keysI==='pn'?'piano':'electric piano'):''}${(st.kx&7)&&KITX[st.kx&7]&&(fk!=='metal'||(st.kx&7)===6)?' · '+KITX[st.kx&7].n:''}${this.percX?' · '+this.percX.n:''}${this.vocal?' · vocals':''}${this.evo?' · evolving':' · steady'}`},
   kept(){try{return JSON.parse(store.get('hoverline.tunes')||'[]')}catch(e){return[]}},
   keep(){const c=this.code();if(!c)return c;let list=this.kept();if(!list.includes(c)){list.unshift(c);list=list.slice(0,12);store.set('hoverline.tunes',JSON.stringify(list))}return c},
   forget(c){store.set('hoverline.tunes',JSON.stringify(this.kept().filter(x=>x!==c)))},
   setState(st,blend){this.st=st;if(!blend)MHIST.add(st);this.rwDone=false;this.gOff=0;this.base={...st,mut:[...st.mut]};if(!blend)this.home={...st,mut:[...st.mut]};this.r=rng((packState(st)^Math.imul(packHi(st),0x01000193)^0x9E3779B9)>>>0);this.build();this.movement=0;this.revealAt=-1;this.themeChanged=false;
     if(this.phase==='ambient')this.amb.omen=true;this.changed()},
   changed(){if(this.onChange)try{this.onChange()}catch(e){}},
-  build(){const st=this.st,th=this.theme=THEMES[st.theme]||THEMES[0],fk=this.fk=flavOf(st),dark=fk==='metal'||fk==='psy',bp=this.bp=st.hook?bpOf(st):null,minor=this.minor=dark||(bp?bp.mode==='minor':th.mode!=='major');
+  build(){const st=this.st,trM=this.trM=st.style===1||!!st.mx,mf=st.mx?'trance':null,th=this.theme=THEMES[st.theme]||THEMES[0],fk=this.fk=flavOf(st),dark=fk==='metal'||fk==='psy',bp=this.bp=st.hook?bpOf(st):null,minor=this.minor=dark||(bp?bp.mode==='minor':th.mode!=='major');
     this.scale=fk==='psy'?SC.phryg:minor?SC.minor:SC.major;this.hscale=fk==='psy'?SC.phryg:minor?SC.harm:SC.major;
     this.prog=fk==='psy'?PROGS.phryg[Math.max(0,st.prog-1)%7]:st.prog?PROGS[minor?'minor':'major'][(st.prog-1)%7]:bp?PROGS[minor?'minor':'major'][0]:dark&&th.mode==='major'?PROGS.minor[0]:th.prog;const P=this.prog;this.roots=P.length===8?[P[0],P[2],P[4],P[6]]:P;
-    this.pw=fk==='metal'||(!!th.pw&&!st.prog&&!dark);this.respK=st.resp?RESP[fk][(st.resp-1)%RESP[fk].length]:null;
+    this.pw=fk==='metal'||(!!th.pw&&!st.prog&&!dark);this.trR=st.style===1&&!st.mx;{const rf=mf||fk;this.respK=st.resp?RESP[rf][(st.resp-1)%RESP[rf].length]:null}
     this.themeEv=toEvents(th.notes);
-    const mk=(st.rng*7919^st.theme<<8^st.groove<<12^st.prog<<16^st.style<<20^(st.hook?(st.flav+1)<<24:0)^(st.bp||0)<<27^0xA5F00D)>>>0;
-    if(this.motifKey!==mk){this.motifKey=mk;if(bp&&bp.role==='lead'){this.motif=makeBpHook(bp,this.scale,this.hscale,this.roots);this.hookIdx=null}else if(st.hook){const h=makeHook(rng(mk),this.scale,this.hscale,this.roots,fk,((mk>>>5)%100)<50);this.motif=h.ev;this.hookIdx=h.idx}else{this.motif=makeMotif(rng(mk),minor,this.roots,!!st.style);this.hookIdx=null}}
+    const mk=(st.rng*7919^st.theme<<8^st.groove<<12^st.prog<<16^st.style<<20^(st.mx?1:0)<<21^(st.hook?(st.flav+1)<<24:0)^(st.bp||0)<<27^0xA5F00D)>>>0;
+    if(this.motifKey!==mk){this.motifKey=mk;if(bp&&bp.role==='lead'){this.motif=makeBpHook(bp,this.scale,this.hscale,this.roots);this.hookIdx=null}else if(st.hook){const h=makeHook(rng(mk),this.scale,this.hscale,this.roots,mf||fk,((mk>>>5)%100)<50);this.motif=h.ev;this.hookIdx=h.idx}else{this.motif=makeMotif(rng(mk),minor,this.roots,trM);this.hookIdx=null}}
     {const ps=(this.motif||[]).map(e=>e.p);this.lOct=ps.length?Math.round((64-(60+st.key+(Math.min(...ps)+Math.max(...ps))/2))/12)*12:0}
     this.anthem=bp&&bp.role==='lead'?st.rng%2===0:st.rng%5===0;
     this.vocal=(st.rng*7+st.key*3+st.groove)%4===0&&fk!=='metal';
     {const ih=(Math.imul(st.rng+1,2654435761)^(st.theme*97+st.groove*31+st.key*7))>>>0,ok=fk!=='metal'&&fk!=='psy';
-      const kx=st.kx||0,kv=kx&7,ic=kx>>3&7,ck=ic?(XI_FL[fk]||[])[(ic-1)%7]:null,cls=ok?[null,'pn','pn','ep',null,'pn',null,'ep'][ih%8]:null;
+      const kx=st.kx||0,kv=kx&7,ic=kx>>3&7,ck=ic?(XI_FL[mf||fk]||[])[(ic-1)%7]:null,cls=ok?[null,'pn','pn','ep',null,'pn',null,'ep'][ih%8]:null;
       /* a new instrument takes over where the piano or electric piano would play, and in half the psytrance tunes */
       this.keysI=ck&&(cls||fk==='psy'&&(ih>>>8)%2===0)?ck:cls;this.sparkI=ck&&INSTX[ck]&&!['or','sx','rc','cb'].includes(ck)?ck:null;
       {const pl=PERC_FL[fk]||[];this.percX=kx&64&&pl.length?PERCX[pl[kv%pl.length]]:null}
-      this.bhit=kv&&fk!=='metal'?BHITX[(kv+ic)%BHITX.length]:null;this.bell=st.style===1&&fk!=='psy'&&ic>0&&ic%3===0;if(!this.lite&&this.ctx)this.ensureExt();this.stabs=!!this.keysI&&fk==='dnb'&&(ih>>>3)%2===0;
-      this.harp=st.style===1&&fk!=='psy'&&(ih>>>4)%2===0;this.tymp=fk!=='metal'&&(ih>>>5)%3===0;this.cym=(ih>>>6)%2===0;
-      this.shk=fk!=='metal'&&(ih>>>7)%3===0;this.clapS=st.style===1&&(ih>>>9)%5<3} /* a quarter of the tunes have vocal chops, shouts and a choir */ /* a lead through the whole drop in about a third of tunes */
+      this.bhit=kv&&fk!=='metal'?BHITX[(kv+ic)%BHITX.length]:null;this.bell=trM&&fk!=='psy'&&ic>0&&ic%3===0;if(!this.lite&&this.ctx)this.ensureExt();this.stabs=!!this.keysI&&fk==='dnb'&&(ih>>>3)%2===0;
+      this.harp=trM&&fk!=='psy'&&(ih>>>4)%2===0;this.tymp=fk!=='metal'&&(ih>>>5)%3===0;this.cym=(ih>>>6)%2===0;
+      this.shk=fk!=='metal'&&(ih>>>7)%3===0;this.clapS=trM&&(ih>>>9)%5<3} /* a quarter of the tunes have vocal chops, shouts and a choir */ /* a lead through the whole drop in about a third of tunes */
     let ev=this.motif;st.mut.forEach((m,i)=>{if(m)ev=mutate(ev,m,i,this.scale,this.roots)});this.variant=ev;this.leadCache={};this.useKit();
     const gi=bp&&bp.half&&(fk==='dnb'||fk==='metal')?2:(st.groove+(this.gOff||0))%4;this.psyTight=!!bp&&bp.patch==='psyroll';this.groove=GROOVES[fk][gi];this.bassPat=BASS[fk][gi];this.timbre=TIMBRES[st.timbre];this.arp=ARPS[gi];
     /* blueprint parts: lead sound, bass and arp lines by step, keys line by step over two bars */
@@ -2818,7 +2840,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
     if(this.movement%2===0||r()<0.25){st.theme=(st.theme+1+Math.floor(r()*(THEMES.length-1)))%THEMES.length;st.prog=0;st.mut=[0,0,0];const th=THEMES[st.theme];st.key=r()<0.6?th.key:(th.key+(r()<0.5?5:7))%12;this.themeChanged=true}
     else{if(r()<0.5)st.key=(st.key+[5,7,2,10][Math.floor(r()*4)])%12;if(r()<0.4)st.prog=Math.floor(r()*8)}
     if(r()<0.6)st.groove=Math.floor(r()*4);if(r()<0.5)st.timbre=Math.floor(r()*8);st.rng=Math.floor(r()*128);
-    if(st.hook){const nf=FLAV[st.style?'trance':'dnb'].length;if(r()<0.3)st.flav=((st.flav||0)+1+Math.floor(r()*(nf-1)))%nf;if(r()<0.4)st.resp=r()<0.9?0:1+Math.floor(r()*3);if(r()<0.4)st.bp=r()<0.3?0:1+Math.floor(r()*5);if(r()<0.45){st.lib=r()<0.25?0:pickLib(r,st.style?1:0,flavOf(st));if(st.lib)st.bp=0}else if(st.lib&&!(LIBSUB[flavOf(st)]||[]).includes(LIB[LIBS[st.style?1:0][st.lib-1]][7]))st.lib=0}
+    if(st.hook){const nf=flavList(st).length;if(r()<0.3)st.flav=((st.flav||0)+1+Math.floor(r()*(nf-1)))%nf;if(r()<0.4)st.resp=r()<0.9?0:1+Math.floor(r()*3);if(r()<0.4)st.bp=r()<0.3?0:1+Math.floor(r()*5);if(r()<0.45){st.lib=r()<0.25?0:pickLib(r,libSide(st),libFk(st),!!st.mx);if(st.lib)st.bp=0}else if(st.lib&&!(LIBSUB[libFk(st)]||[]).includes(LIB[LIBS[libSide(st)][st.lib-1]][7]))st.lib=0}
     this.st=st;this.build();this.padUntil=0;this.changed()},
   slot(hb,s){return this.prog.length===8?(hb%4)*2+(s>=8?1:0):hb%4},
   chordAt(hb,s){const deg=this.prog[this.slot(hb,s)];return{deg,tones:this.pw?[deg,deg+7,deg+12]:chordOf(deg,this.hscale)}},
@@ -2830,7 +2852,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
       this.sec[2]=Math.min(bl,bi+1+((4-(bi+1)%4)%4));this.queue=n==='brk'?[['rise',4],['drop',1e9]]:[['brk',4],['rise',4],['drop',1e9]]}
     else this.finalPending=true},
   /* How present the lead is: off, call (first and third bars of the hook only), thin (the hook as slow bells) or full. */
-  leadPlan(n,bi,bl){const tr=this.st.style===1,an=tr||this.anthem;
+  leadPlan(n,bi,bl){const tr=this.trM,an=tr||this.anthem;
     if(n==='drop')return bl>999?(bi<4?'call':'full'):bi<8?(an?'call':'off'):(an?'full':'call');
     if(n==='b')return bi<8?'full':'call';if(n==='a')return'call';if(n==='brk')return tr?'full':this.fk==='metal'?'off':'thin';
     if(n==='rise')return bl<=2?'off':bi<bl/2?'thin':'full';return'off'},
@@ -2857,7 +2879,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
         if(b===B.full-2)this.riser(t,bd*2,0.16);if(b===B.full)this.crash(t,0.12);this.amb.omen=false}}
     if(this.phase==='groove'){
       if(!fresh){this.sec[1]++;if(this.sec[1]>=this.sec[2])this.nextSection()}this.gb++;
-      const[n,bi,bl]=this.sec,left=bl-bi,tr=this.st.style===1;
+      const[n,bi,bl]=this.sec,left=bl-bi,tr=this.trR;
       if(bi===0&&n!=='rise'&&n!=='rw'&&this.hb%4)this.hb+=4-this.hb%4; /* sections start on the first bar of the hook */
       if(n==='a'&&bi===0&&this.themeChanged){this.revealAt=this.hb;this.themeChanged=false}
       let rb=this.revealAt>=0?this.hb-this.revealAt:99;if(rb>=8&&this.revealAt>=0){this.revealAt=-1;rb=99}
@@ -2931,7 +2953,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
      sister tune (a new hook in the same key and style, with no answering voices or style influences), then home again. */
   blendRace(t){const k=this.raceK=(this.raceK||0)+1,H=this.home;if(!H)return;
     if(k%3===1){this.setState({...H,mut:[...H.mut]},true);this.gOff=1+(k>>1)%3;this.build();this.mutateNow()}
-    else if(k%3===2){const r=rng((((this.tSeed||7)^0x5EED)+Math.imul(k,0x9E3779B1))>>>0||1),st=this.randomState(r,H.style===1);
+    else if(k%3===2){const r=rng((((this.tSeed||7)^0x5EED)+Math.imul(k,0x9E3779B1))>>>0||1),st=this.randomState(r,{style:H.style,mx:H.mx});
       Object.assign(st,{theme:H.theme,key:H.key,flav:H.flav,prog:H.prog,resp:0,lib:0,bp:0,kx:H.kx||0});this.setState(st,true)}
     else this.setState({...H,mut:[...H.mut]},true)},
   blendNew(t){this.nextShuffle=t+150;this.setState(this.freshTune());this.amb.tonic=true},
@@ -2988,7 +3010,10 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
      moves the filter and the hats. With Shuffle on, a new tune takes over at each breakdown, in either mode.
      Evolving: the original behaviour, where the tune mutates every few bars and reacts to boosts, hits and steering. */
   setEvo(b){this.evo=!!b;store.set('hoverline.mevo',b?'1':'0');if(this.dg){const t=this.ctx.currentTime;this.dg.gain.setTargetAtTime(b?0.45:0.3,t,0.1);this.dlyFb.gain.setTargetAtTime(b?0.36:0.3,t,0.1)}this.changed()},
-  setStyle(s){this.style=s;store.set('hoverline.music',s);if(s!=='off'&&this.st){this.st.style=s==='trance'?1:0;this.base.style=this.st.style;this.build();this.changed()}this.ensure()},
+  setStyle(s){this.style=s;store.set('hoverline.music',s);if(s!=='off'&&this.st){const st=this.st,sy=s==='both'?st.style:s==='trance'?1:0,mx=s==='both'&&this.both==='blend'?1:0;
+    if(sy!==st.style||mx!==(st.mx||0)){const side=libSide(st);st.style=sy;st.mx=mx;st.flav=(st.flav||0)%flavList(st).length;if(libSide(st)!==side)st.lib=0;
+      if(this.base)Object.assign(this.base,{style:st.style,mx:st.mx,flav:st.flav,lib:st.lib});this.build();this.changed()}}this.ensure()},
+  setBoth(b){this.both=b;store.set('hoverline.mboth',b);if(this.style==='both')this.setStyle('both')},
   setMood(m){this.mood=m;if((m==='menu'||m==='listen')&&this.ctx){const now=this.ctx.currentTime;if(!(this.nextShuffle>now))this.nextShuffle=now+150}this.moodCut={menu:5200,count:3200,race:18000,pause:600,results:7500,listen:18000}[m]||18000;this.cutT=0;this.applyCut(m==='race'?0.25:0.4)},
   applyCut(tc=0.1){if(!this.ctx)return;const L=this.live;let f=this.moodCut*(1-(this.evo?0.92:0.4)*L.brake)*(this.mood==='race'?0.7+0.3*(1-L.rank):1);
     const O=this.cutOv,now=this.ctx.currentTime;if(O&&now>=O.t1)this.cutOv=null;else if(O&&this.mood!=='pause')f=O.f0*Math.pow(O.f1/O.f0,rmp(now+tc,O.t0,O.t1))*(1-0.4*L.brake);
@@ -3037,7 +3062,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   nz(t,dur){const s=this.ctx.createBufferSource();s.buffer=audio.noise;s.loop=true;s.start(t,Math.random()*0.4);s.stop(t+dur+0.05);s.onended=()=>{try{s.disconnect()}catch(e){}};return s},
   send(node,bus,amt){if(amt<=0||!bus)return;let m=this.sends.get(bus);if(!m)this.sends.set(bus,m=new Map());const key=Math.round(amt*1000);let g=m.get(key);if(!g){g=this.ctx.createGain();g.gain.value=amt;g.connect(bus);m.set(key,g)}node.connect(g)},
   /* Kick: a fast pitch drop and a noise click; short ones (metal, edits) are tighter and skip the sidechain pump. */
-  kick(t,v=1,short=false){try{VFX.kick.push(t)}catch(e){}if(this.kit){const K=this.kit,mt=this.fk==='metal'&&K.km;this.playS(short?(mt?K.km:K.ks):this.fk==='psy'?K.kp:this.st.style?K.kt:mt?K.km:K.kd,t,v*0.95,this.bus.kick);this.kickFx(t,short);return}
+  kick(t,v=1,short=false){try{VFX.kick.push(t)}catch(e){}if(this.kit){const K=this.kit,mt=this.fk==='metal'&&K.km;this.playS(short?(mt?K.km:K.ks):this.fk==='psy'?K.kp:this.trR?K.kt:mt?K.km:K.kd,t,v*0.95,this.bus.kick);this.kickFx(t,short);return}
     const c=this.ctx,o=c.createOscillator(),g=c.createGain(),dec=short?0.17:0.42;
     o.frequency.setValueAtTime(short?220:195,t);o.frequency.exponentialRampToValueAtTime(short?62:46,t+(short?0.035:0.06));
     g.gain.setValueAtTime(v*0.95,t);g.gain.exponentialRampToValueAtTime(0.001,t+dec);o.connect(g);g.connect(this.bus.kick);o.start(t);o.stop(t+dec+0.02);
@@ -3068,12 +3093,12 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   ride(t,v=0.4){if(this.kit&&this.kit.rd)this.playS(this.kit.rd,t,v,this.bus.hat)},
   tom(t,i,v=0.6){const b=this.kit&&this.kit['t'+i];if(b){const g=this.playS(b,t,v,this.bus.snare);this.send(g,this.rev,0.2)}else this.snare(t,v*0.8)},
   /* one hit of a build's snare roll: p is how far through the roll (0-1); level, pitch and reverb climb with it */
-  rollHit(t,p){if(!this.kit)return this.snare(t,0.3+0.6*p);const K=this.kit,b=this.st.style?K.s2:this.fk==='metal'&&K.sm?K.sm:K.s1;
+  rollHit(t,p){if(!this.kit)return this.snare(t,0.3+0.6*p);const K=this.kit,b=this.trR?K.s2:this.fk==='metal'&&K.sm?K.sm:K.s1;
     const g=this.playS(b,t,(0.22+0.78*p*p)*0.85,this.bus.snare,0,1+0.3*p);this.send(g,this.rev,Math.round((0.12+0.4*p)*10)/10)},
   /* the last beat of a phrase */
   fillHit(t,s,k,sd){const i=s-12;if(k==='flam'&&(this.fk==='brk'||this.fk==='dnb')&&this.vbuf&&this.vbuf.s_sc&&this.st.rng%3===0){if(i===0||i===2)this.fxS('s_sc',t,0.5,this.bus.snare);if(i===3)this.kick(t,0.9);return}if(k==='toms'){this.tom(t,[1,1,2,3][i],0.5+0.1*i);if(this.fk==='metal')this.kick(t,0.8,true)}
     else if(k==='flam'){if(i===0)this.snare(t,0.7);else if(i===2){this.snare(t,0.5);this.snare(t+sd*0.5,0.9)}else if(i===3)this.kick(t,0.9,this.fk==='metal')}
-    else if(this.st.style)this.clap(t,0.3+0.1*i);else this.snare(t,0.35+0.17*i)},
+    else if(this.trR)this.clap(t,0.3+0.1*i);else this.snare(t,0.35+0.17*i)},
   /* a pitched sweep up, under the noise riser */
   uplift(t,dur){const c=this.ctx,o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(1300,t+dur);
     f.type='bandpass';f.Q.value=2.5;f.frequency.setValueAtTime(500,t);f.frequency.exponentialRampToValueAtTime(4500,t+dur);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.03,t+dur);g.gain.linearRampToValueAtTime(0,t+dur+0.02);
@@ -3137,7 +3162,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
     o.connect(lp);lp.connect(g);g.connect(this.bus.resp);this.send(g,this.dly,0.4);o.start(t);o.stop(t+d+0.02)},
   /* ---- one sixteenth of the arrangement ---- */
   play(t,sd){const s=this.pos%16;if(s===0)this.onBar(t,sd);
-    const G=this.gate,st=this.st,ph=this.phase,key=st.key,fk=this.fk,tr=st.style===1,psy=fk==='psy',metal=fk==='metal',brk=fk==='brk';
+    const G=this.gate,st=this.st,ph=this.phase,key=st.key,fk=this.fk,tr=this.trR,tm=this.trM,psy=fk==='psy',metal=fk==='metal',brk=fk==='brk';
     if(G.tex){if(s%2===0&&Math.random()<this.amb.dens*(ph==='ambient'?1:this.evo?0.5:0))this.sparkle(t,sd);
       if(ph==='ambient'&&this.amb.mode==='arp'&&s%4===0){const A=this.amb,tn=chordOf(A.deg,this.minor?SC.minor:SC.major),i=Math.floor(this.pos/4)%4;
         this.saw(60+((key+A.deg)%12)+[0,tn[1]-tn[0],7,12][i],t,sd*3,{tag:'aarp',type:'triangle',vol:0.018,cut:3000,a:0.01,rel:0.15,dly:0.55,rev:0.4,dest:this.bus.tex})}}
@@ -3198,7 +3223,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
         else if(metal){const pm=blen<2;if(this.gtr)this.playS((pm?this.gtr.m:this.gtr.o)[((key+ch.deg)%12+12)%12],t,pm?0.27:0.22,this.bus.bass,sd*blen*(pm?0.9:0.98));else for(const q of[bm+12,bm+19])this.saw(q+bo*12,t,sd*blen*(pm?0.7:0.95),{tag:'gtr',voices:2,spread:9,cut:pm?900:2600,env:pm?500:900,envT:0.05,a:0.002,rel:0.02,vol:0.05,dest:this.gtrB});
           if(bs%4===0)this.saw(bm,t,sd*Math.max(2,blen),{tag:'bass',type:'sine',vol:0.08,cut:300,a:0.004,rel:0.05,dest:this.bus.bass})}
         else this.bassNote(bm+bo*12,t,sd*blen*0.95,{cal:0.71,tag:'bass',vol:0.075,voices:brk?2:3,spread:brk?18:22,cut,env:900,envT:0.3,res:T.br,sub:bo?0:0.16,rel:0.03,dest:this.dB})}}
-    if(G.lead&&this.leadEv&&!(stg.gapEnd&&s>=14)){const ls=(hb%4)*16+s,ghost=this.leadGrid>1,echo=this.echo,k0=echo?this.prevKey:key,cr=!!this.respK&&!ghost&&!echo,P=ghost||echo?null:this.leadPatch,gate=tr&&!psy&&!(P==='stadium'||P==='epiano'||P==='euro'||P==='glide'||P==='pluck'||P==='prog'||P==='bell'||P==='fm'||P==='techstab');
+    if(G.lead&&this.leadEv&&!(stg.gapEnd&&s>=14)){const ls=(hb%4)*16+s,ghost=this.leadGrid>1,echo=this.echo,k0=echo?this.prevKey:key,cr=!!this.respK&&!ghost&&!echo,P=ghost||echo?null:this.leadPatch,gate=tm&&!psy&&!(P==='stadium'||P==='epiano'||P==='euro'||P==='glide'||P==='pluck'||P==='prog'||P==='bell'||P==='fm'||P==='techstab');
       for(const e of this.leadEv)if(e.s===ls||(!ghost&&gate&&e.d>=4&&ls>e.s&&ls<e.s+e.d&&(ls-e.s)%2===0)){if(this.leadMode==='call'&&e.v===1)continue;const m=60+k0+e.p+(this.lOct||0);
         if(cr&&e.v===1){if(e.s===ls)this.respNote(m,t,sd*e.d*0.95,sd);continue}
         if(this.keysI&&sec==='a'&&this.vbuf&&!this.lite&&!ghost&&this.instNote(this.keysI,m,t,sd*e.d,0.46))continue;
@@ -3227,14 +3252,14 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
         else if(metal)this.saw(m,t,sd*e.d*0.95,{tag:'lead',voices:2,spread:8,cut:5000,a:0.004,rel:0.06,dly:0.25,rev:0.25,vol:0.06,dest:this.gtrL});
         else if(psy){if(this.voicesOn&&this.vA)this.mono(this.vA,m,t,sd*Math.min(e.d,2)*0.9,{vol:0.09,cal:0.47,voices:1,cut:360,env:4200,envT:0.11,k:3.3,dr:2.4,glide:e.d>=2&&Math.random()<0.3?0.05:0,from:prevL,a:0.002,rel:0.03});
           else this.saw(m,t,sd*Math.min(e.d,2)*0.9,{tag:'lead',voices:1,cut:380,env:4200,envT:0.11,q:9,a:0.002,rel:0.03,dly:0.35,rev:0.2,vol:0.09,dest:this.bus.lead})}
-        else this.saw(m,t,tr?sd*1.7:sd*e.d*0.95,{tag:'lead',type:T.lead,voices:T.lv,spread:T.ls,cut:T.lc*(0.75+0.35*(1-L.rank))*(ph==='build'?0.8:1)*(tr?1.35:1),env:T.le,envT:0.12,a:tr?0.01:0.004,rel:tr?0.05:0.08,
+        else this.saw(m,t,tm?sd*1.7:sd*e.d*0.95,{tag:'lead',type:T.lead,voices:T.lv,spread:T.ls,cut:T.lc*(0.75+0.35*(1-L.rank))*(ph==='build'?0.8:1)*(tm?1.35:1),env:T.le,envT:0.12,a:tm?0.01:0.004,rel:tm?0.05:0.08,
           dly:echo?0.7:T.dly*(this.evo?1:0.7),rev:sec==='brk'?T.rev+0.25:T.rev,vol:(echo?0.03:0.055)*(this.evo?1+0.3*L.steer:1),dest:this.bus.lead})}}
     if(G.arp&&this.bpArp){const e=this.bp.cycle?this.bpArp[this.pos%this.bpArp.length]:this.bpArp[s];if(e){const st0=MSTEP[((e.p%12)+12)%12]+7*Math.floor(e.p/12),n=48+key+degShift(snap(ch.deg,this.scale),st0,this.scale);
         if(this.bp.patch==='pluck16'){const po={tag:'arp',voices:1,cut:280,env:3600,envT:0.12,q:1.8,a:0.002,rel:0.03,vol:0.045,dly:0.18,dest:this.bus.arp};if(this.voicesOn&&this.vP)this.mono(this.vP,n,t,sd*0.9,{...po,cal:0.85,cut:420,env:5000});else this.saw(n,t,sd*0.9,po)}
         else{this.saw(n,t,sd*0.85,{tag:'arp',type:'square',voices:1,cut:3200,env:1200,envT:0.05,a:0.002,rel:0.03,vol:0.02,d16:0.4,dest:this.bus.arp});this.saw(n,t,sd*0.85,{tag:'arp',voices:1,cut:3200,env:1200,envT:0.05,a:0.002,rel:0.03,vol:0.02,dest:this.bus.arp})}}}
-    else if(G.arp){const dense=(this.evo&&L.steer>0.35)||(full&&bi>=8);if(dense||s%2===0){const tones=[...ch.tones.slice(0,3),ch.tones[0]+12],n=60+key+tones[this.arp[s]%4]+(tr?(full&&bi>=8?12:0):-12);
-      const ao={tag:'arp',type:tr?'sawtooth':'triangle',vol:tr?0.03:0.028,voices:tr?3:1,spread:16,cut:tr?2400:4000,env:tr?2600:0,envT:0.06,dly:0.22,dest:this.bus.arp};
-      if(this.voicesOn&&this.vP)this.mono(this.vP,n,t,sd*0.8,{...ao,cal:tr?1.15:0.75,k:0.3,cut:ao.cut*1.6,env:ao.env*1.4});else this.saw(n,t,sd*0.8,ao)}}
+    else if(G.arp){const dense=(this.evo&&L.steer>0.35)||(full&&bi>=8);if(dense||s%2===0){const tones=[...ch.tones.slice(0,3),ch.tones[0]+12],n=60+key+tones[this.arp[s]%4]+(tm?(full&&bi>=8?12:0):-12);
+      const ao={tag:'arp',type:tm?'sawtooth':'triangle',vol:tm?0.03:0.028,voices:tm?3:1,spread:16,cut:tm?2400:4000,env:tm?2600:0,envT:0.06,dly:0.22,dest:this.bus.arp};
+      if(this.voicesOn&&this.vP)this.mono(this.vP,n,t,sd*0.8,{...ao,cal:tm?1.15:0.75,k:0.3,cut:ao.cut*1.6,env:ao.env*1.4});else this.saw(n,t,sd*0.8,ao)}}
     if(G.keys&&this.bpKeys){const e=this.bpKeys[(hb%2)*16+s];if(e){const m=60+key+(this.scale.length===7?snap(e.p,this.scale):e.p),K=this.bp.patch,v=0.8+Math.random()*0.25;
       if(K==='ep')this.ep(m,t,sd*e.d,v*1.3,this.bus.keys);else if(K==='pad')this.saw(m-12,t,sd*e.d*2+0.5,{tag:'pad',voices:3,spread:14,cut:1400,a:0.8,rel:1.2,vol:0.03,hall:0.5,dest:this.bus.keys});else this.piano(m,t,sd*e.d,v)}}
   }};
@@ -3773,8 +3798,8 @@ function logStart(){if(!LOG.on){LOG.cur=null;return}const fc={};for(const f of T
     track:{code:codeStr(),name:T.D.name,complex:!!T.cx,len:Math.round(T.L),laps:LAPS,feats:fc,splits:T.splits.length,fig8:!!T.fig8,marks:(T.marks||[]).length},
     ship:{frame:build.frame,stats:{...build.stats},weapons:[...build.weapons]},
     input:{dev:lastDev,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode},
-    music:{style:music.style,code:music.code(),evolving:music.evo,shuffle:music.shuffle,lite:music.lite,vol:audio.volM,sfx:audio.volS},gfx:Object.keys(G2).filter(k=>G2[k]).join(',')||'none',
-    device:{...DEVICE,view:[cw,ch],draw:[canvas.width,canvas.height],res:RES.k,low:RES.low,style:styleNow()||'own',sky:tod},
+    music:{style:music.style,both:music.style==='both'?music.both:undefined,code:music.code(),evolving:music.evo,shuffle:music.shuffle,lite:music.lite,vol:audio.volM,sfx:audio.volS},gfx:Object.keys(G2).filter(k=>G2[k]).join(',')||'none',
+    device:{...DEVICE,view:[cw,ch],draw:[canvas.width,canvas.height],res:RES.k,low:RES.low,fcap:FCAP.v,style:styleNow()||'own',sky:tod},
     field:racers.map(r=>({name:r.name,ai:!!r.isAI,ghost:!!r.isGhost,rival:!!r.rival,frame:r.build?r.build.frame:null,skill:r.skill?r2(r.skill):null,weapons:r.weapons?[...r.weapons]:[]})),
     cols:['t','u','lat','v','pitch','dive','steer','brake','boost','hp','ammo','place','air','h','fps'],s:[],ev:[],fN:0,fT:0,fh:new Array(101).fill(0),
     acc:{boostT:0,selfBoostT:0,diveT:0,downT:0,upT:0,airT:0,crestAirT:0,scrapeT:0,emptyT:0,lowT:0,vSum:0,vN:0,vMax:0,shots:{},hitsOn:{},hitsBy:{},dmg:{},wall:0,wallDmg:0,wrecks:0,falls:0,offs:0,clips:0,pads:0,routes:{long:0,short:0}},
@@ -3803,7 +3828,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   (o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,i===0?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:34,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:35,log:logShareable(L)});if(body.length>400000)return;
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
 function logSave(L){let idx=logIndex();idx.push(L.id);while(idx.length>60){store.del?store.del('hoverline.log.'+idx[0]):store.set('hoverline.log.'+idx[0],'');idx.shift()}
@@ -4197,8 +4222,14 @@ chip('flipChip',()=>tilt.flip,v=>{tilt.flip=v;store.set('hoverline.flip',v?'1':'
 const syncPitch=()=>{const el=$('pitchChip');el.textContent=['Tilt pitch','Tilt pitch · inverted','Tilt pitch off'][tilt.pitchMode];el.setAttribute('aria-pressed',String(tilt.pitchMode<2))};
 $('pitchChip').onclick=()=>{tilt.pitchMode=(tilt.pitchMode+1)%3;store.set('hoverline.tpitch',String(tilt.pitchMode));syncPitch()};syncPitch();
 chip('sndChip',()=>audio.on,v=>audio.setOn(v));
-const syncMusic=()=>document.querySelectorAll('[data-music]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.music===music.style)));
-document.querySelectorAll('[data-music]').forEach(b=>b.onclick=()=>{audio.init();music.setStyle(b.dataset.music);music.setMood(S.state==='menu'?'menu':'race');syncMusic()});syncMusic();
+const BOTHN={blend:'Each tune mixes the two: drum & bass or breakbeat drums under trance hooks, at 174 or 138 bpm.',random:'Each new tune is drum & bass or trance, at random.',turn:'Drum & bass and trance take turns, tune by tune.'};
+const syncMusic=()=>{const st=music.style,on=k=>k==='off'?st==='off':st===k||st==='both';document.querySelectorAll('[data-music]').forEach(b=>b.setAttribute('aria-pressed',String(on(b.dataset.music))));
+  $('bothRow').hidden=st!=='both';document.querySelectorAll('[data-both]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.both===music.both)));$('bothNote').textContent=BOTHN[music.both]||''};
+document.querySelectorAll('[data-both]').forEach(b=>b.onclick=()=>{audio.init();music.setBoth(b.dataset.both);music.setMood(S.state==='menu'?'menu':'race');syncMusic();audio.blip(660,0.06,0.05)});
+/* Drum & bass and Trance are switches (both can be on); Off turns the music off; the last style on stays on. */
+document.querySelectorAll('[data-music]').forEach(b=>b.onclick=()=>{audio.init();const m=b.dataset.music,cur=music.style;let nx=m;
+  if(m!=='off'){const on={dnb:cur==='dnb'||cur==='both',trance:cur==='trance'||cur==='both'};on[m]=!on[m];nx=on.dnb&&on.trance?'both':on.dnb?'dnb':on.trance?'trance':m}
+  if(nx!==cur)music.setStyle(nx);music.setMood(S.state==='menu'?'menu':'race');syncMusic()});syncMusic();
 /* Menu music: the ambient theme by default; the Race music button plays the race arrangement in the menu instead
    (for this visit only, so the game always opens on the ambient theme). */
 let menuListen=false;
@@ -4291,7 +4322,7 @@ function openSet(from){logUI();setFrom=from;$(from).hidden=true;$('set').hidden=
 function closeSet(){$('set').hidden=true;const f=setFrom;setFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}
 function setSync(){for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.value=String(audio[k]);$(id+'V').textContent=audio[k]+'%'}
   $('sndChip').setAttribute('aria-pressed',String(audio.on));
-  {const n=GOPT.filter(([k])=>g2(k)).length,st=styleNow();$('gfxNote').textContent=(st?STYLES[st].n+' look':'Your own look')+` · ${n} of ${GOPT.length} parts on.`+(RES.k<1?` Resolution ${Math.round(RES.k*100)}%.`:'')+(RES.low?' Low detail.':'')+(st==='ultra'?' The lightest of all; the resolution slider goes lower still.':st==='lite'?' Light, for older phones; Ultra low is lighter still.':' Pick Lite, or Ultra low, if the game stutters.')}}
+  {const n=GOPT.filter(([k])=>g2(k)).length,st=styleNow();$('gfxNote').textContent=(st?STYLES[st].n+' look':'Your own look')+` · ${n} of ${GOPT.length} parts on.`+(RES.k<1?` Resolution ${Math.round(RES.k*100)}%.`:'')+(RES.low?' Low detail.':'')+(FCAP.v?` Capped at ${FCAP.v} fps.`:'')+(st==='ultra'?' The lightest of all; the resolution slider goes lower still.':st==='lite'?' Light; Ultra low is lighter still.':' Pick Lite, or Ultra low, if the game stutters.')}}
 for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.addEventListener('input',()=>{audio[k]=+el.value;store.set('hoverline.'+k,el.value);$(id+'V').textContent=el.value+'%';audio.applyVol()});
   el.addEventListener('change',()=>{audio.init();audio.applyVol();if(k==='volS')audio.blip(660,0.12,0.12,'triangle')})}
 $('sndChip').onclick=()=>{audio.init();audio.setOn(!audio.on);setSync()};
@@ -5687,11 +5718,13 @@ document.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>setCam(+b.datas
   for(const[k,name,desc,cost]of GOPT){const b=document.createElement('button');b.dataset.g=k;b.innerHTML=`<em>${cost}</em>${name}<small>${desc}</small>`;b.setAttribute('aria-pressed',String(g2(k)));
     b.onclick=()=>{G2[k]=g2(k)?0:1;GFX.ok=true;g2Save();b.setAttribute('aria-pressed',String(g2(k)));if(k==='reflect')VFX.applyEnv();audio.blip(g2(k)?880:440,0.06,0.05);syncSty()};list.append(b)}
   const syncSty=()=>{const st=styleNow();document.querySelectorAll('[data-sty]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sty===st)));
-    $('resR').value=String(Math.round(RES.k*100));$('resV').textContent=Math.round(RES.k*100)+'%';$('lowBtn').setAttribute('aria-pressed',String(RES.low))};
+    $('resR').value=String(Math.round(RES.k*100));$('resV').textContent=Math.round(RES.k*100)+'%';$('lowBtn').setAttribute('aria-pressed',String(RES.low));
+    {const i=FCAPS.indexOf(FCAP.v);$('fcapR').value=String(i<0?FCAPS.length-1:i);$('fcapV').textContent=FCAP.v?FCAP.v+' fps':'No cap'}};
+  $('fcapR').oninput=()=>{FCAP.v=FCAPS[clamp(+$('fcapR').value|0,0,FCAPS.length-1)];store.set('hoverline.fcap',String(FCAP.v));FCAP.due=0;syncSty()};$('fcapR').onchange=()=>audio.blip(660,0.06,0.05);
   $('resR').oninput=()=>{RES.k=clamp(Math.round(+$('resR').value/5)*5/100,0.1,1);resSave();syncSty()};$('resR').onchange=()=>audio.blip(660,0.06,0.05);
   $('lowBtn').onclick=()=>{RES.low=!RES.low;resSave();syncSty();audio.blip(RES.low?880:440,0.06,0.05)};
   const sync=()=>{list.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(g2(b.dataset.g))));syncSty()};
-  document.querySelectorAll('[data-sty]').forEach(b=>b.onclick=()=>{const st=STYLES[b.dataset.sty],on=st.on;for(const[k]of GOPT)G2[k]=on.includes(k)?1:0;RES.k=st.res||1;RES.low=!!st.low;resSave();GFX.ok=true;g2Save();sync();VFX.applyEnv();audio.blip(660,0.06,0.05)});
+  document.querySelectorAll('[data-sty]').forEach(b=>b.onclick=()=>{const st=STYLES[b.dataset.sty],on=st.on;for(const[k]of GOPT)G2[k]=on.includes(k)?1:0;RES.k=st.res||1;RES.low=!!st.low;FCAP.v=st.fcap||0;store.set('hoverline.fcap',String(FCAP.v));FCAP.due=0;resSave();GFX.ok=true;g2Save();sync();VFX.applyEnv();audio.blip(660,0.06,0.05)});
   const fpsSync=()=>{$('fpsBtn').setAttribute('aria-pressed',String(FPS.on));$('fps').hidden=!FPS.on};fpsSync();
   $('fpsBtn').onclick=()=>{FPS.on=!FPS.on;store.set('hoverline.fps',FPS.on?'1':'0');FPS.n=FPS.acc=0;$('fps').textContent='… FPS';fpsSync();audio.blip(FPS.on?880:440,0.06,0.05)};
   $('gfxOpen').onclick=()=>{$('set').hidden=true;$('gfxm').hidden=false;sync()};$('gDone').onclick=()=>{$('gfxm').hidden=true;$('set').hidden=false;setSync()}}
@@ -5702,7 +5735,7 @@ function placeShip(r,t){
   back.copy(s.t).negate();right.crossVectors(s.u,back).normalize();up.crossVectors(back,right);
   mtx.makeBasis(right,up,back);qT.setFromRotationMatrix(mtx);
   qY.setFromAxisAngle(AX_Y,r.yaw);qS.setFromAxisAngle(AX_Y,r.spin);qR.setFromAxisAngle(AX_Z,-r.steerS*0.45+(r.rollA||0));
-  const sfp=surf(r.u,r.lat),gh=sfp.h,gsl=Math.atan(sfp.sl);
+  const sfp=surf(r.u,r.lat,r,!(r.isGhost||r.proxy)),gh=sfp.h,gsl=Math.atan(sfp.sl);
   pos.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));if(r.isGhost)r.vh=0;
   qP.setFromAxisAngle(AX_X,r.pitch*0.25+gsl+(r.air?clamp(r.vh/Math.max(30,r.v),-0.5,0.5)*0.6:0));
   r.ship.position.copy(pos);r.ship.quaternion.copy(qT).multiply(qY).multiply(qS).multiply(qP).multiply(qR);
@@ -5878,13 +5911,13 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
     /* The road is drawn as one wide quad per 2 m sample, split corner to corner into two triangles, so where it twists
        (twists, corkscrews, a change of bank) it folds off the smooth surface, by over half a metre on a wide road. Each point
        takes the same fold, and lifts by a quarter of it so the pool clears the creases between its points. */
-    for(let j=0;j<5;j++){const a=-2.2+(j/4-0.5)*6.5*k;for(let i=0;i<3;i++){const x=(i/2-0.5)*3.4*k,uu=r.u+a*cy+x*sy,f=surf(uu,r.lat),l=clamp(r.lat+x*cy-a*sy,f.lo,f.hi),n=(j*3+i)*3;sampleAt(uu,o);
+    for(let j=0;j<5;j++){const a=-2.2+(j/4-0.5)*6.5*k;for(let i=0;i<3;i++){const x=(i/2-0.5)*3.4*k,uu=r.u+a*cy+x*sy,f=surf(uu,r.lat,r,1),l=clamp(r.lat+x*cy-a*sy,f.lo,f.hi),n=(j*3+i)*3;sampleAt(uu,o);
       const fr=(((uu%T.L)+T.L)%T.L)/T.ds,i0=Math.floor(fr)%T.N,al=fr-Math.floor(fr),Ra=T.R[i0],Rb=T.R[(i0+1)%T.N],dx=Ra.x-Rb.x,dy=Ra.y-Rb.y,dz=Ra.z-Rb.z,w=f.hi-f.lo,be=(l-f.lo)/w,
         c=(al+be<=1?al*be:(1-al)*(1-be))*w,h=f.h+0.1+0.25*w*Math.abs(dx*o.u.x+dy*o.u.y+dz*o.u.z);
       q[n]=o.p.x+o.r.x*l+o.u.x*h+dx*c;q[n+1]=o.p.y+o.r.y*l+o.u.y*h+dy*c;q[n+2]=o.p.z+o.r.z*l+o.u.z*h+dz*c}}
     P.geometry.attributes.position.needsUpdate=true;
     /* surf's answer is shared, so ask it again for the ship's own spot (placeShip goes on to use it) */
-    const f=surf(r.u,r.lat),off=Math.max(f.lo-r.lat,r.lat-f.hi,0);
+    const f=surf(r.u,r.lat,r,1),off=Math.max(f.lo-r.lat,r.lat-f.hi,0);
     P.material.color.setHex(bo?0x3ff0ff:0xff8a1f);P.material.opacity=(0.22+0.3*clamp(r.v/VMAX,0,1)+(bo?0.25:0))*fd*clamp(1-off/2,0,1)},
   applyEnv(){const on=g2('reflect');if(on&&T&&this.envT!==T&&!NO_RENDER){this.init();if(this.envRT)this.envRT.dispose();this.envRT=new THREE.WebGLCubeRenderTarget(128,{generateMipmaps:true,minFilter:THREE.LinearMipmapLinearFilter});
       const cc=new THREE.CubeCamera(1,3000,this.envRT),b=T.bounds;let y=0;for(let i=0;i<T.N;i+=20)y+=T.P[i].y;y/=Math.ceil(T.N/20);cc.position.set((b.minX+b.maxX)/2,y+30,(b.minZ+b.maxZ)/2);
@@ -5918,6 +5951,7 @@ const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_v
 function fpsTick(d){const ov=(g2('scan')?'s':'')+(g2('vig')?'v':'');if(ov!==FPS.ov){FPS.ov=ov;$('scrS').hidden=!g2('scan');$('scrV').hidden=!g2('vig');$('scrS').style.setProperty('--sl',(4/Math.min(devicePixelRatio||1,2)).toFixed(2)+'px')}
   if(!FPS.on||!(d>0))return;FPS.n++;FPS.acc+=d;if(FPS.acc>=0.5){$('fps').textContent=Math.round(FPS.n/FPS.acc)+' FPS';FPS.n=0;FPS.acc=0}}
 function frame(now){
+  if(FCAP.v){const ms=1000/FCAP.v;if(now<FCAP.due-1.5){requestAnimationFrame(frame);return}FCAP.due=now-FCAP.due>ms*2?now+ms:FCAP.due+ms}
   const rawDt=(now-lastT)/1000,dt=Math.min(0.05,rawDt);lastT=now;fit();fpsTick(rawDt);logFrame(rawDt);
   greenTex.offset.y-=dt*1.6;purpleTex.offset.y-=dt*1.6;
   if(S.state==='lab'){S.t+=dt;readInput();labFrame(dt);GFX.fx=0;gfxRender(labScene,labCam)}
