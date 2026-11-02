@@ -16,7 +16,7 @@ How the Claude sessions on the designer's Steam Deck make each update. These not
 4. Browser check (see Testing below).
 5. Update `CHANGELOG.md` (a new `## Prototype N` at the top, written in the same plain style) and `docs/DESIGN.md`.
 6. Bump the version in three places:
-   - the menu subtitle `Prototype N · 8 ships · 3 laps`
+   - the menu subtitle `Prototype N · 8 frames · 3 laps`
    - `logShare`'s `{v:N,` (the version shared logs are sent as)
    - `BOARD_ERA`, only when track building or handling changes enough to make old times unfair. Say so in the changelog. Career track codes (`CAR_T`) should still build the same road.
 7. Commit with a message like the existing ones (`Prototype N: short list of changes`) and push.

@@ -21,3 +21,37 @@ python3 compare.py base after    # before / after, once a second set is in resul
 - Rubber banding is off. A race is called at 1.5 times the winner's time (plus 10 s); anyone still racing gets an estimated time (`fte`).
 - About 1.5 to 3 s of CPU a race. Results are appended a race at a time, so a stopped run keeps what it had.
 - The AI rarely runs out of steering, so handling counts for less here than for a human pilot. Check findings against real race logs.
+- Autopilot does nothing for an AI pilot (it already flies itself), so in these runs it is 30 ammo spent for nothing and always looks the weakest module.
+
+## Bug hunt (Prototype 36)
+
+Every run also writes `OUTFILE.races.jsonl`, one line a race: the seed and track code, how long the track took to build and the race to run, where frames fell, clipped and were wrecked, and flags for anything that looks like a bug, checked four times a simulated second for every racer still racing:
+
+| Flag | Means |
+| --- | --- |
+| `err` | the track build or a step threw (message and stack kept) |
+| `nan` | position, speed, shield or ammo not a number |
+| `hp`, `ammo` | shield or ammo outside 0 to the build's maximum |
+| `speed` | negative, or over 2.2 times VMAX |
+| `stuck` | under 20 m of progress in 10 s while not wrecked |
+| `offroad` | on the ground more than 1.5 m outside its route's edges |
+| `longair` | in the air for over 8 s |
+| `fallLoop` | 3 falls or clips within 60 m |
+| `nofinish` | nobody finished |
+
+Each racer line also carries its lap times, wall touches, falls and clips.
+
+```
+python3 bugs.py results/DIR       # flags, errors, slow builds, odd laps, fall and wreck hot spots
+python3 pair.py results/A results/B   # two builds on the same races, race by race (needs numpy, like analyse.py)
+```
+
+Wrecks make a race's median lap a poor yardstick (one race's laps can run from 16 to 40 s), so a lap counts as odd when it is under 75% of the next-fastest lap of its race or averages over 1.3 times VMAX (a shortcut), or is over 2.5 times the median (a stuck frame).
+
+Prototype 36 ran 10,000 races (4,000 full, 2,000 frames, 2,000 weapons, 1,500 stats, 500 hauler) in chunks of 100 on 6 workers, about 100 minutes on the Steam Deck, then 2,000 of the same races again on the build with the stun fix for `pair.py`:
+
+```
+for each chunk: node balance.js MODE 100 OFFSET results/p36/MODE_OFFSET.jsonl
+ls results/p36/full_*.jsonl | grep -v races | xargs cat > results/p36all_full.jsonl   # and so on per mode, then
+python3 analyse.py p36all; python3 bugs.py results/p36
+```

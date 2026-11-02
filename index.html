@@ -50,7 +50,12 @@ body{font-family:var(--display);padding-left:max(16px,env(safe-area-inset-left,0
 .slots>span{display:flex;align-items:center;gap:7px;padding:3px 8px 3px 4px;border-radius:5px;background:rgba(10,12,18,.55);border:1px solid rgba(255,255,255,.08)}
 .slots .rdy{color:var(--ink);border-color:rgba(255,74,61,.55)}.slots .hold{box-shadow:0 0 12px rgba(255,210,122,.55);border-color:rgba(255,210,122,.8)}.slots small{font:500 11px var(--mono);opacity:.75}
 .slots kbd{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 5px;border-radius:5px;background:#2a2f3a;color:#fff;font:700 12px var(--mono);box-sizing:border-box}
-.slots kbd.pA{border-radius:50%;background:#2f9e44}.slots kbd.pB{border-radius:50%;background:#c92a2a}.slots kbd.pX{border-radius:50%;background:#1971c2}.slots kbd.pY{border-radius:50%;background:#e8a400;color:#111}
+.pg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+.wchip em.pk{border-radius:50%;min-width:17px;height:17px;display:inline-grid;place-items:center;padding:0 2px;box-sizing:border-box;color:#fff}
+.slots kbd.pA,.wchip em.pA{border-radius:50%;background:#2f9e44}.slots kbd.pB,.wchip em.pB{border-radius:50%;background:#c92a2a}.slots kbd.pX,.wchip em.pX{border-radius:50%;background:#1971c2}.slots kbd.pY,.wchip em.pY{border-radius:50%;background:#e8a400;color:#111}
+.slots kbd.psX,.slots kbd.psO,.slots kbd.psS,.slots kbd.psT,.slots kbd.pn,.slots kbd.pd,.wchip em.psX,.wchip em.psO,.wchip em.psS,.wchip em.psT,.wchip em.pn,.wchip em.pd{border-radius:50%;background:#1d222c;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
+.slots kbd.psX,.wchip em.psX{color:#8fb4ff}.slots kbd.psO,.wchip em.psO{color:#ff7a7a}.slots kbd.psS,.wchip em.psS{color:#ff9ce0}.slots kbd.psT,.wchip em.psT{color:#4fe0b0}
+.slots kbd.pn,.wchip em.pn,.slots kbd.pd,.wchip em.pd{color:#fff;background:#3a3f4a}
 @keyframes blink{50%{opacity:.35}}
 #pauseBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;transform:translateX(-50%);width:44px;height:36px;border:1px solid var(--line);background:rgba(10,12,18,.5);color:var(--ink);font:700 14px var(--display);border-radius:6px}
 #flash{position:fixed;inset:0;pointer-events:none;opacity:0}
@@ -364,7 +369,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 <div id="title" class="overlay">
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
-    <div class="sub">Prototype 35 · 8 ships · 3 laps</div>
+    <div class="sub">Prototype 37 · 8 frames · 3 laps</div>
     <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open full screen with tilt</a>
     <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip" data-music="dnb" aria-pressed="false">Drum &amp; bass</button><button class="chip" data-music="trance" aria-pressed="false">Trance</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button></div>
@@ -380,7 +385,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
       <button class="btn mode" id="carBtn">Career<small id="carBtnSub">Start slow on wide tracks · win credits and modules</small></button>
       <button class="btn mode" id="trialBtn">Time trial<small>Alone with the ghost of your best run</small></button>
       <button class="btn mode" id="trainBtn">Training<small>Short tracks that repeat one thing · hills, corners, jumps</small></button>
-      <button class="btn mode" id="labBtn">Ship lab<small id="buildSum"></small></button>
+      <button class="btn mode" id="labBtn">Frame lab<small id="buildSum"></small></button>
     </div>
     <div class="row"><button class="btn" id="playBack" data-back>Back</button></div>
   </div>
@@ -392,11 +397,11 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
     <div class="row" id="trDrills" role="group" aria-label="Drill"></div>
     <p id="trDesc"></p>
     <div class="row" role="group" aria-label="Width"><span class="sub">Width</span><button class="chip" data-trw="W">Wide</button><button class="chip" data-trw="S">Standard</button><button class="chip" data-trw="N">Narrow</button></div>
-    <div class="row" role="group" aria-label="Ship"><span class="sub">Ship</span><button class="chip" data-trs="cube">Training cube</button><button class="chip" data-trs="own">Your ship</button></div>
+    <div class="row" role="group" aria-label="Frame"><span class="sub">Frame</span><button class="chip" data-trs="cube">Training cube</button><button class="chip" data-trs="own">Your frame</button></div>
     <p class="small" id="trShip"></p>
     <div class="row" role="group" aria-label="Laps"><span class="sub">Laps</span><button class="chip" data-trl="3">3</button><button class="chip" data-trl="5">5</button><button class="chip" data-trl="10">10</button></div>
     <div class="t best" id="trBest"></div>
-    <div class="row"><button class="btn go" id="trGo">Start</button><button class="btn" id="trLab">Ship lab</button><button class="btn" id="trBack" data-back>Back</button></div>
+    <div class="row"><button class="btn go" id="trGo">Start</button><button class="btn" id="trLab">Frame lab</button><button class="btn" id="trBack" data-back>Back</button></div>
   </div>
   <div class="map"><canvas id="trPreview"></canvas><div class="small" id="trStats"></div></div>
 </div>
@@ -406,7 +411,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
     <div class="sub" id="carSub"></div>
     <div id="carList" class="col"></div>
     <div class="t best" id="carInfo"></div>
-    <div class="row"><button class="btn go" id="carGo">Race</button><button class="btn" id="carLab">Ship lab</button><button class="btn" id="carBuy"></button><button class="btn" id="carBack" data-back>Back</button></div>
+    <div class="row"><button class="btn go" id="carGo">Race</button><button class="btn" id="carLab">Frame lab</button><button class="btn" id="carBuy"></button><button class="btn" id="carBack" data-back>Back</button></div>
   </div>
   <div class="map"><canvas id="carPreview"></canvas><div class="small" id="carStats"></div></div>
 </div>
@@ -457,7 +462,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 </div>
 <div id="lab" class="overlay" hidden>
   <div class="card">
-    <div class="logo">SHIP <b>LAB</b></div>
+    <div class="logo">FRAME <b>LAB</b></div>
     <div class="sub">Frame</div>
     <div class="row" id="labFrame" role="group" aria-label="Frame"></div>
     <p id="labFdesc"></p>
@@ -489,7 +494,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
       <div class="big" id="mpRoom">·····</div>
       <div class="t best" id="mpStatus"></div>
       <table id="mpList"></table>
-      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Ship lab</button><button class="btn" id="mpOpt">Options</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
+      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Frame lab</button><button class="btn" id="mpOpt">Options</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
       <p class="small" id="mpHint"></p>
       <div class="t" id="mpTrack"></div>
       <div id="mpHostRow" class="col">
@@ -555,7 +560,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
     <p class="small" id="logInfo"></p>
     <div class="row"><button class="chip" id="logChip" aria-pressed="true">Record races</button><button class="chip" id="logAll">Download all logs</button><button class="chip" id="logCopy">Copy all logs</button><button class="chip" id="logClear">Clear logs</button></div>
     <div class="row"><button class="chip" id="shareChip" aria-pressed="true">Share race data</button></div>
-    <p class="small" id="shareInfo">Each recorded race is also sent to the game's developer to help balance ships, modules and tracks. No names: other pilots in a room go as Pilot 1, Pilot 2 and so on. Switch it off any time.</p>
+    <p class="small" id="shareInfo">Each recorded race is also sent to the game's developer to help balance frames, modules and tracks. No names: other pilots in a room go as Pilot 1, Pilot 2 and so on. Switch it off any time.</p>
     <div class="row"><button class="btn go" id="setDone" data-back>Done</button></div>
     <p class="small credit">Music is synthesised live, with drum hits and effects from the Sonic Pi sample pack (freesound.org recordings, public domain under CC0). The announcer and sung chops use the open Kokoro speech model (Apache-2.0). Sound effects are public-domain (CC0) recordings from Kenney (kenney.nl), rubberduck on OpenGameArt.org and the Sonic Pi pack.</p>
   </div>
@@ -579,9 +584,9 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
     <div class="row" role="group" aria-label="Looks"><button class="chip" data-sty="ultra">Ultra low</button><button class="chip" data-sty="lite">Lite</button><button class="chip" data-sty="clean">Clean</button><button class="chip" data-sty="arcade">Arcade</button><button class="chip" data-sty="all">Everything</button></div>
     <div class="gopt" id="goptList"></div>
     <div class="slrow"><label for="resR">Resolution</label><input type="range" id="resR" min="10" max="100" step="5"><span id="resV"></span></div>
-    <div class="slrow"><label for="fcapR">Frame rate cap</label><input type="range" id="fcapR" min="0" max="19" step="1"><span id="fcapV"></span></div>
+    <div class="slrow"><label for="fcapR">Frame rate cap</label><input type="range" id="fcapR" min="0" max="18" step="1"><span id="fcapV"></span></div>
     <div class="row"><button class="chip" id="lowBtn" aria-pressed="false">Low detail</button></div>
-    <div class="sub">Lower resolution is the biggest saving on a slow phone or tablet: 50% draws a quarter of the pixels, 20% (Ultra low) a twenty-fifth, and it goes down to 10%. A frame rate cap keeps a device that can't hold its screen's rate steady (Ultra low caps at 30), and saves battery; with no cap the game runs at the screen's own rate, however high. Low detail drops the ship shadows, thins the scenery and leaves out the falls and geysers (from the next track). Lite audio, in Music, saves a little more. Every look races the same, so times count on the boards whichever you pick.</div>
+    <div class="sub">Lower resolution is the biggest saving on a slow phone or tablet: 50% draws a quarter of the pixels, 20% (Ultra low) a twenty-fifth, and it goes down to 10%. A frame rate cap keeps a device that can't hold its screen's rate steady (Ultra low caps at 30), and saves battery; with no cap the game runs at the screen's own rate, however high. Low detail drops the frames' shadows, thins the scenery and leaves out the falls and geysers (from the next track). Lite audio, in Music, saves a little more. Every look races the same, so times count on the boards whichever you pick.</div>
     <div class="row"><button class="chip" id="fpsBtn" aria-pressed="false">FPS counter</button></div>
     <div class="row"><button class="btn go" id="gDone" data-back>Done</button></div>
   </div>
@@ -629,7 +634,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
     <div class="t best" id="resRecord"></div>
     <div class="t best" id="resBoard" hidden></div>
     <div class="t best" id="resCar" hidden></div>
-    <div class="row"><button class="btn go" id="againBtn">Race again</button><button class="btn" id="newBtn2">New track</button><button class="btn" id="resLab">Ship lab</button><button class="btn go" id="mpBackBtn" data-back hidden>Back to lobby</button><button class="btn" id="menuBtn" data-back>Menu</button></div>
+    <div class="row"><button class="btn go" id="againBtn">Race again</button><button class="btn" id="newBtn2">New track</button><button class="btn" id="resLab">Frame lab</button><button class="btn go" id="mpBackBtn" data-back hidden>Back to lobby</button><button class="btn" id="menuBtn" data-back>Menu</button></div>
     <div class="row"><button class="chip" id="songBtn" data-icon="next">New song</button><button class="chip" id="keepBtn3">♪ Keep this tune</button><button class="chip" id="logBtn">Save race log</button></div>
     <p class="small" id="resHint"></p>
   </div>
@@ -678,9 +683,11 @@ const canvas=$('c');
    touches the race, so times set with them count like any other. */
 const RES={k:clamp(+(store.get('hoverline.res')||1)||1,0.1,1),low:store.get('hoverline.low')==='1'};
 /* Frame rate cap (Prototype 35): 0 is no cap (the screen's own rate, whatever it is); otherwise frames are drawn no
-   faster than v a second, on the screen's own beat. Ultra low caps at 30. */
-const FCAPS=[15,20,24,30,36,40,45,50,60,72,75,90,100,120,144,165,180,240,360,0];
-const FCAP={v:Math.max(0,+(store.get('hoverline.fcap')||0)||0),due:0};
+   faster than v a second, on the screen's own beat. Ultra low caps at 30. Prototype 36: the lowest cap is 20 (a step
+   is held to 50 ms, so at 15 the race ran at three quarters speed), and a capped frame may run to 1.5 times the cap's
+   interval: a 20 cap on a 90 Hz screen alternates 44 and 56 ms frames, and the 50 ms hold ran that race at 94%. */
+const FCAPS=[20,24,30,36,40,45,50,60,72,75,90,100,120,144,165,180,240,360,0];
+const FCAP={v:Math.max(0,+(store.get('hoverline.fcap')||0)||0),due:0};if(FCAP.v>0&&FCAP.v<20){FCAP.v=20;store.set('hoverline.fcap','20')}
 const resRatio=()=>Math.min(devicePixelRatio||1,2)*RES.k;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:(devicePixelRatio||1)<1.5&&RES.k>=1&&!RES.low,powerPreference:'high-performance'});
 renderer.setPixelRatio(resRatio());
@@ -714,8 +721,8 @@ const GOPT=[
  ['scan','Scanlines','An old arcade screen look.','light'],
  ['jets','Boost jets','A pulsing jet with rings racing down it when you boost.','light'],
  ['debris','Debris','Explosions throw sparks and cubes that bounce along the road.','medium'],
- ['reflect','Reflections','Ships, the road and the sea reflect the world around them.','medium'],
- ['pools','Light pools','Engines cast coloured light on the road under each ship.','light'],
+ ['reflect','Reflections','Frames, the road and the sea reflect the world around them.','medium'],
+ ['pools','Light pools','Engines cast coloured light on the road under each frame.','light'],
  ['sky','Starry sky','Stars and an aurora above the city and the forest at night (Stratos, Ocean and Reef always have their own sky, and by day every setting has a daylight sky).','light'],
  ['haze','Atmosphere','A coloured haze that thickens with distance.','light'],
  ['motes','Floating particles','Dust, spray, fireflies or star dust drifting in the air.','light'],
@@ -744,11 +751,13 @@ const FPS={on:store.get('hoverline.fps')==='1',n:0,acc:0,ov:''};
   GFX.bright=M('uniform sampler2D t;uniform float th;varying vec2 vUv;void main(){vec3 c=texture2D(t,vUv).rgb;float l=max(c.r,max(c.g,c.b));gl_FragColor=vec4(c*smoothstep(th,th+0.35,l),1.);}',{t:{value:null},th:{value:0.76}});
   GFX.blur=M('uniform sampler2D t;uniform vec2 d;varying vec2 vUv;void main(){vec3 s=texture2D(t,vUv).rgb*0.227;s+=(texture2D(t,vUv+d*1.385).rgb+texture2D(t,vUv-d*1.385).rgb)*0.316;s+=(texture2D(t,vUv+d*3.231).rgb+texture2D(t,vUv-d*3.231).rgb)*0.070;gl_FragColor=vec4(s,1.);}',{t:{value:null},d:{value:new THREE.Vector2()}});
   GFX.copy=M('uniform sampler2D t;varying vec2 vUv;void main(){gl_FragColor=vec4(texture2D(t,vUv).rgb,1.);}',{t:{value:null}});
-  GFX.comp=M(`uniform sampler2D tB,tA,tC;uniform float bl,fx,ca,vig,sat,grain,scan,aa,tm;uniform vec2 rs;varying vec2 vUv;
+  GFX.comp=M(`uniform sampler2D tB,tA,tC;uniform float bl,fx,ca,gli,vig,sat,grain,scan,aa,tm;uniform vec2 rs;varying vec2 vUv;
     float lum(vec3 c){return dot(c,vec3(.299,.587,.114));}
     void main(){vec2 c=vUv-0.5;vec3 col;
       if(fx>0.002){float k=fx*0.022;col=vec3(0.);for(int i=0;i<6;i++){float f=1.-k*float(i)/5.;col+=texture2D(tB,0.5+c*f).rgb;}col/=6.;}
       else col=texture2D(tB,vUv).rgb;
+      if(gli>0.002){float b=floor(vUv.y*(14.+30.*fract(tm*2.3)));float h=fract(sin(b*91.7+floor(tm*30.)*13.1)*43758.5453);
+        if(h<gli*0.45){float o=(fract(h*31.7)-0.5)*0.05*gli;vec2 u=vec2(vUv.x+o,vUv.y);col=vec3(texture2D(tB,u+vec2(0.006*gli,0.)).r,texture2D(tB,u).g,texture2D(tB,u-vec2(0.006*gli,0.)).b)+vec3(0.05,0.,0.08)*gli;}}
       if(aa>0.5){vec2 px=1./rs;vec3 n=texture2D(tB,vUv+vec2(0.,px.y)).rgb,s=texture2D(tB,vUv-vec2(0.,px.y)).rgb,e=texture2D(tB,vUv+vec2(px.x,0.)).rgb,w=texture2D(tB,vUv-vec2(px.x,0.)).rgb;
         float l0=lum(col),mx=max(l0,max(max(lum(n),lum(s)),max(lum(e),lum(w)))),mn=min(l0,min(min(lum(n),lum(s)),min(lum(e),lum(w))));col=mix(col,(n+s+e+w+col)/5.,smoothstep(0.05,0.3,mx-mn)*0.6);}
       if(ca>0.002){float a=ca*0.006;col.r=mix(col.r,texture2D(tB,0.5+c*(1.+a)).r,0.7);col.b=mix(col.b,texture2D(tB,0.5+c*(1.-a)).b,0.7);}
@@ -756,7 +765,7 @@ const FPS={on:store.get('hoverline.fps')==='1',n:0,acc:0,ov:''};
       if(sat>1.001){float lu=lum(col);col=mix(vec3(lu),col,sat);col=(col-0.5)*1.06+0.5;}
       col=col/(1.+col*0.1);
       if(grain>0.){float g=fract(sin(dot(floor(vUv*rs)+tm*61.,vec2(12.9898,78.233)))*43758.5453);col+=(g-0.5)*0.07;}
-      gl_FragColor=vec4(max(col,0.),1.);}`,{tB:{value:null},tA:{value:null},tC:{value:null},bl:{value:0.85},fx:{value:0},ca:{value:0},vig:{value:0.45},sat:{value:1},grain:{value:0},scan:{value:0},aa:{value:0},tm:{value:0},rs:{value:new THREE.Vector2(1,1)}})})();
+      gl_FragColor=vec4(max(col,0.),1.);}`,{tB:{value:null},tA:{value:null},tC:{value:null},bl:{value:0.85},fx:{value:0},ca:{value:0},gli:{value:0},vig:{value:0.45},sat:{value:1},grain:{value:0},scan:{value:0},aa:{value:0},tm:{value:0},rs:{value:new THREE.Vector2(1,1)}})})();
 function gfxSize(w,h){GFX.w=w;GFX.h=h;for(const k of['rt','b1','b2','b3','b4'])if(GFX[k])GFX[k].dispose();
   const opt={minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,format:THREE.RGBAFormat,depthBuffer:false};
   GFX.rt=renderer.capabilities.isWebGL2&&THREE.WebGLMultisampleRenderTarget&&!touchCapable?new THREE.WebGLMultisampleRenderTarget(w,h,{format:THREE.RGBAFormat}):new THREE.WebGLRenderTarget(w,h,{format:THREE.RGBAFormat});
@@ -770,7 +779,7 @@ function gfxRender(sc,cam){const inf=renderer.info.render;if(!postOn()||!GFX.ok)
       const B=GFX.blur.uniforms;B.t.value=GFX.b1.texture;B.d.value.set(1/GFX.b1.width,0);gfxPass(GFX.blur,GFX.b2);B.t.value=GFX.b2.texture;B.d.value.set(0,1/GFX.b1.height);gfxPass(GFX.blur,GFX.b1);
       GFX.copy.uniforms.t.value=GFX.b1.texture;gfxPass(GFX.copy,GFX.b3);
       B.t.value=GFX.b3.texture;B.d.value.set(1.5/GFX.b3.width,0);gfxPass(GFX.blur,GFX.b4);B.t.value=GFX.b4.texture;B.d.value.set(0,1.5/GFX.b3.height);gfxPass(GFX.blur,GFX.b3)}
-    const C=GFX.comp.uniforms;C.tB.value=GFX.rt.texture;C.tA.value=GFX.b1.texture;C.tC.value=GFX.b3.texture;C.bl.value=bloom?0.85:0;C.fx.value=g2('blur')?GFX.fx:0;C.ca.value=g2('aberr')?GFX.fx:0;
+    const C=GFX.comp.uniforms;C.tB.value=GFX.rt.texture;C.tA.value=GFX.b1.texture;C.tC.value=GFX.b3.texture;C.bl.value=bloom?0.85:0;C.fx.value=g2('blur')?GFX.fx:0;C.ca.value=g2('aberr')?GFX.fx:0;C.gli.value=GFX.gl||0;
     C.vig.value=g2('vig')?0.45:0;C.sat.value=g2('grade')?1.18:1;C.grain.value=g2('grain')?1:0;C.scan.value=g2('scan')?1:0;C.aa.value=g2('fxaa')?1:0;C.tm.value=(performance.now()/1000)%100;C.rs.value.set(w,h);gfxPass(GFX.comp,null)}
   catch(e){GFX.ok=false;renderer.setRenderTarget(null);renderer.render(sc,cam)}}
 function makeTex(draw,w,h){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return t}
@@ -1721,20 +1730,20 @@ const BUDGET=15,SMIN=1,SMAX=5;let BUD=BUDGET,buildKey='hoverline.build';
 const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backwards when nobody is ahead.'},
   cannon:{name:'Cannon',cost:5,desc:'Rapid straight bolts. Hold the button to keep firing.'},
   mines:{name:'Mines',cost:30,desc:'Drops three mines behind you.'},
-  shock:{name:'Shockwave',cost:30,desc:'Damages and slows every ship within 36 m.'},
+  shock:{name:'Shockwave',cost:30,desc:'Damages and slows every frame within 40 m.'},
   turbo:{name:'Turbo',cost:25,desc:'A 2.4-second speed burst.'},
   barrier:{name:'Barrier',cost:35,desc:'Blocks all damage for 3.5 seconds.'},
-  phase:{name:'Phase',cost:20,desc:'For 1.5 seconds weapons pass straight through you, and so do other ships.'},
+  phase:{name:'Phase',cost:20,desc:'For 1.5 seconds weapons pass straight through you, and so do other frames.'},
   decoy:{name:'Decoy',cost:15,desc:'Drops a flare. Homing missiles, the Swarm and the Hunter chasing you go for it instead.'},
-  rockets:{name:'Rockets',cost:20,desc:'Three straight rockets in a spread. No homing: aim with the ship.'},
-  swarm:{name:'Swarm',cost:35,desc:'Four small homing missiles, one for each of the nearest ships ahead.'},
-  quake:{name:'Quake',cost:40,desc:'A wave that rolls up the track ahead with one gap in it, hitting every ship it catches and clearing mines.'},
+  rockets:{name:'Rockets',cost:20,desc:'Three straight rockets in a spread. No homing: aim with your frame.'},
+  swarm:{name:'Swarm',cost:35,desc:'Four small homing missiles, one for each of the nearest frames ahead.'},
+  quake:{name:'Quake',cost:35,desc:'A wave that rolls up the track ahead with one gap in it, hitting every frame it catches and clearing mines.'},
   bouncer:{name:'Bouncer',cost:20,desc:'A heavy orb that bounces off the walls. It can come back and hit you.'},
   hunter:{name:'Hunter',cost:40,desc:'Hunts down the race leader, wherever they are. If you lead, it drops back and waits for second place.'},
-  emp:{name:'EMP',cost:30,desc:'Every ship within 400 m ahead loses its modules and boost for 4.5 seconds and slows down.'},
+  emp:{name:'EMP',cost:25,desc:'Every frame within 400 m ahead loses its modules and boost for 4.5 seconds and slows down.'},
   smoke:{name:'Smoke',cost:15,desc:'Leaves a cloud behind you. Pilots who fly through it lose most of their view for a moment, and a little speed.'},
-  autopilot:{name:'Autopilot',cost:30,desc:'The autopilot flies the ship for 4.5 seconds while you get your breath back.'},
-  overdrive:{name:'Overdrive',cost:50,desc:'3.5 seconds untouchable and faster. Ram other ships to dent their shields and slow them.'},
+  autopilot:{name:'Autopilot',cost:30,desc:'The autopilot flies your frame for 4.5 seconds while you get your breath back. Your other module and boost still work.'},
+  overdrive:{name:'Overdrive',cost:60,desc:'3 seconds untouchable and faster. Ram other frames to dent their shields and slow them.'},
   scoopS:{name:'Shield scoop',cost:0,passive:true,desc:'Not a weapon: green strips recharge your shield twice as fast. It takes a module slot, and you cannot fit it with the Ammo scoop.'},
   scoopA:{name:'Ammo scoop',cost:0,passive:true,desc:'Not a weapon: purple strips refill your ammo twice as fast. It takes a module slot, and you cannot fit it with the Shield scoop.'}};
 const SCOOPS=['scoopS','scoopA'],bothScoops=w=>SCOOPS.every(k=>w.includes(k));
@@ -1764,8 +1773,8 @@ const PAINTS=[{n:'Ivory',body:0xeeeae0,stripe:0xffb000,css:'#ffb000'},{n:'Ink',b
 const FRAMES={
  blade:{name:'Blade',tag:'all-rounder',desc:'The all-rounder: twin engine pods and wide wings. No strengths, no weaknesses.',m:{vmax:1,accel:1,turn:1,hp:1,ammo:1},size:1,mass:1,aero:1,glide:1},
  tether:{name:'Tether',tag:'twin engines',desc:'Two huge engines tow a little cockpit on cables. The highest top speed, but wide, slow to turn and fragile.',m:{vmax:1.04,accel:1.02,turn:0.88,hp:0.78,ammo:1},size:1.15,mass:0.95,aero:1,glide:1},
- skiff:{name:'Skiff',tag:'hover bike',desc:'A hover bike. Narrow and nimble: the hardest ship to hit, with the best grip and a quick pick-up. Light armour, small magazine.',m:{vmax:0.985,accel:1.04,turn:1.12,hp:0.76,ammo:0.85},size:0.72,mass:0.75,aero:1,glide:1},
- hauler:{name:'Hauler',tag:'heavy',desc:'Four engines and a lot of armour. Slow to get going, but it shrugs off hits, carries the most ammo and wins every shove.',m:{vmax:0.985,accel:0.95,turn:0.94,hp:1.3,ammo:1.2},size:1.2,mass:1.6,aero:1,glide:1},
+ skiff:{name:'Skiff',tag:'hover bike',desc:'A hover bike. Narrow and nimble: the hardest frame to hit, with the best grip and a quick pick-up. Light armour, small magazine.',m:{vmax:0.985,accel:1.04,turn:1.12,hp:0.76,ammo:0.85},size:0.72,mass:0.75,aero:1,glide:1},
+ hauler:{name:'Hauler',tag:'heavy',desc:'Four engines and a lot of armour. It shrugs off hits, carries the most ammo and wins every shove, but it is the widest target.',m:{vmax:0.995,accel:1.0,turn:0.94,hp:1.3,ammo:1.2},size:1.2,mass:1.6,aero:1,glide:1},
  dart:{name:'Dart',tag:'delta wing',desc:'A delta wing built for the air. Nose-down streamlining is worth half as much again, and it glides further off jumps and crests. Thin armour.',m:{vmax:1.01,accel:0.97,turn:1.02,hp:0.95,ammo:0.95},size:1.05,mass:0.9,aero:1.5,glide:0.82},
  orb:{name:'Orb',tag:'sphere',desc:'A ball with engines bolted on. It bounces off the walls instead of grinding along them: wall hits cost a quarter of the speed and shield. Round, so streamlining does little, and it is a big target.',m:{vmax:0.99,accel:1.02,turn:0.98,hp:1.1,ammo:1},size:1.15,mass:1.2,aero:0.6,glide:1,wallK:0.25},
  roller:{name:'Roller',tag:'hover car',desc:'A low hover car on four flat anti-grav discs. Landings cost nothing and it stays planted over crests. Heavy, so it wins shoves.',m:{vmax:0.99,accel:1.0,turn:1.04,hp:1.1,ammo:1},size:1.1,mass:1.35,aero:0.9,glide:1,soft:true,plant:1.35},
@@ -3275,7 +3284,22 @@ const touch={steer:0,pitch:0,brake:0,boost:0,f1:0,f2:0};
 const ACTS=[['w1','Module 1'],['w2','Module 2'],['boost','Boost'],['brake','Brake'],['song','Next song'],['view','Change view'],['pause','Pause']];
 const PAD_DEF={w1:0,w2:1,boost:7,brake:6,song:4,view:5,pause:9};
 const KEY_DEF={w1:['Space','KeyJ'],w2:['KeyF','KeyK'],boost:['KeyE','KeyL'],brake:['ShiftLeft','ShiftRight','KeyB'],song:['KeyN'],view:['KeyC'],pause:['Escape','KeyP']};
-const PAD_NAMES=['A','B','X','Y','LB','RB','LT','RT','View','Menu','L3','R3','D↑','D↓','D←','D→','Guide'];
+/* Button names follow the pad in use (Prototype 36), read from the id the browser gives it: Xbox (the default),
+   PlayStation, Nintendo (named by place, so the bottom face button is B) and the Steam Deck (plain letters, L1/R1 and
+   L2/R2). The face buttons get their own look on the HUD and in the Frame lab. */
+const PAD_LAYOUTS={
+  xbox:{n:['A','B','X','Y','LB','RB','LT','RT','View','Menu','L3','R3','D↑','D↓','D←','D→','Guide'],c:['pA','pB','pX','pY']},
+  ps:{n:['✕','○','□','△','L1','R1','L2','R2','Create','Options','L3','R3','D↑','D↓','D←','D→','PS'],c:['psX','psO','psS','psT']},
+  nin:{n:['B','A','Y','X','L','R','ZL','ZR','−','+','L3','R3','D↑','D↓','D←','D→','Home'],c:['pn','pn','pn','pn']},
+  deck:{n:['A','B','X','Y','L1','R1','L2','R2','View','Menu','L3','R3','D↑','D↓','D←','D→','Steam'],c:['pd','pd','pd','pd']}};
+/* Valve first (the Deck, or any pad through Steam Input, which presents itself as an Xbox 360 pad), then Xbox (its
+   "Xbox Wireless Controller" would otherwise read as Sony's "Wireless Controller"), Sony, Nintendo; anything else is Xbox. */
+const padKindOf=id=>{id=String(id||'').toLowerCase();return/28de|steam|valve/.test(id)?'deck':/045e|xbox|x-box|xinput/.test(id)?'xbox':/054c|playstation|dualshock|dualsense|wireless controller|ps[345]/.test(id)?'ps':/057e|nintendo|pro controller|joy-con|switch/.test(id)?'nin':'xbox'};
+const PAD={kind:PAD_LAYOUTS[store.get('hoverline.padkind')]?store.get('hoverline.padkind'):'xbox',id:''};
+const padName=i=>PAD_LAYOUTS[PAD.kind].n[i]||'?',padCls=i=>i>=0&&i<4?PAD_LAYOUTS[PAD.kind].c[i]:'';
+/* a button's face for the HUD and the Frame lab: PlayStation's symbols drawn (as text they come out too small to read) */
+const PS_SVG=['<path d="M3 3l6 6M9 3l-6 6"/>','<circle cx="6" cy="6" r="3.6"/>','<rect x="2.6" y="2.6" width="6.8" height="6.8"/>','<path d="M6 2.3L9.8 9H2.2Z"/>'];
+const padFace=i=>PAD.kind==='ps'&&i>=0&&i<4?`<svg class="pg" viewBox="0 0 12 12" aria-label="${padName(i)}">${PS_SVG[i]}</svg>`:esc(padName(i));
 const keyName=c=>c==null?'—':c==='Space'?'Space':c.startsWith('Key')?c.slice(3):c.startsWith('Digit')?c.slice(5):c.startsWith('Shift')?'Shift':c.startsWith('Arrow')?{ArrowUp:'↑',ArrowDown:'↓',ArrowLeft:'←',ArrowRight:'→'}[c]:c==='Escape'?'Esc':c.replace(/(Left|Right)$/,'');
 const bind={pad:{...PAD_DEF},key:JSON.parse(JSON.stringify(KEY_DEF)),padInvert:store.get('hoverline.padinv')==='1'};
 try{const p=JSON.parse(store.get('hoverline.pad')||'null');if(p)for(const[a]of ACTS)if(Number.isInteger(p[a]))bind.pad[a]=p[a];
@@ -3285,8 +3309,11 @@ const keyIs=(a,code)=>bind.key[a].includes(code);
 const keyHeld=a=>bind.key[a].some(c=>keys[c]);
 /* The last thing used decides which button names the HUD shows. */
 let lastDev=coarse?'touch':'key';
-const setDev=d=>{if(lastDev!==d){lastDev=d;hudT=0}};
-const actLabel=a=>lastDev==='pad'?PAD_NAMES[bind.pad[a]]||'?':keyName(bind.key[a][0]);
+const setDev=d=>{if(lastDev!==d){lastDev=d;hudT=0;if(S.state==='lab')try{labSlotTags()}catch(e){}}};
+const actLabel=a=>lastDev==='pad'?padName(bind.pad[a]):keyName(bind.key[a][0]);
+/* the pad last pressed names the buttons: a new kind of pad redraws every label that shows them */
+function padSeen(p){if(p.id===PAD.id)return;PAD.id=p.id;const k=padKindOf(p.id);if(k===PAD.kind)return;PAD.kind=k;store.set('hoverline.padkind',k);hudT=0;padLabels()}
+function padLabels(){try{labSlotTags();bindUI();ctrlHelpUI()}catch(e){}}
 const tilt={ok:false,ang:0,neutral:0,pa:0,np:0,enabled:store.get('hoverline.tilt')!=='0',flip:store.get('hoverline.flip')==='1',
   pitchMode:+(store.get('hoverline.tpitch')||0)}; // 0 tilt pitch on, 1 on and inverted, 2 off
 let padPrev=[];const fireQ=[false,false];
@@ -3370,7 +3397,7 @@ function readInput(){navWatch();
     brake=Math.max(brake,an('brake')>0.08?an('brake'):0);if(an('boost')>0.3)boost=true;
     if(B('w1').pressed)hold[0]=true;if(B('w2').pressed)hold[1]=true;
     const prev=padPrev[p.index]||[];const edge=i=>b(i).pressed&&!prev[i],E=a=>edge(bind.pad[a]);
-    if(p.buttons.some((x,i)=>x.pressed&&!prev[i])||Math.abs(ax)>0.5||Math.abs(ay)>0.5)setDev('pad');
+    if(p.buttons.some((x,i)=>x.pressed&&!prev[i])||Math.abs(ax)>0.5||Math.abs(ay)>0.5){padSeen(p);setDev('pad')}
     if(rebind.on&&rebind.dev==='pad'){const i=p.buttons.findIndex((x,i)=>x.pressed&&!prev[i]);if(i>=0)rebindPad(i);padPrev[p.index]=p.buttons.map(x=>x.pressed);continue}
     if(E('view')&&(S.state==='race'||S.state==='countdown'||S.state==='done'))setCam(camMode+1,true);
     if(E('song')&&S.state!=='lab')newSong();
@@ -3566,7 +3593,7 @@ function fire(r,slot){
   else if(w==='emp'){empBlast(r);if(near&&!fx)audio.blip(1200,0.3,0.14,'square',90)}
   else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
   else if(w==='autopilot'){r.autoT=4.5;if(near&&!fx)audio.blip(520,0.3,0.1,'triangle',1040)}
-  else if(w==='overdrive'){r.od=3.5;r.stun=0;if(near&&!fx)audio.blip(400,0.5,0.15,'sawtooth',1800)}
+  else if(w==='overdrive'){r.od=3;r.stun=0;if(near&&!fx)audio.blip(400,0.5,0.15,'sawtooth',1800)}
   if(mp.on)mpFired(r,w,n0);
   return true}
 /* EMP: weapons and boost go offline for every ship within 400 m ahead (barrier and overdrive block it). */
@@ -3610,8 +3637,6 @@ function wreckBurst(r){if(!r.ship)return;const sh=r.ship,ud=sh.userData,s=sample
     fxAdd(m,{p:m.position.clone(),v:out,life:rnd(1.8,2.8),keepQ:true})}
   shatter(r,c,14,true);
   for(let k=1;k<=3;k++)fxLater.push({t:k*0.13,fn:()=>{const p=c.clone().addScaledVector(s.t,r.v*0.55*k*0.13).addScaledVector(s.r,rnd(-2,2)).addScaledVector(s.u,rnd(0.5,2.5));explode(p,k===3);if(Math.abs(wrapU(r.u-player.u))<150)audio.boom(k===3?0.35:0.2)}})}
-/* Smoke and the odd flame trailing a ship that is spinning out. */
-function stunSmoke(r){const s=sampleAt(r.u);fxAdd(new THREE.Mesh(puffGeo2,Math.random()<0.3?fireMat:puffMat),{p:r.ship.position,v:s.t.clone().multiplyScalar(r.v*0.5).addScaledVector(s.u,3),life:rnd(0.5,0.9),g:-3,grow:rnd(1.5,3),drag:2})}
 function updateFx(dt){
   for(let i=fxLater.length-1;i>=0;i--){const l=fxLater[i];l.t-=dt;if(l.t<=0){fxLater.splice(i,1);try{l.fn()}catch(e){}}}
   for(let i=fx.length-1;i>=0;i--){const o=fx[i];o.t+=dt;const k=o.t/o.life;
@@ -3624,7 +3649,7 @@ function updateFx(dt){
 function clearFx(){for(const o of fx)scene.remove(o.m);fx.length=0;fxLater.length=0}
 function shockwave(r,visualOnly){const m=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:0xb36bff,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
   m.position.copy(r.ship.position);m.quaternion.copy(r.ship.quaternion);scene.add(m);rings.push({m,t:0});if(visualOnly)return;
-  for(const o of racers){if(o===r||!live(o)||o.phase>0)continue;if(Math.abs(wrapU(o.u-r.u))<36&&Math.abs(o.lat-r.lat)<W){LOG.src='shock';LOG.by=r;damage(o,26,o.ship.position.clone());LOG.src=LOG.by=null;o.v*=0.78}}}
+  for(const o of racers){if(o===r||!live(o)||o.phase>0)continue;if(Math.abs(wrapU(o.u-r.u))<40&&Math.abs(o.lat-r.lat)<W){LOG.src='shock';LOG.by=r;damage(o,26,o.ship.position.clone());LOG.src=LOG.by=null;o.v*=0.72}}}
 function explode(pos,big){VFX.debris(pos,big);const m=new THREE.Mesh(boomGeo,new THREE.MeshBasicMaterial({color:0xffb000,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));m.position.copy(pos);scene.add(m);booms.push({m,t:0,big})}
 /* Shield is health: damage drains it, at zero the ship is wrecked and respawns a moment later with 40%. */
 function damage(r,amt,pos,stun=0,quiet=false){
@@ -3639,14 +3664,16 @@ function damage(r,amt,pos,stun=0,quiet=false){
   if(r===player&&!quiet){rumble(0.25+amt/30,0.5,140);S.shake=Math.min(1,S.shake+amt/30);flash('rgba(255,74,61,.4)',0);music.event('hit');cue('hpM','hit',450)}
   if(r.hp<=0){if(r!==player&&pos&&LOG.by===player&&S.t>(S.killV||0)){S.killV=S.t+12;setTimeout(()=>audio.voice('kill'),150)}wreck(r);return}
   if(pos&&amt>=10)shatter(r,pos,amt>=20?9:5,amt>=25);
-  if(stun){r.stun=Math.max(r.stun,stun);r.v*=0.45;r.boost=0;startSpin(r,Math.max(0.7,stun*1.3),stun>=0.6||amt>=20)}}
-/* Spin-outs: a random number of turns either way, a barrel roll and a hop on the big hits, always ending upright. */
-function startSpin(r,dur,big){const dir=Math.random()<0.5?-1:1,n=big&&Math.random()<0.45?2:1,rd=Math.random()<0.5?-1:1;
-  r.spinA0=r.spin||0;r.spinA1=Math.round(r.spinA0/TAU)*TAU+dir*TAU*n;r.rollA0=r.rollA||0;r.rollA1=Math.round(r.rollA0/TAU)*TAU+(big&&Math.random()<0.6?rd*TAU:0);
-  r.hop=big?rnd(1,2.6):rnd(0,0.4);r.spinT=0;r.spinD=dur;r.smokeT=0}
-function spinStep(r,dt){if(!(r.spinD>0))return;r.spinT+=dt;const k=Math.min(1,r.spinT/r.spinD),e=1-Math.pow(1-k,2.2);r.spin=r.spinA0+(r.spinA1-r.spinA0)*e;r.rollA=r.rollA0+(r.rollA1-r.rollA0)*e;r.hopY=r.hop*Math.sin(Math.PI*k);
-  if(r.ship&&r.ship.visible&&Math.abs(wrapU(r.u-player.u))<160){r.smokeT-=dt;if(r.smokeT<=0){r.smokeT=0.045;stunSmoke(r)}}
-  if(k>=1){r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0}}
+  /* Prototype 36: a frame already knocked out of phase takes the damage of another stunning hit but isn't slowed again.
+     Before, every hit of a burst cut its speed to 45% once more (two rockets of one volley left 20%, three 9%), a third of
+     all such hits landed on a frame already out of phase, and frames came to a jump's lip at walking pace and fell in. */
+  if(stun){const again=r.spinD>0;r.stun=Math.max(r.stun,stun);r.stunAt=S.t;if(!again){r.v*=0.45;r.boost=0;startSpin(r,Math.max(0.7,stun*1.3),stun>=0.6||amt>=20)}}}
+/* Knocked out of phase (Prototype 36; until then a spin-out with a barrel roll and a hop): a hit that stuns no longer
+   spins the frame. It flickers out of sight, tears and stretches, shakes, and sheds small purple cubes as trails and
+   wisps (placeShip, VFX.wisps). What the hit does is unchanged: slowed, and passable, so other frames fly through it
+   until it settles. spinD and spinT keep their old names (multiplayer flags and the collisions use them). */
+function startSpin(r,dur,big){r.spinT=0;r.spinD=dur;r.glBig=!!big;r.glSeed=Math.random()*997;r.spin=0;r.rollA=0;r.hopY=0}
+function spinStep(r,dt){if(!(r.spinD>0))return;r.spinT+=dt;if(r.spinT>=r.spinD){r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0}}
 /* steering from the nose: up to +80% nose up (grip), -15% nose down */
 function trimTurn(r){const pu=Math.max(0,r.pitch),pd=Math.max(0,-r.pitch);return 1+0.8*pu-0.15*pd}
 function wreck(r){if(r.stat)r.stat.wrecks++;if(r===player&&LOG.cur){LOG.cur.acc.wrecks++;logEv('wreck',{cause:LOG.lastSrc})}r.hp=0;r.phase=0;r.wreck=3.8;r.dive=0;r.stun=0;r.boost=0;r.selfBoost=false;r.barrier=0;r.ammo=Math.floor(r.ammo/2);r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0;const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);
@@ -3676,10 +3703,10 @@ function updateShots(dt){
       L.scale.set(Math.max(0.01,gl+W/2),hgt,1);L.position.set((gl-W/2)/2,0,0);Rr.scale.set(Math.max(0.01,W/2-gr),hgt,1);Rr.position.set((gr+W/2)/2,0,0);
       EL.scale.set(0.35,hgt+0.6,1);EL.position.set(gl,0,0.02);ER.scale.set(0.35,hgt+0.6,1);ER.position.set(gr,0,0.02);s.mesh.userData.mat.opacity=0.55*Math.min(1,s.life/0.6);s.mesh.userData.edge.opacity=0.9*Math.min(1,s.life/0.6);
       for(const r of racers){if(r===s.owner||s.hits.has(r)||!live(r)||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<4){if(Math.abs(r.lat-s.gap)<QGAP-0.4||(r.air&&r.h-HOVER>2.6))continue;
-        s.hits.add(r);LOG.src='quake';LOG.by=s.owner;damage(r,13,r.ship.position.clone(),0.45);LOG.src=LOG.by=null;if(!r.proxy)r.v*=0.9;if(r===player){S.shake=Math.max(S.shake,0.6);audio.hit(0.5)}}}
+        s.hits.add(r);LOG.src='quake';LOG.by=s.owner;damage(r,13,r.ship.position.clone(),0.45);LOG.src=LOG.by=null;if(!r.proxy)r.v*=0.85;if(r===player){S.shake=Math.max(S.shake,0.6);audio.hit(0.5)}}}
       for(let j=shots.length-1;j>=0;j--){const o=shots[j];if(o.type==='mine'&&Math.abs(wrapU(o.u-s.u))<4){explode(o.mesh.position.clone(),false);scene.remove(o.mesh);shots.splice(j,1);if(j<i)i--}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();s.mesh.userData.edge.dispose();shots.splice(i,1)}continue}
-    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.96;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=2.4}}
+    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=2.4}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();shots.splice(i,1)}continue}
     let hit=null;const wide=s.type==='bolt'?1.5:s.type==='rocket'?1.6:s.type==='bounce'?2:1.9,len=s.type==='bolt'?2.4:2.6;
     if(s.type==='missile'&&s.dud){explode(tp.clone(),false);scene.remove(s.mesh);shots.splice(i,1);continue}
@@ -3694,7 +3721,7 @@ function updateShots(dt){
       else if(s.type==='rocket'){damage(hit,14,tp.clone(),0.5);audio.boom(hit===player?0.45:clamp(0.35-d/300,0,0.3))}
       else if(s.type==='bounce'){damage(hit,27,tp.clone(),0.8);audio.boom(hit===player?0.6:clamp(0.4-d/300,0,0.35))}
       else if(s.type==='mine'){damage(hit,22,tp.clone(),0.8);audio.boom(hit===player?0.6:clamp(0.45-d/300,0,0.35))}
-      else{damage(hit,8,tp.clone(),0);hit.v*=0.96;if(hit===player)audio.hit(0.15)}}
+      else{damage(hit,8,tp.clone(),0);hit.v*=0.94;if(hit===player)audio.hit(0.15)}}
     if(hit||s.life<=0){if(!hit&&(s.type==='missile'||s.type==='rocket'||s.type==='hunter'||s.type==='bounce'))explode(tp.clone(),s.dud&&s.type==='hunter');scene.remove(s.mesh);shots.splice(i,1)}}
   for(let i=zaps.length-1;i>=0;i--){const z=zaps[i];z.t+=dt;z.ln.material.opacity=1-z.t/0.35;if(z.t>=0.35){scene.remove(z.ln);z.ln.geometry.dispose();z.ln.material.dispose();zaps.splice(i,1)}}
   for(let i=booms.length-1;i>=0;i--){const b=booms[i];b.t+=dt;const k=b.t/(b.big?0.55:0.35);b.m.scale.setScalar((b.big?1:0.5)+k*(b.big?5:2.5));b.m.material.opacity=1-k;
@@ -3726,6 +3753,9 @@ function aiWants(r,w){
   if(w==='smoke'){for(const o of racers){const d=wrapU(r.u-o.u);if(o!==r&&live(o)&&d>10&&d<70)return true}return false}
   if(w==='overdrive'){for(const s of shots)if((s.type==='missile'||s.type==='hunter')&&s.target===r&&Math.abs(wrapU(r.u-s.u))<80)return true;for(const o of racers)if(o!==r&&live(o)&&Math.abs(wrapU(o.u-r.u))<25)return true;return false}
   return false}
+/* Autopilot (Prototype 36): the AI steers, brakes and trims the nose, but your modules and boost stay yours, so you can
+   phase or fire while it flies (it used to take every input, and fired nothing). */
+function apInput(r,inp,dt){const a=aiInput(r,dt);a.fire=inp.fire;a.hold=inp.hold;a.boost=!!(a.boost||inp.boost);return a}
 function aiInput(r,dt){
   const none={steer:0,brake:0,pitch:0,fire:[false,false],hold:[false,false]};if(r.wreck>0)return none;
   const look=Math.max(22,r.v*0.75);
@@ -3797,7 +3827,7 @@ function logStart(){if(!LOG.on){LOG.cur=null;return}const fc={};for(const f of T
   LOG.cur={v:2,game:'Hoverline '+($('title').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:S.car?'career':S.train?'training':S.trial?'trial':mp.on?'room':'race',cls:S.cls,
     track:{code:codeStr(),name:T.D.name,complex:!!T.cx,len:Math.round(T.L),laps:LAPS,feats:fc,splits:T.splits.length,fig8:!!T.fig8,marks:(T.marks||[]).length},
     ship:{frame:build.frame,stats:{...build.stats},weapons:[...build.weapons]},
-    input:{dev:lastDev,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode},
+    input:{dev:lastDev,pad:lastDev==='pad'?PAD.kind:null,padId:lastDev==='pad'?String(PAD.id||'').slice(0,64):null,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode},
     music:{style:music.style,both:music.style==='both'?music.both:undefined,code:music.code(),evolving:music.evo,shuffle:music.shuffle,lite:music.lite,vol:audio.volM,sfx:audio.volS},gfx:Object.keys(G2).filter(k=>G2[k]).join(',')||'none',
     device:{...DEVICE,view:[cw,ch],draw:[canvas.width,canvas.height],res:RES.k,low:RES.low,fcap:FCAP.v,style:styleNow()||'own',sky:tod},
     field:racers.map(r=>({name:r.name,ai:!!r.isAI,ghost:!!r.isGhost,rival:!!r.rival,frame:r.build?r.build.frame:null,skill:r.skill?r2(r.skill):null,weapons:r.weapons?[...r.weapons]:[]})),
@@ -3828,7 +3858,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   (o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,i===0?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:35,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:37,log:logShareable(L)});if(body.length>400000)return;
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
 function logSave(L){let idx=logIndex();idx.push(L.id);while(idx.length>60){store.del?store.del('hoverline.log.'+idx[0]):store.set('hoverline.log.'+idx[0],'');idx.shift()}
@@ -3890,7 +3920,7 @@ function physics(r,inp,dt){
   {let dr=0;if(!r.air&&!auto)for(const o of racers){if(o===r||o.isGhost||o.wreck>0||o.air)continue;const g=wrapU(o.u-r.u);if(g>4&&g<45&&Math.abs(o.lat-r.lat)<2.6){dr=1;break}}
     r.draft=clamp((r.draft||0)+(dr?2:-3)*dt,0,1)}
   vm*=1+0.06*r.draft;
-  let vmax=auto?(r.isAI?vm*0.92:70):vm*(r.boost>0?1.32:r.selfBoost?1.22:1)*(r.od>0?1.08:1)*(r.emp>0?0.82:1);if(r.stun>0)vmax*=0.35;
+  let vmax=auto?(r.isAI?vm*0.92:70):vm*(r.boost>0?1.32:r.selfBoost?1.22:1)*(r.od>0?1.06:1)*(r.emp>0?0.78:1);if(r.stun>0)vmax*=0.35;
   if(!r.air){if(r.v<vmax)r.v+=(vmax-r.v)*D.accel*(1+0.6*tb+0.3*r.draft)*dt;else r.v-=(r.v-vmax)*(auto?0.8:1.4)*dt;
     r.v-=r.v*(0.7*r.brk)*dt;r.v=Math.max(0,r.v-slp*9*(slp>0?r.climb:1)*dt)}
   else r.v-=r.v*(0.05+0.1*pu+(r.offT?0.35*r.brk:0))*dt;
@@ -3907,6 +3937,9 @@ function physics(r,inp,dt){
      v²·|curvature|; if that beats the hold, the ship lifts off (losing thrust and half its steering) until it settles again. */
   const gE=(r.air&&r.air!==true?GRAV*S.cls*S.cls:GRAV*HOLD)*(1-0.45*pu+0.6*pd)*(r.air?(r.air!==true&&!r.offT&&D.jumpG?D.jumpG:(D.glide||1)):D.plant);
   if(!r.air||r.air===true)for(const j of T.jumps)if(uPrev<j.u0&&uu>=j.u0&&uu<j.u1){const ex=r.air===true?r.h-HOVER:0,v0=r.air===true?r.vh:0;
+    /* Prototype 37: a frame out of phase, or hit in the last 2.5 s, leaves the lip at least fast enough to clear the gap
+       (level nose, with a margin): most falls were frames hit just before the lip that reached it at walking pace. */
+    {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)){const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need}}
     r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)}
   if(r.air===true){const mg=T.mag&&T.mag[idxAt(uu)]&&!r.offT?4:1;r.vh+=Math.min(20,-(T.Kn[idxAt(uu)]+kvB)*r.v*r.v-gE*mg)*dt;r.h=Math.min(18,r.h+r.vh*dt);
     /* The walls are solid: a ship that reaches one below its top is held in. Only clearing the top takes you off the
@@ -3959,7 +3992,7 @@ function collide(){
   for(let i=0;i<racers.length;i++)for(let j=i+1;j<racers.length;j++){const a=racers[i],b=racers[j];if(a.wreck>0||b.wreck>0||a.isGhost||b.isGhost||a.left||b.left||a.phase>0||b.phase>0||a.spinD>0||b.spinD>0)continue;
     if(a.brS&&a.brS===b.brS&&a.br!==b.br&&T.spl[idxAt(a.u)])continue; /* the two routes of a split (one can pass over the other) */const du=wrapU(b.u-a.u),dl=b.lat-a.lat,sz=((a.d.size||1)+(b.d.size||1))/2;
     if(Math.abs(du)<3.4*sz&&Math.abs(dl)<2.3*sz){const ma=a.d.mass||1,mb=b.d.mass||1,ov=(2.3*sz-Math.abs(dl))*(dl>=0?1:-1),push=ov/2;a.lat-=ov*mb/(ma+mb);b.lat+=ov*ma/(ma+mb);
-      if((a.od>0)!==(b.od>0)&&S.t>(a.ramT||0)&&S.t>(b.ramT||0)){const v=a.od>0?b:a;v.ramT=a.ramT=b.ramT=S.t+0.6;damage(v,16,v.ship.position.clone(),0.6);v.v*=0.82;v.lat+=push*(v===a?-2:2);if(a===player||b===player){S.shake=1;audio.boom(0.5)}}
+      if((a.od>0)!==(b.od>0)&&S.t>(a.ramT||0)&&S.t>(b.ramT||0)){const v=a.od>0?b:a;v.ramT=a.ramT=b.ramT=S.t+0.6;damage(v,16,v.ship.position.clone(),0.6);v.v*=0.82;v.lat+=push*(v===a?-2:2);if(!v.air&&!v.proxy)v.lat=clampLat(v.u,v.lat,1.35,v);/* the shove stops at the wall (Prototype 36: it could put the victim 3 m into it for a frame) */if(a===player||b===player){S.shake=1;audio.boom(0.5)}}
       const back=du>0?a:b,front=du>0?b:a,dv=back.v-front.v;if(dv>0){const mk=back.d.mass||1,mf=front.d.mass||1,avg=(back.v*mk+front.v*mf)/(mk+mf);back.v=avg*0.97;front.v=avg*1.01;if(dv>14){LOG.src='bump';damage(back,0.4,null,0,true);damage(front,0.4,null,0,true);LOG.src=null}}
       if(a===player||b===player){S.shake=Math.max(S.shake,0.25);audio.hit(0.1)}}}}
 function rankOf(r){return ranking().indexOf(r)}
@@ -4063,7 +4096,7 @@ async function startRace(){
   const gh=setField(true);resetGrid();setHud(true);camInit=false;
   {const t=S.car&&CAR_T[S.car.i>>2],cw=t&&carW();S.cls=t?t.k:1;S.aiK=t?t.ai:1;
     if(cw)for(const r of racers)if(r.isAI&&r.weapons){const o=[];for(const x of r.weapons)o.push(cw.includes(x)?x:CAR_W0.find(y=>!o.includes(y)&&!r.weapons.includes(y)));r.weapons=o;r.scoop=null}}
-  if(S.train)setTimeout(()=>note('Training · '+trDrill(TRN.d).n+' · '+(TRN.cube?'Training cube':'your ship')+' · '+LAPS+' laps'+(gh&&gh.best?' · your best run is the ghost':''),2600),900);
+  if(S.train)setTimeout(()=>note('Training · '+trDrill(TRN.d).n+' · '+(TRN.cube?'Training cube':'your frame')+' · '+LAPS+' laps'+(gh&&gh.best?' · your best run is the ghost':''),2600),900);
   else if(S.trial&&!mp.on)setTimeout(()=>note(gh&&gh.best?'Time trial · your best run is the ghost':'Time trial · set a time, and next run it becomes your ghost',2600),900);
   else{const rv=roster.filter(r=>r.rival).map(r=>r.name);if(rv.length)setTimeout(()=>note('Rivals '+rv.join(' and ')+' race like you · marked ≈',2600),900)}
   logStart();
@@ -4257,10 +4290,12 @@ function applyTouchUI(){
   $('tiltChip').hidden=!coarse;$('flipChip').hidden=!coarse;$('pitchChip').hidden=!coarse;$('btnChip').hidden=!coarse;$('psChip').hidden=!coarse;$('slots').hidden=coarse;
   $('touchChip').setAttribute('aria-pressed',String(coarse));
   const a=$('ownTab');if(coarse&&framed&&onItch&&(tilt.enabled||tilt.pitchMode<2)){a.href=location.href;a.hidden=false;a.onclick=()=>{if(audio.ctx)audio.ctx.suspend()}}else a.hidden=true;syncFs();
+  ctrlHelpUI();
+  if(S.state==='race'||S.state==='countdown'||S.state==='paused')$('touch').hidden=!coarse}
+function ctrlHelpUI(){const P=a=>padName(PAD_DEF[a]);
   $('ctrlHelp').innerHTML=coarse
     ?'<b>Left thumb</b> steers: the round stick (it also pitches: push up to dive, pull down for drag), ◀ ▶ buttons, or a slider. <b>Right thumb</b>: Brake, Boost (hold it: faster, costs shield), the two modules, and the optional pitch slider (springs back to level). Hold the nose down and a dive builds: faster and glued over crests, but steering stiffens, and it scrapes in dips and loops. Nose up is an air brake with much more grip, and it floats jumps. The road markings and the <b>Nose guide</b> show when. Tilt works too if your device has a motion sensor. Green strips recharge shield, purple strips refill ammo, cyan pads boost for free. Getting wrecked costs about six seconds and half your ammo.'
-    :`<b>Keyboard:</b> ←/→ or A/D steer, ↑/W drops the nose (a dive that builds speed but stiffens steering; glued over crests, scrapes in dips and loops), ↓/S raises it (an air brake: slower, much more grip, floatier jumps). The road markings and the <b>Nose guide</b> show when. <b>Controller / Steam Deck:</b> left stick steers and trims the nose (the right stick trims too); by default A and B fire, RT boosts (hold: faster, costs shield), LT brakes, LB changes the song, RB changes the view and Menu pauses. Every button can be changed below. Green strips recharge shield, purple strips refill ammo. Getting wrecked costs about six seconds and half your ammo. Playing on a touch screen? Turn on <b>Touch controls</b>.`;
-  if(S.state==='race'||S.state==='countdown'||S.state==='paused')$('touch').hidden=!coarse}
+    :`<b>Keyboard:</b> ←/→ or A/D steer, ↑/W drops the nose (a dive that builds speed but stiffens steering; glued over crests, scrapes in dips and loops), ↓/S raises it (an air brake: slower, much more grip, floatier jumps). The road markings and the <b>Nose guide</b> show when. <b>Controller / Steam Deck:</b> left stick steers and trims the nose (the right stick trims too); by default ${P('w1')} and ${P('w2')} fire the modules, ${P('boost')} boosts (hold: faster, costs shield), ${P('brake')} brakes, ${P('song')} changes the song, ${P('view')} changes the view and ${P('pause')} pauses. Every button can be changed below. Green strips recharge shield, purple strips refill ammo. Getting wrecked costs about six seconds and half your ammo. Playing on a touch screen? Turn on <b>Touch controls</b>.`}
 $('touchChip').onclick=()=>{coarse=!coarse;store.set('hoverline.touch',coarse?'1':'0');applyTouchUI()};
 /* ---------- full screen and the Controls screen ----------
    On phones and tablets: a Full screen button in the menu, and Race / Multiplayer / Controls go full screen (landscape)
@@ -4297,7 +4332,7 @@ for(const id of['btnChip','psChip','tiltChip','pitchChip','flipChip','touchChip'
    action uses swaps the two. */
 const rebind={on:false,dev:null,act:null};
 function bindUI(){const t=$('bindTbl');if(!t)return;
-  t.innerHTML='<tr><th>Action</th><th>Keyboard</th><th>Controller</th></tr>'+ACTS.map(([a,n])=>`<tr><td>${n}</td><td><button class="chip${rebind.on&&rebind.act===a&&rebind.dev==='key'?' wait':''}" data-bk="${a}">${rebind.on&&rebind.act===a&&rebind.dev==='key'?'press…':[...new Set(bind.key[a].map(keyName))].join(' / ')}</button></td><td><button class="chip${rebind.on&&rebind.act===a&&rebind.dev==='pad'?' wait':''}" data-bp="${a}">${rebind.on&&rebind.act===a&&rebind.dev==='pad'?'press…':PAD_NAMES[bind.pad[a]]||'?'}</button></td></tr>`).join('');
+  t.innerHTML='<tr><th>Action</th><th>Keyboard</th><th>Controller</th></tr>'+ACTS.map(([a,n])=>`<tr><td>${n}</td><td><button class="chip${rebind.on&&rebind.act===a&&rebind.dev==='key'?' wait':''}" data-bk="${a}">${rebind.on&&rebind.act===a&&rebind.dev==='key'?'press…':[...new Set(bind.key[a].map(keyName))].join(' / ')}</button></td><td><button class="chip${rebind.on&&rebind.act===a&&rebind.dev==='pad'?' wait':''}" data-bp="${a}">${rebind.on&&rebind.act===a&&rebind.dev==='pad'?'press…':padName(bind.pad[a])}</button></td></tr>`).join('');
   t.querySelectorAll('[data-bk]').forEach(b=>b.onclick=()=>{Object.assign(rebind,{on:true,dev:'key',act:b.dataset.bk});$('bindMsg').textContent='Press a key for '+ACTS.find(x=>x[0]===b.dataset.bk)[1]+' · Esc cancels';bindUI()});
   t.querySelectorAll('[data-bp]').forEach(b=>b.onclick=()=>{Object.assign(rebind,{on:true,dev:'pad',act:b.dataset.bp});$('bindMsg').textContent='Press a controller button for '+ACTS.find(x=>x[0]===b.dataset.bp)[1];bindUI()});
   $('padInvChip').setAttribute('aria-pressed',String(!bind.padInvert));$('padInvChip').textContent=bind.padInvert?'Stick up raises the nose':'Stick up dives'}
@@ -4309,7 +4344,7 @@ function rebindKey(e){e.preventDefault();const a=rebind.act;rebind.on=false;
   saveBind();$('bindMsg').textContent=ACTS.find(x=>x[0]===a)[1]+' · '+keyName(e.code);bindUI();hudT=0}
 function rebindPad(i){const a=rebind.act;rebind.on=false;const other=ACTS.find(([b])=>b!==a&&bind.pad[b]===i);
   if(other)bind.pad[other[0]]=bind.pad[a];bind.pad[a]=i;saveBind();
-  $('bindMsg').textContent=ACTS.find(x=>x[0]===a)[1]+' · '+PAD_NAMES[i]+(other?' (swapped with '+other[1]+')':'');bindUI();hudT=0}
+  $('bindMsg').textContent=ACTS.find(x=>x[0]===a)[1]+' · '+padName(i)+(other?' (swapped with '+other[1]+')':'');bindUI();hudT=0}
 $('bindReset').onclick=()=>{bind.pad={...PAD_DEF};bind.key=JSON.parse(JSON.stringify(KEY_DEF));saveBind();rebind.on=false;$('bindMsg').textContent='Buttons reset';bindUI()};
 {const ac=$('annChip'),sa=()=>{ac.setAttribute('aria-pressed',String(annOn));ac.textContent='Announcer · '+(annOn?'on':'off')};sa();
   ac.onclick=()=>{annOn=!annOn;store.set('hoverline.ann',annOn?'1':'0');sa();if(annOn){audio.init();audio.voice('');setTimeout(()=>audio.voice('go'),300)}}}
@@ -4338,9 +4373,9 @@ const GUIDE=[
  {k:'flat',tab:'Flat',title:'Level on the flat',mark:null,
   body:'On the flat there is nothing to gain from the nose, so hold it level. Nose up or nose down both cost a little speed there.'},
  {k:'corner',tab:'Corners',title:'Lift the nose for tight corners',mark:'grip',
-  body:'Nose up also grips: steering nearly doubles, so you hold the inside line where a level ship runs wide into the wall. On the flat it costs a little speed, which a tight corner is worth. Grey Λ before the tight ones.'},
+  body:'Nose up also grips: steering nearly doubles, so you hold the inside line where a level frame runs wide into the wall. On the flat it costs a little speed, which a tight corner is worth. Grey Λ before the tight ones.'},
  {k:'crest',tab:'Crests',title:'Nose down over a crest',mark:'dive',
-  body:'On twisty tracks the road can fall away under you at the top of a rise. Nose down holds you on it. Level or nose up and the ship floats off, losing thrust and half its steering until it lands.'},
+  body:'On twisty tracks the road can fall away under you at the top of a rise. Nose down holds you on it. Level or nose up and the frame floats off, losing thrust and half its steering until it lands.'},
  {k:'jump',tab:'Jumps',title:'Lift off a jump to float',mark:'grip',
   body:'In the air, nose up softens the fall so you carry further and land past the gap with room to spare. Nose down drops you sooner, and on a long gap that means falling short. The lip has grey chevrons.'},
  {k:'colours',tab:'Colours',title:'What the colours mean',mark:null,
@@ -4425,7 +4460,7 @@ function guideDraw(c,w,h,k,dt){c.fillStyle=GC.bg;c.fillRect(0,0,w,h);
   gShipSide(c,X(A.x),Y(A.y)-S*0.12,ang(A,trimA),S,{lines:(k==='uphill'||k==='downhill')&&!A.air?0.8:k==='crest'&&!A.air?0.4:0,shell:trimA<0&&!A.air?'grey':null});
   /* callouts */
   const tx=Math.max(14,w*0.03),ty=26;gLabel(c,tx,ty,{uphill:'NOSE UP GOING UPHILL',downhill:'NOSE DOWN GOING DOWNHILL',flat:'LEVEL ON THE FLAT',crest:'NOSE DOWN OVER THE CREST',jump:'NOSE UP IN THE AIR'}[k],GC.ink);
-  if(B){const lb={uphill:'level: loses speed on the climb',downhill:'level: no streamlining, slower',flat:'nose down: a little drag',crest:B.air?'level: floats off, half the steering':'level',jump:B.fall?'nose down: falls short':'nose down'}[k];gLabel(c,tx,ty+20,'faded ship · '+lb,B.fall||B.air?GC.red:GC.dim)}
+  if(B){const lb={uphill:'level: loses speed on the climb',downhill:'level: no streamlining, slower',flat:'nose down: a little drag',crest:B.air?'level: floats off, half the steering':'level',jump:B.fall?'nose down: falls short':'nose down'}[k];gLabel(c,tx,ty+20,'faded frame · '+lb,B.fall||B.air?GC.red:GC.dim)}
   if(k==='uphill'||k==='downhill')gLabel(c,tx,ty+40,'a steep slope · up to +20% top speed',GC.green);
 }
 /* corners, from above: the full-colour ship lifts its nose and keeps the inside line; the faded one stays level and runs wide */
@@ -4494,7 +4529,7 @@ function carLeave(){if(car.free){build=car.free;car.free=null;buildKey='hoverlin
 function carSel(i){i=clamp(i,0,carOpen());S.car={i};S.trial=false;const cc=carCode(i),c=parseCode(cc);if(roadStr()!==cc.split('-')[0]||bio.k!==c.bm.k||spec)loadTrack(c.seed,c.wk,c.cx,c.lk,null,c.bm);carUI()}
 const carNext=()=>{const i=S.car.i;if(car.best[i]&&car.best[i]<=3&&i+1<=carOpen())carSel(i+1)};
 function carUI(){if(!S.car)return;const i=S.car.i,t=CAR_T[i>>2],w=carW(),nw=CAR_W[car.best.filter(x=>x&&x<=3).length];
-  $('carSub').innerHTML=`<b>${car.cr.toLocaleString('en')} ¢</b> · ship ${BUD} of ${BUDGET} points · ${w.length} modules`;
+  $('carSub').innerHTML=`<b>${car.cr.toLocaleString('en')} ¢</b> · frame ${BUD} of ${BUDGET} points · ${w.length} modules`;
   const L=$('carList');if(!L.children.length)CAR_T.forEach((T_,ti)=>{const d=document.createElement('div');d.className='tier';d.innerHTML=`<div class="sub"><b>${T_.n}</b> · ${Math.round(T_.k*100)}% speed</div><div class="evs"></div>`;
     for(let e=0;e<4;e++){const b=document.createElement('button');b.className='ev';b.dataset.i=ti*4+e;b.onclick=()=>carSel(+b.dataset.i);d.lastChild.append(b)}L.append(d)});
   const op=carOpen();L.querySelectorAll('.ev').forEach(b=>{const k=+b.dataset.i,p=car.best[k];b.disabled=k>op;b.classList.toggle('done',!!p&&p<=3);b.setAttribute('aria-pressed',String(k===i));
@@ -4552,8 +4587,8 @@ function trUI(){if(!TRN.on)return;const D0=trDrill(TRN.d),L=$('trDrills');
   document.querySelectorAll('[data-trs]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.trs==='cube')===TRN.cube)));
   document.querySelectorAll('[data-trl]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.trl===TRN.laps)));
   const o=TRN.own||build;$('trShip').textContent=TRN.cube?'Training cube · the average of every frame · every stat 3 · no special traits':
-    'Your ship · '+frameOf(o.frame).name+' · '+STATS.map(x=>x.name+' '+o.stats[x.k]).join(' · ');
-  const b=getBest();$('trBest').textContent=(b!=null?'Best lap '+fmt(b):'No lap yet')+' · '+D0.n+' · '+T.D.name+' · '+(TRN.cube?'cube':'your ship')+' · '+(Math.round(T.L/10)/100)+' km a lap';
+    'Your frame · '+frameOf(o.frame).name+' · '+STATS.map(x=>x.name+' '+o.stats[x.k]).join(' · ');
+  const b=getBest();$('trBest').textContent=(b!=null?'Best lap '+fmt(b):'No lap yet')+' · '+D0.n+' · '+T.D.name+' · '+(TRN.cube?'cube':'your frame')+' · '+(Math.round(T.L/10)/100)+' km a lap';
   drawPreview('trPreview','trStats')}
 document.querySelectorAll('[data-trw]').forEach(b=>b.onclick=()=>{TRN.w=b.dataset.trw;trSave();trLoad();trUI()});
 document.querySelectorAll('[data-trs]').forEach(b=>b.onclick=()=>{TRN.cube=b.dataset.trs==='cube';trSave();trShip();trUI()});
@@ -5415,7 +5450,7 @@ const MAXP=8;
 const mpEl={};for(const id of['mp','mpOut','mpIn','mpName','mpCode','mpCreate','mpJoin','mpBack','mpRoom','mpStatus','mpList','mpTrack','mpHostRow','mpStart','mpReady','mpLab','mpLeave','mpHint','mpConnRow','mpNew','mpAI','mpErr'])mpEl[id]=$(id);
 mpEl.mpName.value=(store.get('hoverline.name')||('Pilot '+(10+Math.floor(Math.random()*90)))).slice(0,12);
 const mpProfile=()=>({n:mpEl.mpName.value.trim().slice(0,12)||'Pilot',pt:build.paint,lv:build.liv||null,st:{...build.stats},w:[...build.weapons],fr:build.frame});
-const mpSt={lobby:'not ready',lab:'in ship lab',loading:'loading',race:'racing',results:'on results'};
+const mpSt={lobby:'not ready',lab:'in frame lab',loading:'loading',race:'racing',results:'on results'};
 let mpConn=store.get('hoverline.conn')==='lan'?'lan':'internet';
 function mpOpen(){S.state='menu';S.car=null;hidePages();page='play';mpEl.mp.hidden=false;mpView();drawPreview('mpPreview','mpStats');mpSyncConn();
   if(!mpOpen.probed){mpOpen.probed=true;HLNet.relayAvailable().then(ok=>{if(ok){document.querySelector('[data-conn="wifi"]').hidden=false;mpConn='wifi';mpSyncConn()}})}}
@@ -5496,7 +5531,7 @@ function mpNudge(name){const s=mp.sess;if(!s||s.state.me.rd||S.state==='race'||S
   const t=performance.now();if(t-(mpNudge.t||0)<1500)return;mpNudge.t=t;
   audio.init();audio.blip(880,0.14,0.28,'square');setTimeout(()=>audio.blip(1320,0.22,0.28,'square'),150);setTimeout(()=>audio.blip(1760,0.3,0.22,'triangle'),320);
   try{navigator.vibrate&&navigator.vibrate([120,80,120])}catch(e){}rumble(0.7,0.7,300);
-  note(name+' is ready · '+(S.state==='done'?'go back to the lobby and press Ready':S.state==='lab'?'finish in the ship lab and press Ready':'press Ready'),2600);
+  note(name+' is ready · '+(S.state==='done'?'go back to the lobby and press Ready':S.state==='lab'?'finish in the frame lab and press Ready':'press Ready'),2600);
   const b=mpEl.mpReady;b.classList.remove('nudge');void b.offsetWidth;b.classList.add('nudge')}
 function mpAutoStart(st){if(!st.isHost||st.phase!=='lobby'||st.busy||!st.roster.length)return;
   const all=st.roster.every(e=>e.st==='lobby'&&e.rd);
@@ -5730,6 +5765,7 @@ document.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>setCam(+b.datas
   $('gfxOpen').onclick=()=>{$('set').hidden=true;$('gfxm').hidden=false;sync()};$('gDone').onclick=()=>{$('gfxm').hidden=true;$('set').hidden=false;setSync()}}
 setCam(camMode,false);
 
+const _gq=new THREE.Quaternion(),_gE=new THREE.Euler();
 function placeShip(r,t){
   const s=sampleAt(r.u);
   back.copy(s.t).negate();right.crossVectors(s.u,back).normalize();up.crossVectors(back,right);
@@ -5739,14 +5775,23 @@ function placeShip(r,t){
   pos.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));if(r.isGhost)r.vh=0;
   qP.setFromAxisAngle(AX_X,r.pitch*0.25+gsl+(r.air?clamp(r.vh/Math.max(30,r.v),-0.5,0.5)*0.6:0));
   r.ship.position.copy(pos);r.ship.quaternion.copy(qT).multiply(qY).multiply(qS).multiply(qP).multiply(qR);
-  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);r.shadow.visible=r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
+  /* knocked out of phase: 30 times a second the frame may blink out, or tear sideways and stretch; it shakes all the
+     while. The envelope swells in the first twentieth of the stun and fades to the end. */
+  let gv=true;const sc=r.ship.scale;
+  if(r.spinD>0&&r.wreck<=0){const k=Math.min(1,r.spinT/r.spinD),e=Math.min(1,k/0.05)*Math.pow(1-k,0.7)*(r.glBig?1:0.8),sl=Math.floor(t*30),gs=r.glSeed||0,h=n=>{const x=Math.sin((sl+gs)*12.9898+n*78.233)*43758.5453;return x-Math.floor(x)};
+    gv=h(1)>(r.glBig?0.45:0.34)*e;
+    if(h(2)<0.6*e){sc.set(1+(h(3)-0.25)*0.9*e,Math.max(0.35,1-h(4)*0.55*e),1+(h(5)-0.5)*0.8*e);r.ship.position.addScaledVector(right,(h(6)-0.5)*1.3*e)}else sc.set(1,1,1);
+    r.ship.position.addScaledVector(right,(Math.random()-0.5)*0.32*e).addScaledVector(up,(Math.random()-0.5)*0.24*e);
+    _gq.setFromAxisAngle(AX_Y,(Math.random()-0.5)*0.24*e);r.ship.quaternion.multiply(_gq);_gq.setFromAxisAngle(AX_Z,(Math.random()-0.5)*0.22*e);r.ship.quaternion.multiply(_gq)}
+  else if(sc.x!==1||sc.y!==1||sc.z!==1)sc.set(1,1,1);
+  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
   r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
   const ud=r.ship.userData;ud.flaps[0].rotation.x=ud.flaps[1].rotation.x=-r.brk*0.9;
   if(ud.extra&&ud.extra.spin){const dt=clamp(t-(r._lt??t),0,0.1);r._lt=t;for(const q of ud.extra.spin)q.o.rotation[q.ax]+=(q.k*r.v+(q.w||0))*dt}if(ud.extra&&ud.extra.arc)ud.extra.arc.opacity=0.35+0.45*Math.random()*(0.5+r.v/VMAX);if(ud.extra&&ud.extra.field)ud.extra.field.opacity=0.16+0.1*Math.random()+(r.air?0.1:0);
   const bo=r.boost>0||r.selfBoost,tl=0.6+r.v/VMAX*4.5+(r.selfBoost?3:r.boost*4);VFX.pool(r,s,gh,bo);ud.trailM.map=(bo?FLAMES.boost:FLAMES.fire)[(Math.floor(t*16+(r.bias||0)*7+(r.u||0)*0.01)%6+6)%6];ud.glowM.color.setHex(bo?0xb8fbff:0xffc040);
   if(ud.jets){const on=bo&&g2('jets')&&r.wreck<=0;if(on)qJ.copy(qP).multiply(qR).invert();for(const j of ud.jets){j.visible=on;if(!on)continue;const w=j.userData.w*0.9*(1+0.16*Math.sin(t*38+(r.bias||0)*3)),len=Math.min(4.8,tl*0.34);j.scale.set(w,w,len);j.quaternion.copy(qJ);
     j.userData.rings.forEach((m,k)=>{const ph=(t*2.8+k/3)%1;m.position.z=ph;m.scale.setScalar(1-0.66*ph);m.material.opacity=0.85*(1-ph)})}}
-  const bub=ud.shield,col=r.phase>0?0xd8fbff:r.od>0?0xffd24a:r.emp>0&&Math.floor(t*14)%2?0x6fb8ff:r.barrier>0?0x3ff0ff:r.charging==='hp'?0x46ff8c:r.charging==='ammo'?0xbe5aff:0;bub.visible=!!col&&r.wreck<=0;
+  const bub=ud.shield,col=r.spinD>0&&r.wreck<=0&&Math.floor(t*30)%3===0?0xbe5aff:r.phase>0?0xd8fbff:r.od>0?0xffd24a:r.emp>0&&Math.floor(t*14)%2?0x6fb8ff:r.barrier>0?0x3ff0ff:r.charging==='hp'?0x46ff8c:r.charging==='ammo'?0xbe5aff:0;bub.visible=!!col&&r.wreck<=0;
   if(col){bub.material.color.setHex(col);bub.material.opacity=(r.barrier>0?0.2:0.12)+Math.sin(t*20)*0.05+(r.barrier>0&&r.barrier<1?Math.sin(t*40)*0.1:0)}
   if(r===player){pf.set(0,0,-1).applyQuaternion(qT.clone().multiply(qY)).addScaledVector(up,sfp.sl).normalize();pUp.copy(up);pRight.copy(right);pT.copy(s.t);pPos.copy(pos)}
 }
@@ -5791,7 +5836,7 @@ function step(dt){
     let pdt=dt;if(mp.on&&mp.go!=null){const rt=(performance.now()-mp.go)/1000;pdt=clamp(rt-S.raceT,0,0.25);S.raceT=Math.max(S.raceT,rt)}else S.raceT+=dt;
     const nSub=Math.max(1,Math.ceil(pdt/0.034)),sdt=pdt/nSub,auto=BOT||mp.auto;
     for(let k=0;k<nSub;k++){
-      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}const i=(r===player&&player.finishT==null&&!auto&&!(player.autoT>0))?inp:aiInput(r,sdt);physics(r,i,sdt)}
+      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)}
       logTick(sdt);
       collide();updateShots(sdt);inp.fire=[false,false]}
     if(!mp.on&&player.finishT==null)while(S.raceT>=rec.k*0.1){recSample();rec.k++}
@@ -5857,7 +5902,7 @@ function step(dt){
       for(let k=0;k<2;k++){const w=player.weapons[k],d=WDEF[w],dir=w==='missile'?(targetAhead(player,260)?' ▲':targetBehind(player,200)?' ▼':''):'';
         const rdy=player.ammo>=d.cost&&player.wreck<=0&&!emp,b=$('w'+(k+1)),sub=d.passive?'passive':S.raceT<WLOCK?Math.ceil(WLOCK-S.raceT)+' s':d.cost+dir;const bh=`${icon(w)}<small>${sub}</small>`;if(b._h!==bh){b._h=bh;b.innerHTML=bh;b.setAttribute('aria-label',d.name)}b.classList.toggle('rdy',rdy&&!d.passive&&S.raceT>=WLOCK);b.classList.toggle('emp',emp&&!d.passive);
         const act=k?'w2':'w1',kb=actLabel(act),locked=S.raceT<WLOCK&&S.state!=='menu',sl=$('s'+(k+1));
-        const sh=`<kbd class="${lastDev==='pad'?'p'+kb:''}">${esc(kb)}</kbd>${icon(w)}<small>${sub}</small>`;if(sl._h!==sh){sl._h=sh;sl.innerHTML=sh;sl.title=d.name}sl.classList.toggle('rdy',rdy&&!locked&&!d.passive);sl.classList.toggle('emp',emp&&!d.passive);sl.classList.toggle('hold',S.t-slotLast[k]<0.25&&w==='cannon')}}
+        const sh=`<kbd class="${lastDev==='pad'?padCls(bind.pad[act]):''}">${lastDev==='pad'?padFace(bind.pad[act]):esc(kb)}</kbd>${icon(w)}<small>${sub}</small>`;if(sl._h!==sh){sl._h=sh;sl.innerHTML=sh;sl.title=d.name}sl.classList.toggle('rdy',rdy&&!locked&&!d.passive);sl.classList.toggle('emp',emp&&!d.passive);sl.classList.toggle('hold',S.t-slotLast[k]<0.25&&w==='cannon')}}
   }
 }
 function flash(color,side){const f=$('flash');f.style.background=side===0?`radial-gradient(ellipse at center,transparent 45%,${color} 100%)`:`linear-gradient(${side>0?'270deg':'90deg'},${color},transparent 35%)`;f.style.transition='none';f.style.opacity=1;requestAnimationFrame(()=>requestAnimationFrame(()=>{f.style.transition='opacity .35s';f.style.opacity=0}))}
@@ -5868,8 +5913,8 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
     const mk=(n,add)=>{const m=new THREE.InstancedMesh(box,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,blending:add?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:!add}),n);
       m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);m.frustumCulled=false;const z=new THREE.Matrix4().makeScale(0,0,0),c=new THREE.Color();for(let i=0;i<n;i++){m.setMatrixAt(i,z);m.setColorAt(i,c)}m.visible=false;scene.add(m);return m};
     const pool=(n,add)=>({m:mk(n,add),n,p:new Float32Array(n*3),v:new Float32Array(n*3),q:new Float32Array(n*4),w:new Float32Array(n*3),life:new Float32Array(n),max:new Float32Array(n),sz:new Float32Array(n),pal:new Uint8Array(n),fl:new Float32Array(n),i:0,live:0});
-    this.vox=pool(900,true);this.chunks=pool(300,false);this.sparks=pool(400,true);
-    this.PAL=[[0xfff6d0,0xffd040,0xff8a1f,0xe0401a,0x5a1406],[0xffffff,0xc8ffff,0x3ff0ff,0x1a8cff,0x0e2878],[0xffffff,0xffe08a,0xffb000,0xff6a1f,0x802010],[0x8a919c,0x5d636e,0x3a3f48,0xffb000,0x2a2e36]].map(a=>a.map(h=>new THREE.Color(h)));
+    this.vox=pool(900,true);this.chunks=pool(300,false);this.sparks=pool(400,true);this.wisp=pool(600,true);
+    this.PAL=[[0xfff6d0,0xffd040,0xff8a1f,0xe0401a,0x5a1406],[0xffffff,0xc8ffff,0x3ff0ff,0x1a8cff,0x0e2878],[0xffffff,0xffe08a,0xffb000,0xff6a1f,0x802010],[0x8a919c,0x5d636e,0x3a3f48,0xffb000,0x2a2e36],[0xe0b4ff,0xc77dff,0xa94dff,0x7a2ad6,0x34106a]].map(a=>a.map(h=>new THREE.Color(h)));
     /* the sky: a dome of stars and an aurora, drawn behind everything */
     const sc=document.createElement('canvas');sc.width=2048;sc.height=1024;const g=sc.getContext('2d'),rr=rng(4242);
     for(let k=0;k<1800;k++){const y=rr()*rr()*520,b=0.25+rr()*0.75;g.fillStyle=`rgba(${200+rr()*55|0},${210+rr()*45|0},255,${b})`;const sz=rr()<0.08?2:1;g.fillRect(rr()*2048,y,sz,sz)}
@@ -5893,6 +5938,21 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
       const f=1-L/P.max[i],pal=this.PAL[P.pal[i]],k=Math.min(4,Math.floor(f*5));
       q.set(P.q[i*4],P.q[i*4+1],P.q[i*4+2],P.q[i*4+3]);if(grav){e.set(P.w[o]*(1-f),P.w[o+1]*(1-f),P.w[o+2]*(1-f));_vq2.setFromEuler(new THREE.Euler(e.x*f,e.y*f,e.z*f));q.multiply(_vq2)}
       const z=P.sz[i]*(grav?(f>0.75?(1-f)*4:1):Math.pow(1-f,0.7));sc.set(z,z,z);pv.set(P.p[o],P.p[o+1],P.p[o+2]);M.compose(pv,q,sc);P.m.setMatrixAt(i,M);P.m.setColorAt(i,pal[k])}
+    P.m.instanceMatrix.needsUpdate=true;if(P.m.instanceColor)P.m.instanceColor.needsUpdate=true;P.live=any;P.m.visible=!!any},
+  /* Purple cubes of every size off a frame knocked out of phase: some hang by it and drift up as wisps, the rest stream
+     back as a trail. In every look (they are the hit's cue now), half as many with Low detail. */
+  wisps(dt){for(const r of racers){if(!(r.spinD>0)||r.wreck>0||!r.ship||r.isGhost||r.off||Math.abs(wrapU(r.u-player.u))>180)continue;
+      const k=Math.min(1,r.spinT/r.spinD),e=Math.pow(1-k,0.6);r._wa=(r._wa||0)+(r.glBig?150:100)*e*(RES.low?0.5:1)*dt;const n=Math.min(10,Math.floor(r._wa));r._wa-=n;if(!n)continue;
+      const s=sampleAt(r.u),z=r.d.size||1;
+      for(let q=0;q<n;q++){_vd.copy(r.ship.position).addScaledVector(s.r,(Math.random()-.5)*2.2*z).addScaledVector(s.u,Math.random()*0.9-0.2).addScaledVector(s.t,(0.6-Math.random()*2.4)*z);
+        const f=Math.random()<0.55?0.55+Math.random()*0.4:0.15+Math.random()*0.35;_ve2.copy(s.t).multiplyScalar(r.v*f);rdir(_va);_ve2.addScaledVector(_va,1+Math.random()*3.5).addScaledVector(s.u,0.8+Math.random()*2.2);
+        this.emit(this.wisp,_vd,_ve2,null,0.35+Math.random()*0.65,(0.05+0.34*Math.pow(Math.random(),2.2))*(r.glBig?1.25:1),4)}}},
+  stepWisp(P,dt){if(!P.live)return;const M=_vm,q=_vq,pv=_vp,sc=_vs,dr=Math.max(0,1-1.6*dt);let any=0;
+    for(let i=0;i<P.n;i++){let L=P.life[i];if(L<=0)continue;L-=dt;P.life[i]=L;const o=i*3;if(L<=0){M.makeScale(0,0,0);P.m.setMatrixAt(i,M);continue}any=1;
+      P.v[o]*=dr;P.v[o+1]=P.v[o+1]*dr+1.6*dt;P.v[o+2]*=dr;P.p[o]+=P.v[o]*dt;P.p[o+1]+=P.v[o+1]*dt;P.p[o+2]+=P.v[o+2]*dt;
+      const f=1-L/P.max[i],a=P.max[i]-L;q.setFromEuler(_gE.set(P.w[o]*a,P.w[o+1]*a,P.w[o+2]*a));
+      pv.set(P.p[o],P.p[o+1],P.p[o+2]);const z=P.sz[i]*Math.min(1,f*8)*Math.pow(1-f,0.8)*clamp((pv.distanceTo(camera.position)-1.5)/3.5,0,1);/* thin out where they stream past the camera */
+      sc.set(z,z,z);M.compose(pv,q,sc);P.m.setMatrixAt(i,M);P.m.setColorAt(i,this.PAL[4][Math.min(4,Math.floor(f*5))])}
     P.m.instanceMatrix.needsUpdate=true;if(P.m.instanceColor)P.m.instanceColor.needsUpdate=true;P.live=any;P.m.visible=!!any},
   debris(pos,big){if(!g2('debris'))return;this.init();const nC=big?14:5,nS=big?26:10,fl=pos.y-1.0;
     for(let k=0;k<nC;k++){_va.set(Math.random()-.5,Math.random()*0.8+0.2,Math.random()-.5).normalize().multiplyScalar((big?15:9)*(0.5+Math.random()));this.emit(this.chunks,_vb.copy(pos).addScaledVector(_va,0.03),_va,null,1.3+Math.random()*0.6,0.18+Math.random()*0.3,3,fl)}
@@ -5935,7 +5995,8 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
           for(let k=0;k<n;k++){const f=k/n;_vd.set(_vc.x-_vb.x*dt*f+(Math.random()-.5)*0.2*w,_vc.y-_vb.y*dt*f+(Math.random()-.5)*0.2*w,_vc.z-_vb.z*dt*f+(Math.random()-.5)*0.2*w);
             _ve2.copy(_vb).addScaledVector(_vbk,ex);_ve2.x+=(Math.random()-.5)*2.5;_ve2.y+=(Math.random()-.5)*2.5;_ve2.z+=(Math.random()-.5)*2.5;
             this.emit(V,_vd,_ve2,_vq,0.12+Math.random()*0.08,w*(0.5+Math.random()*0.3),bo?1:0)}}}
-      this.step(V,dt,0);this.step(this.chunks,dt,26);this.step(this.sparks,dt,20)}
+      if(race)this.wisps(dt);
+      this.step(V,dt,0);this.step(this.chunks,dt,26);this.step(this.sparks,dt,20);this.stepWisp(this.wisp,dt)}
     if(this.sky){this.sky.visible=g2('sky')&&!(T&&T.env&&T.env.sky);if(this.sky.visible)this.sky.position.copy(camera.position)}
     if(this.motes){const on=g2('motes')&&race;this.motes.visible=on;if(on){const a=this.motes.geometry.attributes.position,A=a.array,c=camera.position,t=S.t;
       for(let k=0;k<A.length;k+=3){for(let d=0;d<3;d++){const h=d===1?35:70,cc=d===0?c.x:d===1?c.y:c.z;let x=A[k+d];if(x<cc-h)x+=2*h;else if(x>cc+h)x-=2*h;A[k+d]=x}A[k+1]+=Math.sin(t*0.7+k)*0.004}a.needsUpdate=true;this.motes.material.color.setHex(this.moteCol)}}
@@ -5952,11 +6013,12 @@ function fpsTick(d){const ov=(g2('scan')?'s':'')+(g2('vig')?'v':'');if(ov!==FPS.
   if(!FPS.on||!(d>0))return;FPS.n++;FPS.acc+=d;if(FPS.acc>=0.5){$('fps').textContent=Math.round(FPS.n/FPS.acc)+' FPS';FPS.n=0;FPS.acc=0}}
 function frame(now){
   if(FCAP.v){const ms=1000/FCAP.v;if(now<FCAP.due-1.5){requestAnimationFrame(frame);return}FCAP.due=now-FCAP.due>ms*2?now+ms:FCAP.due+ms}
-  const rawDt=(now-lastT)/1000,dt=Math.min(0.05,rawDt);lastT=now;fit();fpsTick(rawDt);logFrame(rawDt);
+  const rawDt=(now-lastT)/1000,dt=Math.min(FCAP.v?Math.max(0.05,1.5/FCAP.v):0.05,rawDt);lastT=now;fit();fpsTick(rawDt);logFrame(rawDt);
   greenTex.offset.y-=dt*1.6;purpleTex.offset.y-=dt*1.6;
-  if(S.state==='lab'){S.t+=dt;readInput();labFrame(dt);GFX.fx=0;gfxRender(labScene,labCam)}
+  if(S.state==='lab'){S.t+=dt;readInput();labFrame(dt);GFX.fx=0;GFX.gl=0;gfxRender(labScene,labCam)}
   else{if(S.state!=='paused')step(dt);else readInput();
-    {const p=player,b=p.boost>0||p.selfBoost;GFX.fx=S.state==='race'&&p.wreck<=0?clamp(clamp((p.v/VMAX-0.95)*2.2,0,1)*(0.55+0.45*(p.dive||0))+(b?0.3:0),0,1):0}
+    {const p=player,b=p.boost>0||p.selfBoost;GFX.fx=S.state==='race'&&p.wreck<=0?clamp(clamp((p.v/VMAX-0.95)*2.2,0,1)*(0.55+0.45*(p.dive||0))+(b?0.3:0),0,1):0;
+      GFX.gl=S.state==='race'&&p.spinD>0&&p.wreck<=0?0.6*Math.pow(1-Math.min(1,p.spinT/p.spinD),1.5):0}
     VFX.update(dt);if(!NO_RENDER||window.__hlRender)gfxRender(scene,camera)}
   if(S.state==='menu'){pv3.acc+=dt;if(pv3.acc>=1/30){const cv=!$('menu').hidden?$('preview'):!$('career').hidden?$('carPreview'):!$('train').hidden?$('trPreview'):!$('mp').hidden?$('mpPreview'):!$('ed').hidden?$('edPreview'):null;if(cv)pv3Draw(cv,pv3.acc);pv3.acc=0}}
   requestAnimationFrame(frame)}
@@ -5990,6 +6052,9 @@ const LAB_VIEW={speed:0.55,thrust:0.25,handling:2.5,shield:1.5,ammo:2.1};
 let labShip=null,labGhost=null,labOld=null;
 const lab={yaw:0.55,target:null,hold:0,drag:null,pulse:0,pulseK:null,pulseUp:true,tagT:0,tagK:null,ghostT:0};
 const labV=new THREE.Vector3(),labC=new THREE.Vector3();
+/* A fitted module's tag in the Frame lab: 1 and 2, or with a pad in use the buttons that fire them (A and B on an Xbox pad) */
+function slotTag(k){const i=bind.pad[k?'w2':'w1'];return lastDev==='pad'?`<em class="pk ${padCls(i)}" data-slot="${k}">${padFace(i)}</em>`:`<em data-slot="${k}">${k+1}</em>`}
+function labSlotTags(){const wb=$('labWpn');if(!wb||!wb.querySelectorAll)return;for(const e of wb.querySelectorAll('em[data-slot]'))e.outerHTML=slotTag(+e.dataset.slot)}
 function labBuildShip(){const s=makeShip(paintOf(build),build.stats,build.frame);s.rotation.y=lab.yaw;labScene.add(s);return s}
 function openLab(from){lab.from=from==='results'?'results':null;if(lab.from)$('results').hidden=true;S.state='lab';hidePages();$('lab').hidden=false;if(!labShip)labShip=labBuildShip();lab.yaw=0.55;lab.target=null;labUI();$('labWdesc').textContent=WDEF[build.weapons[0]].desc}
 function closeLab(){saveBuild();applyBuild();$('lab').hidden=true;$('labTag').hidden=true;
@@ -6012,7 +6077,7 @@ function labUI(){const free=BUD-spent(build),box=$('labStats');
   const wb=$('labWpn');wb.innerHTML='';
   const cw=S.car?carW():null;
   for(const[k,w]of Object.entries(WDEF)){const b=document.createElement('button');b.className='chip wchip';const slot=build.weapons.indexOf(k),lk=cw&&!cw.includes(k);b.classList.toggle('lock',!!lk);
-    b.innerHTML=`${slot>=0?`<em>${slot+1}</em>`:''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?'passive':w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, passive`:`${w.name}, ${w.cost} ammo per shot`);
+    b.innerHTML=`${slot>=0?slotTag(slot):''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?'passive':w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, passive`:`${w.name}, ${w.cost} ammo per shot`);
     b.onclick=()=>{if(lk){$('labWdesc').textContent=`${w.name}: ${w.desc} Win career races to unlock it.`;audio.deny();return}if(build.weapons.includes(k)){$('labWdesc').textContent=`${w.name}: ${w.desc}${w.passive?'':` Uses ${w.cost} ammo.`}`;return}
       /* the two scoops never go together: fitting one swaps out the other */
       const other=w.passive?build.weapons.find(x=>WDEF[x].passive&&x!==k):null,dropped=other||build.weapons[0];
@@ -6030,7 +6095,7 @@ function paintUI(){const pb=$('labPaint'),cur=paintOf(build),hx=c=>'#'+hx6(c),ro
   if(cur.pat===7){const g=document.createElement('div');g.className='pgrid';g.setAttribute('role','grid');g.setAttribute('aria-label','Draw your pattern');const bits=cur.bits;
     for(let r=0;r<8;r++)for(let q=0;q<8;q++){const v=parseInt(bits.substr(r*2,2),16),on=!!(v&(128>>q)),b=document.createElement('button');b.className='pc';b.style.background=on?hx(cur.stripe):hx(cur.body);b.setAttribute('aria-label',`row ${r+1} column ${q+1} ${on?'second':'main'}`);
       b.onclick=()=>set(o=>{const a=[];for(let y=0;y<8;y++)a.push(parseInt(o.own.substr(y*2,2),16));a[r]^=128>>q;o.own=a.map(x=>x.toString(16).padStart(2,'0')).join('')});g.append(b)}
-    pb.append(g);const p=document.createElement('p');p.className='small';p.textContent='Tap a square to swap it between the main and second colour. The pattern repeats over every panel of the ship.';pb.append(p)}
+    pb.append(g);const p=document.createElement('p');p.className='small';p.textContent='Tap a square to swap it between the main and second colour. The pattern repeats over every panel of the frame.';pb.append(p)}
   const code=document.createElement('p');code.className='small';code.textContent=build.liv?'Livery '+build.liv:'';pb.append(code)}
 function changeStat(k,d){const st=build.stats,v=st[k]+d;if(v<SMIN||v>SMAX)return;
   if(d>0&&spent(build)>=BUD){const p=$('labPts');p.textContent='Lower another stat first to free a point';p.classList.add('warn');clearTimeout(p._t);p._t=setTimeout(()=>{p.classList.remove('warn');labUI()},1400);

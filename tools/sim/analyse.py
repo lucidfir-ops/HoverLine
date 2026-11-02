@@ -118,6 +118,17 @@ if fu:
     wc={w:sum(1 for r in win if w in r['w']) for w in WP};allc={w:sum(1 for r in fu if w in r['w']) for w in WP}
     rep.append('weapons on winners vs expected: '+', '.join(f'{w} {wc[w]}/{allc[w]*len(win)/len(fu):.0f}' for w in sorted(WP,key=lambda w:-wc[w]/max(1,allc[w]))))
     out['full']={k:b[k][0] for k in b}
+    # by width (Prototype 36): a frame's or module's wins against its fair share (1.00 = as often as an average racer)
+    for lab,keyf,keys in[('frames',lambda r,k:r['fr']==k,FR),('modules',lambda r,k:k in r['w'],WP)]:
+        rep.append(f'{lab} by width, wins / fair share (W S N):')
+        cells=[]
+        for k in keys:
+            row=[]
+            for wk in 'WSN':
+                s=[r for r in fu if r['wk']==wk and keyf(r,k)]
+                row.append(np.mean([r['win'] for r in s])*8 if s else float('nan'))
+            cells.append(f'{k} {row[0]:.2f} {row[1]:.2f} {row[2]:.2f}')
+        rep.append('  '+'; '.join(cells))
 # ---- hauler ----
 ha=prep(load('hauler'))
 if ha:
