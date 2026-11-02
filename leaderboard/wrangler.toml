@@ -6,3 +6,9 @@ compatibility_date = "2024-09-23"
 binding = "DB"
 database_name = "hoverline"
 database_id = "c1cb6d5b-10a5-42e9-b368-62b2e105ecbd"
+
+# Cuke Cutter (another game) posts its logs to this Worker too; they're kept in their own database
+[[d1_databases]]
+binding = "CUKE_DB"
+database_name = "cuke-cutter"
+database_id = "b0884100-59d1-441f-9695-794c5cce5fce"

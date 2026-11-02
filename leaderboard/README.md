@@ -96,10 +96,18 @@ then `wrangler deploy`.
 
 The free plan's 5 GB of D1 storage holds well over 100,000 race logs.
 
+### Cuke Cutter's logs (2026-11-02)
+
+Cuke Cutter, a different game, sends its logs (crash reports) to this Worker's `POST /log` too. The Worker spots
+them by `log.game` being `cuke-cutter` and keeps them in a separate D1 database, `cuke-cutter` (binding `CUKE_DB` in
+`wrangler.toml`; table in `cuke-schema.sql`), so Hoverline's `logs` table only ever holds Hoverline races. Read them by
+adding `&game=cuke-cutter` to `/logs` or `/logs/count`, or with `wrangler d1 execute cuke-cutter --remote --command "..."`.
+The 21 Cuke Cutter logs sent between 2026-10-31 and 2026-11-02 were moved there, keeping their ids.
+
 ## API
 
 - `GET /top?track=CODE&laps=3&era=28` returns `{rows:[{name,ship,time,lap,at}], total}`.
 - `GET /boards?sort=recent|popular&era=28` returns `{boards:[{track,laps,pilots,best,holder,last}]}` (up to 30), for the in-game Leaderboard screen (Prototype 29).
 - `POST /run` takes `{track,laps,name,ship,time,lap,len,era}` (no `era` counts as 28) and returns `{rank, best, rows, total}`. Errors come back as `{error}` with status 400, 422 or 429.
 - `POST /log` takes `{v, log}` (one race log) and returns `{ok, id}`. Errors: 400, 413 (too big) or 429.
-- `GET /logs?key=ADMIN_KEY&since=MS&limit=N` returns `{logs:[{id,created,ver,track,log}], more, next}`; `GET /logs/count?key=ADMIN_KEY` returns `{n, bytes}`.
+- `GET /logs?key=ADMIN_KEY&since=MS&limit=N` returns `{logs:[{id,created,ver,track,log}], more, next}`; `GET /logs/count?key=ADMIN_KEY` returns `{n, bytes}`. Add `&game=cuke-cutter` to either for Cuke Cutter's logs.

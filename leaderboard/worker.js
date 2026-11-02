@@ -7,6 +7,9 @@
 //   POST /log  {v, log}                       → { ok, id }            (shared race data; no names)
 //   GET  /logs?key=ADMIN_KEY&since=MS&limit=N → { logs:[{id,created,ver,track,log}], more }
 //   GET  /logs/count?key=ADMIN_KEY            → { n, bytes }
+//   Cuke Cutter (another game) posts its logs to the same POST /log. Logs whose log.game is 'cuke-cutter' go to the
+//   separate D1 database `cuke-cutter` (binding CUKE_DB) and never reach Hoverline's. Read them with &game=cuke-cutter
+//   on /logs or /logs/count.
 // Times are in seconds on the wire, stored as ms. One row per run; the board shows each pilot's best.
 // Boards are split by era: the game's BOARD_ERA, raised whenever tracks or handling change enough that old times aren't
 // comparable. Every read and write takes ?era= / {era}; a client that sends none (Prototype 28) is era 28.
@@ -17,6 +20,8 @@ const json = (o, s = 200) => new Response(JSON.stringify(o), { status: s, header
 const TRACK = /^[A-Z0-9-]{4,40}$/i, SHIP = /^[a-z]{2,12}$/;
 const eraOf = v => { const n = parseInt(v, 10); return n > 0 && n < 10000 ? n : 28 };
 const cleanName = n => String(n || '').replace(/[\u0000-\u001f\u007f<>&"]/g, '').trim().slice(0, 12);
+const CUKE = 'cuke-cutter';
+const isCuke = L => !!L && typeof L === 'object' && String(L.game || '').toLowerCase() === CUKE;
 
 async function top(db, track, laps, era, n = 10) {
   const r = await db.prepare(
@@ -89,22 +94,26 @@ export default {
         let b = null; try { b = JSON.parse(txt) } catch (e) { }
         const L = b && b.log;
         if (!L || typeof L !== 'object' || !Array.isArray(L.s) || !L.track) return json({ error: 'bad log' }, 400);
+        const db = isCuke(L) ? env.CUKE_DB : env.DB; // Cuke Cutter's logs live in their own database
+        if (!db) return json({ error: 'no store' }, 503);
         const who = await hash((req.headers.get('CF-Connecting-IP') || 'local') + (env.SALT || 'hoverline'));
         const now = Date.now();
-        const recent = await env.DB.prepare(`SELECT COUNT(*) AS n FROM logs WHERE who=?1 AND created>?2`).bind(who, now - 3600000).first();
+        const recent = await db.prepare(`SELECT COUNT(*) AS n FROM logs WHERE who=?1 AND created>?2`).bind(who, now - 3600000).first();
         if (recent && recent.n >= 40) return json({ error: 'slow down' }, 429);
         const track = String(L.track.code || '').slice(0, 40), ver = (b.v | 0) || 0;
-        const r = await env.DB.prepare(`INSERT INTO logs (created,who,ver,track,data) VALUES (?1,?2,?3,?4,?5)`).bind(now, who, ver, track, JSON.stringify(L)).run();
+        const r = await db.prepare(`INSERT INTO logs (created,who,ver,track,data) VALUES (?1,?2,?3,?4,?5)`).bind(now, who, ver, track, JSON.stringify(L)).run();
         return json({ ok: true, id: r.meta ? r.meta.last_row_id : null });
       }
       if (req.method === 'GET' && (u.pathname === '/logs' || u.pathname === '/logs/count')) {
         if (!env.ADMIN_KEY || u.searchParams.get('key') !== env.ADMIN_KEY) return json({ error: 'key' }, 403);
+        const db = (u.searchParams.get('game') || '').toLowerCase() === CUKE ? env.CUKE_DB : env.DB;
+        if (!db) return json({ error: 'no store' }, 503);
         if (u.pathname === '/logs/count') {
-          const c = await env.DB.prepare(`SELECT COUNT(*) AS n, SUM(LENGTH(data)) AS bytes FROM logs`).first();
+          const c = await db.prepare(`SELECT COUNT(*) AS n, SUM(LENGTH(data)) AS bytes FROM logs`).first();
           return json({ n: c ? c.n : 0, bytes: c ? c.bytes || 0 : 0 });
         }
         const since = parseInt(u.searchParams.get('since') || '0', 10) || 0, limit = Math.min(200, parseInt(u.searchParams.get('limit') || '100', 10) || 100);
-        const r = await env.DB.prepare(`SELECT id, created, ver, track, data FROM logs WHERE created>?1 ORDER BY created ASC LIMIT ?2`).bind(since, limit + 1).all();
+        const r = await db.prepare(`SELECT id, created, ver, track, data FROM logs WHERE created>?1 ORDER BY created ASC LIMIT ?2`).bind(since, limit + 1).all();
         const rows = r.results.slice(0, limit).map(x => { let log = null; try { log = JSON.parse(x.data) } catch (e) { } return { id: x.id, created: x.created, ver: x.ver, track: x.track, log } });
         return json({ logs: rows, more: r.results.length > limit, next: rows.length ? rows[rows.length - 1].created : since });
       }
