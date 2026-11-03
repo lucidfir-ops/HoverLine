@@ -1,5 +1,79 @@
 # Changelog
 
+## Prototype 39
+From your feedback and your 49 race logs of 2 and 3 November (39 on Prototype 38, on the Steam Deck with a pad).
+- Settings starts with three performance presets: Ultra low, Lite and Default. Each one sets the graphics, the resolution, the frame rate cap and the music together.
+  - Ultra low: every effect off, 20% resolution, Low detail, a 30 fps cap and Songs (Pregen in copies without the songs).
+  - Lite: every effect off, 50% resolution, a 45 fps cap and Pregen.
+  - Default: everything on at full resolution, no cap, and Generative music. New players start on Default.
+- Clean, Arcade and Everything are gone. A setup you saved from Clean or Arcade keeps its parts and shows as your own. Change anything after picking a preset and it shows as your own setup too.
+- Beside the presets, a box shows the music: Songs, Pregen, Generative or off. It opens the Music page.
+- Music moved from Options into Settings. Settings now runs, top to bottom: the presets, music and sound volume, Sound and Music, resolution and the frame rate cap, then Graphics and Race data.
+- New Sound page: announcer on or off, the music (Generative, Pregen, Songs or No music) and Sound on or off. Race data has a page of its own.
+- Graphics has the presets, with Low detail and the FPS counter beside them, then resolution and the frame rate cap, then the options. A preview beside the options shows the one you point at, or select with the pad, switching on and off, with a line on what it does. The long paragraph is now "Lower resolution = higher fps".
+- The light pools under the frames are gone.
+- The first-race check now steps down to Lite at 30 to 45 fps; under 30 it still picks Ultra low. If it switches during a race, the music changes when the race is over.
+- Career opens a small page: Load career (when you have one) and New career. New career asks first if it would replace a career you have.
+- New career starts with a frame select:
+  - one frame at a time on the Frame lab's stand, with a line on what makes it different;
+  - all eight in a row along the bottom;
+  - tap a frame to look at it and tap it again to choose;
+  - with a pad or the keys, left and right move along the row and A or Enter chooses.
+- The announcer's voice reads each frame's line the first time you look at it. Repeat reads it again, and moving on stops it. With the announcer off, only Repeat plays.
+- Then the same voice asks "Do you require guidance?". Yes is the tutorial with your frame, plus one step for its trait. No goes straight to the career.
+- The frame steps use the race physics:
+  - the Tether boosts, then comes apart on a mine;
+  - the Orb rides a wall at about 390 km/h, where a Blade drops to about 175;
+  - the Drifter drifts when you tap the brake in a turn;
+  - the Hauler takes a missile and refills its shield and ammo;
+  - the Dart dips its nose on a descent;
+  - the Skiff dodges cannon bolts;
+  - the Monowheel steers in the air beside a Blade's outline.
+  
+  Options, Tutorial includes the step for your own frame.
+- A new career starts with 5 points, every stat at 1, and nothing to spend. Points cost 300 to 1,200 ¢, 7,500 in all (it was 9,000). In simulated careers that's 9 points after Rookie, 12 or 13 after Club, and all 15 before Pro ends.
+- The career page has a credits tracker instead of the +1 point button. It opens the Frame lab, where the buy button is amber only when you can afford a point.
+- The career page states the rule: finish in the top three to clear a race and open the next. Choosing a race asks first, with Yes and No. After a career race the results say Next career race.
+- Reset in the Frame lab keeps the career frame at its own points. It used to give it 15. Career saves carry over unchanged; New career gives the 5-point start.
+- No wasted ammo: a timed module waits until its own effect is nearly over. Turbo won't fire over a running Turbo (a boost pad's short boost doesn't hold it back). Barrier, Phase, Overdrive and Autopilot won't fire again while they're on. The AI follows the same rule.
+- The shield and ammo strips' charging tone fades out as the bar tops up and is silent while it's full, so boosting on a shield strip with a full shield no longer rings.
+- Plumes and boost jets come out of the nozzles:
+  - the Blade's and the Hauler's two rear cylinders (they used to come out of the engine pods);
+  - the Drifter now has three plumes, one from each of its three cylinders.
+- Frames:
+  - The Drifter's drift is gentler: at most 25% more turn (it was 60%), building over half a second (it was a quarter), and still with no braking. It carries its speed round long corners rather than jumping across the road.
+  - The drift is drawn the right way now: in a right-hand bend the nose points further right and the tail swings out to the left. It used to point the nose out of the bend, which looked like a sideways shove.
+  - The Monowheel's description matches what it does: it drops back to the road fast over crests and keeps more of its steering in the air (70%, against 50% for the others). It used to say it steers less in the air.
+  - In the Frame lab the Orb "rolls along walls" (it said "bounces off walls").
+- No "Rivals ... race like you" note at the start and no ≈ mark in the results. The rivals still race as before.
+- The live race music follows the race a little. This is Generative only: Pregen and Songs play as before.
+- Tempo follows your average speed over the last 15 seconds or so:
+  - A fast race pushes drum & bass up to 4 bpm faster (never past 180) and trance up to 3; a slow one brings them down as far.
+  - It moves half a bpm a bar at most and never inside a build.
+  - About 60% of the time your speed is in the middle and nothing moves.
+  - Every race starts at the tune's own tempo, so the drop still lands on GO, in rooms too.
+- In a fight the music gets harder: a grittier, brighter bass, ghost snares, 16th hats and claps doubling the backbeat. In a heavy fight it adds a crash every 4 bars, palm-muted guitar chugs under the bass in drum & bass tunes (blends too) and double kicks in metal. It eases back a level every 4 bars once the fighting stops.
+- Pull 2.5 seconds (about 300 m) clear of second, with nobody attacking for 8 seconds, and the music gets more trancey: pads and arps come up and open out. Five seconds clear and calm for longer, the lead plays its whole hook. Races are close, so this is a rare reward.
+- With your speed in the middle, no fighting and no clear lead, a tune plays exactly as before. Tune codes are unchanged.
+- Race logs record the music:
+  - every tune change, with its code and why: Next (with the tune it replaced and how long that had played), blend and sister-tune steps, and loaded codes;
+  - Keep, and style and mode changes;
+  - each song in Songs mode: started at GO, skipped or finished;
+  - the music's reactions as they change.
+  
+  A log's start says which music mode was on. Logs already had the track code.
+- Race logs count the time you spend against a wall (`scrapeT`). It was always 0, because nothing set it.
+- The race simulator can fly like Eric: `PILOT=eric` (or `node eric.js`), fitted to his 39 Prototype 38 race logs and checked by racing them again.
+  - On Narrow it matches his lap times, wall touches (about 46 a minute), wrecks (1.8 a race), air time, boost and shots. Standard matches within the spread.
+  - Wide is about 13% slow, because it was fitted on 6 races.
+  - `fit_eric.js` refits it from any log export, and `eric.js calibrate` tunes it against the same races.
+- What it found:
+  - For a pilot who flies like Eric (wide in tight corners, rarely braking or diving, handling 1), the Orb at 15% walls is the strongest frame on Narrow. In rooms of eight such pilots, one per frame, it beats 95% of the room there and wins 6 times a fair share. On Narrow it stays on top at 30% (86%) and 50% (83%) too; raising it mostly pulls it back on Standard and Wide.
+  - The Tether is his best all-rounder (about 80% on every width).
+  - The Drifter and Skiff come last for him. The gentler drift doesn't hurt him: 1.6% faster, within the noise.
+- `tools/sim/log2ghost.py` turns any finished race in a log export into a ghost for the Time trial, within a quarter of a metre of the logged run.
+- Shared logs are sent as version 39, and public rooms only meet other Prototype 39 players. The board era stays 38: only the Drifter's drift and the module refire rule change race times, and only slightly.
+
 ## Prototype 38
 From your feedback, Dave's rooms and the race logs of 1 and 2 November (24 new players on Prototype 35, mostly one race each).
 - Fixed the giant blue rings around the frames (Dave saw them all race). They were the boost jets, drawn unscaled when they should have been hidden: a frame that wasn't boosting said its jets were "not set" rather than "off", and the 3D library draws anything that isn't switched off. Every frame that hadn't boosted yet showed them, and in rooms the other pilots' frames kept them all race.

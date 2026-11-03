@@ -24,7 +24,14 @@ if(process.env.PILOT==='human'){const tau=+(process.env.HT||0.12),sig=+(process.
     s.s+=(i.steer-s.s)*Math.min(1,dt/tau);s.n+=-s.n*dt/0.7+sig*Math.sqrt(dt)*g();
     s.pt-=dt;if(s.pt<=0){s.pt=2+Math.random()*4;s.pe=Math.random()<0.25?(Math.random()<0.6?1:-1):null}
     s.bt-=dt;if(s.bt<=0){s.bt=1+Math.random()*2;s.b=Math.random()<0.3}
-    return{...i,steer:Math.max(-1,Math.min(1,s.s+s.n)),brake:(i.brake||0)*0.2,pitch:s.pe!=null?s.pe:i.pitch,boost:i.boost&&s.b,fire:(i.fire||[]).map(f=>f&&Math.random()<0.5),hold:(i.hold||[]).map(h=>h&&s.b)}}}const rnd=()=>{rs=(Math.imul(rs,1103515245)+12345)&0x7fffffff;return rs/0x7fffffff};
+    return{...i,steer:Math.max(-1,Math.min(1,s.s+s.n)),brake:(i.brake||0)*0.2,pitch:s.pe!=null?s.pe:i.pitch,boost:i.boost&&s.b,fire:(i.fire||[]).map(f=>f&&Math.random()<0.5),hold:(i.hold||[]).map(h=>h&&s.b)}}}
+/* PILOT=eric (Prototype 39): every racer flies like Eric, the developer, from his Steam Deck race logs: his line, nose,
+   boost, modules, drifts and Orb wall riding, steering lag and wander fitted per width (eric_pilot.js; parameters in
+   ERIC, default eric_params.json, from fit_eric.js and eric.js calibrate), with a person's physics (r.hum: no AI skill
+   factor, the person's yaw assist and drift rules). eric.js races one Eric against the game's normal field instead. */
+if(process.env.PILOT==='eric'){const {makeEric}=require(__dirname+'/eric_pilot.js'),EP=JSON.parse(fs.readFileSync(process.env.ERIC||__dirname+'/eric_params.json','utf8')),pin=makeEric(H,EP);
+  globalThis.__pin=(r,i,dt)=>{r.hum=true;if(!r.sty)r.sty={boost:1,fire:1,dive:1,up:1,longP:EP.longP};return pin(r,i,dt)}}
+const rnd=()=>{rs=(Math.imul(rs,1103515245)+12345)&0x7fffffff;return rs/0x7fffffff};
 const build=()=>{let st;for(;;){st={};let left=15;for(const k of ST)st[k]=1;left-=5;const order=[...ST];while(left>0){const k=order[Math.floor(rnd()*5)];if(st[k]<5){st[k]++;left--}}return st}};
 const kinds=['W','S','N'],lens=['Q','M','L'],r2=x=>Math.round(x*100)/100,fin=x=>Number.isFinite(x);
 /* FLAGS, checked four times a simulated second for every racer still racing:

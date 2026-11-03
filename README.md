@@ -1,6 +1,6 @@
 # Hoverline
 
-A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight frames, three laps, procedural tracks from shareable codes in five settings (urban, ocean, forest, Stratos and an underwater reef, each by night or by day), a career with a short tutorial, a training mode with drill tracks, live-synthesised music (or the race tune rendered ahead, or recorded CC0 songs), and multiplayer for up to 8 pilots online, in a public room or on one Wi-Fi with no internet.
+A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight frames, three laps, procedural tracks from shareable codes in five settings (urban, ocean, forest, Stratos and an underwater reef, each by night or by day), a career that starts with a spoken frame select and a short tutorial, a training mode with drill tracks, live-synthesised music that follows the race (or the race tune rendered ahead, or recorded CC0 songs), and multiplayer for up to 8 pilots online, in a public room or on one Wi-Fi with no internet.
 
 **Play:** open `index.html` in a browser, or upload `dist/hoverline-itch.zip` to itch.io as an HTML game. `dist/hoverline-offline.html` is one file that plays with no internet at all.
 
@@ -14,6 +14,7 @@ A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet
 | `vendor/three.min.js` | Three.js r128 (MIT), put inside the offline file and the Wi-Fi pack. |
 | `songs/` | Songs mode's recorded tracks (CC0, credited below) and their list. `tools/build.py` puts them beside the page in the itch.io zip and the Wi-Fi host pack; the offline file doesn't carry them. |
 | `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. (Since Prototype 31 any copy of the game can also do this on its own: Multiplayer, Wi-Fi, no internet.) |
+| `tools/sim/` | A headless race simulator for balance studies, with simulated pilots that fly like people or like Eric's race logs (its README has the commands), and `log2ghost.py`, which turns a logged race into a Time trial ghost. |
 | `leaderboard/` | The online leaderboard and shared race data: a Cloudflare Worker and D1 database. |
 | `reference/` | Builds kept for comparison: Prototype 25 (the music and announcer baseline), Prototype 24 (clown music to avoid), Prototype 21, Prototype 26 (the mixed scenery that was rolled back) and Prototype 27. |
 | `docs/DESIGN.md` | The design document: what is locked, what is tuned, and how to change things safely. |
@@ -42,5 +43,5 @@ python3 tools/build.py
   - 50 Over The Speed Limit, HoliznaCC0 (Power Pop!), CC0 1.0, [Free Music Archive](https://freemusicarchive.org/music/holiznacc0/power-pop/50-over-the-speed-limit/)
   - Blippy Trance, Kevin MacLeod (FreePD), CC0 1.0, [FreePD](https://freepd.com)
   - Limit 70, Kevin MacLeod (FreePD), CC0 1.0, [FreePD](https://freepd.com)
-- Announcer and sung chops: the open Kokoro speech model (Apache-2.0).
+- Announcer, sung chops and the career's frame lines: the open Kokoro speech model (Apache-2.0).
 - Sound effects (Prototype 32): public-domain (CC0) recordings from Kenney's Interface Sounds, Digital Audio, Sci-Fi Sounds and Impact Sounds packs ([kenney.nl](https://kenney.nl)), rubberduck's CC0 SFX packs on [OpenGameArt.org](https://opengameart.org/users/rubberduck) (50 CC0 Sci-Fi SFX, 50 CC0 retro / synth SFX, 25 CC0 bang / firework SFX, 100 CC0 SFX #2, 75 CC0 breaking / falling / hit sfx) and the Sonic Pi sample pack, trimmed, some layered, and re-encoded.

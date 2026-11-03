@@ -26,6 +26,35 @@ python3 compare.py base after    # before / after, once a second set is in resul
 - `PILOT=human` (Prototype 38) flies every racer like a person: the AI's inputs go through a model with steering that lags (`HT`, default 0.12 s) and wanders (`HS`, 0.15), the nose held the wrong way in a quarter of 2 to 6 s spells, a fifth of the braking, boost a third of the time and half the shots. The defaults touch the walls about as often as people do in the race logs (Narrow 48 a minute, Standard 24, Wide 11; people 47, 23 and a median of 11), where the AI touches them 9.5, 6 and 4 times. Use it for anything that matters more to people than to the AI, like the walls (it found even the Prototype 37 Orb the strongest frame for such pilots). It is still a model: quirks people use on purpose, like the Drifter's drift or riding the wall in the Orb, need a person to judge.
 - The AI's own mistakes (`AI_LAPSE` in the game) are on in these runs, as in the game.
 
+## Eric pilot (Prototype 39)
+
+A simulated pilot that flies like Eric does in his race logs (`eric_pilot.js`), fitted from a log export and checked by racing his own races again. Where `PILOT=human` is a generic newcomer, this one has his line (wide in tight corners), his nose (up in corners and climbs, rarely down), his held boost by shield left, his module rates by width and ammo in hand, his strip use, his Drifter brake taps and his Orb wall riding, with a person's physics (`r.hum` in `gen.py`: no AI skill or width factor, the person's yaw assist and drift rules). Steering lag and wander, the line, the share of incoming-shot warnings he answers with Phase or Barrier, and a fire-rate factor are fitted in the sim (`calibrate`), so it touches the walls and takes hits about as often as he does on each width.
+
+```
+cd tools/sim && npm install
+SRC=../../src/hoverline.html OUT=game.js python3 gen.py      # build the logs came from, for fitting (any build with the same tracks rebuilds them)
+LOGS=~/Downloads/hoverline-logs-XXXX.json                     # Controls > Download all logs
+node fit_eric.js eric_params.json $LOGS                       # 10 s: line, nose, brake, boost, modules, drifts, Orb, strips, routes
+node eric.js calibrate $LOGS eric_params.json 4               # races his finished races 4 times (Deck: a few minutes)
+node eric.js replay $LOGS results/eric_replay.jsonl 3         # his races again, 3 times each, with the same field
+python3 eric_validate.py $LOGS results/eric_replay.jsonl      # his logs against the pilot's, per width (BY=frame per frame)
+PROFILE=$LOGS node eric.js frames 480 0 results/eric_frames.jsonl   # one Eric, frames in turn, against the normal AI field (rivals copy his profile)
+node eric.js room 160 0 results/eric_room.jsonl               # eight Erics, one in each frame
+python3 eric_frames.py results/eric_frames.jsonl results/eric_room.jsonl
+FRAME=roller VARIANT="roller.dTurn=0.6;roller.dIn=4;roller.dOut=3" node eric.js frames 48 0 results/d38.jsonl   # P38 drift on the current build
+FRAME=roller node eric.js frames 48 0 results/d39.jsonl && python3 eric_pair.py results/d38.jsonl results/d39.jsonl  # same races, race by race
+python3 log2ghost.py $LOGS                                     # list the races; then: python3 log2ghost.py $LOGS LOG_ID ghost
+PILOT=eric node balance.js frames 160 3000 results/eric_bal.jsonl   # balance.js modes with every racer an Eric
+```
+
+- New logs: `KEEP=eric_params.json node fit_eric.js new_params.json $LOGS more.json` keeps the fitted steering and threat answers and refits the rest from the logs; then `node eric.js calibrate $LOGS new_params.json 2` puts the line and steering back on target.
+- `MATCH` picks the logs (a regex on the log's game, default `Prototype 38`), `DEV` the device (default `pad`). Fit on one prototype's logs and the build they came from; race the frames on the current build.
+- `eric.js` sets races up the way the game does (rubber band, career classes, rivals copying the profile in the export, `PROFILE=` for frames/room), not the balance.js way. Replays copy each logged race's field (frames, skills, modules, rivals). Each finished Eric race also writes the game's own race log (`*.logs.jsonl`), so any log tool works on the pilot's races.
+- `FRAME=roller` races one frame only; `VARIANT` works as in balance.js, and the drift has frame fields: `roller.dTurn`, `roller.dIn`, `roller.dOut` (P38 0.6, 4, 3; P39 0.25, 2, 2.5).
+- `log2ghost.py` turns a logged race into the game's ghost (10 Hz from the log's 4 Hz): paste the `.js` it writes into the browser console on the game's page, then Time trial on that track code races it. It replaces your best ghost on that track.
+- About 2.5 s of CPU a race. Results are appended a race at a time; split long runs over workers by OFFSET as in the bug hunt.
+- It is still a model of one pilot on 39 logs (20 Narrow, 12 Standard, 7 Wide, one Orb race): see the P39 report for where it matches him and where it doesn't.
+
 ## Bug hunt (Prototype 36)
 
 Every run also writes `OUTFILE.races.jsonl`, one line a race: the seed and track code, how long the track took to build and the race to run, where frames fell, clipped and were wrecked, and flags for anything that looks like a bug, checked four times a simulated second for every racer still racing:

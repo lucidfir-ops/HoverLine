@@ -15,11 +15,12 @@ How the Claude sessions on the designer's Steam Deck make each update. These not
 3. Syntax check: copy the main `<script>` (the game, not the Three.js tag) into a scratch file and run `node --check` on it.
 4. Browser check (see Testing below).
 5. Update `CHANGELOG.md` (a new `## Prototype N` at the top, written in the same plain style) and `docs/DESIGN.md`.
-6. Bump the version in three places:
+6. Bump the version in four places:
    - the menu subtitle `Prototype N · 8 frames · 3 laps`
    - `logShare`'s `{v:N,` (the version shared logs are sent as)
+   - `PUBV`, the version public rooms are named for (only players on the same version meet)
    - `BOARD_ERA`, only when track building or handling changes enough to make old times unfair. Say so in the changelog. Career track codes (`CAR_T`) should still build the same road.
-7. Commit with a message like the existing ones (`Prototype N: short list of changes`) and push.
+7. Commit with a message like the existing ones (`Prototype N: short list of changes`). Don't push: Eric pushes to GitHub himself.
 
 ## Testing
 
