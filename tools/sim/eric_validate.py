@@ -30,7 +30,7 @@ def agg(rows):
     return out
 def key(l):return l['track']['code'][0] if BY=='width' else l['ship']['frame'] if BY=='frame' else l['track']['code'][0]+'/'+l['ship']['frame']
 if __name__=='__main__':
-    d=json.load(open(sys.argv[1]));real=[l for l in d['logs'] if MATCH in l['game'] and l['result']['how']=='finish']
+    d=json.load(open(sys.argv[1]));real=[l for l in d['logs'] if MATCH in l['game'] and l.get('mode')!='quick' and l['result']['how']=='finish']
     R=collections.defaultdict(list);ids=set()
     for l in real:R[key(l)].append(metrics(l));ids.add(l['id'])
     sims=[]

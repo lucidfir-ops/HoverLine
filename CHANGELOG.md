@@ -1,5 +1,30 @@
 # Changelog
 
+## Prototype 40
+From a stranger's feedback on reddit (played on an iPhone held upright), a friend on an iPhone, and your notes.
+- A new player now starts with a quick race. A browser with nothing saved opens on "Tap to race" over the first track: one tap and the countdown starts. Anyone who has played before still opens on the title. The tap is needed because browsers only start sound and full screen after a tap inside the game.
+- Five short races open the game a part at a time. Each is 2 laps of a hand-built Wide track, about a minute, against 5 AI at the career's Rookie pace:
+  1. Steering only, with long S-bends and lines of boost pads. Nobody fires.
+  2. One module button (the Missile), with a purple strip right after the start and a missile ready at GO.
+  3. The boost button (it costs shield): a long straight, then green strips that heal.
+  4. A split (short and tight, or longer with pickups) and a second module (Cannon) on the same button, which fires whatever is ready.
+  5. The nose, with the green V and grey Λ on a descent and a climb. Until then the nose flies itself, the way the AI's does.
+- You always move on. The end screen has Next race, Rematch and Main menu, a Better view button on phones, and "Start with a quick race". After race 5 it says you're ready and offers Career (with the frame select and the guidance) or Main menu. Picking either switches quick races off, with a line saying where to turn them back on (Settings, Race data). Your progress through the five is remembered.
+- In quick races, phones steer with the slider only (your own setting is kept), with no tilt, no brake, and only the buttons opened so far. With keys or a pad, steering always works and the rest once it's opened. The prompts name your keys or pad buttons.
+- The HUD is quiet: place, lap, shield, and ammo once you have modules. A few short prompts appear on the first lap when they matter.
+- Quick races stay off the boards, best laps, ghosts, the career and your profile. Their logs say "quick" with the race number, what you did next and whether you switched it off, and they're shared once you've chosen what next.
+- Only Turbo waits until a running Turbo is nearly over (boosts don't stack). Barrier, Phase, Overdrive and Autopilot can be fired again while they're on, as before Prototype 39, so you can spam Phase when you're scared and pay for it in ammo. The AI follows the same rule.
+- Phase also takes you through Smoke untouched: no blinding and no slowdown, as with the weapons and frames it already lets through.
+- With quick races off, the game races exactly as Prototype 39 apart from that rule. The race simulator ran the same seeded races on Prototype 39 with only the Turbo rule changed and on Prototype 40 (random builds, the human-like pilots and the Eric pilot in career-style fields), and the results match line for line.
+- The Blade looks more its own: its jet nozzles sit on the back of its two outer engine pods, and its plumes and boost jets come out of them (they were on the hull between the pods).
+- Engine exhaust no longer shoots ahead of a frame. Each frame's new cubes were laid along the stretch the nozzle had just covered and then moved on by a whole frame of their own speed in the same frame, so the newest landed about a frame's travel ahead of the nozzle: about 2 m at 60 fps, 4 m at 30 and 6 m when the frame rate dipped to 20, which put them in front of the frame whenever the frame rate dropped. They now sit where they would be had they left the nozzle at their moment in that frame. In a test, the cubes more than 2 m ahead of a frame went from 360 to none. A jump of the model (a split rejoining the road, a respawn, a room's correction) also no longer reads as a burst of speed for the exhaust.
+- Portrait on Android: a race goes full screen and holds whichever way you're holding the phone when it starts, portrait or landscape, and the menus let go of the lock. It used to force every phone into landscape. Holding the lock in a race means tilting the phone to steer can't turn the screen.
+- On a phone held upright the race camera sits a little further back and higher, with a wider view, so both walls stay in view. Landscape is unchanged, and only the view changes, never the race.
+- Better view (on the quick-race end screen, phones only): one tap to full screen on Android and iPad. An iPhone can't put a web page full screen and a page can't turn it, so there it shows a short card: turn sideways for the widest view, or use Share, Add to Home Screen to play without the browser bars (that copy keeps its own saves), and Rotation Lock if you steer by tilting. On iPhones the "Open full screen with tilt" button now says "Open with tilt".
+- The shield strip's charging tone is back as it was in Prototype 38. The coin-like "shield full" chime no longer repeats while you boost on a shield strip with a full shield: it rang every frame (181 times in 3 seconds), since boosting drains a sliver and the strip puts it straight back. It now chimes only when the strip has refilled a real dip, so filling up from 60% still chimes once.
+- The Eric pilot's tools (`tools/sim/eric.js`, `eric_validate.py`) skip quick-race logs.
+- Shared logs are sent as version 40, and public rooms only meet other Prototype 40 players. The board era stays 38.
+
 ## Prototype 39
 From your feedback and your 49 race logs of 2 and 3 November (39 on Prototype 38, on the Steam Deck with a pad).
 - Settings starts with three performance presets: Ultra low, Lite and Default. Each one sets the graphics, the resolution, the frame rate cap and the music together.

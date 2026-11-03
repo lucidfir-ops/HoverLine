@@ -73,7 +73,7 @@ async function race(o){
   S.car=null;
   return{line:{code:H.codeStr(),wk:T.wk,cx:!!T.cx,L:Math.round(T.L),frame:me.frame,pilot:PILOT,place:pl,ft:r2(pft),fin:p.finishT!=null,win:r2(win),gap:r2((pft/win-1)*100),laps:(p.laps||[]).map(r2),summary:L?L.summary:null,racers,simT:r2(tt)},log:L,cs}}
 const out=(f,o)=>fs.appendFileSync(f,JSON.stringify(o)+'\n');
-const readLogs=f=>{const d=JSON.parse(fs.readFileSync(f,'utf8'));return{d,logs:(d.logs||[d]).filter(l=>new RegExp(process.env.MATCH||'Prototype 38').test(l.game||'')&&l.result&&l.result.how==='finish'&&(!process.env.ONLY||process.env.ONLY.split(',').includes(l.id)))}};
+const readLogs=f=>{const d=JSON.parse(fs.readFileSync(f,'utf8'));return{d,logs:(d.logs||[d]).filter(l=>new RegExp(process.env.MATCH||'Prototype 38').test(l.game||'')&&l.mode!=='quick'&&l.result&&l.result.how==='finish'&&(!process.env.ONLY||process.env.ONLY.split(',').includes(l.id)))}};
 async function replay(logs,profile,reps,outF,extra={}){const res=[];
   for(let k=0;k<reps;k++)for(const l of logs){const car=l.mode==='career'?carIndex(l.track.code):null;
     const t0=Date.now();const R=await race({code:l.track.code,car,me:{frame:l.ship.frame,stats:l.ship.stats,weapons:l.ship.weapons},field:l.field,profile,speeds:!!extra.speeds});

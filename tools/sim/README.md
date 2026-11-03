@@ -87,3 +87,16 @@ for each chunk: node balance.js MODE 100 OFFSET results/p36/MODE_OFFSET.jsonl
 ls results/p36/full_*.jsonl | grep -v races | xargs cat > results/p36all_full.jsonl   # and so on per mode, then
 python3 analyse.py p36all; python3 bugs.py results/p36
 ```
+
+## Comparing two builds exactly (Prototype 40)
+
+The game draws from `Math.random`, so two runs of the same build differ. `seedrand.js` makes it repeatable, and `same.py` compares two result files race for race, ignoring timing fields. A change that should leave races alone (new menus, sound, the quick race) must give the same lines:
+
+```
+SRC=../../src/hoverline.html OUT=new.js python3 gen.py          # and old.js from the previous source
+GAME=./old.js SEED=777 node --require ./seedrand.js balance.js full 40 0 results/old.jsonl
+GAME=./new.js SEED=777 node --require ./seedrand.js balance.js full 40 0 results/new.jsonl
+python3 same.py results/old.jsonl results/new.jsonl                  # SAME, or the first lines that differ
+python3 same.py results/old.races.jsonl results/new.races.jsonl
+```
+
