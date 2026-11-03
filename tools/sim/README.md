@@ -100,3 +100,7 @@ python3 same.py results/old.jsonl results/new.jsonl                  # SAME, or 
 python3 same.py results/old.races.jsonl results/new.races.jsonl
 ```
 
+## Drift (Prototype 41)
+
+Every person-flown racer (`r.hum`: `PILOT=human` and the Eric pilot) gets the Prototype 41 brake and drift: a tap brakes hard, a hold in a turn drifts. The AI keeps its old brake, and only the AI Drifter drifts the Prototype 38 way (`aiDrift`), so all-AI runs (`balance.js full`, `frames`) race exactly as Prototype 40 and the `roller.dTurn`, `dIn` and `dOut` variant fields only change that AI drift. The Eric pilot was fitted to Prototype 38 brake taps, so its numbers on Prototype 41 tracks are a starting point until it is refitted from Prototype 41 logs (drift and tap events carry the fields to fit from).
+

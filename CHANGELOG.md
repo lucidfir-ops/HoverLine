@@ -1,5 +1,21 @@
 # Changelog
 
+## Prototype 41
+From your drift notes, the Mario Kart 8 and street-drift videos, and your answers: tap is a brake, hold in a turn is a drift, the stick shapes the arc, speed builds smoothly with no burst.
+- Every frame can drift now. Hold the brake in a corner and after a moment the tail swings out and the frame drifts for as long as you hold it. Push the stick into the turn to tighten the line, out to widen it; it never flips the other way.
+- The longer you hold a drift, the faster you go. A long drift comes out faster than you went in, even after the brake press. Let go and the extra speed fades over a second or two. There's no burst.
+- The smoke off the back shows how much you've built up: pale, then cyan, amber and magenta.
+- The Drifter drifts best, by a long way. It starts easiest (steering past 0.35 at 34 m/s for 0.2 s) and builds to about 9% over its top speed on a long hold: 4.7% faster than it went in after a 2 s drift, 6.4% after 3 s, net of the press. The Skiff, Blade and Monowheel get about half that, the Dart, Orb and Hauler about a quarter, and the Tether barely any (0.2% after 2 s). The Frame lab shows each frame's drift.
+- A quick tap of the brake is a proper brake now: about 10% off at full speed, however short the tap (it was 2% to 8% for a 0.05 to 0.15 s tap). You get steering up to 30% sharper for 0.8 s after, and a little help that stops you shooting across into the far wall: closing on a wall in under 0.9 s cuts steering towards it and eases you back to the road's heading.
+- The camera looks along the way you're travelling, so a drift's swung tail shows.
+- On touch, the Brake button says "hold: drift". The Controls page, the Nose guide and the tutorial's brake step explain tap and hold, and the Drifter's tutorial step shows the new drift. The Drifter's frame-select line is re-recorded in the announcer's voice: "Hold the brake through a corner and it drifts, swinging its tail out and gaining speed the longer you hold it."
+- The AI brakes exactly as before and doesn't use the new drift yet (the AI Drifter keeps its Prototype 38 drift). Race some, send the logs, and the AI can learn it. With only AI racing, the race simulator gives the same results as Prototype 40, race for race.
+- Each drift and each tap is logged in detail for that: a drift's start (speed before the press, how long the press took, the road's curve, lat, frame), how it ended (released, air, hit, slow, wreck), the speed gained net of the press, the peak extra speed, and the stick in and out of the turn; each tap's length, speed change, steering and whether the assist helped. Samples have a drift column.
+- Other pilots in a room see your drift (tail and smoke), and your ghost shows it too.
+- Quick races are unchanged: they have no brake.
+- The Eric pilot in the simulator (`tools/sim/eric_pilot.js`) checks the Drifter by its AI drift flag, since every frame drifts now.
+- New board era (41): the brake and the drift change handling for everyone, so older times don't compare. Shared logs are sent as version 41 and public rooms meet Prototype 41 players.
+
 ## Prototype 40
 From a stranger's feedback on reddit (played on an iPhone held upright), a friend on an iPhone, and your notes.
 - A new player now starts with a quick race. A browser with nothing saved opens on "Tap to race" over the first track: one tap and the countdown starts. Anyone who has played before still opens on the title. The tap is needed because browsers only start sound and full screen after a tap inside the game.

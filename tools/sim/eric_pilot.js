@@ -66,7 +66,7 @@ function makeEric(H,P,rnd=Math.random){
     E.pt-=dt;if(sit!==E.sit||E.pt<=0){E.sit=sit;E.pt=P.pitchSpell*(0.5+rnd());const pp=(P.pitch[wk]||P.pitch.S)[sit]||{up:0,down:0},x=rnd();E.pe=x<pp.up?1:x<pp.up+pp.down?-1:0}
     let pitch=E.pe,brake=0;
     /* 4. brake taps */
-    if(E.brT>0){E.brT-=dt;brake=1}else if(sit==='tight'&&!r.d.drift&&rnd()<dt*(P.brake[wk]||0)){E.brT=0.25;brake=1}
+    if(E.brT>0){E.brT-=dt;brake=1}else if(sit==='tight'&&!r.d.aiDrift&&rnd()<dt*(P.brake[wk]||0)){E.brT=0.25;brake=1}
     /* 5. held boost */
     E.bt-=dt;if(E.bt<=0){E.bt=P.boostSpell*(0.5+rnd());const B=P.boost,cb=Math.max(Math.abs(cAt(50)),Math.abs(cAt(100))),ci=B.cEdges.findIndex(e=>cb<e),hf=r.hp/r.d.hp,hi2=B.hEdges.findIndex(e=>hf<e);
       const pc=(B.c[wk]||B.c.S)[ci<0?B.cEdges.length:ci],ph=B.h[hi2<0?B.hEdges.length:hi2];E.bo=rnd()<clamp(pc*ph,0,1)}
@@ -82,7 +82,7 @@ function makeEric(H,P,rnd=Math.random){
       const af=r.ammo/r.d.ammo,bi=F.ammoEdges.findIndex(e=>af<e),lam=(F.perS[wk]||F.perS.S)[bi<0?F.ammoEdges.length:bi]*((P.cal&&P.cal.fire)||1)*(P.firePlace[place-1]||1);
       if(rnd()<1-Math.exp(-lam*dt))(w==='cannon'?hold:fire)[k]=true}
     /* 7. the Drifter's drift */
-    if(r.d.drift&&P.drift){const D=P.drift,want=-Math.sign(c30)||1;
+    if(r.d.aiDrift&&P.drift){const D=P.drift,want=-Math.sign(c30)||1;
       if(r.drift){E.drT-=dt;if(Math.sign(steer)!==r.drift||Math.abs(steer)<0.3)steer=r.drift*Math.max(0.3,Math.abs(steer));if(E.drT<=0){steer=0;E.dr=null}brake=0}
       else if(E.dr){E.dr.t-=dt;steer=want*Math.max(0.5,Math.abs(steer));brake=E.dr.t>0.05?1:0;if(E.dr.t<=0)E.dr=null}
       else if(!r.air&&v>40&&Math.max(Math.abs(c30),Math.abs(cAt(0)))>D.c&&rnd()<dt*D.rate){E.dr={t:0.1};E.drT=Math.exp(D.mu+D.sd*gauss());steer=want*Math.max(0.5,Math.abs(steer));brake=0}}
