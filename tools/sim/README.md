@@ -22,6 +22,9 @@ python3 compare.py base after    # before / after, once a second set is in resul
 - About 1.5 to 3 s of CPU a race. Results are appended a race at a time, so a stopped run keeps what it had.
 - The AI rarely runs out of steering, so handling counts for less here than for a human pilot. Check findings against real race logs.
 - Autopilot does nothing for an AI pilot (it already flies itself), so in these runs it is 30 ammo spent for nothing and always looks the weakest module.
+- `VARIANT="orb.wallK=0.45;hauler.hRegen=0.25"` changes frames for one run without a new build (a stat factor in `m`, or a frame field).
+- `PILOT=human` (Prototype 38) flies every racer like a person: the AI's inputs go through a model with steering that lags (`HT`, default 0.12 s) and wanders (`HS`, 0.15), the nose held the wrong way in a quarter of 2 to 6 s spells, a fifth of the braking, boost a third of the time and half the shots. The defaults touch the walls about as often as people do in the race logs (Narrow 48 a minute, Standard 24, Wide 11; people 47, 23 and a median of 11), where the AI touches them 9.5, 6 and 4 times. Use it for anything that matters more to people than to the AI, like the walls (it found even the Prototype 37 Orb the strongest frame for such pilots). It is still a model: quirks people use on purpose, like the Drifter's drift or riding the wall in the Orb, need a person to judge.
+- The AI's own mistakes (`AI_LAPSE` in the game) are on in these runs, as in the game.
 
 ## Bug hunt (Prototype 36)
 

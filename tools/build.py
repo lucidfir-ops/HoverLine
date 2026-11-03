@@ -4,6 +4,7 @@
 
 Writes index.html (a full page for itch.io or any web host), dist/hoverline-itch.zip, dist/hoverline-offline.html
 (Three.js inside, plays with no internet) and dist/hoverline-wifi-host.zip (which carries the offline page).
+The zips also carry songs/ (Songs mode's recorded tracks) beside the page; the offline file doesn't.
 src/hoverline.html is the page body as published on Claude; the reference/ builds use the same format.
 """
 import os, zipfile, shutil
@@ -14,14 +15,23 @@ i = src.find('</style>') + len('</style>')
 page = head + src[:i] + '</head><body>' + src[i:] + '</body></html>'
 open(os.path.join(ROOT, 'index.html'), 'w', encoding='utf-8').write(page)
 dist = os.path.join(ROOT, 'dist'); os.makedirs(dist, exist_ok=True)
+SONGS = os.path.join(ROOT, 'songs')
+def add_songs(z, pre):
+    """Songs mode's tracks (CC0, see README) and their list, beside the page; the MP3s are stored, not deflated."""
+    if not os.path.isdir(SONGS): return
+    for f in sorted(os.listdir(SONGS)):
+        if f.endswith('.mp3') or f == 'songs.json':
+            z.write(os.path.join(SONGS, f), pre + 'songs/' + f, zipfile.ZIP_STORED if f.endswith('.mp3') else zipfile.ZIP_DEFLATED)
 with zipfile.ZipFile(os.path.join(dist, 'hoverline-itch.zip'), 'w', zipfile.ZIP_DEFLATED) as z:
     z.write(os.path.join(ROOT, 'index.html'), 'index.html')
+    add_songs(z, '')
 tag = '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>'
 three = open(os.path.join(ROOT, 'vendor', 'three.min.js'), encoding='utf-8').read()
 offline = page.replace(tag, '<script>' + three + '</script>')
 open(os.path.join(dist, 'hoverline-offline.html'), 'w', encoding='utf-8').write(offline)
 with zipfile.ZipFile(os.path.join(dist, 'hoverline-wifi-host.zip'), 'w', zipfile.ZIP_DEFLATED) as z:
     z.writestr('hoverline-wifi/index.html', offline)
+    add_songs(z, 'hoverline-wifi/')
     for f in os.listdir(os.path.join(ROOT, 'wifi-host')):
         z.write(os.path.join(ROOT, 'wifi-host', f), 'hoverline-wifi/' + f)
 print('built index.html, dist/hoverline-offline.html and dist/*.zip')

@@ -6,7 +6,7 @@ def rep(a,b):
     global js
     assert js.count(a)==1,a[:80];js=js.replace(a,b)
 rep("loadTrack(seed);\ntuneUI();buildSummary();\nrequestAnimationFrame(frame);","globalThis.__hl={racers,S,startRace,step,loadTrack,getT:()=>T,ranking,shots,player,physics,aiInput,fire,leaderFor,parseCode,roster,ROSTER,FRAMES,setShip,getW:()=>W,VMAX,surf,wrapU,code:()=>{try{return roadStr()}catch(e){return null}}};")
-rep("const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)","const i=aiInput(r,sdt);if(r===player&&globalThis.__forcePitch!=null)i.pitch=globalThis.__forcePitch;physics(r,i,sdt)")
+rep("const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)","let i=aiInput(r,sdt);if(globalThis.__pin)i=globalThis.__pin(r,i,sdt);if(r===player&&globalThis.__forcePitch!=null)i.pitch=globalThis.__forcePitch;physics(r,i,sdt)")
 js=js.replace("if(into>0.02){","if(into>0.02){(globalThis.__wall=globalThis.__wall||{})[r.name]=(globalThis.__wall[r.name]||0)+1;globalThis.__wallAt&&globalThis.__wallAt(r,into);",1)
 rep("if(r.h<=HOVER&&!r.offT){const imp=-r.vh;r.air=false;","if(r.h<=HOVER&&!r.offT){const imp=-r.vh;(globalThis.__hop=globalThis.__hop||{})[r.name]=(globalThis.__hop[r.name]||0)+1;r.air=false;")
 rep("return false;const w=r.weapons[slot],n0=shots.length;","return false;const w=r.weapons[slot],n0=shots.length;(globalThis.__fw=globalThis.__fw||{})[w]=(globalThis.__fw[w]||0)+1;")

@@ -13,7 +13,18 @@ const mode=process.argv[2]||'full',N=+(process.argv[3]||50),off=+(process.argv[4
 const FR=Object.keys(H.FRAMES).filter(k=>k!=='cube'),WP=['missile','cannon','mines','shock','turbo','barrier','phase','decoy','rockets','swarm','quake','bouncer','hunter','emp','smoke','autopilot','overdrive'];
 const ST=['speed','thrust','handling','shield','ammo'];
 if(process.env.VARIANT){for(const kv of process.env.VARIANT.split(';')){const[k,v]=kv.split('=');const[f,p]=k.split('.');const F=H.FRAMES[f];if(p in F.m)F.m[p]=+v;else F[p]=+v}}
-let rs=987654+off*7919;const rnd=()=>{rs=(Math.imul(rs,1103515245)+12345)&0x7fffffff;return rs/0x7fffffff};
+let rs=987654+off*7919;
+/* PILOT=human (Prototype 38): every racer flies like a person rather than the AI, to see what a frame is worth to someone who
+   touches the walls a lot. The AI's inputs go through a newcomer model: steering that lags (HT s) and wanders (HS), the nose
+   held the wrong way in a quarter of 2-6 s spells, a fifth of the braking, boost a third of the time, half the shots.
+   HT and HS default to 0.12 and 0.15, which touch the walls about as often as people do in the race logs (Narrow 48 a minute,
+   Standard 24, Wide 11; people 47, 23 and a median of 11). */
+if(process.env.PILOT==='human'){const tau=+(process.env.HT||0.12),sig=+(process.env.HS||0.15),g=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+  globalThis.__pin=(r,i,dt)=>{if(r.finishT!=null)return i;const s=r._nb||(r._nb={s:0,n:0,pt:0,pe:null,bt:0,b:false});
+    s.s+=(i.steer-s.s)*Math.min(1,dt/tau);s.n+=-s.n*dt/0.7+sig*Math.sqrt(dt)*g();
+    s.pt-=dt;if(s.pt<=0){s.pt=2+Math.random()*4;s.pe=Math.random()<0.25?(Math.random()<0.6?1:-1):null}
+    s.bt-=dt;if(s.bt<=0){s.bt=1+Math.random()*2;s.b=Math.random()<0.3}
+    return{...i,steer:Math.max(-1,Math.min(1,s.s+s.n)),brake:(i.brake||0)*0.2,pitch:s.pe!=null?s.pe:i.pitch,boost:i.boost&&s.b,fire:(i.fire||[]).map(f=>f&&Math.random()<0.5),hold:(i.hold||[]).map(h=>h&&s.b)}}}const rnd=()=>{rs=(Math.imul(rs,1103515245)+12345)&0x7fffffff;return rs/0x7fffffff};
 const build=()=>{let st;for(;;){st={};let left=15;for(const k of ST)st[k]=1;left-=5;const order=[...ST];while(left>0){const k=order[Math.floor(rnd()*5)];if(st[k]<5){st[k]++;left--}}return st}};
 const kinds=['W','S','N'],lens=['Q','M','L'],r2=x=>Math.round(x*100)/100,fin=x=>Number.isFinite(x);
 /* FLAGS, checked four times a simulated second for every racer still racing:
