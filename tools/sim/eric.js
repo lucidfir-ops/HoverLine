@@ -6,17 +6,25 @@
 //                                                    field, on the balance.js tracks (OFFSET picks them, as there)
 //   node eric.js room N OFFSET OUT.jsonl             eight Erics, one in each frame, no AI (a room full of Erics)
 //   node eric.js calibrate LOGS.json PARAMS.json [ROUNDS]   fits the steering lag and wander per width (see calibrate below)
+//   node eric.js trial N OFFSET OUT.jsonl            (Prototype 43) time trials: the Eric pilot alone (no AI, no ghost),
+//                                                    every frame in turn on each balance.js track; trials.py makes the tables
+//                                                    (CODES=a,b races those codes N times; TRIAL_BUILD as JSON; D43 as below)
 // env: GAME (default ./game.js), PARAMS (default ../eric_params.json next to this folder, or ./eric_params.json),
 //      PILOT eric (default) | human (the generic PILOT=human model) | ai, VARIANT (as balance.js), MATCH (logs to replay,
 //      default "Prototype 38"), ONLY (comma list of log ids), PROFILE (a log export whose profile the rivals copy;
 //      replay uses the LOGS file's), BUILD (frames/room: Eric's stats and modules as JSON, default his P38 race build),
 //      LOGS=0 (don't write OUT.logs.jsonl, the Eric racer's own race log in the game's format, replay only by default),
-//      FRAME (frames: always this frame for the one Eric, e.g. roller to compare two drifts)
+//      FRAME (frames: always this frame for the one Eric, e.g. roller to compare two drifts; trial: a comma list),
+//      D43 (Prototype 43 builds: the pilot's drift habit as JSON, e.g. '{"p":0}' never drifts; see eric_pilot.js part 7)
 const fs=require('fs'),path=require('path');
 const GAME=process.env.GAME||path.join(__dirname,'game.js');
 const H=require('./hl.js')(GAME),{makeEric}=require('./eric_pilot.js');
 const PF=process.argv[2]==='calibrate'?process.argv[4]:process.env.PARAMS||[path.join(__dirname,'eric_params.json'),path.join(__dirname,'..','eric_params.json')].find(f=>fs.existsSync(f));
 let P=JSON.parse(fs.readFileSync(PF,'utf8'));
+/* D43='{"p":0}' (Prototype 43 builds): the pilot's drift habit (eric_pilot.js part 7), e.g. p 0 never drifts */
+if(process.env.D43)P.drift43=Object.assign(P.drift43||{},JSON.parse(process.env.D43));
+/* trial: no ghosts (the game would race your best run on that track; here every frame starts from a clean slate) */
+{const g=global.localStorage.getItem.bind(global.localStorage);global.localStorage.getItem=k=>/^hoverline\.ghost/.test(k)?null:g(k)}
 const PILOT=process.env.PILOT||'eric';
 if(process.env.VARIANT){for(const kv of process.env.VARIANT.split(';')){const[k,v]=kv.split('=');const[f,p]=k.split('.');const F=H.FRAMES[f];if(p in F.m)F.m[p]=+v;else F[p]=+v}}
 const FR=Object.keys(H.FRAMES).filter(k=>k!=='cube');
@@ -41,7 +49,7 @@ function carIndex(code){const C=H.CAR_T;if(!C)return null;const base=code.split(
 /* one race. o: {code | seed,wk,cx,lk; car (career race index); me:{frame,stats,weapons}; field (logged field to copy);
    room (all eight racers fly as Eric, frames from o.frames); profile} */
 async function race(o){
-  const S=H.S;S.trial=false;S.train=null;S.car=o.car!=null?{i:o.car}:null;
+  const S=H.S;S.trial=!!o.trial;S.train=null;S.car=o.car!=null?{i:o.car}:null;
   if(o.code){const c=H.parseCode(o.code);H.loadTrack(c.seed,c.wk,c.cx,c.lk,c.sp,c.bm)}else H.loadTrack(o.seed,o.wk,o.cx,o.lk,null,{k:'U',d:null});
   H.store.set('hoverline.profile',o.profile?JSON.stringify(o.profile):'');
   const p=H.player,me=o.me;const b0=H.getBuild();H.setBuild({...b0,frame:me.frame,stats:{...me.stats},weapons:[...me.weapons]});
@@ -91,6 +99,16 @@ async function replay(logs,profile,reps,outF,extra={}){const res=[];
       const fr=process.env.FRAME||FR[qq%FR.length],t0=Date.now();
       const R=await race({seed,wk,cx,lk,me:{frame:mode==='room'?frames[4]:fr,...ERIC_BUILD},profile,room:mode==='room',frames});
       out(outF,{race:qq,mode,...R.line,variant:process.env.VARIANT||null,cpu:Date.now()-t0})}}
+  /* trial (Prototype 43): time trials, the Eric pilot alone on the track (no AI, no ghost), every frame in turn on each
+     balance.js track (OFFSET picks them, as there), with his time-trial build (TRIAL_BUILD, default his P41 one) */
+  else if(mode==='trial'){const N=+process.argv[3],off=+process.argv[4],outF=process.argv[5],kinds=['W','S','N'],lens=['Q','M','L'];
+    const TB=process.env.TRIAL_BUILD?JSON.parse(process.env.TRIAL_BUILD):{stats:{speed:5,thrust:5,handling:1,shield:3,ammo:1},weapons:['turbo','scoopS']};
+    const FRS=process.env.FRAME?process.env.FRAME.split(','):FR;
+    /* CODES=a,b,c races those track codes instead, N times each (OFFSET unused) */
+    const CODES=process.env.CODES?process.env.CODES.split(','):null;
+    for(let q=0;q<(CODES?N*CODES.length:N);q++){const qq=q+off,seed=(Math.imul(qq+101,2654435761)>>>0)&0xffffff,wk=kinds[qq%3],cx=(Math.floor(qq/3)%2)===1,lk=lens[Math.floor(qq/6)%3],code=CODES?CODES[q%CODES.length]:null;
+      for(const fr of FRS){const t0=Date.now();const R=await race({...(code?{code}:{seed,wk,cx,lk}),me:{frame:fr,...TB},trial:true});const m=R.line.summary||{};
+        out(outF,{race:qq,mode,wk:R.line.wk,cx:R.line.cx,lk:code?(R.line.code.match(/^[WSN]X?([LQ])?/)||[])[1]||'M':lk,code:R.line.code,L:R.line.L,frame:fr,fin:R.line.fin,ft:R.line.ft,laps:R.line.laps,walls:m.wallHits,drifts:m.drifts,driftT:m.driftT,taps:m.taps,driftDv:m.driftDv,ends:m.driftEnds,wrecks:m.wrecks,falls:R.line.racers[0].falls,variant:process.env.VARIANT||null,d43:process.env.D43||null,cpu:Date.now()-t0})}}}
   else if(mode==='calibrate')await calibrate();
   else console.error('modes: replay, frames, room, calibrate');
   process.exit(0)})();

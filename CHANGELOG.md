@@ -1,5 +1,40 @@
 # Changelog
 
+## Prototype 43
+From your three notes (drifting, Wi-Fi, music), the voice note, your Steam Deck and phone logs, and the S22 video of a race that kept pausing. Same-room play without internet is its own update (Prototype 44).
+
+**The race that kept pausing**
+- Fixed on your S22 in Firefox: the phone reports its touch screen to the browser as a game controller, so a tap on the screen read as that controller's Start button and paused the race, and every Resume paused it again. A Start press within 0.3 s of a screen touch is ignored, and a controller whose presses keep coming with screen touches is set aside for the session after the second.
+- The pause menu says what paused the race (the game was hidden, it lost focus, a controller's Start button, a key), and the log records every pause, why, and every controller the browser reports.
+- A moment hidden or out of focus (a system toast, going full screen, turning the phone) no longer pauses: the page has to stay hidden for a quarter of a second, or out of focus for 0.3 s.
+
+**Drifting**
+- Drifting is instant. Hold the brake while you steer and you're drifting from that moment, the way you're steering, with no load-up and no braking. In Prototype 41 it took 0.2 to 0.3 s to start, and in about half your wrong-way drifts the stick had swung across in that time.
+- It won't go the wrong way by accident: with a light steer and the road clearly bending, it drifts with the road. A full swing of the stick the other way in the first 0.3 s turns it round.
+- A brake with the stick level is still a brake. A quick tap (under 0.18 s) is a short drift and the hard brake.
+- The stick shapes the arc like steering, the same for every frame: level follows the corner, into the turn tightens it (up to 45% tighter than you can steer, scrubbing speed past full steering, so hairpins work), out of the turn widens it to almost straight. It never flips. The Tether drifts as well as any frame now: in the simulator, drifting cut its wall hits on narrow tracks by about a third.
+- How much speed a drift builds is still the frame's trait. The Drifter gets the most (up to 7% over top speed), the Skiff, Blade and Monowheel about two thirds of that, the Dart, Orb and Hauler a third, the Tether none. A good drift through a long corner is never slower than steering through it, for any frame but the Orb, which loses a little against riding the walls.
+- Balance, from 144 simulated time trials flown your way: the Tether leads simple wide tracks, the Orb narrow ones (complex most), and the Drifter wide complex and standard ones. Every frame now wins some tracks.
+
+**Turbo, the Orb, EMP and a step in the road**
+- Turbo and held boost don't stack. While Turbo or a boost pad pushes you, holding boost costs no shield, and if you're still holding it when Turbo ends, the held boost carries on. Turbo fires whatever the boost button is doing.
+- Orb: no nose-down streamlining at all, and top speed 0.5% lower. Walls still cost it 15% (I took your second thought: streamlining off, wall resistance kept). In the simulator it still wins most narrow tracks, by about half the margin, and no longer most standard ones.
+- EMP: lightning crackles over a frame while it's EMP'd, yours and anyone's near you. It's off with Debris off (so not on Lite or Ultra low) and lighter on Low detail.
+- Fixed the step on WQ04640D. Where a spire or spiral starts, or a loop or spiral ends, on a banked stretch, the road's bank snapped in 2 m and stepped the edges by up to 3 m (1.7 m on WQ04640D). That happened on about 1 track in 5. It now eases over 60 m. About half of all track codes get slightly different banking somewhere, and no road moves.
+- New board era (43): handling, the Orb and some roads changed. The logs record more about each drift: the arc used, whether it was turned round, and whether it was a tap.
+
+**Music: 106 songs that are actually different**
+- The music is now built from 106 song templates taken from your documents and voice note: phonk, glitch-hop, techno and industrial, bass house, dubstep, eurobeat, drum & bass, jungle and breakcore, and trance. Each fixes its own tempo, drums, bassline, chords, instruments and structure; the notes are still made live, so a template is a style, not one fixed recording.
+- Most songs no longer have a "do do" hook. About a fifth do, and they play it in about a quarter of the bars instead of nearly all of them. The others carry a riff, a bassline, chord stabs, arpeggios, vocal chops, or a solo on sitar, sax, piano and more. Some have drum-only breakcore sections, some no lead at all. The 8th-note re-strike that made every hook go "do do, do do" is gone.
+- Measured from the notes they play, the closest two templates are further apart than the old engine's typical pair, and about four times as far apart as your last 80 tunes were from their nearest twin.
+- In a race the tune changes about every 90 s, at a phrase line: through a breakdown into the next tune's build, or a short fill. Count-ins, GO and the final lap work as before. In a room everyone hears the same sequence. A kept or loaded code, or Shuffle off, plays one tune all race.
+- The menu works as a radio and moves to a new song every 90 s (Race music plays the full tunes).
+- The ride, splash, crashes, mark tree and brush kit are much rarer: they were the most repeated metallic sounds. By how often it played, the ride is the likeliest one you couldn't place.
+- New sounds: a sitar (modelled, with a buzzing bridge), sirens, techno and industrial kicks, the amen and a Think-style break re-played from CC0 drum hits and chopped live, and four CC0 Arovane breaks. The old amen recording is gone, as its rights are doubtful. Tempo and fight reactions are still there, a little lighter (±2 bpm).
+- Tune codes for new songs start with S and name the template; old codes still work but sound slightly different. The race log records every change. The page is about 210 KB bigger.
+- Nobody has listened to these yet: the music guide page has 30 one-minute previews, a 4-minute race and the radio. Tell me any that miss.
+- Races are unchanged by the music: the simulator gives the same results race for race.
+
 ## Prototype 42
 From your Prototype 41 screen recording on the S22 (Firefox) and your tilt notes.
 - Tilt now works inside the itch.io page. itch passes the motion sensor to HTML5 games in its frame (it has since 2021), so the game no longer sends you to another tab just for being in itch's page. Pick a tilt setup, or start a race with one, and the game checks the motion sensor (an iPhone asks first). Then tilt just works, full screen as before.

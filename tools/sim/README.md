@@ -104,3 +104,20 @@ python3 same.py results/old.races.jsonl results/new.races.jsonl
 
 Every person-flown racer (`r.hum`: `PILOT=human` and the Eric pilot) gets the Prototype 41 brake and drift: a tap brakes hard, a hold in a turn drifts. The AI keeps its old brake, and only the AI Drifter drifts the Prototype 38 way (`aiDrift`), so all-AI runs (`balance.js full`, `frames`) race exactly as Prototype 40 and the `roller.dTurn`, `dIn` and `dOut` variant fields only change that AI drift. The Eric pilot was fitted to Prototype 38 brake taps, so its numbers on Prototype 41 tracks are a starting point until it is refitted from Prototype 41 logs (drift and tap events carry the fields to fit from).
 
+
+## Drift and time trials (Prototype 43)
+
+Every person-flown racer (`r.hum`) gets the Prototype 43 drift: hold the brake while steering and it drifts at once; the
+stick sets the arc as a share of full steering (level follows the road, into the turn up to 1.45, out of it almost
+straight); how much speed it builds is the frame's `drift` (Drifter 0.8, Skiff/Blade/Mono 0.5, Dart/Orb/Hauler 0.25,
+Tether 0). The AI never uses it, so all-AI runs only change by what the AI does see (the Orb, held boost resting under
+Turbo, the road's bank). The Eric pilot holds the brake through corners (`eric_pilot.js` part 7, `drive.js`).
+
+```
+node eric.js trial 36 0 results/tr.jsonl             # the pilot alone, every frame on balance.js tracks 0-35
+D43='{"p":0}' node eric.js trial 36 0 results/nd.jsonl   # the same, never drifting
+FRAME=orb VARIANT="orb.vmax=0.985" node eric.js trial 72 0 results/orb.jsonl   # one frame with a variant
+python3 trials.py results/tr*.jsonl                  # gap to the fastest frame by width and complexity
+python3 driftgain.py results/tr.jsonl -- results/nd.jsonl   # what drifting is worth per frame
+python3 orbvar.py results/tr.jsonl -- results/orb.jsonl     # a frame's variant against the full set (framevar.py: any frame)
+```

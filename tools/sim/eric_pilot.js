@@ -19,8 +19,13 @@
                 each place (P.firePlace) and cal.fire. A module he never carried uses the AI's choice of moment, thinned
                 to P.fireOther. The HUD warns of incoming shots: Phase and Barrier also answer a share of those warnings
                 (P.react, calibrated so he takes as much weapon damage as Eric; a mild reaction shows in his logs).
-   7. Drifter.  In a corner he taps the brake to start a drift (P.drift.rate taps a second of corner, above P.drift.c),
-                holds it for a time drawn from his drift lengths (log-normal P.drift.mu, P.drift.sd) and lets go.
+   7. Drift.    Prototype 43 builds (every frame drifts, at once, the arc on the stick): in a corner bending past
+                P.drift43.on (default 0.0032) 0.35 s and 0.8 s ahead, on a share p (0.9) of corners, he holds the brake
+                from the bend until it opens out, and steers the arc with his usual steering through drive.js's
+                driftStick (the inverse of the drift's stick map; in a drift he may ask for up to 1.6 of full steering).
+                Not while riding the wall in the Orb. Not fitted from logs yet: P43 logs carry the fields to fit it.
+                Older builds: the Drifter taps the brake to start a drift (P.drift.rate taps a second of corner, above
+                P.drift.c), holds it for a time drawn from his drift lengths (log-normal P.drift.mu, P.drift.sd).
    8. Orb.      Rides the wall on purpose: in a share of corners and straights (P.ride.corner, P.ride.straight), held
                 for spells, it aims at the wall (the outside one in a corner) instead of the line.
    Everything random goes through rnd (pass a seeded one for repeatable runs). */
@@ -28,7 +33,10 @@ const sitOf=(air,knMin,c30,c50,gy12)=>{const c=Math.max(Math.abs(c30),Math.abs(c
   return air?'air':knMin<-0.0011?'crest':c>0.006?'tight':c>0.0035?'corner':gy12>0.03?'uphill':gy12<-0.03?'downhill':'straight'};
 const SITS=['air','crest','tight','corner','uphill','downhill','straight'];
 const lerpTab=(xs,ys,x)=>{if(x<=xs[0])return ys[0];for(let i=1;i<xs.length;i++)if(x<=xs[i]){const a=(x-xs[i-1])/(xs[i]-xs[i-1]);return ys[i-1]+(ys[i]-ys[i-1])*a}return ys[ys.length-1]};
+const {driftStick}=require('./drive.js');
 function makeEric(H,P,rnd=Math.random){
+  /* 7 (Prototype 43 builds): the drift every frame has. Defaults until it is fitted from Prototype 43 logs. */
+  const D43=H.DR&&H.DR.tapMax!=null?Object.assign({on:0.0032,off:0.0016,p:0.9,minV:42,tap:0.12},P.drift43||{}):null;
   const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),gauss=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
   const expo=m=>-Math.log(1-rnd())*m;
   return function pin(r,ai,dt){
@@ -59,14 +67,16 @@ function makeEric(H,P,rnd=Math.random){
     const look=Math.max(22,v*0.75),desired=f.sp?null:-Math.atan2(target-r.lat,look*(st.look||1));
     const turn=(1.85-0.55*(v/H.VMAX))*r.d.turn*(1+0.8*Math.max(0,r.pitch)-0.15*Math.max(0,-r.pitch));
     let cmd=nearSplit||desired==null?ai.steer:(3.2*(r.yaw-desired)-T.Cs[idx(r.u)]*v)/turn;
-    cmd=clamp(cmd,-1,1);
+    /* in a drift the stick can ask for more than full steering (up to 1+DR.turn), so the same law unclamped (to 1.6) and
+       lagged the same way (E.su) is what goes through driftStick */
+    const cmdU=clamp(cmd,-1.6,1.6);cmd=clamp(cmd,-1,1);E.su=(E.su??0)+(cmdU-(E.su??0))*Math.min(1,dt/st.tau);
     E.s+=(cmd-E.s)*Math.min(1,dt/st.tau);E.n+=-E.n*dt/0.7+st.sigma*Math.sqrt(dt)*gauss();
     let steer=clamp(E.s+E.n,-1,1);
     /* 3. the nose */
     E.pt-=dt;if(sit!==E.sit||E.pt<=0){E.sit=sit;E.pt=P.pitchSpell*(0.5+rnd());const pp=(P.pitch[wk]||P.pitch.S)[sit]||{up:0,down:0},x=rnd();E.pe=x<pp.up?1:x<pp.up+pp.down?-1:0}
     let pitch=E.pe,brake=0;
     /* 4. brake taps */
-    if(E.brT>0){E.brT-=dt;brake=1}else if(sit==='tight'&&!r.d.aiDrift&&rnd()<dt*(P.brake[wk]||0)){E.brT=0.25;brake=1}
+    if(E.brT>0){E.brT-=dt;brake=1}else if(sit==='tight'&&!E.d43&&(D43||!r.d.aiDrift)&&rnd()<dt*(P.brake[wk]||0)){E.brT=D43?D43.tap:0.25;brake=1}
     /* 5. held boost */
     E.bt-=dt;if(E.bt<=0){E.bt=P.boostSpell*(0.5+rnd());const B=P.boost,cb=Math.max(Math.abs(cAt(50)),Math.abs(cAt(100))),ci=B.cEdges.findIndex(e=>cb<e),hf=r.hp/r.d.hp,hi2=B.hEdges.findIndex(e=>hf<e);
       const pc=(B.c[wk]||B.c.S)[ci<0?B.cEdges.length:ci],ph=B.h[hi2<0?B.hEdges.length:hi2];E.bo=rnd()<clamp(pc*ph,0,1)}
@@ -81,8 +91,18 @@ function makeEric(H,P,rnd=Math.random){
       if((w==='phase'||w==='barrier')&&P.react){const th=H.aiWants(r,w);if(th&&!E.th[k]&&rnd()<P.react){fire[k]=true;E.th[k]=th;continue}E.th[k]=th}
       const af=r.ammo/r.d.ammo,bi=F.ammoEdges.findIndex(e=>af<e),lam=(F.perS[wk]||F.perS.S)[bi<0?F.ammoEdges.length:bi]*((P.cal&&P.cal.fire)||1)*(P.firePlace[place-1]||1);
       if(rnd()<1-Math.exp(-lam*dt))(w==='cannon'?hold:fire)[k]=true}
-    /* 7. the Drifter's drift */
-    if(r.d.aiDrift&&P.drift){const D=P.drift,want=-Math.sign(c30)||1;
+    /* 7. the drift (Prototype 43 builds): in a corner (the road 0.35 s ahead bending past D43.on and still past 0.7 of
+       that 0.8 s ahead, the same way) he holds the brake on a share D43.p of corners, from the bend until it opens out
+       (under D43.off 0.3 s ahead, or bending the other way), and shapes the arc with his steering through driftStick. The
+       press starts with at least a light steer into the bend (the drift then goes the road's way). If the press doesn't
+       start a drift (too slow, in the air) he lets go at once rather than brake. */
+    if(D43){const ca=cAt(Math.max(20,v*0.35)),cb=cAt(Math.max(40,v*0.8)),bend=!nearSplit&&!r.air&&Math.abs(ca)>D43.on&&Math.abs(cb)>D43.on*0.7&&Math.sign(ca)===Math.sign(cb);
+      if(E.d43){if(r.dN){if(Math.abs(cAt(Math.max(15,v*0.3)))<D43.off||Math.sign(cAt(Math.max(15,v*0.3)))!==E.d43.s||r.air)E.d43=null;else{brake=1;steer=driftStick(H,r,(nearSplit||desired==null?steer:E.su+E.n))}}
+        else if(E.d43.t>0){E.d43.t-=dt;brake=1;steer=-E.d43.s*Math.max(0.35,Math.abs(steer))}else E.d43=null}
+      else if(bend&&v>D43.minV&&E.brT<=0&&!E.ride){/* not while riding the wall in the Orb: a drift can't steer back out to it */if(E.dRoll==null)E.dRoll=rnd()<D43.p;if(E.dRoll){E.d43={s:Math.sign(ca),t:1/50};brake=1;steer=-E.d43.s*Math.max(0.35,Math.abs(steer))}}
+      if(!bend&&!E.d43)E.dRoll=null}
+    /* 7. the Drifter's drift (older builds) */
+    if(!D43&&r.d.aiDrift&&P.drift){const D=P.drift,want=-Math.sign(c30)||1;
       if(r.drift){E.drT-=dt;if(Math.sign(steer)!==r.drift||Math.abs(steer)<0.3)steer=r.drift*Math.max(0.3,Math.abs(steer));if(E.drT<=0){steer=0;E.dr=null}brake=0}
       else if(E.dr){E.dr.t-=dt;steer=want*Math.max(0.5,Math.abs(steer));brake=E.dr.t>0.05?1:0;if(E.dr.t<=0)E.dr=null}
       else if(!r.air&&v>40&&Math.max(Math.abs(c30),Math.abs(cAt(0)))>D.c&&rnd()<dt*D.rate){E.dr={t:0.1};E.drT=Math.exp(D.mu+D.sd*gauss());steer=want*Math.max(0.5,Math.abs(steer));brake=0}}
