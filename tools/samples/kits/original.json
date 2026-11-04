@@ -1,0 +1,329 @@
+{
+ "kit": "original",
+ "label": "Original kit (lossless)",
+ "family": "electronic",
+ "genres": [
+  "drum & bass",
+  "breakcore",
+  "jungle",
+  "metal"
+ ],
+ "notes": "The Prototype 25 kit from its lossless FLAC originals: bd_tek, sn_dolf and sn_zome, the menegass acoustic hits. Each hit has 3-4 round robins derived from the one recording. The bright closed hat (drum_cymbal_closed) is shelved above 10 kHz.",
+ "source": "sonicpi",
+ "dir": "../work/prep/sonicpi/original",
+ "voices": {
+  "kick": [
+   {
+    "files": [
+     "kick_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "kick_metal": [
+   {
+    "files": [
+     "kick_metal_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "kick_trance": [
+   {
+    "files": [
+     "kick_trance_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "kick_short": [
+   {
+    "files": [
+     "kick_short_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "snare": [
+   {
+    "files": [
+     "snare_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.45
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   },
+   {
+    "files": [
+     "snare_v2_*_r*.wav"
+    ],
+    "vel": [
+     0.45,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "snare_metal": [
+   {
+    "files": [
+     "snare_metal_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "snare_brk": [
+   {
+    "files": [
+     "snare_brk_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "clap": [
+   {
+    "files": [
+     "clap_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "chh": [
+   {
+    "files": [
+     "chh_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "ohh": [
+   {
+    "files": [
+     "ohh_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ],
+    "process": {
+     "maxlen": 1.1
+    }
+   }
+  ],
+  "pedal": [
+   {
+    "files": [
+     "pedal_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "crash": [
+   {
+    "files": [
+     "crash_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.45
+    ],
+    "tags": [
+     "rr-derived"
+    ],
+    "process": {
+     "maxlen": 2.0,
+     "fade_from": 1.0
+    }
+   },
+   {
+    "files": [
+     "crash_v2_*_r*.wav"
+    ],
+    "vel": [
+     0.45,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ],
+    "process": {
+     "maxlen": 2.0,
+     "fade_from": 1.0
+    }
+   }
+  ],
+  "ride": [
+   {
+    "files": [
+     "ride_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ],
+    "process": {
+     "maxlen": 2.2,
+     "fade_from": 1.2
+    }
+   }
+  ],
+  "tomL": [
+   {
+    "files": [
+     "tomL_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.45
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   },
+   {
+    "files": [
+     "tomL_v2_*_r*.wav"
+    ],
+    "vel": [
+     0.45,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "tomM": [
+   {
+    "files": [
+     "tomM_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.45
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   },
+   {
+    "files": [
+     "tomM_v2_*_r*.wav"
+    ],
+    "vel": [
+     0.45,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "tomH": [
+   {
+    "files": [
+     "tomH_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.45
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   },
+   {
+    "files": [
+     "tomH_v2_*_r*.wav"
+    ],
+    "vel": [
+     0.45,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "cowbell": [
+   {
+    "files": [
+     "cowbell_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ]
+ }
+}

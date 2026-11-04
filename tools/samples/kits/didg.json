@@ -1,0 +1,91 @@
+{
+ "kit": "didg",
+ "label": "Didgeridoo",
+ "family": "world",
+ "genres": [
+  "psytrance",
+  "goa",
+  "world",
+  "downtempo",
+  "ambient"
+ ],
+ "notes": "VCSL didgeridoo: two sustained drones (5 s), three rhythmic phrases (4 s), two barks, a short note and a tap. root is the measured drone pitch, so a tune can retune it to its key with playbackRate = 2^((key - root)/12).",
+ "source": "vcsl",
+ "dir": "../work/prep/world/didg",
+ "voices": {
+  "drone": [
+   {
+    "files": [
+     "drone_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 5.0,
+     "fade_from": 3.8,
+     "end_db": -50,
+     "rate": 32000
+    },
+    "root": 37.91
+   }
+  ],
+  "phrase": [
+   {
+    "files": [
+     "phrase_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 4.0,
+     "fade_from": 3.2,
+     "end_db": -50,
+     "rate": 32000
+    },
+    "root": 37.18
+   }
+  ],
+  "bark": [
+   {
+    "files": [
+     "bark_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 2.0,
+     "fade_from": 1.4,
+     "rate": 32000
+    },
+    "root": 37.91
+   }
+  ],
+  "short": [
+   {
+    "files": [
+     "short_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.2,
+     "fade_from": 0.8,
+     "rate": 32000
+    },
+    "root": 37.91
+   }
+  ]
+ },
+ "tags": [
+  "acoustic",
+  "drone"
+ ]
+}

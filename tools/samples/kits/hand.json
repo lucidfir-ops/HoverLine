@@ -1,0 +1,192 @@
+{
+ "kit": "hand",
+ "label": "Hand drums",
+ "family": "world",
+ "genres": [
+  "psytrance",
+  "world",
+  "downtempo",
+  "house",
+  "flamenco"
+ ],
+ "notes": "Frame drums and hand drums, open and muted, large and small (VCSL; the nearest CC0 thing to a djembe here), darbuka doum, tek and pa, cajon bass and slap, maracas (back and forward strokes), castanets and real hand claps (FreePats World percussion); the shaker and tambourine are the latin kit's.",
+ "source": "vcsl",
+ "dir": "../work/prep/world/hand",
+ "voices": {
+  "frame": [
+   {
+    "files": [
+     "frame_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ]
+   },
+   {
+    "files": [
+     "frame_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ]
+   }
+  ],
+  "frame_mute": [
+   {
+    "files": [
+     "frame_mute_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ]
+   }
+  ],
+  "frame_hi": [
+   {
+    "files": [
+     "frame_hi_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ]
+   }
+  ],
+  "frame_hi_mute": [
+   {
+    "files": [
+     "frame_hi_mute_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ]
+   }
+  ],
+  "doum": [
+   {
+    "files": [
+     "doum_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "source": "fp_world"
+   }
+  ],
+  "tek": [
+   {
+    "files": [
+     "tek_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "source": "fp_world"
+   }
+  ],
+  "pa": [
+   {
+    "files": [
+     "pa_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "source": "fp_world"
+   }
+  ],
+  "cajon": [
+   {
+    "files": [
+     "cajon_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "source": "fp_world"
+   }
+  ],
+  "cajon_slap": [
+   {
+    "files": [
+     "cajon_slap_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "source": "fp_world"
+   }
+  ],
+  "tamb": {
+   "use": "latin:tamb"
+  },
+  "shaker": {
+   "use": "latin:shaker"
+  },
+  "maracas": [
+   {
+    "files": [
+     "maracas_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.6
+    ],
+    "process": {
+     "maxlen": 0.4
+    },
+    "source": "fp_world"
+   },
+   {
+    "files": [
+     "maracas_v2_r*.wav"
+    ],
+    "vel": [
+     0.6,
+     1
+    ],
+    "process": {
+     "maxlen": 0.4
+    },
+    "source": "fp_world"
+   }
+  ],
+  "perc_cast": [
+   {
+    "files": [
+     "perc_cast_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "source": "fp_world"
+   }
+  ],
+  "clap": [
+   {
+    "files": [
+     "clap_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "source": "fp_world"
+   }
+  ]
+ },
+ "tags": [
+  "acoustic",
+  "percussion"
+ ]
+}

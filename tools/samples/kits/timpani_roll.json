@@ -1,0 +1,83 @@
+{
+ "instrument": "timpani_roll",
+ "label": "Timpani rolls",
+ "family": "orchestral",
+ "tags": [
+  "orchestral",
+  "roll",
+  "build"
+ ],
+ "source": "vsco2",
+ "dir": "../work/prep/world/timpani_roll",
+ "zones": [
+  {
+   "files": [
+    "d1.wav"
+   ],
+   "root": 41.46,
+   "name": "roll1",
+   "process": {
+    "maxlen": 3.5,
+    "fade_from": 2.8,
+    "end_db": -50,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d2.wav"
+   ],
+   "root": 46.81,
+   "name": "roll2",
+   "process": {
+    "maxlen": 3.5,
+    "fade_from": 2.8,
+    "end_db": -50,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d3.wav"
+   ],
+   "root": 49.49,
+   "name": "roll3",
+   "process": {
+    "maxlen": 3.5,
+    "fade_from": 2.8,
+    "end_db": -50,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d4.wav"
+   ],
+   "root": 52.39,
+   "name": "roll4",
+   "process": {
+    "maxlen": 3.5,
+    "fade_from": 2.8,
+    "end_db": -50,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d5.wav"
+   ],
+   "root": 54.59,
+   "name": "roll5",
+   "process": {
+    "maxlen": 3.5,
+    "fade_from": 2.8,
+    "end_db": -50,
+    "rate": 32000
+   }
+  }
+ ],
+ "below": 5,
+ "above": 5,
+ "pack": "timpani",
+ "notes": "A roll on each of the five timpani, for builds."
+}

@@ -1,0 +1,100 @@
+{
+ "kit": "house",
+ "label": "House",
+ "family": "electronic",
+ "genres": [
+  "house",
+  "tech house",
+  "bass house",
+  "disco"
+ ],
+ "notes": "A round, warm house kick, a 909-ish snare with a long soft wire, a roomy clap, soft hats, egg shaker and ride.",
+ "source": "hoverline",
+ "dir": "../work/prep/synth/house",
+ "voices": {
+  "kick": [
+   {
+    "files": [
+     "kick_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ]
+   },
+   {
+    "files": [
+     "kick_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ]
+   }
+  ],
+  "snare": [
+   {
+    "files": [
+     "snare_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "process": {
+     "rate": 32000
+    }
+   },
+   {
+    "files": [
+     "snare_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "clap": [
+   {
+    "files": [
+     "clap_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "chh": {
+   "use": "hats:chh"
+  },
+  "ohh": {
+   "use": "hats:ohh"
+  },
+  "shaker": {
+   "use": "hats:shaker"
+  },
+  "ride": {
+   "use": "cym:ride"
+  },
+  "rim": {
+   "use": "909:rim"
+  },
+  "crash": {
+   "use": "cym:crash"
+  },
+  "cowbell": {
+   "use": "808:cowbell"
+  }
+ },
+ "tags": [
+  "synth"
+ ]
+}

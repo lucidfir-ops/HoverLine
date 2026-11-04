@@ -1,4 +1,6 @@
-# Music tools (Prototype 43)
+# Music tools (Prototype 43, and Prototype 45 in `p45/`)
+
+`p45/` holds the Prototype 45 music patch's sources (`src/`: make_patch.py, spec.py with the 129 templates, the data and method blocks, trims.json), its tools (`tools/`: fingerprints, previews, levels and trims, Pregen, rooms, bols, the library page test) and `catalogue.json`; `docs/music-templates.md` is its catalogue. The patch was built against Prototype 44 plus the sample library (`tools/samples/`) and the synths (`tools/synths/`).
 
 The song templates and the tools that measured them. The game itself never loads anything from here: the patch that
 built Prototype 43's music put the result into `src/hoverline.html`, so these are for changing the templates later.

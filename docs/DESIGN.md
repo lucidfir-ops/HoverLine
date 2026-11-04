@@ -30,6 +30,8 @@ Hoverline is a WipEout-style anti-grav racer for itch.io: phone first, also tabl
 - **Menus (Prototype 32):** the title has only Race, Options, Leaderboard and a small music player (Drum & bass, Trance, Race music, Next, song details). Race opens Race, Multiplayer, Career, Time trial, Training and Frame lab (in that order since Prototype 34, Race first); Race and Time trial open the track page (types, scenery, Night/Day, New track, code, map, Start). Options holds Settings, Controls, the Nose guide and the Tutorial (Music moved into Settings in Prototype 39), and opens from the title, the pause menu and a lobby. Layouts were checked on phones in both orientations, tablets, the Steam Deck and desktops up to 2560 wide. With a pad or the keys the focus remembers its place: a control rebuilt or dimmed under it keeps the focus, or hands it to the nearest one (Prototype 34). The results have a Frame lab button that returns to the results (Prototype 34).
 - **Controls:** always accelerating. Steer, brake, boost, two weapons and nose pitch, by tilt, sliders, buttons, stick, keyboard or gamepad. Every menu, results included, works with a gamepad or the keys (B or Escape is Back). Button names follow the pad in use (Prototype 36), from the name the browser gives it: Xbox, PlayStation (✕ ○ □ △, L1/R1, L2/R2), Nintendo (by position) or the Steam Deck (L1/R1, L2/R2); with a pad the Frame lab tags the fitted modules with their buttons rather than 1 and 2.
 - **Rivals:** after two races a few AI frames loosely copy your pace and habits.
+- **AI drift and styles (Prototype 45):** the AI drifts with a person's rules and inputs when the road 0.3 s and 0.7 s ahead bends past its frame's threshold and the corner needs at most 1.38 times full steering (tighter, it brakes), holding the stick its arc asks for and letting go as the corner opens. Each frame has its own style (`AIX` in the source; `AIX.on=false` gives back the Prototype 44 AI): the Blade is the reference line; the Tether keeps a wider berth, brakes a little early and boosts only above 65% shield; the Skiff cuts further inside, threads gaps and fires less; the Hauler shoves lighter frames and boosts down to 45%; the Dart dives harder downhill and flies jumps nose level; the Orb lets the outside wall turn it; the Drifter drifts most corners; the Mono shoves. Drifted corners: Drifter 59%, Mono 26%, Blade 21%, Skiff 20%, the others under 10%, the Orb almost never.
+- **EMP (Prototype 45):** 2 s (4.5 s before), top speed held to 85% (78% before) and easing back over the last half second, a softer flash, and the HUD blinks twice and then stays dim instead of strobing.
 - **AI mistakes (Prototype 38):** the AI now and then starts a turn late, holds it too little or runs a corner wide, for a third of a second to a second, more often in tight corners, and each AI pilot is tidier or sloppier than the next. They touch the walls about a quarter as often as people do.
 - **Data:** every race is logged and can be downloaded from Settings for tuning. Since Prototype 31 a log also says what it ran on (browser, cores, memory, graphics chip, screen, the size drawn, the look) and how smoothly (a frame rate with every sample, and the average, slowest 5% and 1%, and frames over 50 ms). Times go to an online board when the game runs from itch, and with Share race data on (the default) each log also goes to the same server, with other humans' names replaced, so balance can use everyone's races.
 
@@ -135,6 +137,159 @@ From Eric's notes: the songs were mostly one song (one hook rule for every tune,
 - **Logs:** every change is a `tune` event with `why:'change'`, how it changed, the code, template number and name, the previous code, how long it played and its place in the sequence; the race log header has `tpl` and `tname`.
 - **Not heard yet:** no one had listened when Prototype 43 shipped. Start with the 30 previews in the music guide, and fix any template Eric marks.
 
+## Song templates (Prototype 45)
+
+Eric listened to 30 previews of the Prototype 43 templates and sent notes. This round acts on them.
+
+**One generator for every genre.** There is no more Drum & bass, Trance or Blend. Settings, Music has a list of 13 genres: Phonk, Glitch-hop, Techno, House, Dubstep, Trance, Psytrance, Eurobeat, Drum & bass, Jungle & breakcore, Happy hardcore, Metal and World. All are on at first. A tune plays only when all its genres are on. If you switch off everything but World, the world fusions play.
+
+**Fusions.** 18 templates are fusions: one genre's rhythm with another genre's melody or colour. They were chosen by hand, not by dice. Examples: Raga Roller (drum & bass with a sitar), Silk Road (psytrance with an erhu and a guzheng), Trance Breaks (a funk break under trance arps), Acid Phonk (phonk drums with a 303) and Iron Riff (breakcore with guitars).
+
+**Likes.** The title's music player has a Like button, and so does Settings, Music. Settings also has "Influence the radio with your likes", which is on at first. Liked templates, and ones like them (same family, drums or genre), come up more often in the menu and in races on your own. Keep counts as a like. Skipping a tune in its first 20 seconds counts a little against it. The memory of the last tunes still comes first, so nothing repeats too soon.
+
+**Rooms.** In a room everyone hears the same tunes. The sequence comes only from the track, so genres and likes don't apply there.
+
+**The radio.** The menu plays every genre that is on when Race music is on.
+
+**Templates.** There are 129 templates. 118 are in rotation. 23 are new, 73 were revised and 11 were retired. A retired template's code still plays, but the radio never picks it. Every template keeps its number, so old S codes still name the same template. Old D, T, M and N codes still play on the old engine.
+
+**New templates:**
+
+- Happy hardcore: Rave Rush, Sugar Rush and Lightspeed, at 165 to 175 bpm. They have a gabber kick, offbeat claps, piano stabs and supersaws over I-V-vi-IV.
+- Psytrance with Indian and Chinese colours: Tabla Psy, Silk Road, Night Raga and Morning Bansuri.
+- World fusions: Raga Roller, Liquid Erhu, Bansuri Dub, Hang Garden, Didge Stomp and Erhu Drift.
+- Metal on real guitars: Iron Riff and Double Kick.
+- Two more wave phonk tunes: Midnight Wave and Glass Coast.
+- From the production guide's blueprints: Modal Friction (RACE 201) and Melancholy Chaos (RACE 202, strings over odd amen cuts).
+- Tempo spread: Velvet 120 (deep house) and Hard Pressure (hard techno at 145).
+- Fusions: Trance Breaks and Acid Phonk.
+
+**What's gone.**
+
+- The "tsshh". It was Sonic Pi's hat_gump: the open hat of the tight and 808 kits, played on every offbeat of the trance, psytrance and eurobeat drums. Offbeats are closed hats now. An open hat only marks the end of a phrase, and it is cut short.
+- The "wa wa wa" screech in Asym Screech and Screech Vowel.
+- The reese filter that opened on every note in Amen Roller.
+- The "tooty" clipped lead in Aggressive Riff.
+- The "meow" glide in Stadium Anthem.
+- The siren in Work Groove. Other industrial tunes play one siren a tune; Siren Grid keeps its own.
+- The mbira recordings.
+- The frequency-shift bass.
+- The "badly recorded" snare on 2 and 4 of the gas kit (Sonic Pi sn_dub).
+
+**What's tamed.**
+
+- The bright hats of the electro, tape, club and gas kits.
+- The concert crash, the splash, and the end of the reverse crash.
+- The glass and bowed-vibraphone pads.
+
+**What's kept.** Eric's favourites keep their drums, bass and character, now on the new kits: Wet Asphalt, Rain Glass, Siren Grid, Acid Resonance, Hall Pluck, Halftime Drop, Mentasm, Breakcore Riot, Piano Roller and the others he liked.
+
+**Drums.** The drums now play from the sample library's kits. Each hit picks a velocity layer and a round robin that never repeats the last sound. Every hit is nudged a little in level and timing. In neurofunk and breakcore the snares sit a hair behind the grid and the ghost notes a hair ahead. Cymbals come from the dark versions. Without the library (the single-file copy, or Lite audio), the old kits play, with a small pitch and level change on each hit.
+
+There are 34 drum languages. New or rebuilt ones include:
+
+- a real trance groove: a long kick, a big clap and closed offbeat hats, with the pump doing the rest;
+- psytrance, DUH-duh-duh-duh: the kick on every beat and the bass on the three sixteenths after it;
+- techno, house, bass house, industrial and EBM;
+- drum & bass styles: roller, two-step, jump-up, neurofunk, liquid and halftime;
+- breaks: amen, Think and a rolling break of our own, plus breakcore in sevens and fives;
+- funk, jazz-funk, happy hardcore, metal double kick and an 80s gated snare.
+
+Percussion layers play in most templates now: in B and A sections and in the second half of drops. Seven new layers use recordings that never played before.
+
+**Sidechain.** Each kick ducks the other parts. The attack is 2 ms and the release is quick. How much depends on the genre:
+
+- Psytrance ducks the bass right under the kick, and the pads 6 dB.
+- House and trance pump the pads for a quarter note.
+- Phonk ducks the reese about 12 dB.
+
+**Chords.** Chords can now be sevenths, ninths, elevenths, sus chords and altered dominants. That includes the guide's voicings, such as C#m9, Amaj7, F#m11, Fm9, Dbmaj7#11, C7#9#5, G9 and A7b9. Pads and keys play the upper notes, often without the root, and each chord moves as little as it can from the one before. Nothing in the pads goes below D3, so the sub bass stays alone and mono.
+
+**Instruments.** The library synths: a supersaw, a 303, 4-operator FM, clean leads, warm pads, a guzheng, an erhu, a bansuri and a tanpura drone. The library's recordings:
+
+- metal guitars: open power chords on the accents, palm-muted power chords for the chugs, distorted single notes for riffs and comps;
+- the hang drum;
+- the didgeridoo (drones and short notes, retuned to the tune's key);
+- the tabla kit for the bols.
+
+Without the library, the older guitar renders, the embedded didgeridoo and the embedded tabla strokes play.
+
+**Cymbals.** Crashes and rides no longer go through the drum bus's drive, which is what made a crash sound distorted before. The ride has its own clean path that follows the hats' level. Each drum hit now starts so its main attack lands exactly on the beat.
+
+**Every recording has a home.** 316 of the 318 music recordings can now play in a template. They come in as:
+
+- an instrument climbing the chords in breakdowns (hand chimes, glockenspiel, harpsichord, xylophone, balafon, Kenyan kalimba, psaltery);
+- percussion layers;
+- section textures;
+- tuned bass hits on a drop;
+- the concert and dusty kits.
+
+The glass hum and the splash stay out because they are too sharp.
+
+**Tempo.** Tempos run from 80 to 190 bpm, with 44 different tempos. House now runs from 118 to 130 bpm, techno from 120 to 145, and trance from 128 to 145.
+
+**Levels.** Every template has a level trim, measured on the final build with the final synths and samples.
+
+- Drops sit at -20.9 dB on the preview meter (the median; the target is -20.7). 95 of the 96 previews are within 0.7 dB of the target.
+- Breakdowns sit at -28.7 dB (the median; the target is -28.5). Four sparse ones stay near -31 dB, where the trim reaches its limit.
+- Peaks stay at 0.45 or below in every template preview. The 4-minute race reaches 0.451 on one sample in the final lap.
+- Nothing clips.
+
+**A track raced again.** Before, a race shorter than 90 s always started on bar 1 of the same tune, so a track you raced over and over played one tune over and over. Now the game counts the races you start on each track. The first race plays the track's own tune. Races 2 and 3 play another tune from the same family. Races 4 and 5 play one that shares a genre. After that the tune can be anything. The ninth race, and every eighth race after it, brings the track's own tune back. The count is kept in your browser for your last 120 tracks. In a room the count is ignored, so everyone hears the same tunes. Pregen renders whichever tune the next race opens with.
+
+**The library.** Settings, Music, Library opens a page with a table of the tunes you kept. Each row shows the name, the style, the tempo and the key.
+
+- Tap a name to play that tune on repeat. The player then says "Repeating <name>".
+- "Play library" plays the kept tunes one after another, the oldest-heard first. It plays in the menu and in races on your own.
+- "Play generator with library influence" makes new tunes and leans hard towards the ones in the library.
+- "Back to radio" ends any of these. It sits in the title's player, on the Music page and on the library page.
+- Remove sits at the far end of each row, away from the names, so you can't hit it by accident. Undo brings the tune back to its place.
+
+The library holds up to 100 tunes.
+
+**What the logs taught.** Eric's Prototype 44 logs show what he kept and what he skipped. Those templates are now a starting lean for the radio and for races on your own:
+
+- kept: Goa Sitar, Bell Sprint, Psy Rolling, Fast Arp Theme, Rhodes and Sax, Silk Pad, Uplift Glide, Jungle Keys, Cold Monitor, Breakcore Riot and Conga Line (+1.5 each);
+- skipped in the first 20 s: Wobble Classic, Two-Octave Sub, Ring Growl, Yah-Yah Funk, Saxello Lounge, Tunnel Rim, JP Ninety, Bb Tilt and Bounce Stab (−1 each);
+- skipped later: OTT Sixty, Downhill 155, Drill Edit, Tech Resonance and Jump Glide (−0.5 each).
+
+Ring Growl and Drill Edit are retired, but they still steer their neighbours.
+
+The lean spreads to similar templates, as likes do. On average, a psytrance tune now weighs about 1.9 times as much in the draw, jungle 1.5, trance and drum & bass 1.3, glitch-hop 0.6 and dubstep 0.7. Nothing is banned. Your own likes and skips count on top. Switching off "Influence the radio with your likes" turns this lean off too.
+
+**The log export.** Download logs (Settings, Race data) now includes your library, the tunes you like, and a history of likes, unlikes, keeps, quick skips and removals, with times. Each race log records which tunes you like and which race on the track it was.
+
+**Tabla bols.** Now and then, a tune with a tabla layer has a call and answer in the last four bars of a breakdown. The phrase is a theka (the Teentaal cycle), a kaida or a tihai. A tihai's last Dha lands on the next section's first beat. The call is the tabla playing the phrase lightly, with the right hand only. The answer is the tabla playing exactly that phrase in full. Bols are built from the tabla recordings: Dha is Na and Ghe together, Dhin is Tun and Ghe, and so on.
+
+The call is spoken when the bols are in samples/vox-bols (one FLAC per bol: dha, dhin, dhe, ta, na, tin, tun, te, ti, re, ra, ki, ke, ka, ghe, ge). Prototype 45 ships them in the announcer's voice, the Kokoro model's bf_emma, made by `tools/samples/make_vox_bols.py` (phonemes fed straight to the model, said fast, trimmed to 320 ms). The game looks for them once, beside the sample library; they're fetched as files, so the offline zip (opened from a file) plays the tabla's light call instead. It happens at most once every three tunes, and only about half of the tabla tunes get it. In a room it depends only on the tune, so everyone hears the same.
+
+**Still the same:**
+
+- The tune changes about every 90 s.
+- The transitions, count-ins, GO, the final lap and rooms work as before.
+- Pregen renders a tune before the race, as before: now the tune that race opens with.
+- Songs mode is unchanged.
+
+## Sample library (Prototype 45)
+
+The drums are now real recordings and carefully made electronic sounds. They sit in a folder called `samples`, next to the game: 25 kits and 10 instruments in 50 packs, about 22 MB in all, most of it drums. A tune downloads only what it plays, so phones don't fetch sounds they never hear.
+
+- **Takes:** every hit has three to six takes, and the game never plays the same take twice in a row (its own random numbers, never Math.random). Hard and soft hits are different recordings. The Sonic Pi kits have one recording per hit, so their takes are subtle retunings.
+- **Sound:** FLAC, 16-bit mono; hats, cymbals and shakers stored at 32 kHz and soft at the very top, so nothing hisses. Every voice plays at the loudness of the Prototype 44 kit piece it replaces (within 0.5 dB), so changing kits never jumps in volume. Each hit carries its main transient (`hit`), and the music starts it that much early, so the attack lands on the beat.
+- **Kits:** synthesised for Hoverline at 16x oversampling (808, 909, techno, house, trance, psytrance, hardcore, drum & bass, plus shared hats, cymbals and snares); the Sonic Pi kits from their lossless originals (original, tight, electro, tape, gas: the bright hats replaced); Virtuosity Drums' breaks, funk and jazz kits; the MuldjordKit for rock and metal; VCSL and VSCO-2 concert percussion and timpani; FreePats' hang drum, guitars, basses and world percussion; Latin, hand drums and tabla; VCSL's didgeridoo.
+- **Loading:** `manifest.json` and one `.bin` pack per kit over http (itch.io, the Wi-Fi pack); from a file (the offline zip) `manifest.js` and one `.js` pack each; in Claude the `.js` packs fetched as text. Over http the manifest is tried as a script only when fetch itself is blocked. Decoded sounds are cached up to 40, 80 or 160 MB by the device's memory, least recently used first, never one that's playing.
+- **Without the folder** (the single offline file, Lite audio, or before a kit has loaded) the game plays the older sounds inside the page.
+- **Building it:** `tools/samples/` (its README has the recipe for adding a kit, the API and the manifest format; `CREDITS.md` lists every source at pinned commits). All CC0, except the rock kit (CC BY 4.0: "Drum samples provided by DrumGizmo.org").
+
+## Synth instruments (Prototype 45)
+
+The game makes its own synth instruments, instead of the DAW plugins we talked about: 23 of them, each as loud as the instruments already there (`tools/synths/INSTRUMENTS.md` has every name, range, level and cost).
+
+- **Live** (an AudioWorklet voice while the music runs): the 303 (saw or square into a ladder filter, accent and slide, clean self-oscillation), the reese, growl, talk-box and FM basses, a 4-operator FM electric piano, bell, brass and metallic stab, a smooth lead, an erhu, a bansuri and a hang stand-in. Each costs about as much as the old bass voice, up to two and a half times for the heaviest.
+- **Rendered once** when a tune needs them: the supersaws (anthem, eurobeat brass, happy hardcore, pluck, pad) and the warm and choir pads as seamless loops built from their spectra, cheaper than the old seven-oscillator saw; the guzheng (a plucked string that bends after the pluck) and the tanpura, a drone in the tune's key, like the sitar. At most three loop sets stay in memory (about 4 MB each); Lite audio makes none.
+- **What was wrong before:** the "wa wa" was a filter swept open on every note (the new growls move once every two bars between two close vowels); the tooty lead was the clipped saw (now quieter and darker, with the smooth lead to replace it); the "meow" was a lead sliding into every note (the anthem only slides on tied notes); Tritone Reese's wubs were a filter moving twice a beat (the new reese moves gently, or not at all). The sitar's string loop was one sample short, so it played sharp; it's in tune now, with no click on the onset.
+- **Engines:** the synths play on whichever engine calls them (`opts.eng`), so Pregen's own offline engine gets its own voices; an offline render waits on `SYN.sync(engine)` before it starts and before each resume.
+
 ## Sound effects (Prototype 32)
 
 Like the music, the effects are real recordings, all public domain (CC0): Kenney's Interface Sounds, Digital Audio, Sci-Fi Sounds and Impact Sounds (kenney.nl), rubberduck's CC0 packs on OpenGameArt.org, and the Sonic Pi pack. 34 short mono MP3s (22 kHz, 40 kbps, about 124 KB), trimmed, faded and normalised, a few layered (landings, heavy hits, wrecks, the missile, mines, the shockwave, boost). Rockets and Hunter play the Missile recording faster and slower, Turbo the boost. Each effect's level is set so it is as loud (peak 30 ms RMS) as the synth sound it replaced, so the mix with the music is unchanged; the synth sounds remain as the fallback while the recordings decode. Wall hits play at most every 0.15 s. The "no" (deny) sound is the negative cue for a refused boost or an unaffordable shot.
@@ -207,7 +362,7 @@ Checked by a playtest script over about 3,000 random tracks of every width, layo
 **Jumps and spires (Prototype 27)**
 
 - The one vertical set piece is the spire, on about 1 track in 6: the road eases out to one side, climbs one and a half turns round a ring, takes a half turn in to the middle, goes over the edge and drops straight down the middle, then pulls out underneath the ring. Every change of direction eases in and out. Cyan mag-lock strips hold the frame on the drop. The 70-degree climbs of Prototype 26 are gone: they came with no curve to lead into them.
-- About half the jumps have rails across the gap, and every jump whose gap or landing is on a bend has them. The rest are open, and you can fly off the side.
+- Every jump has catch fences (Prototype 45) on both sides, from the ramp, over the gap and along the landing. The top follows the flight of a frame leaving at 1.2 times top speed, plus 2 m (about 2 m at the lip, 8 m at the peak, back to wall height about 210 m on), so a frame that drifts wide in the air glances back as off a wall; normal lines never touch them. They carry on over a jump that follows, stop short of other features, splits and spire drops, and stay under any road overhead. Glass in the walls' amber, posts every 12 m, leaning out 12%. (Before, about half the jumps had rails and the rest were open: at 145 to 160 m/s a frame flies 100 to 150 m straight, so on a jump into a bend it crossed the edge 3 to 5 m up.) Slow arrivals can still drop into a gap.
 - Fences never let a frame through: you only leave the road by flying over the top, and complex tracks have taller fences on their bends. Clear a fence and you explode and respawn, unless you fly a glider (the Dart), which can steer back in if it stays within 12 m below and 40 m out. Open jumps have no invisible wall.
 - The Monowheel rolls on the road. It falls faster off crests and in free flight, but keeps normal gravity over jumps so it clears them.
 - Wall scrapes cost speed and very little shield.
@@ -226,13 +381,14 @@ Checked by a playtest script over about 3,000 random tracks of every width, layo
 - Balance (Prototype 38): the Hauler keeps its speed and gets shield regen (0.25 a second) and bonus ammo regen (0.5), and wins about a fair share (1.03 over 900 random races). The Orb rolls along walls: hits and scraping cost it 15% of what they cost other frames (Eric's call from his own races; scraping used to cost it the full amount). Simulated human-like pilots (`PILOT=human`, who touch the walls as often as people) found even the old Orb the strongest frame (1.55 times a fair share), so watch it in the race logs. The Tether is a little more fragile (shield 0.74). With AI pilots the Tether still wins most (1.28; 1.48 on Wide, 0.94 on Narrow).
 - Balance (Prototype 37) applies what that study suggested, checked on 1,700 paired races. A frame out of phase, or hit in the last 2.5 s, leaves a jump's lip at least fast enough to clear the gap (falls down about 80%). Hauler pick-up 1.0 and top speed 0.995 (it now wins about its fair share). Overdrive 3 s, ×1.06, cost 60 (1.89 to 1.21 times a fair share). The five weakest modules slow more rather than hit harder, since extra damage made Barrier and Decoy stronger and added a wreck a race: Cannon bolts keep 94% of the speed, Shockwave 40 m and 72%, Quake costs 35 and leaves 85%, EMP costs 25 and holds top speed to 78%, Smoke costs 8% of the speed. They still win less than a fair share (0.67 to 0.91), and Decoy (1.76) and Barrier (1.56) now win the most.
 - Balance (Prototype 43), Eric-pilot time trials over 144 tracks with the new drift: Orb aero 0 (no streamlining at all) and top speed 0.985, walls kept at 15%. The Tether leads simple Wide tracks (38% won), the Orb Narrow ones (75% won, was 92%; none on Wide), the Drifter (ability 0.8) Wide complex and Standard, and every frame now wins some tracks. Next steps: Orb `wallK` 0.25 if it still dominates Narrow (`ORB_WALLK` in the patch), and a pilot fitted to Prototype 43 drift logs.
+- Balance (Prototype 45), 3,000 simulated races on random tracks and random Frame lab builds with the new AI (`tools/sim/bal45.js`; 7,000 in all with the paired runs): frames win from 0.91 (Skiff) to 1.15 (Mono) of a fair share, Tether 1.14, Drifter 1.10, Dart 1.06, Hauler 1.03, Blade 0.93, and the Orb 0.68 (0.71 in Prototype 44 too: the slowest AI frame since its Prototype 43 streamlining cut, left alone because it was tuned for people). Prototype 44 spread 0.71 to 1.32 on the same races. Modules: Decoy 1.51, Barrier 1.45 (1.55 before it went to 3 s), Turbo 1.27, Overdrive 1.20 down to EMP 0.68. Falls 0.123 a race, 0.004 of them off the side at jumps (0.009 before).
 - Balance (Prototype 39) was measured with a simulated pilot fitted to Eric's race logs (`PILOT=eric`, `tools/sim/eric.js`) and not changed. Flown his way (wide in tight corners, rarely braking or diving, handling 1), the Orb at 15% walls is the strongest frame on Narrow: in rooms of eight such pilots it beats 95% of the room there, and still 83% to 86% at 30% to 50% walls. The Tether is his best all-rounder, the Drifter and Skiff the weakest for him; the softer drift doesn't hurt him. Keep the Orb at 15% (Eric's call) and watch it in the logs.
 
 **Brake and drift (Prototype 43).** For people only. Brake with the stick past 0.25 above 36 m/s drifts at once, the stick's way; with the stick under 0.55 and the road bending more than 15% of full steering, it goes the road's way. A full swing the other way in the first 0.3 s turns it round once. A brake with the stick level is a brake. A release within 0.18 s is the tap: at least 0.12 s of full bite at 0.9 a second, then 0.8 s of up to 30% sharper steering and the wall assist (closing on a wall in under 0.9 s cuts steering towards it by up to 60% and eases the heading back to the road's). A drift takes no brake. It ends on release, take-off, a hit, a wreck or under 28 m/s. The arc is a share n of full steering (nose included), the same for every frame: a level stick holds n0, the curve of the road ahead followed with a 0.8 s lag (0.12 to 1); into the turn rises linearly to 1.45, out of the turn falls to 0.03. It never flips and eases in over 0.2 s. Past n = 1 it scrubs speed with the square of how far past, up to 0.5 a second. The speed gain is the frame's `FRAMES[k].drift` a: top speed times (1 + 0.09a(1 - e^(-t/τ))), τ about 2.1 to 2.7 s, pulled up towards it at 1.6a a second; it holds 0.3 s after release, then fades with a 0.6 s time constant, and a drift begun before it fades keeps it. Drifter 0.8; Skiff, Blade, Monowheel 0.5; Dart, Orb, Hauler 0.25; Tether 0. Smoke steps pale, cyan, amber and magenta with the extra speed. Numbers are in `DR`. The AI, the autopilot, bots and quick races brake as before (the AI Drifter keeps `aiDrift`), and seeded all-AI races are unchanged by it. In Prototype 41 a drift took 0.2 to 0.3 s to load, a fifth of Eric's drifts started the wrong way, and the Tether lost time drifting; the drift log now records the arc used (`nMin`, `nMax`), turnarounds and taps. Next: fit the Eric pilot's drift from Prototype 43 logs, then train the AI's.
 
 **Turbo doesn't stack (Prototype 39, Turbo only since Prototype 40):** Turbo can't be fired over a running Turbo (a boost pad's short boost doesn't hold it back); every other module can be fired again while it's on, so panic-firing Phase costs ammo rather than being blocked. Since Prototype 43, while a Turbo or pad boost runs the held boost rests at no shield cost, and carries on by itself when the burst ends; Turbo fires whatever the boost button is doing.
 
-**Defence:** Barrier blocks everything for 3.5 s (6 s before Prototype 34). Phase lets weapons, frames and (since Prototype 40) Smoke pass through for 1.5 s. Decoy pulls homing shots away for 3 s. Autopilot flies for 4.5 s while your other module and boost stay yours (Prototype 36; before, it took every input). The screen edge glows where a hit is coming from.
+**Defence:** Barrier blocks everything for 3 s (3.5 s until Prototype 45, 6 s before Prototype 34). Phase lets weapons, frames and (since Prototype 40) Smoke pass through for 1.5 s. Decoy pulls homing shots away for 3 s. Autopilot flies for 4.5 s while your other module and boost stay yours (Prototype 36; before, it took every input). The screen edge glows where a hit is coming from.
 
 **Balance targets:** weapons should matter as much as going fast, wrecks should come from weapons and rams rather than walls, and the player should rarely be wrecked more than twice a race.
 
@@ -264,7 +420,7 @@ The look is a neon night city drawn in glowing lines and simple blocks, with 3D 
 
 Low-end phones come first: every heavy effect is optional, and the default look must run smoothly on an older Android phone.
 
-- **One file:** the whole game is a single HTML page, about 3.9 MB (Prototype 43 added 121 KB of Arovane breaks and the template table, and took out the 17 KB amen loop), of which about 240 KB is the original instrument samples, 770 KB the Prototype 34 music recordings, 870 KB the Prototype 38 ones, 124 KB sound effects and 200 KB the career's frame lines (Prototype 39). Songs mode's 20 MB of tracks sit beside it in `songs/`, only in the itch.io zip and the Wi-Fi host pack. Three.js r128 loads from cdnjs.
+- **One file:** the whole game is a single HTML page, about 4.0 MB (Prototype 45 added about 13 KB of sample loader, 41 KB of synths and 195 KB of music engine; the sample library itself sits beside it in `samples/`, about 22 MB; Prototype 43 added 121 KB of Arovane breaks and the template table, and took out the 17 KB amen loop), of which about 240 KB is the original instrument samples, 770 KB the Prototype 34 music recordings, 870 KB the Prototype 38 ones, 124 KB sound effects and 200 KB the career's frame lines (Prototype 39). Songs mode's 20 MB of tracks sit beside it in `songs/`, only in the itch.io zip and the Wi-Fi host pack. Three.js r128 loads from cdnjs.
 - **Test devices:** a Samsung Galaxy S22, a Doogee E3 Tab Max tablet, a Steam Deck and a desktop PC.
 - **Defaults:** the Default preset (since Prototype 39; the Clean look before). Lite and Ultra low are one tap away at the top of Settings.
 - **Ultra low (Prototype 31):** every effect off at 20% resolution (since Prototype 35; 25% in 34, a third in 32 and 33, half before) with Low detail (no frame shadows, thinner scenery, no falls or geysers) and a 30 fps cap (Prototype 35), for tablets like the Doogee that ran about 20 frames a second on Lite. Resolution is a slider from 10% to 100% (Prototype 34), and Low detail can also be set on its own. The look never touches the race, so times count whichever look is used. Since Prototype 38 a browser drawing without the graphics card (llvmpipe, SwiftShader, Basic Render Driver) starts on Ultra low, and so does a first race that runs under 30 fps, unless a look was picked; since Prototype 39 Ultra low also sets Songs (Pregen where the songs are missing), and a first race at 30 to 45 fps steps to Lite, with the music changing after the race.
@@ -275,7 +431,7 @@ Low-end phones come first: every heavy effect is optional, and the default look 
 - **Draw calls:** a racing frame's still parts are merged by material, with plain colours in the vertices (about 40 draw calls for each racing frame, down to 8), and pylons are instanced. A long track has about half again as many triangles as a short one but no more draw calls; resolution and draw calls matter far more than track length.
 - **Offline play:** single-player races need no network. Multiplayer uses a small relay online. With no internet, Same room · no internet (any copy of the game): phones pair by sound (Prototype 44) or by swapping QR codes (Prototype 31), then connect directly by WebRTC over the Wi-Fi, with the host relaying. The Wi-Fi host pack is the fallback for networks where phones can't connect directly. Reconnect (in the lobby and the pause menu) rejoins the same room. The start messages repeat, so one lost message can't leave a pilot stuck in the lobby.
 - **Pairing by sound (Prototype 44):** ggwave 0.4.0 (MIT) sits in the page as text and starts only when pairing does. The host opens the microphone first, because browsers share real Wi-Fi addresses only once the mic is allowed, then calls in turn at ggwave's audible fastest (3.2 s) and fast (5.3 s) speeds; the fast call is what gets through echoey or loud rooms. A call is 69 bytes: room, tag, ICE username and password, DTLS fingerprint and one IPv4 address, bit-packed with a CRC-16 (ggwave's limit is 140). A pilot answers at the same speed after a random 0.35 to 2 s and gives way to any chirp that starts first; the "someone is chirping" check needs 64 ms of continuous in-band sound, or 256 ms once talking or beats have been heard, and the third try goes ahead regardless. The host takes the first answer with its current tag and calls the next pilot with a new tag; the pilot hands WebRTC the host's addresses only after its answer has played. The music ducks to 12% through the music volume node. Audio is resampled to 48 kHz for ggwave (it fails silently at 44.1 kHz otherwise). Audible beats ultrasound for phone speakers in tests; `?chirp=ultra` calls in ultrasound for trying it on real phones (pilots always listen for both). Pairing uses its own random numbers (crypto), never Math.random, so the race simulator is unaffected. Fallbacks: QR codes one tap away, a volume-up line after 20 s unheard, a hotspot line after 12 s heard but unconnected. Not yet run on a real phone; on iOS, play-and-record mode may make the chirp quieter.
-- **Builds:** the Hoverline page in Claude, an itch.io zip, an offline file with Three.js inside, and a Wi-Fi host pack with its own small server (it now carries the offline page, so it needs no internet at all).
+- **Builds:** the Hoverline page in Claude, an itch.io zip, an offline file with Three.js inside, an offline zip with the sample library (Prototype 45), and a Wi-Fi host pack with its own small server (it now carries the offline page, so it needs no internet at all). The itch.io zip and the Wi-Fi pack carry `songs/` and `samples/` beside the page.
 - **Target audience:** to be posted on r/lowendgaming, so sound quality per byte and per CPU cycle matters more than raw spectacle.
 
 ## How to change things safely

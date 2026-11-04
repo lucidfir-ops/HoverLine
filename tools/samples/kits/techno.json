@@ -1,0 +1,105 @@
+{
+ "kit": "techno",
+ "label": "Techno",
+ "family": "electronic",
+ "genres": [
+  "techno",
+  "industrial techno",
+  "hard techno",
+  "acid"
+ ],
+ "notes": "Kicks: clean (909-like, long and round), industrial (driven hard, asymmetric, gritty mids) and rumble-ready (short, dry and deep, no tail of its own, to feed a reverb and low-pass rumble). 909 snare, clap, hats, ride and rim.",
+ "source": "hoverline",
+ "dir": "../work/prep/synth/techno",
+ "voices": {
+  "kick": [
+   {
+    "files": [
+     "kick_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ]
+   },
+   {
+    "files": [
+     "kick_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ]
+   }
+  ],
+  "kick_dist": [
+   {
+    "files": [
+     "kick_dist_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ]
+   },
+   {
+    "files": [
+     "kick_dist_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ]
+   }
+  ],
+  "kick_rumble": [
+   {
+    "files": [
+     "kick_rumble_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "root": 30
+   },
+   {
+    "files": [
+     "kick_rumble_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "root": 30
+   }
+  ],
+  "clap": {
+   "use": "dnb:clap"
+  },
+  "snare": {
+   "use": "909:snare"
+  },
+  "chh": {
+   "use": "909:chh"
+  },
+  "ohh": {
+   "use": "hats:ohh_dark"
+  },
+  "ride": {
+   "use": "909:ride"
+  },
+  "rim": {
+   "use": "909:rim"
+  },
+  "crash": {
+   "use": "cym:crash_dark"
+  },
+  "clap_909": {
+   "use": "909:clap"
+  }
+ },
+ "tags": [
+  "synth"
+ ]
+}

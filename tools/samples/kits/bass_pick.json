@@ -1,0 +1,130 @@
+{
+ "instrument": "bass_pick",
+ "label": "Picked bass",
+ "family": "bass",
+ "tags": [
+  "bass",
+  "electric bass",
+  "rock",
+  "metal"
+ ],
+ "source": "fp_bass",
+ "dir": "../work/prep/inst/bass_pick",
+ "zones": [
+  {
+   "files": [
+    "n28_v1_r*.wav"
+   ],
+   "root": 28,
+   "name": "n28",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.8,
+    "fade_from": 1.0,
+    "rate": 22050
+   },
+   "nominal": 28,
+   "lo": 24,
+   "hi": 29
+  },
+  {
+   "files": [
+    "n30_v1_r*.wav"
+   ],
+   "root": 30.09,
+   "name": "n30",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.8,
+    "fade_from": 1.0,
+    "rate": 22050
+   },
+   "nominal": 30,
+   "lo": 30,
+   "hi": 31
+  },
+  {
+   "files": [
+    "n32_v1_r*.wav"
+   ],
+   "root": 32.06,
+   "name": "n32",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.8,
+    "fade_from": 1.0,
+    "rate": 22050
+   },
+   "nominal": 32,
+   "lo": 32,
+   "hi": 33
+  },
+  {
+   "files": [
+    "n34_v1_r*.wav"
+   ],
+   "root": 34.03,
+   "name": "n34",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.8,
+    "fade_from": 1.0,
+    "rate": 22050
+   },
+   "nominal": 34,
+   "lo": 34,
+   "hi": 35
+  },
+  {
+   "files": [
+    "n36_v1_r*.wav"
+   ],
+   "root": 36,
+   "name": "n36",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.8,
+    "fade_from": 1.0,
+    "rate": 22050
+   },
+   "nominal": 36,
+   "lo": 36,
+   "hi": 37
+  },
+  {
+   "files": [
+    "n38_v1_r*.wav"
+   ],
+   "root": 38,
+   "name": "n38",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.8,
+    "fade_from": 1.0,
+    "rate": 22050
+   },
+   "nominal": 38,
+   "lo": 38,
+   "hi": 39
+  },
+  {
+   "files": [
+    "n40_v1_r*.wav"
+   ],
+   "root": 39.94,
+   "name": "n40",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.8,
+    "fade_from": 1.0,
+    "rate": 22050
+   },
+   "nominal": 40,
+   "lo": 40,
+   "hi": 49
+  }
+ ],
+ "below": 4,
+ "above": 9,
+ "notes": "FreePats Picked Bass YR: every other semitone from E1 to E2."
+}

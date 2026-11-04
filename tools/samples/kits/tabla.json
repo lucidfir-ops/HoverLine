@@ -1,0 +1,132 @@
+{
+ "kit": "tabla",
+ "label": "Tabla (lossless)",
+ "family": "world",
+ "genres": [
+  "psytrance",
+  "goa",
+  "world",
+  "downtempo"
+ ],
+ "notes": "The Sonic Pi tabla strokes from their FLAC originals: ghe (bayan bass, 8 takes), ke, te, na (open, slap, other), tun, tas, re, dhe. The takes of one stroke are its round robins.",
+ "source": "sonicpi",
+ "dir": "../work/prep/world/tabla",
+ "voices": {
+  "ghe": [
+   {
+    "files": [
+     "ghe_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ],
+  "ke": [
+   {
+    "files": [
+     "ke_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ],
+  "te": [
+   {
+    "files": [
+     "te_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ],
+  "na": [
+   {
+    "files": [
+     "na_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ],
+  "tun": [
+   {
+    "files": [
+     "tun_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ],
+  "tas": [
+   {
+    "files": [
+     "tas_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ],
+  "re": [
+   {
+    "files": [
+     "re_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ],
+  "dhe": [
+   {
+    "files": [
+     "dhe_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "maxlen": 1.5
+    }
+   }
+  ]
+ },
+ "tags": [
+  "acoustic",
+  "percussion"
+ ]
+}

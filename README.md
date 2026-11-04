@@ -13,7 +13,9 @@ A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet
 | `tools/build.py` | Rebuilds `index.html`, the offline file and the zips in `dist/`. |
 | `vendor/three.min.js` | Three.js r128 (MIT), put inside the offline file and the Wi-Fi pack. |
 | `songs/` | Songs mode's recorded tracks (CC0, credited below) and their list. `tools/build.py` puts them beside the page in the itch.io zip and the Wi-Fi host pack; the offline file doesn't carry them. |
+| `samples/` | The sample library (Prototype 45): `manifest.json`, one FLAC pack per kit or instrument, the spoken tabla bols in `vox-bols/`, and `CREDITS.md`. `tools/build.py` puts it beside the page in the itch.io zip and the Wi-Fi host pack, and in its file form in the offline zip. Built by `tools/samples/` (its README). |
 | `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. (Any copy of the game can also do this on its own: Multiplayer, Same room · no internet, pairing by sound since Prototype 44 or by QR codes since Prototype 31. The pack is the fallback for networks where phones can't connect directly.) |
+| `tools/music/`, `tools/synths/`, `tools/samples/` | The song templates and the tools that built and measured them (Prototype 43, and `tools/music/p45/` for Prototype 45), the synth instruments (`INSTRUMENTS.md`), and the sample library's build. Their scripts still carry the paths of the sessions that wrote them. |
 | `tools/sim/` | A headless race simulator for balance studies, with simulated pilots that fly like people or like Eric's race logs (its README has the commands), and `log2ghost.py`, which turns a logged race into a Time trial ghost. |
 | `leaderboard/` | The online leaderboard and shared race data: a Cloudflare Worker and D1 database. |
 | `reference/` | Builds kept for comparison: Prototype 25 (the music and announcer baseline), Prototype 24 (clown music to avoid), Prototype 21, Prototype 26 (the mixed scenery that was rolled back) and Prototype 27. |
@@ -30,6 +32,15 @@ python3 tools/build.py
 ## Credits
 
 - 3D: [Three.js](https://threejs.org) r128 (MIT), loaded from cdnjs (inside the offline file).
+- Sample library (Prototype 45), full list with pinned sources in `samples/CREDITS.md`:
+  - Drum kits: Virtuosity Drums by Versilian Studios and Karoryfer Samples, played by Austin McMahon (CC0), github.com/sfzinstruments/virtuosity_drums.
+  - Percussion, timpani, cymbals and didgeridoo: VCSL (CC0) and VSCO-2 Community Edition (CC0) by Versilian Studios.
+  - Rock and metal kit: MuldjordKit by Lars Muldjord, FreePats version (CC BY 4.0). Drum samples provided by DrumGizmo.org.
+  - FreePats (CC0): Hang tuned in D minor (played by Mar, recorded by Gonzalo and Roberto); Electric Guitar FSBS; Finger and Picked Bass YR by Andrea Biasior; World percussion (played by Xavimart).
+  - Sonic Pi sample pack (CC0, freesound.org uploaders): the original, tight, electro, tape and gas kits and the tabla, from the lossless originals.
+  - Electronic drums (808, 909, techno, house, trance, psytrance, hardcore, drum & bass): synthesised for Hoverline.
+  - Spoken tabla bols: the announcer's voice, the Kokoro speech model's bf_emma (Apache-2.0), run through sherpa-onnx's kokoro-en-v0_19 export.
+- Synth instruments (Prototype 45): made by the game itself (supersaws, a 303, FM keys and basses, pads, guzheng, erhu, bansuri, tanpura); no plugins or samples.
 - Pairing by sound (Prototype 44): [ggwave](https://github.com/ggerganov/ggwave) 0.4.0 by Georgi Gerganov (MIT), inside the page.
 - Drum hits and effects: the Sonic Pi sample pack (freesound.org recordings, CC0).
 - Instruments: the [Versilian Community Sample Library](https://github.com/sgossner/VCSL) (CC0): grand piano, FM electric piano, harp, timpani, cymbal, claps, shaker; and since Prototype 34 marimba, vibraphone, glockenspiel, kalimba, harpsichord, pipe organ, tenor sax, dan tranh, strumstick, balafon, alto recorder, tubular bell, bongos, congas, cajon, darbuka, tambourine, cowbell, agogo, woodblock, triangle, guiro, cabasa, frame drum, hi-hat and snare.

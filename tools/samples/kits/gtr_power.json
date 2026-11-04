@@ -1,0 +1,79 @@
+{
+ "instrument": "gtr_power",
+ "label": "Power chords (open)",
+ "family": "guitar",
+ "tags": [
+  "guitar",
+  "metal",
+  "chord"
+ ],
+ "source": "fp_egtr",
+ "dir": "../work/prep/inst/gtr_power",
+ "zones": [
+  {
+   "files": [
+    "n40_v1_r*.wav"
+   ],
+   "root": 40,
+   "name": "n40",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.5,
+    "fade_from": 0.9,
+    "rate": 32000
+   },
+   "nominal": 40,
+   "lo": 36,
+   "hi": 41
+  },
+  {
+   "files": [
+    "n43_v1_r*.wav"
+   ],
+   "root": 43,
+   "name": "n43",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.5,
+    "fade_from": 0.9,
+    "rate": 32000
+   },
+   "nominal": 43,
+   "lo": 42,
+   "hi": 44
+  },
+  {
+   "files": [
+    "n46_v1_r*.wav"
+   ],
+   "root": 46,
+   "name": "n46",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.5,
+    "fade_from": 0.9,
+    "rate": 32000
+   },
+   "nominal": 46,
+   "lo": 45,
+   "hi": 47
+  },
+  {
+   "files": [
+    "n49_v1_r*.wav"
+   ],
+   "root": 49,
+   "name": "n49",
+   "layer": 1,
+   "process": {
+    "maxlen": 1.5,
+    "fade_from": 0.9,
+    "rate": 32000
+   },
+   "nominal": 49,
+   "lo": 48,
+   "hi": 53
+  }
+ ],
+ "notes": "Root, fifth and octave from the FSBS direct recordings, strummed a few ms apart, through a high-gain amp and 4x12 cabinet rendered offline at 8x. Roots E2, G2, A#2, C#3."
+}

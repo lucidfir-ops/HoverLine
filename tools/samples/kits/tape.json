@@ -1,0 +1,84 @@
+{
+ "kit": "tape",
+ "label": "Tape kit (new top end)",
+ "family": "electronic",
+ "genres": [
+  "lo-fi",
+  "phonk",
+  "hip hop",
+  "breakbeat"
+ ],
+ "notes": "The tape kit's kicks and filtered snare (lossless), with the new tape-coloured hats (dark, rolled off above 9 kHz).",
+ "source": "sonicpi",
+ "dir": "../work/prep/sonicpi/tape",
+ "voices": {
+  "kick": [
+   {
+    "files": [
+     "kick_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "kick_808": [
+   {
+    "files": [
+     "kick_808_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "snare_filt": [
+   {
+    "files": [
+     "snare_filt_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "clap": [
+   {
+    "files": [
+     "clap_v1_*_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "tags": [
+     "rr-derived"
+    ]
+   }
+  ],
+  "snare": {
+   "use": "esn:snare_dub"
+  },
+  "chh": {
+   "use": "hats:chh_tape"
+  },
+  "ohh": {
+   "use": "hats:ohh_tape"
+  },
+  "crash": {
+   "use": "cym:crash_dark"
+  }
+ }
+}

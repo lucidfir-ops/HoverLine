@@ -1,0 +1,102 @@
+{
+ "instrument": "timpani",
+ "label": "Timpani",
+ "family": "orchestral",
+ "tags": [
+  "orchestral",
+  "pitched",
+  "drum"
+ ],
+ "source": "vsco2",
+ "dir": "../work/prep/world/timpani",
+ "zones": [
+  {
+   "files": [
+    "d1_v1_r*.wav"
+   ],
+   "root": 41.46,
+   "vel": [
+    0,
+    1
+   ],
+   "layer": 1,
+   "name": "d1",
+   "process": {
+    "maxlen": 2.2,
+    "fade_from": 1.2,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d2_v1_r*.wav"
+   ],
+   "root": 46.81,
+   "vel": [
+    0,
+    1
+   ],
+   "layer": 1,
+   "name": "d2",
+   "process": {
+    "maxlen": 2.2,
+    "fade_from": 1.2,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d3_v1_r*.wav"
+   ],
+   "root": 49.49,
+   "vel": [
+    0,
+    1
+   ],
+   "layer": 1,
+   "name": "d3",
+   "process": {
+    "maxlen": 2.2,
+    "fade_from": 1.2,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d4_v1_r*.wav"
+   ],
+   "root": 52.39,
+   "vel": [
+    0,
+    1
+   ],
+   "layer": 1,
+   "name": "d4",
+   "process": {
+    "maxlen": 2.2,
+    "fade_from": 1.2,
+    "rate": 32000
+   }
+  },
+  {
+   "files": [
+    "d5_v1_r*.wav"
+   ],
+   "root": 54.59,
+   "vel": [
+    0,
+    1
+   ],
+   "layer": 1,
+   "name": "d5",
+   "process": {
+    "maxlen": 2.2,
+    "fade_from": 1.2,
+    "rate": 32000
+   }
+  }
+ ],
+ "below": 5,
+ "above": 5,
+ "notes": "Five timpani from VSCO-2, two round robins each; roots are measured (principal tone), so zone() retunes exactly."
+}

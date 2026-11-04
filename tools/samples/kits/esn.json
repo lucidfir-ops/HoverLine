@@ -1,0 +1,69 @@
+{
+ "kit": "esn",
+ "label": "Electro and dub snares",
+ "family": "electronic",
+ "genres": [
+  "any"
+ ],
+ "notes": "New snares for the gas, electro and tape kits.",
+ "source": "hoverline",
+ "dir": "../work/prep/synth/esn",
+ "voices": {
+  "snare_dub": [
+   {
+    "files": [
+     "snare_dub_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "process": {
+     "rate": 32000
+    }
+   },
+   {
+    "files": [
+     "snare_dub_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "snare_electro": [
+   {
+    "files": [
+     "snare_electro_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "process": {
+     "rate": 32000
+    }
+   },
+   {
+    "files": [
+     "snare_electro_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ]
+ },
+ "tags": [
+  "synth"
+ ],
+ "shared": true
+}

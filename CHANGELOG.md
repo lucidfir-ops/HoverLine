@@ -1,5 +1,39 @@
 # Changelog
 
+## Prototype 45
+From your listening notes, your master guide and your race logs: a new sound for every genre, a radio that learns, and the race fixes you asked for. Nobody has heard the new music yet, me included; start with the Prototype 45 section of the music guide.
+
+**Sound**
+- **Real drums, about 22 MB of them.** 25 kits and 10 instruments in a `samples` folder beside the game: recorded acoustic kits (breaks, funk, jazz, rock/metal, the concert kit's bass drum you liked), electronic kits made for the game (808, 909, techno, house, trance, psytrance, hardcore, drum & bass), the old kits with their harsh hats replaced, Latin and hand percussion, tabla, hang drum, didgeridoo, timpani, electric guitars and bass. A tune downloads only the kit it plays.
+- **No sound twice in a row.** Every hit has several takes in rotation, as your producer friend said, and soft hits are softer recordings. Each hit is nudged a little in level and timing, and lands its attack exactly on the beat.
+- **The "tsshh" is gone.** It was the tight kit's open hat on every offbeat. Trance and psy get a soft, short open hat now, and cymbals no longer go through the drum distortion (the distorted crash).
+- **Also gone:** the "wa wa wa" screech, the "tooty" lead, the "meow" glide, Work Groove's siren, the frequency-shift bass, the mbira and the snare on 2 and 4. Tamed: bright hats, the concert crash, the splash, the reverse crash's tail and the glass pads.
+- **34 drum languages** instead of 5: a real trance groove, psytrance's DUH-duh-duh-duh, techno, house, bass house, industrial, EBM, drum & bass as roller, two-step, jump-up, neuro, liquid and halftime, amen, Think and breakcore in 7s and 5s, funk, jazz-funk, happy hardcore, metal double kick and an 80s gated snare. Percussion layers play in most tunes.
+- **Sidechain per genre:** psytrance ducks its bass right under the kick, house and trance pump their pads, phonk ducks the reese.
+- **Chords from your master guide:** sevenths, ninths, elevenths, sus and altered chords, voiced smoothly from one to the next and kept clear of the sub.
+- **23 synth instruments made by the game** instead of DAW plugins: supersaws (trance, eurobeat, happy hardcore), a 303, an electric piano, bells and brass stabs, new basses, warm and choir pads, a smooth lead, and for the psy and world tunes a guzheng, an erhu, a bansuri and a tanpura drone. The clip lead is 3.8 dB quieter and darker, the metal lead 3 dB quieter, and the sitar is in tune (it was up to two-thirds of a semitone sharp on high notes).
+
+**The generator and the radio**
+- **One generator.** Drum & bass, Trance and Blend are replaced by 13 genre switches (Settings, Music), all on at first. A tune is one genre or one of 18 hand-picked fusions (one genre's rhythm under another's melody). The menu radio plays everything that's switched on.
+- **129 templates:** 23 new (happy hardcore: Rave Rush, Sugar Rush, Lightspeed; psy with Indian and Chinese colours: Tabla Psy, Silk Road, Night Raga, Morning Bansuri; world fusions: Raga Roller, Liquid Erhu, Bansuri Dub, Hang Garden, Didge Stomp, Erhu Drift; metal on guitars: Iron Riff, Double Kick; Midnight Wave, Glass Coast, Modal Friction, Melancholy Chaos, Velvet 120, Hard Pressure, Trance Breaks, Acid Phonk), 73 revised from your notes (Dream Piano plays a plain melody, Slap Shot is a funk groove, Peak Time is cleaner, Stadium Anthem's clap varies, Tritone Reese's wubs are quieter) and 11 retired (their codes still play). Tempos run from 80 to 190 bpm.
+- **Likes:** a Like button in the player, and "Influence the radio with your likes" (on at first). Your Prototype 44 skips and keeps already lean it a little: psy, trance, jungle and drum & bass come up more, slow glitch-hop and wobble less. Nothing is banned. Rooms ignore genres and likes, so everyone hears the same tunes.
+- **A track you race again moves on.** Its own tune plays first, then tunes close to its style, then anything; the ninth race brings its own tune back. Only when you race alone: in a room the track always plays its own tune.
+- **The Library is its own page** (Settings, Music, Library): a table of your tunes with style, tempo and key, **Play library**, and **Play generator with library influence**. Remove sits at the far end of each row, with Undo. It holds 100 tunes.
+- **A tune you pick says "Repeating"**, with **Back to radio** in the title player, the Music page and the library.
+- **Logs:** Download logs now carries your library, your likes and a history of likes, keeps, quick skips and removals, and each race log says which race on the track it was.
+- **Tabla bols:** now and then, a tabla tune's breakdown has a call and answer: a teentaal theka, a kaida or a tihai. The announcer speaks the call softly (the same voice model, saying the bols) and the tabla answers with exactly that phrase. Hear it in Tabla Psy and Raga Roller.
+
+**Races** (they change, so the board era is 45 and the boards start fresh)
+- **Every jump has catch fences**, from the ramp, over the gap and along the landing, high enough for a frame leaving at speed, glass leaning out a little (a nod to your U). Your two falling jumps (NXQCA752C-R and NXQC86160) went from 13 side falls in 6 simulated races to none; slow arrivals can still drop into a gap.
+- **EMP lasts 2 s** (was 4.5), holds top speed to 85% (was 78%) and eases off at the end; its flash is softer and the HUD blinks twice and then stays dim instead of strobing. Same lightning.
+- **The AI drifts** where a person would, with the same drift rules and inputs: up to 1.9% faster laps for the Drifter, 18% of AI corners drifted overall.
+- **Each frame races its own way:** the Hauler shoves and boosts deep into its shield, the Tether keeps its distance and its shield, the Skiff cuts inside and threads gaps, the Dart dives downhill and flies jumps nose level, the Orb lets the wall turn it, the Drifter drifts most corners, the Mono shoves.
+- **Balance**, 3,000 simulated races on random tracks and random Frame lab builds (7,000 in all, against Prototype 44 too): frames win 0.91 to 1.15 of a fair share, except the Orb at 0.68, the slowest AI frame since Prototype 43's streamlining cut (left alone, since it was tuned for people). Barrier was the strongest module and now lasts 3 s (was 3.5). Decoy is next to watch.
+
+**Files**
+- The itch.io zip and the Wi-Fi pack carry `samples/` beside the page (about 44 MB each, with the songs). New: `hoverline-offline.zip`, the offline game with the whole sample library (24 MB). The single offline file still works, on the sounds inside the page.
+- Tested headless in Chromium: races replay identically, the music-only part leaves races exactly as Prototype 44, every template builds, Pregen works with the new synths, rooms hear the same tunes, the library page and the four ways the samples load. Not yet heard by a person, and not yet run on a real phone.
+
 ## Prototype 44
 From your Wi-Fi note: same-room play built into the game, no server, no internet, easy for anyone.
 - **Same room, no internet: phones pair by sound.** In Multiplayer pick **Same room · no internet**. One person taps **Host a room**; everyone else taps **Join** and holds their phone near the host's. The host's phone plays a short chirp, the other phone chirps back, and you're in the lobby. No server, no internet, no codes to type. It works on itch.io and in the downloaded file.

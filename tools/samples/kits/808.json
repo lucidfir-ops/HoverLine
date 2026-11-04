@@ -1,0 +1,335 @@
+{
+ "kit": "808",
+ "label": "808",
+ "family": "electronic",
+ "genres": [
+  "trap",
+  "phonk",
+  "electro",
+  "hip hop",
+  "bass house",
+  "drum & bass"
+ ],
+ "notes": "A TR-808 family, synthesised: a bridged-T kick with a tuned tail (root in the manifest; kick_long rings on F1, kick G1, kick_short A1, kick_dist a saturated one), snare, clap, the six-square metallic hats (soft-topped), cowbell, three toms, rimshot, clave, maracas, and the shared dark crash.",
+ "source": "hoverline",
+ "dir": "../work/prep/synth/808",
+ "voices": {
+  "kick": [
+   {
+    "files": [
+     "kick_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "root": 31,
+    "process": {
+     "maxlen": 1.6
+    }
+   },
+   {
+    "files": [
+     "kick_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "root": 31,
+    "process": {
+     "maxlen": 1.6
+    }
+   }
+  ],
+  "kick_long": [
+   {
+    "files": [
+     "kick_long_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "root": 29,
+    "process": {
+     "maxlen": 2.6
+    }
+   },
+   {
+    "files": [
+     "kick_long_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "root": 29,
+    "process": {
+     "maxlen": 2.6
+    }
+   }
+  ],
+  "kick_short": [
+   {
+    "files": [
+     "kick_short_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "root": 33
+   },
+   {
+    "files": [
+     "kick_short_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "root": 33
+   }
+  ],
+  "kick_dist": [
+   {
+    "files": [
+     "kick_dist_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "root": 31,
+    "process": {
+     "maxlen": 1.8
+    }
+   },
+   {
+    "files": [
+     "kick_dist_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "root": 31,
+    "process": {
+     "maxlen": 1.8
+    }
+   }
+  ],
+  "snare": [
+   {
+    "files": [
+     "snare_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "process": {
+     "rate": 32000
+    }
+   },
+   {
+    "files": [
+     "snare_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "clap": [
+   {
+    "files": [
+     "clap_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "chh": [
+   {
+    "files": [
+     "chh_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.4
+    ],
+    "process": {
+     "rate": 32000
+    }
+   },
+   {
+    "files": [
+     "chh_v2_r*.wav"
+    ],
+    "vel": [
+     0.4,
+     0.75
+    ],
+    "process": {
+     "rate": 32000
+    }
+   },
+   {
+    "files": [
+     "chh_v3_r*.wav"
+    ],
+    "vel": [
+     0.75,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "ohh": [
+   {
+    "files": [
+     "ohh_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "cowbell": [
+   {
+    "files": [
+     "cowbell_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ]
+   }
+  ],
+  "tomL": [
+   {
+    "files": [
+     "tomL_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ]
+   },
+   {
+    "files": [
+     "tomL_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ]
+   }
+  ],
+  "tomM": [
+   {
+    "files": [
+     "tomM_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ]
+   },
+   {
+    "files": [
+     "tomM_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ]
+   }
+  ],
+  "tomH": [
+   {
+    "files": [
+     "tomH_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ]
+   },
+   {
+    "files": [
+     "tomH_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ]
+   }
+  ],
+  "rim": [
+   {
+    "files": [
+     "rim_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "perc_clave": [
+   {
+    "files": [
+     "perc_clave_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "shaker": [
+   {
+    "files": [
+     "shaker_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "crash": {
+   "use": "cym:crash_dark"
+  }
+ },
+ "tags": [
+  "synth"
+ ]
+}

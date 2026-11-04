@@ -1,0 +1,121 @@
+{
+ "kit": "hardcore",
+ "label": "Hardcore",
+ "family": "electronic",
+ "genres": [
+  "happy hardcore",
+  "gabber",
+  "hardstyle",
+  "hard dance"
+ ],
+ "notes": "Gabber kick (overdriven until it is a tone, settling on its root) and a lighter happy-hardcore kick, both with their root note in the manifest, a hard bright snare, a big clap, 909 hats and a crash.",
+ "source": "hoverline",
+ "dir": "../work/prep/synth/hardcore",
+ "voices": {
+  "kick": [
+   {
+    "files": [
+     "kick_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "root": 35,
+    "process": {
+     "gain": 0.8
+    }
+   },
+   {
+    "files": [
+     "kick_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "root": 35,
+    "process": {
+     "gain": 0.8
+    }
+   }
+  ],
+  "kick_hhc": [
+   {
+    "files": [
+     "kick_hhc_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "root": 36
+   },
+   {
+    "files": [
+     "kick_hhc_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "root": 36
+   }
+  ],
+  "snare": [
+   {
+    "files": [
+     "snare_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     0.55
+    ],
+    "process": {
+     "rate": 32000
+    }
+   },
+   {
+    "files": [
+     "snare_v2_r*.wav"
+    ],
+    "vel": [
+     0.55,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "clap": [
+   {
+    "files": [
+     "clap_v1_r*.wav"
+    ],
+    "vel": [
+     0,
+     1
+    ],
+    "process": {
+     "rate": 32000
+    }
+   }
+  ],
+  "chh": {
+   "use": "909:chh"
+  },
+  "ohh": {
+   "use": "909:ohh"
+  },
+  "crash": {
+   "use": "cym:crash"
+  },
+  "ride": {
+   "use": "cym:ride"
+  }
+ },
+ "tags": [
+  "synth"
+ ]
+}
