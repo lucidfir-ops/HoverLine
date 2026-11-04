@@ -1,5 +1,24 @@
 # Changelog
 
+## Prototype 42
+From your Prototype 41 screen recording on the S22 (Firefox) and your tilt notes.
+- Tilt now works inside the itch.io page. itch passes the motion sensor to HTML5 games in its frame (it has since 2021), so the game no longer sends you to another tab just for being in itch's page. Pick a tilt setup, or start a race with one, and the game checks the motion sensor (an iPhone asks first). Then tilt just works, full screen as before.
+- If your browser doesn't pass the sensor into the page, a small card says "Tilt is blocked here", with **Open with tilt** and **Use the slider**. Open with tilt is the game in its own tab, already set to tilt. Only then does the title show "Open with tilt". The own tab keeps its own saves, and the card says so.
+- With no motion sensor at all (like the Doogee), the game says "No motion sensor found" and switches to the sliders.
+- Two tilt setups in Quick setup instead of one:
+  - **Tilt steer**, the new default tilt: tilt the phone to steer, with a nose slider bottom-left (up dives, down is drag, springs back to level).
+  - **Full tilt**: tilting steers and pitches, with the stick as backup, as before.
+- Portrait and landscape keep their own controls. The Controls page says which one you're setting up ("Portrait controls · turn the phone to set up landscape") and switches when you turn the phone in the menus. Your old setup became both, so nothing is lost.
+- A race uses the controls of the way it started (Android locks it there). On an iPhone, which can't lock, turning the phone mid-race keeps those controls and re-lays them out.
+- Brake is the same size as Boost. Where they wouldn't fit side by side next to your left thumb (a phone held upright with the nose slider), Boost sits on top of Brake.
+- New **Modules** option: Auto, Right, Left or Split.
+  - Auto puts one each side in landscape.
+  - Held upright, Auto puts both above Boost and Brake on a phone and one each side on a tablet, or both on the left when your left thumb has nothing else to hold.
+  - Modules never sit on a slider or the stick.
+  - Every button is at least finger-sized, checked on 8 screen sizes (the S22 included) with notch insets.
+- The sketch on the Controls page is now the real layout for your screen. The tutorial, the Nose guide and the race-start notes name your setup's controls.
+- Quick races keep their own steering slider. Races are unchanged: the simulator gives the same results as Prototype 41, race for race, so the board era stays 41. Shared logs are version 42 and record the race's orientation and module placement.
+
 ## Prototype 41
 From your drift notes, the Mario Kart 8 and street-drift videos, and your answers: tap is a brake, hold in a turn is a drift, the stick shapes the arc, speed builds smoothly with no burst.
 - Every frame can drift now. Hold the brake in a corner and after a moment the tail swings out and the frame drifts for as long as you hold it. Push the stick into the turn to tighten the line, out to widen it; it never flips the other way.

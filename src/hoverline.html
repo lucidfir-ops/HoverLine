@@ -128,6 +128,10 @@ body{font-family:var(--display);padding-left:max(16px,env(safe-area-inset-left,0
 #pslide.on{background:rgba(255,176,0,.16)}
 .bk{width:clamp(72px,19vmin,96px);height:clamp(72px,19vmin,96px);border-radius:50%;border:2px solid var(--amber);background:rgba(255,176,0,.10);color:var(--ink);font:700 12px var(--display);letter-spacing:.08em;touch-action:none;text-transform:uppercase}
 .bk.on{background:rgba(255,176,0,.55);color:#111}
+/* Prototype 42: the touch layout is worked out in px (touchLayout); its controls sit straight on #touch */
+#touch.jl :is(#rightPad,.wrow,.brow,#steerBtns):not([hidden]){display:contents}
+#touch.jl :is(#bst,#brk,#w1,#w2,#pslide,#sl,#sr){position:absolute;margin:0;min-width:0;box-sizing:border-box}
+#touch.jl #brk{padding:0}#touch.jl #brk small{white-space:nowrap}
 /* overlays */
 .overlay{touch-action:pan-y;position:fixed;inset:0;display:flex;align-items:center;justify-content:flex-start;gap:24px;padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(90deg,rgba(9,11,16,.94) 0%,rgba(9,11,16,.6) 55%,rgba(9,11,16,.15) 100%);overflow:auto;flex-wrap:wrap}
 .card{width:min(440px,100%);display:flex;flex-direction:column;gap:12px}
@@ -137,7 +141,7 @@ body{font-family:var(--display);padding-left:max(16px,env(safe-area-inset-left,0
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 button.btn{font:700 15px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:11px 16px;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer}
 a.btn{text-decoration:none;text-align:center;font:700 15px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:11px 16px;border-radius:6px}
-#ownTab{background:var(--cyan);border-color:var(--cyan);color:#071114}
+#ownTab,#tiltOwn{background:var(--cyan);border-color:var(--cyan);color:#071114}
 button.btn.go{background:var(--amber);color:#111;border-color:var(--amber);font-size:18px;padding:13px 28px}
 button.btn:focus-visible,input:focus-visible,.bk:focus-visible,.chip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .padf,.padf:focus{outline:3px solid var(--cyan)!important;outline-offset:3px;box-shadow:0 0 0 6px rgba(63,240,255,.18)}
@@ -216,15 +220,15 @@ td.b{color:var(--amber)}
 .gmark svg{width:64px;height:34px;flex:none;background:#1c2129;border-radius:4px}
 @media (orientation:portrait){.gwrap{flex-direction:column;max-height:none}.gview{flex:0 0 auto;height:38vh;height:38dvh}.gtext{flex:1 1 auto}}
 @media (max-height:480px){.gtext .logo{display:none}#guideTitle{font-size:18px}.gbody{font-size:14px}}
-.pv{position:relative;flex:none;width:176px;height:84px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.35)}
-.pv i{position:absolute;display:block;border:2px solid var(--amber);box-sizing:border-box}
-.pv .stk{left:8px;bottom:8px;width:34px;height:34px;border-radius:50%}.pv .sls{left:8px;bottom:14px;width:62px;height:18px;border-radius:9px}
-.pv .bl,.pv .br{bottom:10px;width:24px;height:24px;border-radius:50%}.pv .bl{left:8px}.pv .br{left:38px}
-.pv .wp{right:30px;top:22px;width:46px;height:12px;border-radius:6px;border-color:var(--red)}
-.pv .bk2{right:30px;bottom:8px;width:30px;height:30px;border-radius:50%}.pv .bo{right:66px;bottom:10px;width:22px;height:22px;border-radius:50%;border-color:var(--cyan)}
-.pv .psl{right:8px;bottom:8px;width:14px;height:44px;border-radius:7px}
-.pv.nopsl .bk2{right:8px}.pv.nopsl .bo{right:44px}.pv.nopsl .wp{right:8px}
-.pv .tl{left:50%;top:8px;transform:translateX(-50%);border:none;font:700 10px var(--display);color:var(--cyan);letter-spacing:.08em;white-space:nowrap}
+/* the setup sketch (Prototype 42): the real layout for this screen, scaled down; a portrait screen shows its lower part */
+.pv{position:relative;flex:none;width:176px;height:84px;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,.35);overflow:hidden}
+.pv.crop{border-top-style:dashed;border-radius:0 0 10px 10px}
+.pv i{position:absolute;display:block;border:2px solid var(--amber);box-sizing:border-box;border-radius:50%}
+.pv .sls,.pv .psl,.pv .wp{border-radius:99px}.pv .wp{border-color:var(--red)}.pv .bo{border-color:var(--cyan)}
+.pv .tl{left:50%;top:6px;transform:translateX(-50%);border:none;border-radius:0;font:700 10px var(--display);color:var(--cyan);letter-spacing:.08em;white-space:nowrap}
+.presets>.preset:last-child:nth-child(odd){grid-column:1/-1}
+#ctlOr b{color:var(--cyan);font-weight:700}
+#tiltAsk .big{font-size:clamp(26px,6vmin,40px)}#tiltAsk p.ask{font:500 14px/1.45 var(--display);color:var(--dim);margin:8px 0}#tiltAsk p.ask b{color:var(--ink,#fff)}
 table.bind td{padding:2px 10px 2px 0;font:500 13px var(--display)}table.bind th{font:500 11px var(--display);color:var(--dim);text-align:left;padding:0 10px 2px 0;letter-spacing:.08em;text-transform:uppercase}
 table.bind .chip{min-width:64px;padding:5px 10px;font:700 12px var(--mono)}table.bind .chip.wait{background:var(--amber);color:#111;animation:blink .6s steps(2) infinite}
 #labTag{position:fixed;pointer-events:none;font:700 14px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:4px;background:rgba(10,12,18,.85);border:1px solid currentColor;transform:translate(-50%,-160%);white-space:nowrap;z-index:5}
@@ -492,9 +496,9 @@ body.qk:not(.qkN) #pslide{display:none!important}
 <div id="title" class="overlay">
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
-    <div class="sub">Prototype 41 · 8 frames · 3 laps</div>
+    <div class="sub">Prototype 42 · 8 frames · 3 laps</div>
     <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
-    <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open full screen with tilt</a>
+    <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open with tilt</a>
     <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip" data-music="dnb" aria-pressed="false">Drum &amp; bass</button><button class="chip" data-music="trance" aria-pressed="false">Trance</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip mmode" aria-label="Music mode">Generative</button></div>
       <div class="t best tinfo" id="titleTune"></div></div>
   </div>
@@ -704,18 +708,21 @@ body.qk:not(.qkN) #pslide{display:none!important}
 <div id="ctl" class="overlay" hidden>
   <div class="card">
     <div class="logo">CONT<b>ROLS</b></div>
+    <div class="sub" id="ctlOr" hidden></div>
     <div class="sub">Quick setup · tap one, fine-tune below</div>
     <div class="presets" id="ctlPresets">
+      <button class="btn preset" data-preset="tiltsteer">Tilt steer<small>tilt to steer · nose slider bottom-left</small></button>
+      <button class="btn preset" data-preset="fulltilt">Full tilt<small>tilt steers and pitches · stick as backup</small></button>
       <button class="btn preset" data-preset="sliders">Two sliders<small>steer slider left · pitch slider right</small></button>
       <button class="btn preset" data-preset="buttons">Buttons<small>◀ ▶ left · pitch slider right</small></button>
       <button class="btn preset" data-preset="stick">Stick<small>one stick steers and pitches</small></button>
-      <button class="btn preset" data-preset="tilt">Tilt<small>tilt to steer and pitch · stick as backup</small></button>
     </div>
     <div class="ctlrow"><div class="pv" id="ctlPv" aria-hidden="true"></div><p class="small" id="ctlNote"></p></div>
     <div class="sub">Fine-tune</div>
     <div class="row">
       <button class="chip" id="btnChip" aria-pressed="false">Steer: stick</button>
       <button class="chip" id="psChip" aria-pressed="false">Pitch slider</button>
+      <button class="chip" id="modChip" aria-pressed="false">Modules: auto</button>
       <button class="chip" id="tiltChip" aria-pressed="true">Tilt steering</button>
       <button class="chip" id="pitchChip" aria-pressed="true">Tilt pitch</button>
       <button class="chip" id="flipChip" aria-pressed="false">Flip tilt</button>
@@ -727,6 +734,14 @@ body.qk:not(.qkN) #pslide{display:none!important}
     <table id="bindTbl" class="bind"></table>
     <div class="row"><button class="chip" id="rumbleChip" aria-pressed="true">Rumble</button><button class="chip" id="padInvChip" aria-pressed="false">Stick up dives</button><button class="chip" id="bindReset">Reset buttons</button><span class="small" id="bindMsg"></span></div>
     <div class="row"><button class="btn go" id="ctlDone" data-back>Done</button></div>
+  </div>
+</div>
+<div id="tiltAsk" class="overlay pop" hidden>
+  <div class="card">
+    <div class="big">Tilt is blocked here</div>
+    <p class="ask">This browser doesn't pass the motion sensor to the game inside this page.</p>
+    <p class="ask" id="tiltOwnTxt"><b>Open with tilt</b> plays it in its own tab, which keeps its own saves.</p>
+    <div class="row"><a class="btn go" id="tiltOwn" target="_blank" rel="noopener">Open with tilt</a><button class="btn" id="tiltSl" data-back>Use the slider</button></div>
   </div>
 </div>
 
@@ -3919,7 +3934,7 @@ const actLabel=a=>lastDev==='pad'?padName(bind.pad[a]):keyName(bind.key[a][0]);
 /* the pad last pressed names the buttons: a new kind of pad redraws every label that shows them */
 function padSeen(p){if(p.id===PAD.id)return;PAD.id=p.id;const k=padKindOf(p.id);if(k===PAD.kind)return;PAD.kind=k;store.set('hoverline.padkind',k);hudT=0;padLabels()}
 function padLabels(){try{labSlotTags();bindUI();ctrlHelpUI()}catch(e){}}
-const tilt={ok:false,ang:0,neutral:0,pa:0,np:0,enabled:store.get('hoverline.tilt')!=='0',flip:store.get('hoverline.flip')==='1',
+const tilt={ok:false,ang:0,neutral:0,pa:0,np:0,at:0,n:0,blocked:false,msg:'',enabled:store.get('hoverline.tilt')!=='0',flip:store.get('hoverline.flip')==='1',
   pitchMode:+(store.get('hoverline.tpitch')||0)}; // 0 tilt pitch on, 1 on and inverted, 2 off
 let padPrev=[];const fireQ=[false,false];
 addEventListener('keydown',e=>{if(rebind.on){rebindKey(e);return}if(e.code.startsWith('Arrow')||e.code==='Escape')setDev('key');if(navKey(e))return;if(e.repeat&&!e.code.startsWith('Arrow')){e.preventDefault();return}keys[e.code]=true;
@@ -3939,12 +3954,27 @@ addEventListener('blur',()=>{for(const k in keys)keys[k]=false;if(S.state==='rac
 /* Tilt: roll (turning the device like a wheel) steers; pitch (tipping the top edge away / towards you) trims the nose.
    Both are measured against how the device was held when the race started. */
 function onMotion(e){const a=e.accelerationIncludingGravity;if(!a||a.x==null)return;
+  tilt.at=performance.now();tilt.n++;if(tilt.blocked){tilt.blocked=false;try{applyTouchUI()}catch(_){}}
   const ang=(screen.orientation&&typeof screen.orientation.angle==='number')?screen.orientation.angle:(window.orientation||0);
   let sx,sy;if(ang===90){sx=-a.y;sy=a.x}else if(ang===270||ang===-90){sx=a.y;sy=-a.x}else if(ang===180){sx=-a.x;sy=-a.y}else{sx=a.x;sy=a.y}
   const inPlane=Math.hypot(sx,sy);tilt.pa=Math.atan2(a.z||0,inPlane);
   if(inPlane<2.5)return;tilt.ok=true;tilt.ang=Math.atan2(sx,sy)}
 addEventListener('devicemotion',onMotion);
-async function askMotion(){try{if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function')await DeviceMotionEvent.requestPermission()}catch(e){}}
+/* Prototype 42: tilt works inside itch's frame (itch passes the motion sensors to HTML5 games), so nothing sends a player
+   to another tab for being framed. Picking a tilt setup, or starting a race or the tutorial with tilt, asks for the sensor
+   where the browser wants a tap for it (iPhones) and listens for a reading for 1.5 s, counting the time the page has been
+   listening already (since it loaded, came back into view or got the permission). A reading: tilt just works where it is.
+   None: a framed page offers its own tab (tiltNo); anywhere else steering falls back to the slider. tilt.at and tilt.n
+   are the last reading's time and the count; tilt.blocked says this framed page got none; tilt.msg is a note to show. */
+const TP={t0:performance.now()};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)TP.t0=performance.now()});
+/* iPhones and iPads send no reading at all until a tap grants the sensor; elsewhere readings start with the listener (Chrome
+   has requestPermission too now, but it answers without asking and readings don't wait for it) */
+const IOS=/iP(hone|ad|od)/.test(navigator.userAgent||'')||(/Mac/.test(navigator.platform||'')&&(navigator.maxTouchPoints||0)>1);
+const tiltLive=()=>tilt.at>0&&performance.now()-tilt.at<1000;
+const tiltWanted=()=>tilt.enabled||tilt.pitchMode<2;
+async function askMotion(){try{if(typeof DeviceMotionEvent!=='undefined'&&typeof DeviceMotionEvent.requestPermission==='function'){const r=await DeviceMotionEvent.requestPermission();if(IOS&&r==='granted'&&!askMotion.ok){askMotion.ok=true;TP.t0=performance.now()}return r}}catch(e){return'error'}return''}
+function tiltProbe(ms){return new Promise(res=>{if(tiltLive())return res(true);const n0=tilt.n,end=TP.t0+ms,tick=()=>{if(tilt.n>n0)res(true);else if(performance.now()>=end)res(false);else setTimeout(tick,50)};tick()})}
 const dead=(v,d)=>Math.abs(v)<d?0:(v-Math.sign(v)*d)/(1-d);
 
 
@@ -4066,10 +4096,73 @@ ssl.addEventListener('pointermove',e=>{if(ssl.classList.contains('on'))sslRead(e
 const sslEnd=()=>{if(!ssl.classList.contains('on'))return;touch.steer=0;ssl.classList.remove('on');sslShow(0)};
 for(const ev of['pointerup','pointercancel','lostpointercapture'])ssl.addEventListener(ev,sslEnd);ssl.addEventListener('contextmenu',e=>e.preventDefault());
 /* Left thumb: the round stick (default), two ◀ ▶ buttons, or the steer slider. */
-const STEER_MODES=['stick','btns','slider'],STEER_LABEL={stick:'Steer: stick',btns:'Steer: buttons',slider:'Steer: slider'};
+const STEER_MODES=['stick','btns','slider'],STEER_LABEL={stick:'Steer: stick',btns:'Steer: buttons',slider:'Steer: slider',tilt:'Steer: tilt only'};
 let steerMode=store.get('hoverline.steer')||(store.get('hoverline.btns')==='1'?'btns':'stick');if(!STEER_MODES.includes(steerMode))steerMode='stick';
+/* steerMode 'tilt' (Prototype 42, only with tilt steering on): nothing on screen steers, and the pitch slider (the nose
+   slider) moves to the bottom left */
 function applySteerMode(){$('steerPad').hidden=steerMode!=='stick';$('steerBtns').hidden=steerMode!=='btns';ssl.hidden=steerMode!=='slider';touch.steer=0;sslShow(0)}
 applySteerMode();
+/* Prototype 42: portrait and landscape keep their own touch setup (hoverline.touchset: {p, l}, each {tilt, pm, steer, psl,
+   mods}). The globals (tilt.enabled, tilt.pitchMode, steerMode, pitchSlider, modsMode) hold the one in use: in a menu the
+   one for the way the device is held now (it follows the device as it turns), in a race the one for the orientation the
+   race started in, which is the one Android locks it to (setHud), even if an iPhone turns mid-race. With no touchset
+   saved, both start as the single setup saved before (the old keys or their defaults), and nothing is written until a
+   control changes, so a fresh browser still counts as fresh for the quick races. Flip tilt and Touch controls stay one
+   setting for the device. */
+const MODS=['auto','right','left','split'],MODS_LABEL={auto:'Modules: auto',right:'Modules: right',left:'Modules: left',split:'Modules: split'};
+let modsMode='auto';
+const REAL=typeof HTMLElement!=='undefined'&&$('touch') instanceof HTMLElement;/* not in the headless simulator */
+const qkLive=()=>{try{return QK.live}catch(e){return false}};
+const orNow=()=>innerHeight>innerWidth?'p':'l';
+const TS={p:null,l:null,cur:'l',race:null};
+function tsClean(o,d){o=o&&typeof o==='object'?o:{};const c={tilt:typeof o.tilt==='boolean'?o.tilt:d.tilt,pm:[0,1,2].includes(o.pm)?o.pm:d.pm,steer:[...STEER_MODES,'tilt'].includes(o.steer)?o.steer:d.steer,
+  psl:typeof o.psl==='boolean'?o.psl:d.psl,mods:MODS.includes(o.mods)?o.mods:d.mods};if(c.steer==='tilt'&&!c.tilt)c.steer='slider';return c}
+{let j=null;try{j=JSON.parse(store.get('hoverline.touchset')||'null')}catch(e){}
+  const old=tsClean({},{tilt:tilt.enabled,pm:[0,1,2].includes(tilt.pitchMode)?tilt.pitchMode:0,steer:steerMode,psl:pitchSlider,mods:'auto'});TS.p=tsClean(j&&j.p,old);TS.l=tsClean(j&&j.l,old)}
+const tsEdit=()=>TS.race||TS.cur;
+function tsSave(){TS[tsEdit()]={tilt:tilt.enabled,pm:tilt.pitchMode,steer:steerMode,psl:pitchSlider,mods:modsMode};store.set('hoverline.touchset',JSON.stringify({v:42,p:TS.p,l:TS.l}))}
+function tsUse(o){TS.cur=o;if(qkLive())return;const c=TS[tsEdit()];tilt.enabled=c.tilt;tilt.pitchMode=c.pm;steerMode=c.steer;pitchSlider=c.psl;modsMode=c.mods;applySteerMode();applyPitchSlider()}
+tsUse(orNow());
+/* The touch layout (Prototype 42), worked out in px for the screen rather than left to CSS, so it can weigh the whole
+   screen at once; the Controls sketch draws the same rectangles. Left thumb, bottom left: the stick, the ◀ ▶ buttons, the
+   steer slider or (Tilt steer) the nose slider. Right thumb: Boost and Brake, the same size, with the pitch slider at the
+   far right; where that row would run into the left thumb's control (a narrow portrait screen) Boost sits on top of Brake,
+   and a steer slider that still doesn't fit gets shorter. Modules: Right (both above Brake), Left (both above the left
+   thumb's control), Split (one each side), or Auto: one each side in landscape; in portrait both on the left when the left
+   thumb has nothing to hold, one each side on a screen 500 px wide or more, else both on the right. A module that would
+   land on another control moves up above it. Quick races keep their own CSS layout. Rectangles: x from the left, b from
+   the bottom, in px, safe areas included. */
+const TL_IDS=['stick','steerSl','sl','sr','pslide','bst','brk','w1','w2','padHint'],TL={last:null};
+function tlIns(){if(!tlIns.e){const d=document.createElement('div');d.style.cssText='position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';document.body.appendChild(d);tlIns.e=d}
+  const c=getComputedStyle(tlIns.e),n=v=>parseFloat(v)||0;return{t:n(c.paddingTop),r:n(c.paddingRight),b:n(c.paddingBottom),l:n(c.paddingLeft)}}
+function tlMode(m,P,W,left){return m!=='auto'?m:!P?'split':!left?'left':W>=500?'split':'right'}
+function tlCalc(W,H,ins,c){const vm=Math.min(W,H),k=(a,f,b)=>Math.round(Math.max(a,Math.min(b,f*vm))),P=H>W,G=12,r={};
+  const S=k(124,0.31,176),B=k(72,0.2,100),bb=k(72,0.19,96),sw=k(210,0.48,320),sh=k(58,0.14,76),pw=k(48,0.12,60),ph=k(118,0.3,160),mw=k(84,0.2,112),mh=k(48,0.12,58);
+  const x0=ins.l,x1=W-ins.r,y0=ins.b,pslL=c.psl&&c.steer==='tilt';let left=null;
+  if(c.steer==='stick')left=r.stick={x:x0+18,b:y0+14,w:S,h:S};
+  else if(c.steer==='slider')left=r.steerSl={x:x0+14,b:y0+18,w:sw,h:sh};
+  else if(c.steer==='btns'){r.sl={x:x0+14,b:y0+14,w:bb,h:bb};r.sr={x:x0+28+bb,b:y0+14,w:bb,h:bb};left={x:x0+14,b:y0+14,w:2*bb+14,h:bb}}
+  else if(pslL)left=r.pslide={x:x0+20,b:y0+14,w:k(54,0.14,64),h:k(140,0.36,190)};/* the nose slider: the left thumb's only control, so a little bigger */
+  const row=up=>{const o={};let x=x1-14;if(c.psl&&!pslL){o.pslide={x:x-pw,b:y0+14,w:pw,h:ph};x-=pw+G}
+    o.brk={x:x-B,b:y0+14,w:B,h:B};o.bst=up?{x:x-B,b:y0+14+B+G,w:B,h:B}:{x:x-2*B-G,b:y0+14,w:B,h:B};return o};
+  const box=o=>{const v=Object.values(o),x=Math.min(...v.map(q=>q.x)),b=Math.min(...v.map(q=>q.b));return{x,b,w:Math.max(...v.map(q=>q.x+q.w))-x,h:Math.max(...v.map(q=>q.b+q.h))-b}};
+  let R=row(false),stack=false;if(left&&left.x+left.w+G>box(R).x){R=row(true);stack=true}
+  Object.assign(r,R);const RB=box(R);
+  if(r.steerSl&&left.x+left.w+G>RB.x)left.w=r.steerSl.w=Math.max(150,RB.x-G-left.x);
+  const mode=tlMode(c.mods,P,W,left),lx=left?left.x:x0+14,lb=left?left.b+left.h+G:y0+14,rb=RB.b+RB.h+G,rx=x1-14;
+  if(mode==='right'){r.w1={x:rx-2*mw-10,b:rb,w:mw,h:mh};r.w2={x:rx-mw,b:rb,w:mw,h:mh}}
+  else if(mode==='left'){r.w1={x:lx,b:lb,w:mw,h:mh};r.w2=lx+2*mw+10+G>RB.x&&lb<RB.b+RB.h?{x:lx,b:lb+mh+10,w:mw,h:mh}:{x:lx+mw+10,b:lb,w:mw,h:mh}}
+  else{r.w1={x:lx,b:lb,w:mw,h:mh};r.w2={x:rx-mw,b:rb,w:mw,h:mh}}
+  const hit=(a,q)=>a.x<q.x+q.w+6&&q.x<a.x+a.w+6&&a.b<q.b+q.h+6&&q.b<a.b+a.h+6,solid=Object.keys(r).filter(i=>i[0]!=='w').map(i=>r[i]);
+  for(const i of['w1','w2']){const m=r[i];for(let n=0;n<4;n++){const q=[...solid,...(i==='w2'?[r.w1]:[])].find(q=>hit(m,q));if(!q)break;m.b=q.b+q.h+G}}
+  if(r.stick)r.padHint={x:x0+20,b:Math.max(r.stick.b+r.stick.h,...['w1','w2'].filter(i=>r[i].x<r.stick.x+r.stick.w).map(i=>r[i].b+r[i].h))+8};
+  return{r,mode,stack,P,W,H}}
+function tlClear(e){if(e)for(const p of['left','bottom','width','height'])e.style.removeProperty(p)}
+function touchLayout(){if(!REAL)return;const t=$('touch');
+  if(qkLive()){t.classList.remove('jl');TL_IDS.forEach(i=>tlClear($(i)));TL.last=null;return}
+  const L=tlCalc(innerWidth,innerHeight,tlIns(),{steer:steerMode,psl:pitchSlider,mods:modsMode});t.classList.add('jl');
+  for(const i of TL_IDS){const e=$(i),q=L.r[i];if(!q){tlClear(e);continue}e.style.left=q.x+'px';e.style.bottom=q.b+'px';if(i!=='padHint'){e.style.width=q.w+'px';e.style.height=q.h+'px'}}
+  TL.last=L}
 /* Right thumb: one big brake, two weapon buttons above it. */
 for(const[id,k]of[['brk','brake'],['bst','boost'],['w1','f1'],['w2','f2']]){const el=$(id);
   const on=e=>{touch[k]=1;if(k==='f1')fireQ[0]=true;else if(k==='f2')fireQ[1]=true;else if(k==='brake')music.event('brake');el.classList.add('on');try{el.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault()};
@@ -4450,7 +4543,7 @@ function logStart(){if(!LOG.on){LOG.cur=null;return}const fc={};for(const f of T
   LOG.cur={v:2,game:'Hoverline '+($('title').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:QK.live?'quick':S.car?'career':S.train?'training':S.trial?'trial':mp.on?'room':'race',quick:QK.live?qkTag():undefined,cls:S.cls,
     track:{code:codeStr(),name:T.D.name,complex:!!T.cx,len:Math.round(T.L),laps:LAPS,feats:fc,splits:T.splits.length,fig8:!!T.fig8,marks:(T.marks||[]).length},
     ship:{frame:build.frame,stats:{...build.stats},weapons:[...build.weapons]},
-    input:{dev:lastDev,pad:lastDev==='pad'?PAD.kind:null,padId:lastDev==='pad'?String(PAD.id||'').slice(0,64):null,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode},
+    input:{dev:lastDev,pad:lastDev==='pad'?PAD.kind:null,padId:lastDev==='pad'?String(PAD.id||'').slice(0,64):null,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode,or:TS.race||orNow(),mods:TL.last?TL.last.mode:null},
     music:{style:music.style,both:music.style==='both'?music.both:undefined,code:music.code(),mode:music.modeEff(),evolving:music.evo,shuffle:music.shuffle,lite:music.lite,vol:audio.volM,sfx:audio.volS},gfx:Object.keys(G2).filter(k=>G2[k]).join(',')||'none',
     device:{...DEVICE,view:[cw,ch],draw:[canvas.width,canvas.height],res:RES.k,low:RES.low,fcap:FCAP.v,style:styleNow()||'own',sky:tod},
     field:racers.map(r=>({name:r.name,me:r===player||undefined,ai:!!r.isAI,ghost:!!r.isGhost,rival:!!r.rival,frame:r.build?r.build.frame:null,skill:r.skill?r2(r.skill):null,weapons:r.weapons?[...r.weapons]:[]})),
@@ -4483,7 +4576,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   const hasMe=(o.field||[]).some(f=>f.me);(o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,(hasMe?f.me:i===0)?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:41,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:42,log:logShareable(L)});if(body.length>400000)return;
   if(bc&&navigator.sendBeacon&&navigator.sendBeacon(LB+'/log',new Blob([body],{type:'text/plain'})))return; /* a page being closed: a beacon still gets there */
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
@@ -4827,12 +4920,16 @@ function resetGrid(){clearShots();
   S.raceT=0;S.shake=0}
 let lowWarn=false;
 function updateMenuBest(){const b=getBest();$('menuBest').textContent=b!=null?'Best lap on this track · '+fmt(b):'No lap set on this track yet'}
-function setHud(on){$('lapBox').classList.remove('final');['hudL','hudR','pauseBtn'].forEach(i=>$(i).hidden=!on);$('touch').hidden=!(on&&coarse);orSync()}
+/* Prototype 42: the HUD coming up holds the touch setup of the orientation the race starts in (the one orSync then locks
+   to on Android) and lays the controls out for the screen; going down lets the menus follow the device again. */
+function setHud(on){$('lapBox').classList.remove('final');['hudL','hudR','pauseBtn'].forEach(i=>$(i).hidden=!on);
+  if(on){TS.race=orNow();tsUse(TS.race)}else if(TS.race){TS.race=null;tsUse(orNow())}
+  $('touch').hidden=!(on&&coarse);if(on&&coarse)touchLayout();orSync()}
 function note(text,ms=2200){const n=$('note');n.textContent=text;n.hidden=false;clearTimeout(note.t);note.t=setTimeout(()=>n.hidden=true,ms)}
 
 async function startRace(){
   if(LOG.cur)logEnd('restart');audio.init();try{document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}catch(e){}
-  if(coarse){goFull();if(!QK.live)await askMotion()}
+  if(coarse){goFull();if(!QK.live&&!(await tiltCheck()))return}
   hidePages();['results','pause','mus','set','ctl','gfxm'].forEach(i=>$(i).hidden=true);
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;
   const gh=setField(!QK.live);if(QK.live)qkField();resetGrid();setHud(true);camInit=false;
@@ -4843,7 +4940,9 @@ async function startRace(){
   logStart();
   audio.voice('');S.state='countdown';S.count=music.countIn(2.999);setTimeout(()=>{if(S.state==='countdown')audio.voice('three')},60);S.goAt=performance.now()+S.count*1000;S.lastBeep=3; /* the race music builds through the countdown and drops on GO */
   $('bestL').textContent='Best '+fmt(getBest());$('posT').textContent=racers.length;
-  if(coarse&&!QK.live)setTimeout(()=>{if(tilt.enabled&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa;note(tilt.pitchMode<2?'Tilt calibrated · tip the top away to dive, towards you for drag':'Tilt calibrated · hold like a wheel',2600)}else if(tilt.enabled)note(framed&&onItch?'Tilt is blocked in this frame · use "'+ownTabLabel()+'" in the menu':({btns:'No tilt sensor · use the ◀ ▶ buttons to steer',slider:'No tilt sensor · use the slider bottom-left to steer'}[steerMode]||'No tilt sensor · use the stick bottom-left'),3600)},350);
+  if(coarse&&!QK.live)setTimeout(()=>{if(tilt.msg){note(tilt.msg,3200);tilt.msg='';return}if(!tiltWanted())return;
+    if(tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa;note(tiltNote(),2600)}
+    else note(tiltLive()?'Hold the phone up to steer by tilt':{btns:'No tilt reading · steer with ◀ ▶',slider:'No tilt reading · steer with the slider',stick:'No tilt reading · steer with the stick',tilt:'No tilt reading yet · hold the phone up'}[steerMode],3600)},350);
   $('padHint').textContent=tilt.enabled&&tilt.ok?'Tilt to steer · stick also works':'Stick: steer · up fast · down drag';showStick(0,0);$('padHint').hidden=false;
   clearTimeout(startRace.h);startRace.h=setTimeout(()=>{$('padHint').hidden=true},6000);
   if(QK.live)qkGoRace();
@@ -4992,10 +5091,10 @@ $('edDone').onclick=()=>closeEd(false);$('edRace').onclick=()=>closeEd(ed.from!=
 $('seedIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('loadBtn').click()});
 $('resumeBtn').onclick=togglePause;$('quitBtn').onclick=()=>{if(mp.on){mp.sess&&mp.sess.send({t:'quit'});$('pause').hidden=true;mpBackToLobby()}else toMenu()};$('menuBtn').onclick=()=>{if(mp.on){mp.sess&&mp.sess.send({t:'quit'});mpLeaveRoom();$('mp').hidden=true}toMenu()};$('pauseBtn').onclick=togglePause;
 const chip=(id,get,set)=>{const el=$(id);el.setAttribute('aria-pressed',String(get()));el.onclick=()=>{set(!get());el.setAttribute('aria-pressed',String(get()))}};
-chip('tiltChip',()=>tilt.enabled,v=>{tilt.enabled=v;store.set('hoverline.tilt',v?'1':'0')});
+chip('tiltChip',()=>tilt.enabled,v=>{const was=tiltWanted();tilt.enabled=v;if(!v&&steerMode==='tilt')steerMode='slider';tsSave();if(v&&!was)tiltTry()});
 chip('flipChip',()=>tilt.flip,v=>{tilt.flip=v;store.set('hoverline.flip',v?'1':'0')});
 const syncPitch=()=>{const el=$('pitchChip');el.textContent=['Tilt pitch','Tilt pitch · inverted','Tilt pitch off'][tilt.pitchMode];el.setAttribute('aria-pressed',String(tilt.pitchMode<2))};
-$('pitchChip').onclick=()=>{tilt.pitchMode=(tilt.pitchMode+1)%3;store.set('hoverline.tpitch',String(tilt.pitchMode));syncPitch()};syncPitch();
+$('pitchChip').onclick=()=>{const was=tiltWanted();tilt.pitchMode=(tilt.pitchMode+1)%3;tsSave();syncPitch();if(tiltWanted()&&!was)tiltTry()};syncPitch();
 chip('sndChip',()=>audio.on,v=>audio.setOn(v));
 const BOTHN={blend:'Each tune mixes the two: drum & bass or breakbeat drums under trance hooks, at 174 or 138 bpm.',random:'Each new tune is drum & bass or trance, at random.',turn:'Drum & bass and trance take turns, tune by tune.'};
 const syncMusic=()=>{const st=music.style,on=k=>k==='off'?st==='off':st===k||st==='both';document.querySelectorAll('[data-music]').forEach(b=>b.setAttribute('aria-pressed',String(on(b.dataset.music))));
@@ -5036,18 +5135,26 @@ document.addEventListener('visibilitychange',()=>{const c=audio.ctx;
   else if(c&&c.state==='suspended')c.resume()});
 let framed=false;try{framed=window.top!==window.self}catch(e){framed=true}
 const onItch=/itch\.(zone|io)$/.test(location.hostname);
-$('psChip').setAttribute('aria-pressed',String(pitchSlider));$('psChip').onclick=()=>{pitchSlider=!pitchSlider;store.set('hoverline.pslider',pitchSlider?'1':'0');$('psChip').setAttribute('aria-pressed',String(pitchSlider));applyPitchSlider()};
+/* Prototype 42: the game's own tab, for a framed page that gets no motion readings. ?tilt=1 sets tilt there (below). */
+const canOwnTab=/^https?:$/.test(location.protocol);
+function ownTabUrl(){try{const u=new URL(location.href);u.searchParams.set('tilt','1');return u.href}catch(e){return location.href}}
+$('psChip').setAttribute('aria-pressed',String(pitchSlider));$('psChip').onclick=()=>{pitchSlider=!pitchSlider;tsSave();$('psChip').setAttribute('aria-pressed',String(pitchSlider));applyPitchSlider()};
 const syncSteerChip=()=>{const el=$('btnChip');el.textContent=STEER_LABEL[steerMode];el.setAttribute('aria-pressed',String(steerMode!=='stick'))};syncSteerChip();
-$('btnChip').onclick=()=>{steerMode=STEER_MODES[(STEER_MODES.indexOf(steerMode)+1)%STEER_MODES.length];store.set('hoverline.steer',steerMode);syncSteerChip();applySteerMode()};
+$('btnChip').onclick=()=>{const m=tilt.enabled?[...STEER_MODES,'tilt']:STEER_MODES;steerMode=m[(m.indexOf(steerMode)+1)%m.length];tsSave();syncSteerChip();applySteerMode()};
+const syncModChip=()=>{const el=$('modChip');el.textContent=MODS_LABEL[modsMode];el.setAttribute('aria-pressed',String(modsMode!=='auto'))};syncModChip();
+$('modChip').onclick=()=>{modsMode=MODS[(MODS.indexOf(modsMode)+1)%MODS.length];tsSave();syncModChip()};
 function applyTouchUI(){
-  $('tiltChip').hidden=!coarse;$('flipChip').hidden=!coarse;$('pitchChip').hidden=!coarse;$('btnChip').hidden=!coarse;$('psChip').hidden=!coarse;$('slots').hidden=coarse;
+  $('tiltChip').hidden=!coarse;$('flipChip').hidden=!coarse;$('pitchChip').hidden=!coarse;$('btnChip').hidden=!coarse;$('psChip').hidden=!coarse;$('modChip').hidden=!coarse;$('slots').hidden=coarse;
   $('touchChip').setAttribute('aria-pressed',String(coarse));
-  const a=$('ownTab');if(coarse&&framed&&onItch&&(tilt.enabled||tilt.pitchMode<2)){a.href=location.href;a.hidden=false;a.textContent=ownTabLabel();a.onclick=()=>{if(audio.ctx)audio.ctx.suspend()}}else a.hidden=true;syncFs();
+  /* the title's own-tab button (Prototype 42): only once this framed page has been found to get no motion readings, with
+     tilt in the setup */
+  const a=$('ownTab');if(coarse&&framed&&tilt.blocked&&canOwnTab&&tiltWanted()){a.href=ownTabUrl();a.hidden=false;a.textContent=ownTabLabel();a.onclick=()=>{if(audio.ctx)audio.ctx.suspend()}}else a.hidden=true;syncFs();
   ctrlHelpUI();
-  if(S.state==='race'||S.state==='countdown'||S.state==='paused')$('touch').hidden=!coarse}
+  if(S.state==='race'||S.state==='countdown'||S.state==='paused')$('touch').hidden=!coarse;
+  if(!$('touch').hidden)touchLayout()}
 function ctrlHelpUI(){const P=a=>padName(PAD_DEF[a]);
   $('ctrlHelp').innerHTML=coarse
-    ?'<b>Left thumb</b> steers: the round stick (it also pitches: push up to dive, pull down for drag), ◀ ▶ buttons, or a slider. <b>Right thumb</b>: Brake (tap it to brake hard; hold it in a turn to drift: steer into the turn to tighten the arc, out to widen it, and the longer you hold it the faster you go), Boost (hold it: faster, costs shield), the two modules, and the optional pitch slider (springs back to level). Hold the nose down and a dive builds: faster and glued over crests, but steering stiffens, and it scrapes in dips and loops. Nose up is an air brake with much more grip, and it floats jumps. The road markings and the <b>Nose guide</b> show when. Tilt works too if your device has a motion sensor. Green strips recharge shield, purple strips refill ammo, cyan pads boost for free. Getting wrecked costs about six seconds and half your ammo.'
+    ?'<b>Tilt steer</b>: tilt the device like a wheel to steer, and the nose slider bottom-left trims the nose (up dives, down is drag; it springs back to level). <b>Full tilt</b>: tilting also pitches (tip the top away to dive), with the stick as backup. Otherwise the <b>left thumb</b> steers: the round stick (it also pitches: push up to dive, pull down for drag), ◀ ▶ buttons, or a slider. <b>Right thumb</b>: Brake (tap it to brake hard; hold it in a turn to drift: steer into the turn to tighten the arc, out to widen it, and the longer you hold it the faster you go), Boost (hold it: faster, costs shield), and the optional pitch slider (springs back to level). The two <b>modules</b> sit one each side in landscape and above Boost and Brake on a narrow portrait screen, or where Modules puts them. Portrait and landscape each keep their own setup. Hold the nose down and a dive builds: faster and glued over crests, but steering stiffens, and it scrapes in dips and loops. Nose up is an air brake with much more grip, and it floats jumps. The road markings and the <b>Nose guide</b> show when. Green strips recharge shield, purple strips refill ammo, cyan pads boost for free. Getting wrecked costs about six seconds and half your ammo.'
     :`<b>Keyboard:</b> ←/→ or A/D steer, ↑/W drops the nose (a dive that builds speed but stiffens steering; glued over crests, scrapes in dips and loops), ↓/S raises it (an air brake: slower, much more grip, floatier jumps), Shift or B brakes: tap it to brake hard, hold it in a turn to drift. The road markings and the <b>Nose guide</b> show when. <b>Controller / Steam Deck:</b> left stick steers and trims the nose (the right stick trims too); by default ${P('w1')} and ${P('w2')} fire the modules, ${P('boost')} boosts (hold: faster, costs shield), ${P('brake')} brakes (tap) or drifts (hold it in a turn: the stick into the turn tightens the arc, out widens it, and the longer you hold it the faster you go), ${P('song')} changes the song, ${P('view')} changes the view and ${P('pause')} pauses. Every button can be changed below. Green strips recharge shield, purple strips refill ammo. Getting wrecked costs about six seconds and half your ammo. Playing on a touch screen? Turn on <b>Touch controls</b>.`}
 $('touchChip').onclick=()=>{coarse=!coarse;store.set('hoverline.touch',coarse?'1':'0');applyTouchUI()};
 /* ---------- full screen and the Controls screen ----------
@@ -5055,7 +5162,7 @@ $('touchChip').onclick=()=>{coarse=!coarse;store.set('hoverline.touch',coarse?'1
    on the first tap. Controls has four quick setups and the individual options, with a sketch of the layout; it opens
    from the menu, the pause menu and the multiplayer lobby, so the layout can be changed mid-race. */
 const canFull=!!document.documentElement.requestFullscreen;
-function ownTabLabel(){return canFull?'Open full screen with tilt':'Open with tilt'}
+function ownTabLabel(){return'Open with tilt'}
 /* Prototype 40: full screen without forcing landscape (it used to lock every phone sideways). A race holds whichever way the
    phone is held when its HUD comes up, portrait or landscape, so turning the phone to steer by tilt can't turn the screen;
    menus let go of the lock. iPhones have neither full screen nor a lock for web pages, so there the page just follows the
@@ -5074,28 +5181,55 @@ function betterView(){if(canFull){goFull();return}$('bview').hidden=false;navTo(
 function syncFs(){$('fsBtn').hidden=!(coarse&&canFull&&!document.fullscreenElement)}
 document.addEventListener('fullscreenchange',()=>{syncFs();orSync()});$('fsBtn').onclick=goFull;
 $('bviewOk').onclick=()=>{$('bview').hidden=true};
-const PRESETS={sliders:{tilt:false,pm:2,steer:'slider',psl:true},buttons:{tilt:false,pm:2,steer:'btns',psl:true},stick:{tilt:false,pm:2,steer:'stick',psl:false},tilt:{tilt:true,pm:0,steer:'stick',psl:false}};
-function applyPreset(k){const c=PRESETS[k];
-  tilt.enabled=c.tilt;store.set('hoverline.tilt',c.tilt?'1':'0');tilt.pitchMode=c.pm;store.set('hoverline.tpitch',String(c.pm));
-  steerMode=c.steer;store.set('hoverline.steer',c.steer);pitchSlider=c.psl;store.set('hoverline.pslider',c.psl?'1':'0');
+/* Quick setups (Prototype 42: Tilt steer, the default tilt, and Full tilt replace the single Tilt). Each sets the setup of
+   the orientation being edited; the module placement stays as it is, and Full tilt keeps an inverted tilt pitch. */
+const PRESETS={tiltsteer:{tilt:true,pm:2,steer:'tilt',psl:true},fulltilt:{tilt:true,pm:0,steer:'stick',psl:false},sliders:{tilt:false,pm:2,steer:'slider',psl:true},buttons:{tilt:false,pm:2,steer:'btns',psl:true},stick:{tilt:false,pm:2,steer:'stick',psl:false}};
+function applyPreset(k,quiet){const c=PRESETS[k];
+  tilt.enabled=c.tilt;tilt.pitchMode=c.pm===0&&tilt.pitchMode===1?1:c.pm;steerMode=c.steer;pitchSlider=c.psl;tsSave();
   if(!coarse){coarse=true;store.set('hoverline.touch','1')}
-  if(c.tilt){askMotion();setTimeout(()=>{if(tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}},200)}
+  if(!quiet){tilt.msg='';if(c.tilt)tiltTry()}
   ctlSync()}
 document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>applyPreset(b.dataset.preset));
+/* On a tap with tilt wanted (a race, the tutorial, a tilt setup picked): ask for the sensor and listen for it. True: go
+   on (tilt works, or steering fell back to the slider); false: the player took the game's own tab instead. */
+async function tiltCheck(){if(!REAL||!coarse||!tiltWanted())return true;if(tiltNo.p)return tiltNo.p;
+  const perm=await askMotion();if(perm!=='denied'&&await tiltProbe(1500))return true;
+  if(perm==='error'&&steerMode!=='tilt')return true;/* an iPhone asked without a tap (a pad started it): no verdict, the setup's own controls still steer */
+  return tiltNo(perm)}
+function tiltNo(perm){
+  if(framed){tilt.blocked=true;applyTouchUI();const el=$('tiltAsk'),a=$('tiltOwn');
+    return tiltNo.p=new Promise(res=>{const done=v=>{el.hidden=true;tiltNo.p=null;res(v)};
+      a.hidden=$('tiltOwnTxt').hidden=!canOwnTab;a.href=ownTabUrl();a.onclick=()=>{if(audio.ctx)audio.ctx.suspend();done(false)};
+      $('tiltSl').onclick=()=>{tiltSlider('Steering by the slider');done(true)};el.hidden=false;navTo(el,canOwnTab?a:$('tiltSl'))})}
+  tiltSlider(perm==='denied'?'Motion access refused · slider steering':'No motion sensor found · slider steering');return true}
+function tiltSlider(msg){tilt.msg=msg;applyPreset('sliders',true)}
+function tiltTry(){tiltCheck().then(()=>{if(tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}if(!$('ctl').hidden)ctlSync()})}
+function tiltNote(){const d=tilt.pitchMode===1?'tip the top towards you to dive':'tip the top away to dive';
+  return tilt.enabled&&tilt.pitchMode<2?'Tilt calibrated · '+d:tilt.enabled&&steerMode==='tilt'&&pitchSlider?'Tilt calibrated · nose slider bottom-left':tilt.enabled?'Tilt calibrated · hold like a wheel':'Tilt calibrated · '+d}
 function ctlSync(){
-  $('tiltChip').setAttribute('aria-pressed',String(tilt.enabled));$('flipChip').setAttribute('aria-pressed',String(tilt.flip));syncPitch();syncSteerChip();
+  $('tiltChip').setAttribute('aria-pressed',String(tilt.enabled));$('flipChip').setAttribute('aria-pressed',String(tilt.flip));syncPitch();syncSteerChip();syncModChip();
   $('psChip').setAttribute('aria-pressed',String(pitchSlider));applySteerMode();applyPitchSlider();applyTouchUI();
   const show=coarse||touchCapable;$('ctlPresets').hidden=!show;$('ctlPv').parentNode.hidden=!show;
+  const o=tsEdit(),nm=o==='p'?'Portrait':'Landscape',dev=Math.min(innerWidth,innerHeight)<600?'phone':'tablet';
+  $('ctlOr').hidden=!coarse;$('ctlOr').innerHTML=`<b>${nm} controls</b> · `+(TS.race?`for ${nm.toLowerCase()} races`:`turn the ${dev} to set up ${o==='p'?'landscape':'portrait'}`);
   for(const b of document.querySelectorAll('[data-preset]')){const c=PRESETS[b.dataset.preset];
     b.setAttribute('aria-pressed',String(coarse&&c.tilt===tilt.enabled&&(c.pm<2)===(tilt.pitchMode<2)&&c.steer===steerMode&&c.psl===pitchSlider))}
-  const pv=$('ctlPv'),parts=steerMode==='stick'?['stk']:steerMode==='btns'?['bl','br']:['sls'];parts.push('wp','bk2','bo');if(pitchSlider)parts.push('psl');
-  const tl=tilt.enabled&&tilt.pitchMode<2?'TILT STEER + PITCH':tilt.enabled?'TILT STEER':tilt.pitchMode<2?'TILT PITCH':'';
-  pv.classList.toggle('nopsl',!pitchSlider);pv.innerHTML=parts.map(c=>`<i class="${c}"></i>`).join('')+(tl?`<i class="tl">${tl}</i>`:'');
-  const usesTilt=tilt.enabled||tilt.pitchMode<2;
-  $('ctlNote').textContent=!coarse?'Touch controls are off on this device.':usesTilt&&framed&&onItch?'Tilt is blocked inside the itch.io page: use "Open full screen with tilt" in the menu, or pick a setup without tilt.':
-    usesTilt?'Hold the device the way you will play when the race starts: that is level. '+(tilt.ok?'Motion sensor found.':'No motion sensor reading yet (it is checked at the start of a race).'):
-    {stick:'Round stick bottom-left.',btns:'◀ ▶ buttons bottom-left.',slider:'Steer slider bottom-left, springs back to straight.'}[steerMode]+(pitchSlider?' Pitch slider far right.':' Pitch with the stick or the keyboard.')+' Boost sits left of the brake.'}
-for(const id of['btnChip','psChip','tiltChip','pitchChip','flipChip','touchChip'])$(id).addEventListener('click',ctlSync);
+  ctlSketch();$('ctlNote').textContent=ctlNoteTxt()}
+/* the sketch: this screen's real layout (tlCalc, no safe areas), scaled into the box; portrait shows the lower part */
+function ctlSketch(){const pv=$('ctlPv'),o=tsEdit(),a=innerWidth,b=innerHeight,W=o==='p'?Math.min(a,b):Math.max(a,b),H=o==='p'?Math.max(a,b):Math.min(a,b);
+  const L=tlCalc(W,H,{t:0,r:0,b:0,l:0},{steer:steerMode,psl:pitchSlider,mods:modsMode}),SH={stick:'stk',steerSl:'sls',sl:'bl',sr:'bl',pslide:'psl',bst:'bo',brk:'bk2',w1:'wp',w2:'wp'};
+  const ids=Object.keys(L.r).filter(i=>SH[i]),top=Math.max(...ids.map(i=>L.r[i].b+L.r[i].h))+44,ch=o==='p'?Math.min(H,top):H,bw=o==='p'?132:176,k=bw/W;ctlSketch.mode=L.mode;
+  pv.classList.toggle('crop',ch<H);pv.style.width=bw+'px';pv.style.height=Math.round(ch*k)+'px';
+  const tl=tilt.enabled&&tilt.pitchMode<2?'TILT STEER + PITCH':tilt.enabled?'TILT STEER':tilt.pitchMode<2?'TILT PITCH':'',f=v=>(v*k).toFixed(1)+'px';
+  pv.innerHTML=ids.map(i=>{const q=L.r[i];return`<i class="${SH[i]}" style="left:${f(q.x)};bottom:${f(q.b)};width:${f(q.w)};height:${f(q.h)}"></i>`}).join('')+(tl?`<i class="tl">${tl}</i>`:'')}
+function ctlNoteTxt(){if(!coarse)return'Touch controls are off on this device.';const away=tilt.pitchMode===1?'towards you':'away';
+  const t=tilt.enabled?(tilt.pitchMode<2?`Tilt like a wheel to steer; tip the top ${away} to dive.`:'Tilt like a wheel to steer.'):tilt.pitchMode<2?`Tip the top ${away} to dive.`:'';
+  const l={stick:tilt.enabled?'Stick bottom-left as backup.':'Round stick bottom-left.',btns:'◀ ▶ buttons bottom-left.',slider:'Steer slider bottom-left.',tilt:''}[steerMode];
+  const p=pitchSlider?(steerMode==='tilt'?'Nose slider bottom-left: up dives, down is drag.':'Pitch slider far right.'):'';
+  const m={right:'Modules above Boost and Brake.',left:'Modules on the left.',split:'One module each side.'}[ctlSketch.mode]||'';
+  const z=!tiltWanted()?'':tilt.blocked&&framed?'Tilt is blocked in this page: Open with tilt on the title plays it in its own tab.':tiltLive()?'Motion sensor found: hold the device the way you will play when the race starts.':'The motion sensor is checked when the race starts.';
+  return[tilt.msg&&tilt.msg+'.',t,l,p,m,z].filter(Boolean).join(' ')}
+for(const id of['btnChip','psChip','modChip','tiltChip','pitchChip','flipChip','touchChip'])$(id).addEventListener('click',ctlSync);
 /* The button mapper: tap a cell, then press a key (Esc cancels) or a controller button. Taking a button that another
    action uses swaps the two. */
 const rebind={on:false,dev:null,act:null};
@@ -5160,7 +5294,7 @@ $('logOpen').onclick=()=>setPane('setLog');$('logDone').onclick=()=>setPane('set
 for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.addEventListener('input',()=>{audio[k]=+el.value;store.set('hoverline.'+k,el.value);$(id+'V').textContent=el.value+'%';audio.applyVol()});
   el.addEventListener('change',()=>{audio.init();audio.applyVol();if(k==='volS')audio.blip(660,0.12,0.12,'triangle')})}
 $('sndChip').onclick=()=>{audio.init();audio.setOn(!audio.on);setSync()};
-function closeCtl(){rebind.on=false;$('ctl').hidden=true;const f=ctlFrom;ctlFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}
+function closeCtl(){tilt.msg='';rebind.on=false;$('ctl').hidden=true;const f=ctlFrom;ctlFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}
 /* ---------- nose guide ----------
    One animated example per situation, drawn in 2D: side views for straights, crests, dips and jumps, a top-down view
    for corners. The ship in full colour does it right; a faded one shows what happens otherwise. */
@@ -5184,7 +5318,8 @@ const guide={i:0,t:0,on:false,raf:0,from:null,last:0,st:null};
 function guideKeys(){const inv=bind.padInvert;
   if(lastDev==='pad')return`Nose down: left stick ${inv?'down':'up'} (the right stick works too) · nose up: stick ${inv?'up':'down'}.`;
   if(lastDev==='key')return'Nose down: ↑ or W · nose up: ↓ or S.';
-  return tilt.enabled&&tilt.pitchMode<2?`Nose down: tip the top of the screen ${tilt.pitchMode?'towards you':'away'}, or push the stick up · nose up: the other way.`:'Nose down: push the stick (or the pitch slider) up · nose up: pull it down.'}
+  const tp=tilt.pitchMode<2?`tip the top of the screen ${tilt.pitchMode?'towards you':'away'}`:'',th=steerMode==='stick'?'push the stick up':steerMode==='btns'?'slide up on ◀ or ▶':pitchSlider?`slide the ${steerMode==='tilt'?'nose':'pitch'} slider up`:'';
+  return tp||th?`Nose down: ${[tp,th].filter(Boolean).join(', or ')} · nose up: the other way.`:'Nose down: turn on the pitch slider in Controls.'}
 function guideShow(i){guide.i=(i+GUIDE.length)%GUIDE.length;guide.t=0;guide.st=null;const g=GUIDE[guide.i];
   $('guideTitle').textContent=g.title;$('guideBody').textContent=g.body;$('guideKeys').textContent=guideKeys();
   const m=g.mark&&GMARK[g.mark];$('guideMark').innerHTML=m?`<svg viewBox="0 0 64 34" aria-hidden="true">${m[1]?`<path d="${m[1]}" fill="none" stroke="${m[0]}" stroke-width="6"/>`:`<rect x="6" y="7" width="52" height="7" fill="${m[0]}"/><rect x="6" y="20" width="52" height="7" fill="${m[0]}"/>`}</svg><span>${m[2]} on the road</span>`:'';
@@ -5424,17 +5559,22 @@ const tut={on:false,i:0,t:0,h:0,l:0,r:0,ok:-1,from:null,g:null,ship:null,hid:[],
 const tutK=a=>[...new Set(bind.key[a].map(keyName))].slice(0,2).map(c=>'<kbd>'+esc(c)+'</kbd>').join(' or ');
 const tutB=a=>{const i=bind.pad[a];return`<kbd class="${padCls(i)}">${padFace(i)}</kbd>`};
 /* what to press, in the words of the device in use */
-function tutDo(k){if(k==='fx')return tutFxDo();const key=lastDev==='key',pad=lastDev==='pad',inv=bind.padInvert,tl=tilt.enabled&&tilt.ok,tp=tl&&tilt.pitchMode<2,away=tilt.pitchMode?'towards you':'away from you',near=tilt.pitchMode?'away from you':'towards you';
-  const thumb=d=>steerMode==='btns'?`Hold ◀ or ▶ and slide ${d}`:steerMode==='slider'&&pitchSlider?`Slide the pitch bar ${d}`:`Thumb ${d} on the stick`;
-  if(k==='steer')return key?'<kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd>':pad?'Left stick, left and right':tl?'Tilt the screen like a wheel':steerMode==='btns'?'Hold ◀ and ▶':steerMode==='slider'?'Slide left and right':'Thumb left and right on the stick';
-  if(k==='down')return key?'Hold <kbd>↑</kbd> or <kbd>W</kbd>':pad?`Push the left stick ${inv?'down':'up'}`:tp?`Tip the top of the screen ${away}, or ${thumb('up').toLowerCase()}`:thumb('up');
-  if(k==='up')return key?'Hold <kbd>↓</kbd> or <kbd>S</kbd>':pad?`Pull the left stick ${inv?'up':'down'}`:tp?`Tip the top of the screen ${near}, or ${thumb('down').toLowerCase()}`:thumb('down');
-  if(k==='boost')return key?'Hold '+tutK('boost'):pad?'Hold '+tutB('boost'):'Hold the boost button';
-  if(k==='brake')return key?'Tap '+tutK('brake'):pad?'Tap '+tutB('brake'):'Tap Brake';
+/* the same for touch (Prototype 42): the control of the setup in use, the Tilt steer nose slider included */
+function tutT(k){const tl=tilt.enabled&&tilt.ok,tp=tilt.ok&&tilt.pitchMode<2,away=tilt.pitchMode===1?'towards you':'away from you',near=tilt.pitchMode===1?'away from you':'towards you';
+  const thumb=d=>steerMode==='btns'?`Hold ◀ or ▶ and slide ${d}`:steerMode==='stick'?`Thumb ${d} on the stick`:pitchSlider?`Slide the ${steerMode==='tilt'?'nose slider':'pitch bar'} ${d}`:'';
+  if(k==='steer')return tl||steerMode==='tilt'?'Tilt the screen like a wheel':steerMode==='btns'?'Hold ◀ and ▶':steerMode==='slider'?'Slide left and right':'Thumb left and right on the stick';
+  if(k==='down'||k==='up'){const t=thumb(k==='down'?'up':'down'),w=`Tip the top of the screen ${k==='down'?away:near}`;return tp?w+(t?', or '+t.toLowerCase():''):t||(tilt.pitchMode<2?w:'Turn on the pitch slider in Controls')}
+  return k==='boost'?'Hold the boost button':k==='brake'?'Tap Brake':'Tap a module button'}
+function tutDo(k){if(k==='fx')return tutFxDo();const key=lastDev==='key',pad=lastDev==='pad',inv=bind.padInvert;if(!key&&!pad)return tutT(k);
+  if(k==='steer')return key?'<kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd>':'Left stick, left and right';
+  if(k==='down')return key?'Hold <kbd>↑</kbd> or <kbd>W</kbd>':`Push the left stick ${inv?'down':'up'}`;
+  if(k==='up')return key?'Hold <kbd>↓</kbd> or <kbd>S</kbd>':`Pull the left stick ${inv?'up':'down'}`;
+  if(k==='boost')return key?'Hold '+tutK('boost'):'Hold '+tutB('boost');
+  if(k==='brake')return key?'Tap '+tutK('brake'):'Tap '+tutB('brake');
   return key?`<kbd>${esc(keyName(bind.key.w1[0]))}</kbd> or <kbd>${esc(keyName(bind.key.w2[0]))}</kbd>`:pad?`${tutB('w1')} or ${tutB('w2')}`:'Tap a module button'}
 /* the touch control to look at in each step */
 function tutHi(k){document.querySelectorAll('.tutHi').forEach(e=>e.classList.remove('tutHi'));if(!coarse||!k)return;
-  const st=steerMode==='btns'?['sl','sr']:steerMode==='slider'?['steerSl']:['stick'],ids={steer:st,down:steerMode==='slider'&&pitchSlider?['pslide']:st,up:steerMode==='slider'&&pitchSlider?['pslide']:st,boost:['bst'],brake:['brk'],fire:['w1','w2']}[k]||[];
+  const st=steerMode==='btns'?['sl','sr']:steerMode==='slider'?['steerSl']:steerMode==='tilt'?[]:['stick'],pt=pitchSlider&&(steerMode==='slider'||steerMode==='tilt')?['pslide']:st,ids={steer:st,down:pt,up:pt,boost:['bst'],brake:['brk'],fire:['w1','w2']}[k]||[];
   for(const id of ids)if($(id))$(id).classList.add('tutHi')}
 function tutText(){const st=TUT[tut.i];tut.dev=lastDev;$('tutDots').innerHTML=TUT.map((x,k)=>k<tut.i||k===tut.i&&tut.ok>=0?'<b>●</b>':k===tut.i?'<b>○</b>':'○').join(' ');
   $('tutName').textContent=st.n;const d=$('tutDo');d.classList.toggle('ok',tut.ok>=0);d.innerHTML=tut.ok>=0?'✓ '+tutDo(st.k):tutDo(st.k);$('tutWhy').textContent=st.why||'';
@@ -5457,16 +5597,16 @@ function tutScene(){if(!tut.g){const g=new THREE.Group(),rt=roadTex.clone();rt.n
 function tutStart(from){if(tut.on)return;tut.from=from;TUT.length=TUT_N;if(TUT_FX[build.frame])TUT.push(TUT_FX[build.frame]);tut.on=true;S.state='tut';hidePages();['opts','tutAsk'].forEach(i=>$(i).hidden=true);
   try{document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}catch(e){}
   tutScene();if(tilt.enabled&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}
-  if(coarse){$('touch').hidden=false;for(let k=0;k<2;k++){const w=build.weapons[k],b=$('w'+(k+1));b._h=null;b.innerHTML=`${icon(w)}<small>${WDEF[w].name}</small>`;b.classList.toggle('rdy',!WDEF[w].passive)}}
+  if(coarse){$('touch').hidden=false;touchLayout();for(let k=0;k<2;k++){const w=build.weapons[k],b=$('w'+(k+1));b._h=null;b.innerHTML=`${icon(w)}<small>${WDEF[w].name}</small>`;b.classList.toggle('rdy',!WDEF[w].passive)}}
   tut.hold=[true,true];tut.pp=true;tut.now=0;tut.fin=false;$('tut').hidden=false;tutShow(0)}
 function tutEnd(){if(!tut.on)return;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
   for(const k of['steer','pitch','psl','brake','boost','f1','f2'])touch[k]=0;showStick(0,0);
   for(const s of tut.shots)labScene.remove(s.m);tut.shots=[];labScene.remove(tut.g);if(tut.ship){labScene.remove(tut.ship);disposeObj(tut.ship);tut.ship=null}for(const o of tut.hid)o.visible=true;tut.hid=[];
   labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else showPage('career')}
 function tutAsk(){hidePages();$('tutAsk').hidden=false}
-$('tutYes').onclick=async()=>{if(coarse){goFull();await askMotion()}tutStart('career')};
+$('tutYes').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('career')};
 $('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career')};
-$('tutBtn').onclick=async()=>{if(coarse){goFull();await askMotion()}tutStart('opts')};
+$('tutBtn').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('opts')};
 $('tutSkip').onclick=tutEnd;addEventListener('resize',()=>{if(tut.on&&!tut.fin)tutText()});
 addEventListener('keydown',e=>{if(S.state==='tut'&&(e.code==='Escape'||keyIs('pause',e.code))){e.preventDefault();tutEnd()}});
 function tutFrame(dt){const inp=readInput(),st=TUT[tut.i],P=tut.p,sh=tut.ship,now=performance.now(),rt=Math.min(0.25,Math.max(0,(now-(tut.now||now))/1000));tut.now=now;tut.t+=rt;
@@ -5761,6 +5901,17 @@ function modeGo(){const c=(store.get('hoverline.lastmode')||'career')==='career'
 /* Any real finger touch switches touch controls on, unless the player has explicitly turned them off. */
 addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setDev('touch');if(e.pointerType==='touch'&&!coarse&&store.get('hoverline.touch')!=='0'){coarse=true;applyTouchUI()}},true);
 applyTouchUI();
+/* ?tilt=1 (Prototype 42, added by the own-tab link): this orientation's controls become Tilt steer, saved, and the flag
+   leaves the address so a reload can't undo a later change */
+if(REAL&&QS.get('tilt')==='1'){applyPreset('tiltsteer',true);try{const u=new URL(location.href);u.searchParams.delete('tilt');history.replaceState(history.state,'',u.href)}catch(e){}}
+/* a framed page with tilt in its setup that gets no motion reading in its first 1.6 s, where none needs a tap (not an
+   iPhone or iPad): the title offers its own tab. A reading later takes that back (onMotion). */
+if(REAL&&framed&&!IOS)setTimeout(()=>{if(coarse&&tiltWanted()&&!tiltLive()){tilt.blocked=true;applyTouchUI()}},1600);
+/* the device turned: in a menu the new orientation's setup takes over (an open Controls page follows); a race keeps its
+   own and lays the controls out again */
+function tsTurn(){if(!REAL)return;const o=orNow();if(!TS.race&&o!==TS.cur){tsUse(o);if(!$('ctl').hidden)ctlSync();else applyTouchUI();if(tut.on&&!tut.fin)tutText()}
+  else if(!$('ctl').hidden)ctlSync();else if(!$('touch').hidden)touchLayout()}
+addEventListener('resize',tsTurn);addEventListener('orientationchange',()=>setTimeout(tsTurn,150));
 addEventListener('resize',()=>{if(!$('menu').hidden)drawPreview();if(!$('career').hidden)drawPreview('carPreview','carStats');miniBase=null});
 
 /* ---------- multiplayer transport ----------
@@ -6617,7 +6768,7 @@ function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidd
 function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill}}
 /* Public rooms (Prototype 38): Public room joins the first public room of this version that has space, or opens it if nobody
    is there (whoever is first is the host, and the next pilot takes over if they leave). Random codes never contain a 1. */
-const PUBV=41,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
+const PUBV=42,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
 function mpConnect(code,host,pub){mp.pub=pub||0;
   audio.init();store.set('hoverline.name',mpEl.mpName.value.trim().slice(0,12));mpEl.mpErr.textContent='';
   const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':mpConn==='lan'?'lan':'net';
@@ -6772,6 +6923,7 @@ function mpStart(pl,field){mp.bg=false;
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;setHud(true);camInit=false;
   $('bestL').textContent='Best '+fmt(getBest());$('posT').textContent=racers.length;
   logStart();S.state='mpwait';mpWaitNote();
+  if(REAL&&coarse&&steerMode==='tilt'&&!tiltLive()){tiltSlider('No tilt reading · steering by the slider');note(tilt.msg,3000);tilt.msg=''}
   if(coarse&&tilt.enabled&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}
   mp.sess.loaded()}
 function mpWaitNote(){if(S.state!=='mpwait')return;const st=mp.sess&&mp.sess.state;if(!st)return;
@@ -7365,7 +7517,7 @@ function labFrame(dt){
 canvas.addEventListener('pointerdown',e=>{if(S.state!=='lab')return;lab.drag=e.clientX;lab.target=null;try{canvas.setPointerCapture(e.pointerId)}catch(_){}});
 canvas.addEventListener('pointermove',e=>{if(S.state!=='lab'||lab.drag==null)return;lab.yaw+=(e.clientX-lab.drag)*0.012;lab.drag=e.clientX});
 const labUp=()=>{lab.drag=null};canvas.addEventListener('pointerup',labUp);canvas.addEventListener('pointercancel',labUp);
-$('labBtn').onclick=openLab;$('resLab').onclick=()=>openLab('results');$('mpBtn').onclick=()=>{goFull();mpOpen()};$('labDone').onclick=closeLab;
+$('labBtn').onclick=openLab;$('resLab').onclick=()=>openLab('results');$('mpBtn').onclick=()=>{goFull();if(coarse&&tiltWanted())askMotion();mpOpen()};$('labDone').onclick=closeLab;
 $('labReset').onclick=()=>{if(S.car){const st={...BARE};for(let n=CAR_P0;n<BUD;n++){let k=CAR_ORD[0];for(const x of CAR_ORD)if(st[x]<st[k])k=x;st[k]++}build.stats=st;saveBuild();labRebuild(null);$('labStats').innerHTML='';labUI();$('labWdesc').textContent='Career frame reset: the bare frame with your bought points on the lowest stats.';return}build=defaultBuild();saveBuild();labRebuild(null);$('labStats').innerHTML='';labUI();$('labWdesc').textContent='Build reset to the balanced default.'};
 
 /* ---------- quick race (Prototype 40) ----------
@@ -7455,7 +7607,7 @@ function qkEndShow(){setHud(false);qkB('qkRun',false);const ready=!QK.post&&QK.c
 /* leave the quick race for the menus: your frame, steering, laps and title track come back */
 function qkLeave(){if(!QK.live)return;QK.live=false;qkTipHide();qkB('qkRun',false);qkClasses();LAPS=3;['qkTap','qkEnd'].forEach(i=>$(i).hidden=true);
   if(QK.own){build=QK.own;QK.own=null;applyBuild()}
-  steerMode=store.get('hoverline.steer')||(store.get('hoverline.btns')==='1'?'btns':'stick');if(!STEER_MODES.includes(steerMode))steerMode='stick';applySteerMode();applyPitchSlider();
+  tsUse(TS.race||orNow());
   const h=QK.home,c=parseCode(store.get('hoverline.code'));QK.home=null;
   if(c)loadTrack(c.seed,c.wk,c.cx,c.lk,c.sp||null,c.bm);else if(h)loadTrack(h.seed,h.wid,h.cplx,h.lenK,h.spec||null,h.bio);else newTrack();
   S.state='menu';camInit=false}
