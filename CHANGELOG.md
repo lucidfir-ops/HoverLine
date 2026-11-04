@@ -1,5 +1,18 @@
 # Changelog
 
+## Prototype 44
+From your Wi-Fi note: same-room play built into the game, no server, no internet, easy for anyone.
+- **Same room, no internet: phones pair by sound.** In Multiplayer pick **Same room · no internet**. One person taps **Host a room**; everyone else taps **Join** and holds their phone near the host's. The host's phone plays a short chirp, the other phone chirps back, and you're in the lobby. No server, no internet, no codes to type. It works on itch.io and in the downloaded file.
+- Several pilots can tap Join at once. The host takes them one at a time, about 10 s each; three pilots took about 30 s in tests. Tap **Done** when everyone's in, or **Add pilots** to call again.
+- Turn the volume up on both phones and hold them close. The music dips while they pair.
+- If the microphone is blocked, or the phones can't hear each other after 20 s, **Use QR codes** is one tap away (**Pair by: QR code** makes it the default). QR codes work as before, and sound and QR pilots can be in the same room.
+- If the phones hear each other but can't connect, the game says so after 12 s and suggests a phone's hotspot: some Wi-Fi (guest, hotel, café) keeps phones apart.
+- The room code is hidden in these rooms, since nobody types it, which also brings Ready back into view on a phone held sideways.
+- Tested in simulated rooms (quiet, normal, music, music with talking) and in itch's frame, but not yet on a real phone. iPhones are the biggest unknown: with the microphone on, Safari may play the chirp quieter.
+- The Wi-Fi host pack still ships as a fallback for networks where phones can't connect directly.
+- The game is about 185 KB bigger. That's ggwave, a free sound library (MIT licence), and it only starts when you pair.
+- Races are unchanged: the simulator gives the same results race for race, so the board era stays 43.
+
 ## Prototype 43
 From your three notes (drifting, Wi-Fi, music), the voice note, your Steam Deck and phone logs, and the S22 video of a race that kept pausing. Same-room play without internet is its own update (Prototype 44).
 

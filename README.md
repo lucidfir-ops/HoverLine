@@ -13,7 +13,7 @@ A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet
 | `tools/build.py` | Rebuilds `index.html`, the offline file and the zips in `dist/`. |
 | `vendor/three.min.js` | Three.js r128 (MIT), put inside the offline file and the Wi-Fi pack. |
 | `songs/` | Songs mode's recorded tracks (CC0, credited below) and their list. `tools/build.py` puts them beside the page in the itch.io zip and the Wi-Fi host pack; the offline file doesn't carry them. |
-| `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. (Since Prototype 31 any copy of the game can also do this on its own: Multiplayer, Wi-Fi, no internet.) |
+| `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. (Any copy of the game can also do this on its own: Multiplayer, Same room · no internet, pairing by sound since Prototype 44 or by QR codes since Prototype 31. The pack is the fallback for networks where phones can't connect directly.) |
 | `tools/sim/` | A headless race simulator for balance studies, with simulated pilots that fly like people or like Eric's race logs (its README has the commands), and `log2ghost.py`, which turns a logged race into a Time trial ghost. |
 | `leaderboard/` | The online leaderboard and shared race data: a Cloudflare Worker and D1 database. |
 | `reference/` | Builds kept for comparison: Prototype 25 (the music and announcer baseline), Prototype 24 (clown music to avoid), Prototype 21, Prototype 26 (the mixed scenery that was rolled back) and Prototype 27. |
@@ -30,6 +30,7 @@ python3 tools/build.py
 ## Credits
 
 - 3D: [Three.js](https://threejs.org) r128 (MIT), loaded from cdnjs (inside the offline file).
+- Pairing by sound (Prototype 44): [ggwave](https://github.com/ggerganov/ggwave) 0.4.0 by Georgi Gerganov (MIT), inside the page.
 - Drum hits and effects: the Sonic Pi sample pack (freesound.org recordings, CC0).
 - Instruments: the [Versilian Community Sample Library](https://github.com/sgossner/VCSL) (CC0): grand piano, FM electric piano, harp, timpani, cymbal, claps, shaker; and since Prototype 34 marimba, vibraphone, glockenspiel, kalimba, harpsichord, pipe organ, tenor sax, dan tranh, strumstick, balafon, alto recorder, tubular bell, bongos, congas, cajon, darbuka, tambourine, cowbell, agogo, woodblock, triangle, guiro, cabasa, frame drum, hi-hat and snare.
 - More drums and electronic sounds (Prototype 34): the Sonic Pi sample pack (CC0): kicks, snares, hats, electronic percussion, bass hits, tabla, pads, glitches, loop_breakbeat (loop_amen was taken out in Prototype 43: it appears to be sampled from the Winstons' "Amen, Brother", so its CC0 tag can't be relied on).

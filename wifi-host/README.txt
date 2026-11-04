@@ -1,6 +1,8 @@
 Hoverline · same-Wi-Fi host
 
-Use this when there is no internet, or to keep a race on your own network.
+Most of the time you won't need this: since Prototype 44 any copy of the game (itch.io, the offline file) pairs phones in
+the same room by sound with no internet: Multiplayer -> Same room · no internet -> Host a room / Join.
+Use this pack when phones can't connect to each other directly on your network, or to keep a race on your own network.
 1. On the Steam Deck (desktop mode), a Linux PC or a Mac: run "Host for Phone or Tablet.sh"
    (or: python3 wifi-host.py). It prints an address like http://192.168.1.20:5198/
 2. On every phone and tablet on the same Wi-Fi, open that address in the browser.
@@ -9,6 +11,6 @@ Use this when there is no internet, or to keep a race on your own network.
 
 Notes
 - Everyone in a room must use the same connection. Without this pack, any copy of the game (itch.io, the offline file)
-  can race on one Wi-Fi with no internet too: Multiplayer -> Wi-Fi, no internet, then swap QR codes.
+  can race on one Wi-Fi with no internet too: Multiplayer -> Same room · no internet (pairs by sound, or QR codes).
 - Up to 8 pilots per race. Keep the host window open while playing.
 - Tilt steering needs a secure page on some phones (Android Chrome allows it on a local address; iOS may not).
