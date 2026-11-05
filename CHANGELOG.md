@@ -1,5 +1,12 @@
 # Changelog
 
+## Prototype 48
+From your Prototype 47 notes. Races are unchanged.
+- **The orientation you pick sticks.** Once you've chosen Portrait or Landscape, every screen holds it, menus too, not only races. Settings' Races: Portrait | Landscape now turns the screen at once, and after a reload your first touch goes full screen and turns it back.
+- **Rotate button** on the title, beside Leaderboard: one tap swaps portrait and landscape and remembers it. Android phones and tablets only (desktops, the Steam Deck and Apple devices can't lock a web page's orientation, so it's hidden there).
+- **Tilt in the quick races:** on a phone, tilting steers alongside the slider (steering only; the nose stays the AI's choice until race 5). It's measured from how you hold the phone as the countdown starts and again at GO. Tablets keep the slider only.
+- **No more Open with tilt on the title.** Inside itch.io's page, Firefox never passes the motion sensor to a game (Mozilla only allows it for pages from the same site, and itch serves games from another one); Chrome does. So in Chrome tilt works straight away inside itch; in Firefox the game steers by the slider. Choosing a tilt setup in Firefox still shows a short card saying why, with Use the slider first and the own-tab option second.
+
 ## Prototype 47
 Your notes on the first start, pairing with no internet and the speed classes. Races at Redline (the default) are unchanged.
 - **Set orientation:** on an Android phone or tablet the game first asks Portrait or Landscape, and every race holds that (Settings, Races: Portrait | Landscape changes it). The first start came up landscape because itch.io locks its full screen to the shape of the game's frame, and the first race kept that lock. Desktop, the Steam Deck and iPhones don't ask.

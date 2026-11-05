@@ -183,7 +183,7 @@ button.btn.orOpt{display:flex;flex-direction:column;align-items:center;justify-c
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 button.btn{font:700 15px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:11px 16px;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);cursor:pointer}
 a.btn{text-decoration:none;text-align:center;font:700 15px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:11px 16px;border-radius:6px}
-#ownTab,#tiltOwn{background:var(--cyan);border-color:var(--cyan);color:#071114}
+#ownTab{background:var(--cyan);border-color:var(--cyan);color:#071114}
 button.btn.go{background:var(--amber);color:#111;border-color:var(--amber);font-size:18px;padding:13px 28px}
 button.btn:focus-visible,input:focus-visible,.bk:focus-visible,.chip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .padf,.padf:focus{outline:3px solid var(--cyan)!important;outline-offset:3px;box-shadow:0 0 0 6px rgba(63,240,255,.18)}
@@ -359,6 +359,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
   /* title: Race full width, then Options | Leaderboard (and Full screen full width when shown) */
   #title .card>.row:has(#playBtn){display:grid;grid-template-columns:1fr 1fr}
   #playBtn,#fsBtn{grid-column:1/-1}
+  #title .card>.row:has(#rotBtn:not([hidden])){grid-template-columns:1fr 1fr auto}
   /* label + input + buttons: the input takes the slack, so Load / Join stay on the line; Tune wraps New and Keep together */
   .code input{flex:1 1 6em;width:auto}
   #tuneIn{flex-basis:10em}
@@ -505,6 +506,7 @@ body.qk:not(.qkN) #pslide{display:none!important}
 .lib .n{white-space:nowrap;text-align:right}.lib .rmc{text-align:right;width:1%;padding-left:22px}
 .lib .lrm{background:none;border:0;color:inherit;font:inherit;font-size:12px;opacity:.55;cursor:pointer;padding:9px 2px;text-decoration:underline}.lib .lrm:hover{opacity:1}
 .lib td.st{opacity:.8;font-size:12px}.libw{max-height:48vh;overflow-y:auto;overflow-x:hidden}@media (max-width:560px){.lib .k{display:none}.lib{font-size:12px}}
+#rotBtn{padding-inline:14px;min-width:0;display:inline-flex;align-items:center;justify-content:center}#rotBtn svg{display:block}
 </style></head><body>
 
 <canvas id="c" aria-label="Race view"></canvas>
@@ -545,8 +547,8 @@ body.qk:not(.qkN) #pslide{display:none!important}
 <div id="title" class="overlay">
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
-    <div class="sub">Prototype 47 · 8 frames · 3 laps</div>
-    <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
+    <div class="sub">Prototype 48 · 8 frames · 3 laps</div>
+    <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open with tilt</a>
     <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip" id="likeTune" aria-pressed="false" aria-label="Like this tune">♥ Like</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip" id="radioBack" hidden>Back to radio</button><button class="chip mmode" aria-label="Music mode">Generative</button></div>
       <div class="t best tinfo" id="titleTune"></div></div>
@@ -798,9 +800,9 @@ body.qk:not(.qkN) #pslide{display:none!important}
 <div id="tiltAsk" class="overlay pop" hidden>
   <div class="card">
     <div class="big">Tilt is blocked here</div>
-    <p class="ask">This browser doesn't pass the motion sensor to the game inside this page.</p>
+    <p class="ask">This browser doesn't pass the motion sensor to the game inside itch.io's page (Firefox never does; Chrome does).</p>
     <p class="ask" id="tiltOwnTxt"><b>Open with tilt</b> plays it in its own tab, which keeps its own saves.</p>
-    <div class="row"><a class="btn go" id="tiltOwn" target="_blank" rel="noopener">Open with tilt</a><button class="btn" id="tiltSl" data-back>Use the slider</button></div>
+    <div class="row"><button class="btn go" id="tiltSl" data-back>Use the slider</button><a class="btn" id="tiltOwn" target="_blank" rel="noopener">Open with tilt</a></div>
   </div>
 </div>
 
@@ -5922,8 +5924,8 @@ function readInput(){navWatch();
     else if(!guide.on&&navLayer())padNav(p,b,edge)
     padPrev[p.index]=p.buttons.map(x=>x.pressed)}
   steer+=touch.steer;pitch+=touch.pitch+(touch.psl||0);brake=Math.max(brake,touch.brake);
-  if(tilt.enabled&&tilt.ok&&!QK.live){let d=wrapA(tilt.ang-tilt.neutral)*180/Math.PI;d=Math.abs(d)<1.5?0:d-Math.sign(d)*1.5;steer+=(tilt.flip?1:-1)*d/24;
-    if(tilt.pitchMode<2){let q=(tilt.pa-tilt.np)*180/Math.PI;q=Math.abs(q)<3?0:q-Math.sign(q)*3;pitch+=(tilt.pitchMode?1:-1)*q/15}}
+  if(tilt.ok&&(QK.live?qkTilt():tilt.enabled)){let d=wrapA(tilt.ang-tilt.neutral)*180/Math.PI;d=Math.abs(d)<1.5?0:d-Math.sign(d)*1.5;steer+=(tilt.flip?1:-1)*d/24;
+    if(!QK.live&&tilt.pitchMode<2){let q=(tilt.pa-tilt.np)*180/Math.PI;q=Math.abs(q)<3?0:q-Math.sign(q)*3;pitch+=(tilt.pitchMode?1:-1)*q/15}}
   const fire=[fireQ[0],fireQ[1]];fireQ[0]=fireQ[1]=false;
   steer=clamp(steer,-1,1);pitch=clamp(pitch,-1,1);
   if(coarse&&padId==null)showStick(steer,pitch);
@@ -6500,7 +6502,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   const hasMe=(o.field||[]).some(f=>f.me);(o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,(hasMe?f.me:i===0)?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:47,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:48,log:logShareable(L)});if(body.length>400000)return;
   if(bc&&navigator.sendBeacon&&navigator.sendBeacon(LB+'/log',new Blob([body],{type:'text/plain'})))return; /* a page being closed: a beacon still gets there */
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
@@ -6946,6 +6948,8 @@ async function startRace(){
   logStart();
   audio.voice('');S.state='countdown';S.count=music.countIn(2.999);setTimeout(()=>{if(S.state==='countdown')audio.voice('three')},60);S.goAt=performance.now()+S.count*1000;S.lastBeep=3; /* the race music builds through the countdown and drops on GO */
   $('bestL').textContent='Best '+fmt(getBest());$('posT').textContent=racers.length;
+  /* Prototype 48: the quick race's tilt is measured from how the phone is held as the countdown starts, and again at GO */
+  if(QK.live&&qkTilt()){const z=()=>{if(QK.live&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}};setTimeout(z,350);setTimeout(z,Math.max(400,S.count*1000-40))}
   if(coarse&&!QK.live)setTimeout(()=>{if(tilt.msg){note(tilt.msg,3200);tilt.msg='';return}if(!tiltWanted())return;
     if(tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa;note(tiltNote(),2600)}
     else note(tiltLive()?'Hold the phone up to steer by tilt':{btns:'No tilt reading · steer with ◀ ▶',slider:'No tilt reading · steer with the slider',stick:'No tilt reading · steer with the stick',tilt:'No tilt reading yet · hold the phone up'}[steerMode],3600)},350);
@@ -7187,7 +7191,8 @@ function applyTouchUI(){
   $('touchChip').setAttribute('aria-pressed',String(coarse));
   /* the title's own-tab button (Prototype 42): only once this framed page has been found to get no motion readings, with
      tilt in the setup */
-  const a=$('ownTab');if(coarse&&framed&&tilt.blocked&&canOwnTab&&tiltWanted()){a.href=ownTabUrl();a.hidden=false;a.textContent=ownTabLabel();a.onclick=()=>{if(audio.ctx)audio.ctx.suspend()}}else a.hidden=true;syncFs();
+  /* Prototype 48: no Open with tilt on the title (Eric didn't want a second tab); the card on a tilt race still offers it */
+  $('ownTab').hidden=true;syncFs();
   ctrlHelpUI();
   if(S.state==='race'||S.state==='countdown'||S.state==='paused')$('touch').hidden=!coarse;
   if(!$('touch').hidden)touchLayout()}
@@ -7217,27 +7222,35 @@ const OR={on:false,next:null};
    changes it. Menus follow the device as before, and a framed page lets go of the lock the page around it set when it
    loads. Elsewhere (desktops, the Steam Deck, iPhones) nothing is asked and a race holds whichever way the device is held. */
 const ANDROID=/Android/i.test(navigator.userAgent||'');
+/* Prototype 48: a phone (not a tablet): tilt steers in the quick races alongside the slider */
+const qkTilt=()=>coarse&&Math.min(screen.width||0,screen.height||0)<600&&!tilt.blocked;
 const orCan=()=>REAL&&ANDROID&&canFull&&!!(screen.orientation&&typeof screen.orientation.lock==='function');
 let orPick=(v=>v==='portrait'||v==='landscape'?v:null)(store.get('hoverline.orient'));
 const orAsk=()=>orCan()&&!orPick&&!BOT;
 /* the lock a race takes: the chosen way round (as it stands now if it already is, so a phone held the other way up stays so) */
 function orType(){const so=screen.orientation,t=so&&so.type||'';if(!orPick||!orCan())return t||'any';return t.startsWith(orPick)?t:orPick+'-primary'}
 /* a race (and, with a way chosen, the quick race's Tap to race before it) holds the lock; anything else lets it go */
-function orSync(){const so=screen.orientation;if(!so||typeof so.lock!=='function')return;const want=coarse&&!!document.fullscreenElement&&(!$('hudL').hidden||!!orPick&&!$('qkTap').hidden);
+function orSync(){const so=screen.orientation;if(!so||typeof so.lock!=='function')return;const want=coarse&&!!document.fullscreenElement&&(!$('hudL').hidden||!!orPick&&orCan());
   if(want&&!OR.on){OR.on=true;const ty=orType();
     if(orPick&&orCan()&&TS.race&&TS.race!==orPick[0]){TS.race=orPick[0];tsUse(TS.race);if(!$('touch').hidden)touchLayout()}
     try{so.lock(ty).catch(()=>{OR.on=false;const o=orNow();if(TS.race&&TS.race!==o){TS.race=o;tsUse(o);if(!$('touch').hidden)touchLayout()}})}catch(e){OR.on=false}}
   else if(!want&&OR.on){OR.on=false;try{so.unlock()}catch(e){}}}
-function orSetSync(){const r=$('orRow');if(r)r.hidden=!orCan();document.querySelectorAll('[data-orient]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.orient===orPick)))}
+/* Prototype 48: apply a new choice now: lock again if full screen, else go full screen (a tap), which locks */
+function orApply(){if(!coarse||!orCan())return;if(document.fullscreenElement){OR.on=false;orSync()}else goFull()}
+function orSetSync(){const r=$('orRow');if(r)r.hidden=!orCan();const rb=$('rotBtn');if(rb){rb.hidden=!(orCan()&&coarse);rb.setAttribute('aria-label',orPick==='portrait'?'Rotate to landscape':'Rotate to portrait');rb.title=rb.getAttribute('aria-label')}document.querySelectorAll('[data-orient]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.orient===orPick)))}
 function orShow(next){OR.next=next||null;orSetSync();$('orSet').hidden=false;navTo($('orSet'))}
 /* the choice: saved; before the quick race it also goes full screen, so Tap to race already stands the chosen way */
 function orChoose(o){orPick=o;store.set('hoverline.orient',o);orSetSync();const box=$('orSet');if(box.hidden)return;box.hidden=true;try{audio.sfx('ui_select')}catch(e){}
   const next=OR.next;OR.next=null;if(next)next();
   if(next&&coarse&&canFull){if(document.fullscreenElement)orSync();else goFull()}}
 document.querySelectorAll('[data-or]').forEach(b=>b.onclick=()=>orChoose(b.dataset.or));
-document.querySelectorAll('[data-orient]').forEach(b=>b.onclick=()=>{orPick=b.dataset.orient;store.set('hoverline.orient',orPick);orSetSync()});
+document.querySelectorAll('[data-orient]').forEach(b=>b.onclick=()=>{orPick=b.dataset.orient;store.set('hoverline.orient',orPick);orSetSync();orApply()});
+$('rotBtn').onclick=()=>{orPick=(orPick?orPick[0]:orNow())==='p'?'landscape':'portrait';store.set('hoverline.orient',orPick);orSetSync();try{audio.sfx('ui_select')}catch(e){}orApply()};
 orSetSync();
 if(orCan()&&framed)try{screen.orientation.unlock()}catch(e){}
+/* Prototype 48: with a way chosen, the first touch on this visit goes full screen, which locks it (once a visit, so leaving
+   full screen on purpose sticks) */
+addEventListener('pointerup',function f(){removeEventListener('pointerup',f,true);if(orPick&&orCan()&&coarse&&!document.fullscreenElement&&$('orSet').hidden)goFull()},true);
 /* Better view (Prototype 40), offered on the quick-race results: one tap to full screen where the browser has it
    (Android, iPad); on an iPhone a short card instead, since a page can't go full screen there. Never on desktops or the
    Deck, and not once the game is full screen or opened from the Home Screen. */
@@ -7266,7 +7279,7 @@ function tiltNo(perm){
   if(framed){tilt.blocked=true;applyTouchUI();const el=$('tiltAsk'),a=$('tiltOwn');
     return tiltNo.p=new Promise(res=>{const done=v=>{el.hidden=true;tiltNo.p=null;res(v)};
       a.hidden=$('tiltOwnTxt').hidden=!canOwnTab;a.href=ownTabUrl();a.onclick=()=>{if(audio.ctx)audio.ctx.suspend();done(false)};
-      $('tiltSl').onclick=()=>{tiltSlider('Steering by the slider');done(true)};el.hidden=false;navTo(el,canOwnTab?a:$('tiltSl'))})}
+      $('tiltSl').onclick=()=>{tiltSlider('Steering by the slider');done(true)};el.hidden=false;navTo(el,$('tiltSl'))})}
   tiltSlider(perm==='denied'?'Motion access refused · slider steering':'No motion sensor found · slider steering');return true}
 function tiltSlider(msg){tilt.msg=msg;applyPreset('sliders',true)}
 function tiltTry(){tiltCheck().then(()=>{if(tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}if(!$('ctl').hidden)ctlSync()})}
@@ -7293,7 +7306,7 @@ function ctlNoteTxt(){if(!coarse)return'Touch controls are off on this device.';
   const l={stick:tilt.enabled?'Stick bottom-left as backup.':'Round stick bottom-left.',btns:'◀ ▶ buttons bottom-left.',slider:'Steer slider bottom-left.',tilt:''}[steerMode];
   const p=pitchSlider?(steerMode==='tilt'?'Nose slider bottom-left: up dives, down is drag.':'Pitch slider far right.'):'';
   const m={right:'Modules above Boost and Brake.',left:'Modules on the left.',split:'One module each side.'}[ctlSketch.mode]||'';
-  const z=!tiltWanted()?'':tilt.blocked&&framed?'Tilt is blocked in this page: Open with tilt on the title plays it in its own tab.':tiltLive()?'Motion sensor found: hold the device the way you will play when the race starts.':'The motion sensor is checked when the race starts.';
+  const z=!tiltWanted()?'':tilt.blocked&&framed?'Tilt is blocked in this browser inside itch.io (Firefox never passes the motion sensor into a page like this one; Chrome does).':tiltLive()?'Motion sensor found: hold the device the way you will play when the race starts.':'The motion sensor is checked when the race starts.';
   return[tilt.msg&&tilt.msg+'.',t,l,p,m,z].filter(Boolean).join(' ')}
 for(const id of['btnChip','psChip','modChip','tiltChip','pitchChip','flipChip','touchChip'])$(id).addEventListener('click',ctlSync);
 /* The button mapper: tap a cell, then press a key (Esc cancels) or a controller button. Taking a button that another
@@ -8857,7 +8870,7 @@ function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidd
 function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls}}
 /* Public rooms (Prototype 38): Public room joins the first public room of this version that has space, or opens it if nobody
    is there (whoever is first is the host, and the next pilot takes over if they leave). Random codes never contain a 1. */
-const PUBV=47,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
+const PUBV=48,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
 function mpConnect(code,host,pub){mp.pub=pub||0;
   audio.init();store.set('hoverline.name',mpEl.mpName.value.trim().slice(0,12));mpEl.mpErr.textContent='';
   const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':mpConn==='lan'?'lan':'net';
@@ -10116,7 +10129,8 @@ $('labReset').onclick=()=>{if(S.car){const st={...BARE};for(let n=CAR_P0;n<BUD;n
    time. Each is 2 laps of a hand-built Wide track (about a minute) against 5 AI at the career's Rookie pace and easing:
    1 steering only (boost pads on the road, no module fire from anyone), 2 one module button and purple strips, 3 the boost
    button and green strips, 4 a split and a second module on the same button, 5 the nose (until then the AI's own choice
-   of pitch flies it). You always move on, and the end screen also has Rematch. Phones steer with the slider only. Quick
+   of pitch flies it). You always move on, and the end screen also has Rematch. Phones steer with the slider, and by tilt too
+   where the sensor reaches the page (Prototype 48; tablets use the slider only). Quick
    races stay off the boards, best laps, ghosts, the career and the profile, and don't touch hoverline.code or lastmode;
    their logs say mode 'quick' and the step. Everything here runs only while QK.live: with it off the game is as before.
    Who gets it: anyone with "Start with a quick race" on (hoverline.quick), and a browser with nothing saved (qkFresh). */
@@ -10275,7 +10289,7 @@ function qkHud(dt){if(!QK.live)return;
   const sl=$('qkSlot'),sh=`<kbd class="${lastDev==='pad'?padCls(bind.pad.w1):''}">${lastDev==='pad'?padFace(bind.pad.w1):esc(actLabel('w1'))}</kbd>${h}`;if(sl._h!==sh){sl._h=sh;sl.innerHTML=sh;sl.title=WDEF[w].name}sl.classList.toggle('rdy',rdy)}
 
 /* ---------- the screens ---------- */
-$('qkTap').addEventListener('click',e=>{if(e.target.closest('#qkTapMenu'))return;qkGo()});
+$('qkTap').addEventListener('click',e=>{if(e.target.closest('#qkTapMenu'))return;if(coarse&&REAL)askMotion();qkGo()});
 addEventListener('keydown',e=>{if(!$('qkTap').hidden&&(e.code==='Enter'||e.code==='Space'||e.code==='NumpadEnter')&&!e.repeat){e.preventDefault();qkGo()}});
 $('qkTapMenu').onclick=()=>{qkLeave();showPage('title')};
 $('qkNext').onclick=()=>{if(!QK.post&&QK.cur===QK_N){qkMenu('career');return}qkRace(QK.post?QK.cur%QK_N+1:Math.min(QK_N,QK.cur+1))};
