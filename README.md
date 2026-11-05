@@ -12,6 +12,7 @@ A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet
 | `index.html` | The playable page, built from the source. |
 | `tools/build.py` | Rebuilds `index.html`, the offline file and the zips in `dist/`. |
 | `vendor/three.min.js` | Three.js r128 (MIT), put inside the offline file and the Wi-Fi pack. |
+| `vendor/jsqr/` | jsQR 1.4.0 (Apache-2.0), the QR reader inside the page since Prototype 47, with its licence. |
 | `songs/` | Songs mode's recorded tracks (CC0, credited below) and their list. `tools/build.py` puts them beside the page in the itch.io zip and the Wi-Fi host pack; the offline file doesn't carry them. |
 | `samples/` | The sample library (Prototype 45): `manifest.json`, one FLAC pack per kit or instrument, the spoken tabla bols in `vox-bols/`, and `CREDITS.md`. `tools/build.py` puts it beside the page in the itch.io zip and the Wi-Fi host pack, and in its file form in the offline zip. Built by `tools/samples/` (its README). |
 | `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. (Any copy of the game can also do this on its own: Multiplayer, Same room · no internet, pairing by sound since Prototype 44 or by QR codes since Prototype 31. The pack is the fallback for networks where phones can't connect directly.) |
@@ -32,6 +33,7 @@ python3 tools/build.py
 ## Credits
 
 - 3D: [Three.js](https://threejs.org) r128 (MIT), loaded from cdnjs (inside the offline file).
+- QR reading: [jsQR](https://github.com/cozmo/jsQR) 1.4.0 by Cosmo Wolfe (Apache-2.0), inside the page.
 - Sample library (Prototype 45), full list with pinned sources in `samples/CREDITS.md`:
   - Drum kits: Virtuosity Drums by Versilian Studios and Karoryfer Samples, played by Austin McMahon (CC0), github.com/sfzinstruments/virtuosity_drums.
   - Percussion, timpani, cymbals and didgeridoo: VCSL (CC0) and VSCO-2 Community Edition (CC0) by Versilian Studios.

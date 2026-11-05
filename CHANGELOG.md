@@ -1,5 +1,17 @@
 # Changelog
 
+## Prototype 47
+Your notes on the first start, pairing with no internet and the speed classes. Races at Redline (the default) are unchanged.
+- **Set orientation:** on an Android phone or tablet the game first asks Portrait or Landscape, and every race holds that (Settings, Races: Portrait | Landscape changes it). The first start came up landscape because itch.io locks its full screen to the shape of the game's frame, and the first race kept that lock. Desktop, the Steam Deck and iPhones don't ask.
+- **Same room, no internet, step by step:** the host invites, each pilot replies, then they connect directly. Both screens number the steps (1 Invite, 2 Reply, 3 Lobby or Join), and any step can go by sound, QR code or typing (Use a code).
+- **QR codes scan in any browser with a camera** (a QR reader is now inside the game; it used to need a browser feature Firefox doesn't have). With no camera the Scan buttons are hidden.
+- **Sound pairing:** works in browsers that won't join the mic to the game's audio, says when the browser is still asking for the mic, and shows a mic level meter, with Test sound to check the device hears its own call.
+- **Shorter codes** (113 to 122 letters, was 148), and one wrong, missing or extra letter is fixed for you.
+- **Pairing report:** Download all logs now has a record of every pairing attempt (mic, levels, chirps heard, codes, connection), even with no races.
+- **The caller:** a hooded wireframe machine-priest opens its jaw and screams the chirps, and listens with glowing eyes.
+- **Speed classes:** Glide 70%, Surge 80%, Rush 90%, Redline 100%, one dropdown on the Race and Time trial track page and in a room's lobby (the host picks). Career shows its tier's class (Rookie · Glide). Only Redline times go online; best laps and ghosts are kept per class.
+- Races are unchanged at Redline: the simulator gives the same results race for race, so the board era stays 45. Shared logs and public rooms are version 47; Prototype 46 can't read Prototype 47's codes.
+
 ## Prototype 46
 From your 120 notes in the music guide and the tunes you named in chat: space in the mix, melodies that mean it, and no more drone or shaker. Races are unchanged.
 - **The synth drone is gone from under the drops.** It was the pad, a held chord under everything. It now holds under a drop only in the tunes you said could keep it (Hard Pressure, Modal Friction, Tape Haze, Tabla Psy, plus Rain Glass, Glass Coast, Double Kick's strings and Deep Shuffle at half level). Elsewhere it plays only in breakdowns and builds, and not even there when the keys play. Iron Lung gets a quiet pluck pulse in its place, Melancholy Chaos quiet piano broken chords.
