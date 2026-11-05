@@ -1,0 +1,10 @@
+const H=require('./hl.js');
+(async()=>{const {browser,page}=await H.open(process.argv[2]);
+  const r=await page.evaluate(()=>{const W=window.__hl,M=W.music,mp=W.mp,store=W.store,codeOf=W.codeOf,TPL=W.TPL;
+    const seq=()=>{M.pinned=false;M.fromTrack(4242);const a=[codeOf(M.st)];for(let k=1;k<6;k++){M.rPrevF=TPL[M.st.tp-1].f;const s=M.raceTune(k);a.push(codeOf(s));M.setState(s)}return a};
+    const reset=()=>{for(const k of['hoverline.mhist','hoverline.mtpl','hoverline.mlike','hoverline.mgoff'])store.set(k,k==='hoverline.mgoff'||k==='hoverline.mlike'?'[]':'[]');M._gOn=null};
+    const out={};mp.on=true;reset();out.roomA=seq();
+    store.set('hoverline.mgoff',JSON.stringify(['dnb','trance','techno','house','dub','phonk']));M._gOn=null;for(let i=0;i<10;i++)W.MLIKE.add(107,3);out.roomB=seq();
+    mp.on=false;reset();out.soloA=seq();store.set('hoverline.mgoff',JSON.stringify(['dnb','trance','techno','house','dub','phonk']));M._gOn=null;out.soloB=seq();
+    out.soloBgenres=out.soloB.map(c=>TPL[parseInt(c.slice(1,3),16)-1].gn.join('+'));reset();return out});
+  console.log(JSON.stringify(r,null,0));console.log('room same:',JSON.stringify(r.roomA)===JSON.stringify(r.roomB));await browser.close()})().catch(e=>{console.error(e);process.exit(1)});

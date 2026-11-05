@@ -1,0 +1,5555 @@
+{
+ "p46": {
+  "label": "Prototype 46",
+  "templates": 95,
+  "tunes": 190,
+  "rows": [
+   {
+    "sound": "kick",
+    "kind": "drums",
+    "templates": 95,
+    "share": 1.0,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     12,
+     14,
+     16,
+     17,
+     19,
+     20,
+     21,
+     24,
+     25,
+     26,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     102,
+     103,
+     104,
+     105,
+     108,
+     109,
+     110,
+     111,
+     112,
+     113,
+     114,
+     115,
+     116,
+     117,
+     119,
+     120,
+     122,
+     123,
+     124,
+     125,
+     126,
+     127,
+     128,
+     129,
+     130,
+     131,
+     132
+    ],
+    "median_time": 0.828,
+    "max_time": 0.988,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "kit:im",
+    "kind": "marker",
+    "templates": 95,
+    "share": 1.0,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     12,
+     14,
+     16,
+     17,
+     19,
+     20,
+     21,
+     24,
+     25,
+     26,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     102,
+     103,
+     104,
+     105,
+     108,
+     109,
+     110,
+     111,
+     112,
+     113,
+     114,
+     115,
+     116,
+     117,
+     119,
+     120,
+     122,
+     123,
+     124,
+     125,
+     126,
+     127,
+     128,
+     129,
+     130,
+     131,
+     132
+    ],
+    "median_time": 0.033,
+    "max_time": 0.055,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "snare",
+    "kind": "drums",
+    "templates": 93,
+    "share": 0.979,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     12,
+     14,
+     16,
+     17,
+     19,
+     20,
+     21,
+     24,
+     26,
+     28,
+     29,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     102,
+     103,
+     104,
+     105,
+     108,
+     109,
+     110,
+     111,
+     112,
+     113,
+     114,
+     115,
+     116,
+     117,
+     119,
+     120,
+     122,
+     123,
+     124,
+     125,
+     126,
+     127,
+     128,
+     129,
+     130,
+     131,
+     132
+    ],
+    "median_time": 0.105,
+    "max_time": 0.727,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "riser",
+    "kind": "marker",
+    "templates": 87,
+    "share": 0.916,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     12,
+     14,
+     16,
+     19,
+     21,
+     26,
+     28,
+     29,
+     33,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     102,
+     103,
+     104,
+     105,
+     108,
+     109,
+     110,
+     111,
+     112,
+     113,
+     114,
+     115,
+     116,
+     117,
+     119,
+     122,
+     123,
+     124,
+     125,
+     126,
+     127,
+     128,
+     129,
+     130,
+     131,
+     132
+    ],
+    "median_time": 0.057,
+    "max_time": 0.089,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "chh",
+    "kind": "drums",
+    "templates": 85,
+    "share": 0.895,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     14,
+     16,
+     17,
+     20,
+     24,
+     25,
+     26,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     79,
+     80,
+     81,
+     83,
+     84,
+     85,
+     88,
+     89,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     102,
+     103,
+     104,
+     105,
+     108,
+     109,
+     111,
+     112,
+     113,
+     114,
+     115,
+     116,
+     117,
+     119,
+     120,
+     122,
+     123,
+     124,
+     126,
+     127,
+     129,
+     130,
+     131,
+     132
+    ],
+    "median_time": 0.866,
+    "max_time": 1.0,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "uplift",
+    "kind": "marker",
+    "templates": 79,
+    "share": 0.832,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     14,
+     16,
+     19,
+     28,
+     33,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     102,
+     104,
+     105,
+     108,
+     109,
+     110,
+     111,
+     112,
+     114,
+     116,
+     117,
+     119,
+     122,
+     124,
+     125,
+     126,
+     127,
+     128,
+     129,
+     130,
+     131,
+     132
+    ],
+    "median_time": 0.03,
+    "max_time": 0.044,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "crash",
+    "kind": "drums",
+    "templates": 67,
+    "share": 0.705,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     12,
+     14,
+     16,
+     17,
+     19,
+     20,
+     21,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     104,
+     108,
+     109,
+     110,
+     111,
+     116,
+     117,
+     119,
+     122,
+     123,
+     124,
+     125,
+     128,
+     129,
+     130,
+     132
+    ],
+    "median_time": 0.032,
+    "max_time": 0.055,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "clap",
+    "kind": "drums",
+    "templates": 57,
+    "share": 0.6,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     24,
+     25,
+     26,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     69,
+     77,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     102,
+     103,
+     104,
+     105,
+     108,
+     109,
+     112,
+     113,
+     114,
+     115,
+     120,
+     122,
+     126,
+     127,
+     129,
+     131
+    ],
+    "median_time": 0.42,
+    "max_time": 0.652,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "revcrash",
+    "kind": "marker",
+    "templates": 45,
+    "share": 0.474,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     14,
+     28,
+     33,
+     65,
+     66,
+     67,
+     69,
+     71,
+     77,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     105,
+     110,
+     111,
+     112,
+     114,
+     116,
+     119,
+     122,
+     124,
+     125,
+     127,
+     129,
+     130,
+     131,
+     132
+    ],
+    "median_time": 0.016,
+    "max_time": 0.033,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "ghost",
+    "kind": "drums",
+    "templates": 33,
+    "share": 0.347,
+    "who": [
+     2,
+     6,
+     7,
+     8,
+     11,
+     14,
+     16,
+     17,
+     20,
+     34,
+     36,
+     55,
+     60,
+     61,
+     62,
+     63,
+     65,
+     66,
+     67,
+     68,
+     71,
+     73,
+     74,
+     76,
+     79,
+     80,
+     97,
+     116,
+     117,
+     122,
+     123,
+     124,
+     132
+    ],
+    "median_time": 0.31,
+    "max_time": 0.711,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "i_cy",
+    "kind": "marker",
+    "templates": 31,
+    "share": 0.326,
+    "who": [
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     68,
+     73,
+     74,
+     76,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     104,
+     108,
+     109,
+     117,
+     126,
+     128
+    ],
+    "median_time": 0.033,
+    "max_time": 0.038,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "rim",
+    "kind": "drums",
+    "templates": 23,
+    "share": 0.242,
+    "who": [
+     24,
+     25,
+     26,
+     28,
+     29,
+     30,
+     32,
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     57,
+     93,
+     98,
+     104,
+     115,
+     120,
+     126,
+     127
+    ],
+    "median_time": 0.296,
+    "max_time": 0.769,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "ride",
+    "kind": "drums",
+    "templates": 22,
+    "share": 0.232,
+    "who": [
+     14,
+     24,
+     26,
+     28,
+     29,
+     32,
+     58,
+     68,
+     73,
+     74,
+     76,
+     89,
+     92,
+     96,
+     97,
+     99,
+     104,
+     111,
+     117,
+     120,
+     127,
+     130
+    ],
+    "median_time": 0.265,
+    "max_time": 0.613,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "ohh",
+    "kind": "drums",
+    "templates": 22,
+    "share": 0.232,
+    "who": [
+     24,
+     25,
+     26,
+     30,
+     32,
+     35,
+     38,
+     40,
+     41,
+     43,
+     44,
+     58,
+     69,
+     77,
+     92,
+     96,
+     97,
+     99,
+     108,
+     109,
+     120,
+     126
+    ],
+    "median_time": 0.033,
+    "max_time": 0.075,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:dark(brk)",
+    "kind": "pad",
+    "templates": 21,
+    "share": 0.221,
+    "who": [
+     3,
+     12,
+     19,
+     20,
+     25,
+     26,
+     28,
+     30,
+     34,
+     65,
+     67,
+     69,
+     82,
+     86,
+     87,
+     102,
+     103,
+     105,
+     110,
+     120,
+     131
+    ],
+    "median_time": 0.211,
+    "max_time": 0.346,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "kit:wh",
+    "kind": "texture",
+    "templates": 21,
+    "share": 0.221,
+    "who": [
+     1,
+     3,
+     4,
+     7,
+     11,
+     12,
+     19,
+     20,
+     34,
+     65,
+     67,
+     69,
+     81,
+     82,
+     86,
+     87,
+     102,
+     103,
+     110,
+     111,
+     114
+    ],
+    "median_time": 0.024,
+    "max_time": 0.062,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "break:buf",
+    "kind": "drums",
+    "templates": 19,
+    "share": 0.2,
+    "who": [
+     12,
+     19,
+     21,
+     67,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     110,
+     124,
+     125,
+     128,
+     130
+    ],
+    "median_time": 0.756,
+    "max_time": 0.846,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_hit_c",
+    "kind": "marker",
+    "templates": 19,
+    "share": 0.2,
+    "who": [
+     24,
+     25,
+     26,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     102,
+     103,
+     105,
+     112,
+     113,
+     114,
+     115,
+     120,
+     127,
+     131
+    ],
+    "median_time": 0.009,
+    "max_time": 0.021,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:saw",
+    "kind": "pad",
+    "templates": 18,
+    "share": 0.189,
+    "who": [
+     16,
+     41,
+     57,
+     58,
+     61,
+     66,
+     68,
+     74,
+     76,
+     80,
+     84,
+     89,
+     92,
+     96,
+     99,
+     112,
+     113,
+     116
+    ],
+    "median_time": 0.227,
+    "max_time": 1.0,
+    "allowed": [
+     112
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_dnb_f",
+    "kind": "marker",
+    "templates": 16,
+    "share": 0.168,
+    "who": [
+     65,
+     66,
+     67,
+     68,
+     69,
+     71,
+     73,
+     74,
+     76,
+     77,
+     80,
+     116,
+     117,
+     124,
+     130,
+     132
+    ],
+    "median_time": 0.024,
+    "max_time": 0.036,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_woosh",
+    "kind": "texture",
+    "templates": 14,
+    "share": 0.147,
+    "who": [
+     3,
+     7,
+     11,
+     65,
+     69,
+     77,
+     83,
+     86,
+     87,
+     91,
+     97,
+     105,
+     119,
+     125
+    ],
+    "median_time": 0.039,
+    "max_time": 0.113,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_trance_c",
+    "kind": "marker",
+    "templates": 14,
+    "share": 0.147,
+    "who": [
+     55,
+     57,
+     58,
+     60,
+     61,
+     62,
+     63,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     104
+    ],
+    "median_time": 0.032,
+    "max_time": 0.039,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:sub",
+    "kind": "bass",
+    "templates": 13,
+    "share": 0.137,
+    "who": [
+     14,
+     16,
+     35,
+     44,
+     82,
+     84,
+     86,
+     87,
+     88,
+     117,
+     119,
+     125,
+     130
+    ],
+    "median_time": 0.708,
+    "max_time": 0.789,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:dark",
+    "kind": "pad",
+    "templates": 13,
+    "share": 0.137,
+    "who": [
+     4,
+     17,
+     24,
+     29,
+     31,
+     71,
+     79,
+     81,
+     85,
+     98,
+     114,
+     124,
+     127
+    ],
+    "median_time": 0.256,
+    "max_time": 1.0,
+    "allowed": [
+     124,
+     127
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_cine",
+    "kind": "texture",
+    "templates": 13,
+    "share": 0.137,
+    "who": [
+     3,
+     7,
+     11,
+     19,
+     31,
+     65,
+     69,
+     77,
+     83,
+     87,
+     91,
+     119,
+     123
+    ],
+    "median_time": 0.058,
+    "max_time": 0.094,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_woodsy_c",
+    "kind": "marker",
+    "templates": 13,
+    "share": 0.137,
+    "who": [
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     91,
+     119,
+     125,
+     128
+    ],
+    "median_time": 0.028,
+    "max_time": 0.051,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:pn",
+    "kind": "instrument",
+    "templates": 12,
+    "share": 0.126,
+    "who": [
+     11,
+     21,
+     38,
+     62,
+     80,
+     84,
+     87,
+     93,
+     108,
+     109,
+     125,
+     130
+    ],
+    "median_time": 0.826,
+    "max_time": 0.901,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:offb",
+    "kind": "bass",
+    "templates": 12,
+    "share": 0.126,
+    "who": [
+     57,
+     58,
+     92,
+     93,
+     96,
+     97,
+     98,
+     99,
+     104,
+     115,
+     128,
+     132
+    ],
+    "median_time": 0.737,
+    "max_time": 0.935,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "kit:rw",
+    "kind": "marker",
+    "templates": 12,
+    "share": 0.126,
+    "who": [
+     66,
+     67,
+     69,
+     71,
+     77,
+     81,
+     82,
+     83,
+     88,
+     91,
+     124,
+     132
+    ],
+    "median_time": 0.021,
+    "max_time": 0.023,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_voxy_hit_c",
+    "kind": "marker",
+    "templates": 12,
+    "share": 0.126,
+    "who": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     11,
+     122,
+     123,
+     129
+    ],
+    "median_time": 0.009,
+    "max_time": 0.019,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_thick_c",
+    "kind": "marker",
+    "templates": 11,
+    "share": 0.116,
+    "who": [
+     34,
+     35,
+     36,
+     38,
+     40,
+     41,
+     43,
+     44,
+     110,
+     111,
+     126
+    ],
+    "median_time": 0.028,
+    "max_time": 0.037,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_ocean",
+    "kind": "texture",
+    "templates": 10,
+    "share": 0.105,
+    "who": [
+     5,
+     17,
+     67,
+     71,
+     79,
+     81,
+     85,
+     89,
+     125,
+     129
+    ],
+    "median_time": 0.03,
+    "max_time": 0.031,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:b808",
+    "kind": "bass",
+    "templates": 9,
+    "share": 0.095,
+    "who": [
+     2,
+     5,
+     6,
+     7,
+     8,
+     79,
+     83,
+     122,
+     123
+    ],
+    "median_time": 0.728,
+    "max_time": 0.798,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_sroll",
+    "kind": "texture",
+    "templates": 9,
+    "share": 0.095,
+    "who": [
+     5,
+     67,
+     71,
+     79,
+     81,
+     85,
+     89,
+     125,
+     129
+    ],
+    "median_time": 0.026,
+    "max_time": 0.027,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_vinyl_scratch",
+    "kind": "texture",
+    "templates": 9,
+    "share": 0.095,
+    "who": [
+     5,
+     67,
+     71,
+     79,
+     81,
+     85,
+     89,
+     125,
+     129
+    ],
+    "median_time": 0.007,
+    "max_time": 0.009,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:reese0",
+    "kind": "bass",
+    "templates": 8,
+    "share": 0.084,
+    "who": [
+     65,
+     68,
+     73,
+     74,
+     76,
+     80,
+     89,
+     91
+    ],
+    "median_time": 0.769,
+    "max_time": 0.789,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_voxy_c",
+    "kind": "marker",
+    "templates": 7,
+    "share": 0.074,
+    "who": [
+     12,
+     14,
+     16,
+     17,
+     19,
+     20,
+     21
+    ],
+    "median_time": 0.011,
+    "max_time": 0.018,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:psyT",
+    "kind": "bass",
+    "templates": 6,
+    "share": 0.063,
+    "who": [
+     102,
+     103,
+     105,
+     113,
+     114,
+     131
+    ],
+    "median_time": 0.777,
+    "max_time": 0.934,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:wave",
+    "kind": "pad",
+    "templates": 6,
+    "share": 0.063,
+    "who": [
+     1,
+     2,
+     7,
+     8,
+     122,
+     123
+    ],
+    "median_time": 0.652,
+    "max_time": 1.0,
+    "allowed": [
+     2,
+     7,
+     123
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "pad:bright",
+    "kind": "pad",
+    "templates": 6,
+    "share": 0.063,
+    "who": [
+     5,
+     55,
+     60,
+     62,
+     63,
+     97
+    ],
+    "median_time": 0.262,
+    "max_time": 0.34,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "zap",
+    "kind": "texture",
+    "templates": 6,
+    "share": 0.063,
+    "who": [
+     102,
+     103,
+     105,
+     112,
+     114,
+     131
+    ],
+    "median_time": 0.209,
+    "max_time": 0.263,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:warm(brk)",
+    "kind": "pad",
+    "templates": 6,
+    "share": 0.063,
+    "who": [
+     14,
+     21,
+     36,
+     38,
+     40,
+     44
+    ],
+    "median_time": 0.167,
+    "max_time": 0.306,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:rumb",
+    "kind": "bass",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     29,
+     30,
+     33,
+     120,
+     127
+    ],
+    "median_time": 0.846,
+    "max_time": 0.877,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:gallop",
+    "kind": "bass",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     55,
+     60,
+     61,
+     62,
+     63
+    ],
+    "median_time": 0.764,
+    "max_time": 0.774,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:cowbell",
+    "kind": "instrument",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     1,
+     3,
+     6,
+     11,
+     129
+    ],
+    "median_time": 0.656,
+    "max_time": 0.675,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_na_s",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.532,
+    "max_time": 0.934,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_te1",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.532,
+    "max_time": 0.934,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:sitar",
+    "kind": "instrument",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     105,
+     112,
+     114,
+     116
+    ],
+    "median_time": 0.508,
+    "max_time": 0.63,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_tun1",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.461,
+    "max_time": 0.58,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_ghe4",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.389,
+    "max_time": 0.461,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_dhec",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.351,
+    "max_time": 0.593,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_na",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.334,
+    "max_time": 0.593,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_ghe1",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.266,
+    "max_time": 0.469,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_ke1",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.266,
+    "max_time": 0.465,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "pad:warm",
+    "kind": "pad",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     43,
+     73,
+     115,
+     117,
+     126
+    ],
+    "median_time": 0.21,
+    "max_time": 1.0,
+    "allowed": [
+     43
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_re",
+    "kind": "percussion",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     103,
+     105,
+     112,
+     116
+    ],
+    "median_time": 0.194,
+    "max_time": 0.289,
+    "allowed": [
+     103,
+     105,
+     116
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:tanpura",
+    "kind": "instrument",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     88,
+     105,
+     112,
+     114,
+     116
+    ],
+    "median_time": 0.148,
+    "max_time": 0.272,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_gong",
+    "kind": "texture",
+    "templates": 5,
+    "share": 0.053,
+    "who": [
+     103,
+     105,
+     113,
+     115,
+     131
+    ],
+    "median_time": 0.029,
+    "max_time": 0.062,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:sawpluck",
+    "kind": "instrument",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     5,
+     58,
+     128,
+     132
+    ],
+    "median_time": 0.804,
+    "max_time": 0.987,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:reese7",
+    "kind": "bass",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     4,
+     77,
+     116,
+     124
+    ],
+    "median_time": 0.781,
+    "max_time": 0.795,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:rhodes",
+    "kind": "instrument",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     12,
+     14,
+     122,
+     126
+    ],
+    "median_time": 0.704,
+    "max_time": 0.899,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:str(brk)",
+    "kind": "pad",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     83,
+     88,
+     91,
+     119
+    ],
+    "median_time": 0.23,
+    "max_time": 0.296,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:sawS",
+    "kind": "pad",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     35,
+     108,
+     109,
+     128
+    ],
+    "median_time": 0.194,
+    "max_time": 0.306,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bols",
+    "kind": "voice",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     88,
+     103,
+     112,
+     116
+    ],
+    "median_time": 0.064,
+    "max_time": 0.073,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_feel",
+    "kind": "voice",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     36,
+     69,
+     83,
+     85
+    ],
+    "median_time": 0.009,
+    "max_time": 0.01,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_higher",
+    "kind": "voice",
+    "templates": 4,
+    "share": 0.042,
+    "who": [
+     36,
+     69,
+     83,
+     85
+    ],
+    "median_time": 0.009,
+    "max_time": 0.01,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:dark",
+    "kind": "bass",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     24,
+     28,
+     32
+    ],
+    "median_time": 0.857,
+    "max_time": 0.906,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:reese",
+    "kind": "bass",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     1,
+     11,
+     66
+    ],
+    "median_time": 0.735,
+    "max_time": 0.795,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:square",
+    "kind": "instrument",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     55,
+     61,
+     63
+    ],
+    "median_time": 0.705,
+    "max_time": 0.93,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:pluck",
+    "kind": "bass",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     36,
+     40,
+     41
+    ],
+    "median_time": 0.704,
+    "max_time": 0.714,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:deep",
+    "kind": "bass",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     38,
+     43,
+     126
+    ],
+    "median_time": 0.692,
+    "max_time": 0.704,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:guzheng",
+    "kind": "instrument",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     113,
+     115,
+     117
+    ],
+    "median_time": 0.674,
+    "max_time": 0.741,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:silk(brk)",
+    "kind": "pad",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     77,
+     130,
+     132
+    ],
+    "median_time": 0.229,
+    "max_time": 0.231,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_hey",
+    "kind": "voice",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     36,
+     69,
+     83
+    ],
+    "median_time": 0.175,
+    "max_time": 0.256,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_yeah",
+    "kind": "voice",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     69,
+     83,
+     85
+    ],
+    "median_time": 0.174,
+    "max_time": 0.253,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_go",
+    "kind": "voice",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     36,
+     83,
+     85
+    ],
+    "median_time": 0.13,
+    "max_time": 0.218,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "siren",
+    "kind": "texture",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     25,
+     29,
+     31
+    ],
+    "median_time": 0.047,
+    "max_time": 0.075,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_ambi_lunar_land",
+    "kind": "texture",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     11,
+     19,
+     123
+    ],
+    "median_time": 0.038,
+    "max_time": 0.039,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_scresc",
+    "kind": "texture",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     33,
+     111,
+     127
+    ],
+    "median_time": 0.035,
+    "max_time": 0.035,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:hp",
+    "kind": "instrument",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     57,
+     73,
+     93
+    ],
+    "median_time": 0.022,
+    "max_time": 0.799,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_anv2",
+    "kind": "texture",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     25,
+     29,
+     33
+    ],
+    "median_time": 0.009,
+    "max_time": 0.023,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_brk1",
+    "kind": "texture",
+    "templates": 3,
+    "share": 0.032,
+    "who": [
+     25,
+     29,
+     33
+    ],
+    "median_time": 0.009,
+    "max_time": 0.009,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:pluck",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     31,
+     57
+    ],
+    "median_time": 0.841,
+    "max_time": 0.938,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "break:x_lp_ar_b",
+    "kind": "drums",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     12,
+     21
+    ],
+    "median_time": 0.816,
+    "max_time": 0.816,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "break:x_lp_ar_d",
+    "kind": "drums",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     12,
+     19
+    ],
+    "median_time": 0.798,
+    "max_time": 0.816,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:hcbass",
+    "kind": "bass",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     108,
+     109
+    ],
+    "median_time": 0.791,
+    "max_time": 0.795,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:vb",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     20,
+     74
+    ],
+    "median_time": 0.769,
+    "max_time": 1.0,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:square",
+    "kind": "bass",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     31,
+     85
+    ],
+    "median_time": 0.735,
+    "max_time": 0.744,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:slap",
+    "kind": "bass",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     19,
+     20
+    ],
+    "median_time": 0.732,
+    "max_time": 0.78,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "gtr",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     110,
+     111
+    ],
+    "median_time": 0.728,
+    "max_time": 0.766,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:fmbell",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     63,
+     76
+    ],
+    "median_time": 0.712,
+    "max_time": 0.89,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:up",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     7,
+     44
+    ],
+    "median_time": 0.695,
+    "max_time": 0.845,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "gtrm",
+    "kind": "bass",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     110,
+     111
+    ],
+    "median_time": 0.688,
+    "max_time": 0.734,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:ep",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     68,
+     89
+    ],
+    "median_time": 0.675,
+    "max_time": 0.793,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:str",
+    "kind": "pad",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     111,
+     125
+    ],
+    "median_time": 0.587,
+    "max_time": 1.0,
+    "allowed": [
+     111
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:techstab",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     24,
+     28
+    ],
+    "median_time": 0.564,
+    "max_time": 0.605,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:fmstab",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     127,
+     131
+    ],
+    "median_time": 0.549,
+    "max_time": 0.551,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:reso",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     30,
+     104
+    ],
+    "median_time": 0.545,
+    "max_time": 0.571,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:smooth",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     65,
+     97
+    ],
+    "median_time": 0.543,
+    "max_time": 0.594,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_te2",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.514,
+    "max_time": 0.777,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_te_ne",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.514,
+    "max_time": 0.777,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_cgs",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     40,
+     126
+    ],
+    "median_time": 0.453,
+    "max_time": 0.462,
+    "allowed": [
+     40,
+     126
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_bgl",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     40,
+     126
+    ],
+    "median_time": 0.453,
+    "max_time": 0.462,
+    "allowed": [
+     40,
+     126
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_te_m",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.385,
+    "max_time": 0.583,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_bgh",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     40,
+     126
+    ],
+    "median_time": 0.368,
+    "max_time": 0.389,
+    "allowed": [
+     40,
+     126
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_na_o",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.337,
+    "max_time": 0.506,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tmb",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     40,
+     126
+    ],
+    "median_time": 0.325,
+    "max_time": 0.333,
+    "allowed": [
+     40,
+     126
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_ghe2",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.323,
+    "max_time": 0.482,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_tun2",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.323,
+    "max_time": 0.49,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_tas2",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.313,
+    "max_time": 0.478,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "noise",
+    "kind": "drums",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     31,
+     33
+    ],
+    "median_time": 0.301,
+    "max_time": 0.492,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:wave(brk)",
+    "kind": "pad",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     6,
+     129
+    ],
+    "median_time": 0.287,
+    "max_time": 0.294,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:didg",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     114,
+     120
+    ],
+    "median_time": 0.287,
+    "max_time": 0.584,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_cgl",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     40,
+     126
+    ],
+    "median_time": 0.278,
+    "max_time": 0.282,
+    "allowed": [
+     40,
+     126
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_ghe3",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.257,
+    "max_time": 0.389,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_tas3",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.257,
+    "max_time": 0.389,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_cgo",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     40,
+     126
+    ],
+    "median_time": 0.226,
+    "max_time": 0.231,
+    "allowed": [
+     40,
+     126
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "pad:choirS",
+    "kind": "pad",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     11,
+     33
+    ],
+    "median_time": 0.225,
+    "max_time": 0.254,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_oh",
+    "kind": "voice",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     36,
+     85
+    ],
+    "median_time": 0.159,
+    "max_time": 0.192,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tabla_ke2",
+    "kind": "percussion",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     112
+    ],
+    "median_time": 0.128,
+    "max_time": 0.194,
+    "allowed": [
+     103
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:kk",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     8,
+     123
+    ],
+    "median_time": 0.085,
+    "max_time": 0.106,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:hc",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     21,
+     125
+    ],
+    "median_time": 0.084,
+    "max_time": 0.106,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:bf",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     112,
+     120
+    ],
+    "median_time": 0.078,
+    "max_time": 0.105,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:xy",
+    "kind": "instrument",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     61,
+     108
+    ],
+    "median_time": 0.067,
+    "max_time": 0.074,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_hard_c",
+    "kind": "marker",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     108,
+     109
+    ],
+    "median_time": 0.029,
+    "max_time": 0.032,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "fx:s_sc",
+    "kind": "texture",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     16,
+     20
+    ],
+    "median_time": 0.028,
+    "max_time": 0.032,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_markd",
+    "kind": "texture",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     103,
+     115
+    ],
+    "median_time": 0.028,
+    "max_time": 0.028,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_herewego",
+    "kind": "voice",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     69,
+     108
+    ],
+    "median_time": 0.013,
+    "max_time": 0.013,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "vox:c_letsgo",
+    "kind": "voice",
+    "templates": 2,
+    "share": 0.021,
+    "who": [
+     83,
+     108
+    ],
+    "median_time": 0.013,
+    "max_time": 0.013,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:fold",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     25
+    ],
+    "median_time": 0.889,
+    "max_time": 0.889,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:acid",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     26
+    ],
+    "median_time": 0.846,
+    "max_time": 0.846,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "break:x_lp_ar_a",
+    "kind": "drums",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     21
+    ],
+    "median_time": 0.816,
+    "max_time": 0.816,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:tech",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     71
+    ],
+    "median_time": 0.789,
+    "max_time": 0.789,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:jump",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     69
+    ],
+    "median_time": 0.782,
+    "max_time": 0.795,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "break:x_lp_ar_e",
+    "kind": "drums",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     19
+    ],
+    "median_time": 0.781,
+    "max_time": 0.781,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:neuro",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     67
+    ],
+    "median_time": 0.781,
+    "max_time": 0.789,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:crush",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     3
+    ],
+    "median_time": 0.775,
+    "max_time": 0.775,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:reeseS",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     81
+    ],
+    "median_time": 0.766,
+    "max_time": 0.784,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_lp_tabla",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     114
+    ],
+    "median_time": 0.757,
+    "max_time": 0.757,
+    "allowed": [
+     114
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "bass:psy",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     112
+    ],
+    "median_time": 0.75,
+    "max_time": 0.75,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:arp12",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     96
+    ],
+    "median_time": 0.728,
+    "max_time": 0.728,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:tb303",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     129
+    ],
+    "median_time": 0.728,
+    "max_time": 0.728,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:or",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     32
+    ],
+    "median_time": 0.721,
+    "max_time": 0.786,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:fmgrowl",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     12
+    ],
+    "median_time": 0.715,
+    "max_time": 0.715,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:talk",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     21
+    ],
+    "median_time": 0.715,
+    "max_time": 0.715,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:horn",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     35
+    ],
+    "median_time": 0.708,
+    "max_time": 0.708,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:talkbass",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     34
+    ],
+    "median_time": 0.704,
+    "max_time": 0.704,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:fmbrass",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     34
+    ],
+    "median_time": 0.704,
+    "max_time": 0.704,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:hangB",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     119
+    ],
+    "median_time": 0.697,
+    "max_time": 0.697,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "bass:growl",
+    "kind": "bass",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     17
+    ],
+    "median_time": 0.686,
+    "max_time": 0.686,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:hoover",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     82
+    ],
+    "median_time": 0.662,
+    "max_time": 0.663,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:mb",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     40
+    ],
+    "median_time": 0.644,
+    "max_time": 0.644,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:ka",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     8
+    ],
+    "median_time": 0.576,
+    "max_time": 0.576,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:chip",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     110
+    ],
+    "median_time": 0.572,
+    "max_time": 0.572,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:prog",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     98
+    ],
+    "median_time": 0.571,
+    "max_time": 0.658,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:st",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     16
+    ],
+    "median_time": 0.567,
+    "max_time": 0.567,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc",
+    "kind": "drums",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     33
+    ],
+    "median_time": 0.562,
+    "max_time": 0.562,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_anv1",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     111
+    ],
+    "median_time": 0.553,
+    "max_time": 0.553,
+    "allowed": [
+     111
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_brk1",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     111
+    ],
+    "median_time": 0.549,
+    "max_time": 0.549,
+    "allowed": [
+     111
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_brk2",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     111
+    ],
+    "median_time": 0.546,
+    "max_time": 0.546,
+    "allowed": [
+     111
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:bansuri",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     115
+    ],
+    "median_time": 0.465,
+    "max_time": 0.465,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:anthem",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     66
+    ],
+    "median_time": 0.455,
+    "max_time": 0.458,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tms",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     82
+    ],
+    "median_time": 0.45,
+    "max_time": 0.45,
+    "allowed": [
+     82
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_agl",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     34
+    ],
+    "median_time": 0.449,
+    "max_time": 0.449,
+    "allowed": [
+     34
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_agh",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     34
+    ],
+    "median_time": 0.449,
+    "max_time": 0.449,
+    "allowed": [
+     34
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:tb303",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     102
+    ],
+    "median_time": 0.448,
+    "max_time": 0.514,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_tri",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     82
+    ],
+    "median_time": 0.447,
+    "max_time": 0.447,
+    "allowed": [
+     82
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_gui",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     82
+    ],
+    "median_time": 0.44,
+    "max_time": 0.44,
+    "allowed": [
+     82
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:eurobrass",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     60
+    ],
+    "median_time": 0.437,
+    "max_time": 0.437,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:eurolead",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     55
+    ],
+    "median_time": 0.426,
+    "max_time": 0.435,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:sx",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     41
+    ],
+    "median_time": 0.377,
+    "max_time": 0.377,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_frm",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     82
+    ],
+    "median_time": 0.33,
+    "max_time": 0.33,
+    "allowed": [
+     82
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "inst:pluck16",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     92
+    ],
+    "median_time": 0.316,
+    "max_time": 0.316,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "pad:saw(brk)",
+    "kind": "pad",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     104
+    ],
+    "median_time": 0.27,
+    "max_time": 0.27,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_wbk",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     34
+    ],
+    "median_time": 0.264,
+    "max_time": 0.264,
+    "allowed": [
+     34
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_cow",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     34
+    ],
+    "median_time": 0.222,
+    "max_time": 0.222,
+    "allowed": [
+     34
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "perc:x_drum_cowbell",
+    "kind": "percussion",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     82
+    ],
+    "median_time": 0.22,
+    "max_time": 0.22,
+    "allowed": [
+     82
+    ],
+    "flag": ""
+   },
+   {
+    "sound": "pad:silk",
+    "kind": "pad",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     93
+    ],
+    "median_time": 0.165,
+    "max_time": 0.165,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:hm",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     92
+    ],
+    "median_time": 0.146,
+    "max_time": 0.146,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "fx:s_g1",
+    "kind": "texture",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     17
+    ],
+    "median_time": 0.091,
+    "max_time": 0.091,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "fx:s_g3",
+    "kind": "texture",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     17
+    ],
+    "median_time": 0.091,
+    "max_time": 0.091,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:ps",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     113
+    ],
+    "median_time": 0.077,
+    "max_time": 0.077,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:gl",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     96
+    ],
+    "median_time": 0.074,
+    "max_time": 0.074,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "inst:hangS",
+    "kind": "instrument",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     119
+    ],
+    "median_time": 0.06,
+    "max_time": 0.06,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "i_tp",
+    "kind": "texture",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     125
+    ],
+    "median_time": 0.045,
+    "max_time": 0.045,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "siren:dub",
+    "kind": "texture",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     83
+    ],
+    "median_time": 0.042,
+    "max_time": 0.048,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tomH",
+    "kind": "drums",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     111
+    ],
+    "median_time": 0.042,
+    "max_time": 0.042,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tomM",
+    "kind": "drums",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     111
+    ],
+    "median_time": 0.042,
+    "max_time": 0.042,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tomL",
+    "kind": "drums",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     111
+    ],
+    "median_time": 0.042,
+    "max_time": 0.042,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_troll",
+    "kind": "texture",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     105
+    ],
+    "median_time": 0.033,
+    "max_time": 0.033,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_didg",
+    "kind": "texture",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     113
+    ],
+    "median_time": 0.032,
+    "max_time": 0.032,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "tex:x_mark",
+    "kind": "texture",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     131
+    ],
+    "median_time": 0.03,
+    "max_time": 0.03,
+    "allowed": [],
+    "flag": ""
+   },
+   {
+    "sound": "x_bass_drop_c",
+    "kind": "marker",
+    "templates": 1,
+    "share": 0.011,
+    "who": [
+     79
+    ],
+    "median_time": 0.02,
+    "max_time": 0.02,
+    "allowed": [],
+    "flag": ""
+   }
+  ],
+  "aggregate": {
+   "the synth drone: any pad": {
+    "templates": 94,
+    "share": 0.989,
+    "median_time": 0.23,
+    "max_time": 1.0
+   },
+   "the synth drone: a pad under a drop (over a quarter of its beats)": {
+    "templates": 8,
+    "share": 0.084,
+    "median_time": 0.033,
+    "max_time": 1.0
+   },
+   "the shaker: any percussion layer or shaker lane": {
+    "templates": 11,
+    "share": 0.116,
+    "median_time": 0.504,
+    "max_time": 0.942
+   },
+   "the shaker: in a drop (over a quarter of its beats)": {
+    "templates": 9,
+    "share": 0.095,
+    "median_time": 0.454,
+    "max_time": 1.0
+   }
+  },
+  "roles": {
+   "bass": {
+    "tunes": 190,
+    "median_time": 0.746,
+    "p90": 0.812
+   },
+   "lead": {
+    "tunes": 105,
+    "median_time": 0.498,
+    "p90": 0.673
+   },
+   "fx": {
+    "tunes": 92,
+    "median_time": 0.067,
+    "p90": 0.222
+   },
+   "pad": {
+    "tunes": 188,
+    "median_time": 0.23,
+    "p90": 0.362
+   },
+   "arp": {
+    "tunes": 22,
+    "median_time": 0.89,
+    "p90": 0.987
+   },
+   "keys": {
+    "tunes": 74,
+    "median_time": 0.153,
+    "p90": 0.886
+   },
+   "resp": {
+    "tunes": 2,
+    "median_time": 0.379,
+    "p90": 0.379
+   },
+   "vox": {
+    "tunes": 10,
+    "median_time": 0.272,
+    "p90": 0.358
+   }
+  },
+  "parts": {
+   "drop_mean": 1.77,
+   "drop_p90": 2.16,
+   "else_mean": 1.49,
+   "else_p90": 2.06
+  }
+ },
+ "p45": {
+  "aggregate": {
+   "the synth drone: any pad": {
+    "templates": 118,
+    "share": 1.0,
+    "median_time": 1.0,
+    "max_time": 1.0
+   },
+   "the synth drone: a pad under a drop (over a quarter of its beats)": {
+    "templates": 78,
+    "share": 0.661,
+    "median_time": 1.0,
+    "max_time": 1.0
+   },
+   "the shaker: any percussion layer or shaker lane": {
+    "templates": 118,
+    "share": 1.0,
+    "median_time": 0.598,
+    "max_time": 0.943
+   },
+   "the shaker: in a drop (over a quarter of its beats)": {
+    "templates": 118,
+    "share": 1.0,
+    "median_time": 0.516,
+    "max_time": 1.0
+   }
+  },
+  "parts": {
+   "drop_mean": 2.36,
+   "drop_p90": 3.17,
+   "else_mean": 1.97,
+   "else_p90": 2.66
+  },
+  "roles": {
+   "pad": {
+    "tunes": 236,
+    "median_time": 1.0,
+    "p90": 1.0
+   },
+   "bass": {
+    "tunes": 236,
+    "median_time": 0.744,
+    "p90": 0.877
+   },
+   "lead": {
+    "tunes": 140,
+    "median_time": 0.453,
+    "p90": 0.671
+   },
+   "fx": {
+    "tunes": 226,
+    "median_time": 0.043,
+    "p90": 0.136
+   },
+   "arp": {
+    "tunes": 32,
+    "median_time": 0.934,
+    "p90": 0.988
+   },
+   "keys": {
+    "tunes": 94,
+    "median_time": 0.148,
+    "p90": 0.888
+   },
+   "resp": {
+    "tunes": 4,
+    "median_time": 0.379,
+    "p90": 0.395
+   },
+   "vox": {
+    "tunes": 14,
+    "median_time": 0.295,
+    "p90": 0.38
+   }
+  },
+  "templates": 118,
+  "tunes": 236
+ },
+ "p43": {
+  "aggregate": {
+   "the synth drone: any pad": {
+    "templates": 106,
+    "share": 1.0,
+    "median_time": 0.975,
+    "max_time": 1.0
+   },
+   "the synth drone: a pad under a drop (over a quarter of its beats)": {
+    "templates": 56,
+    "share": 0.528,
+    "median_time": 0.928,
+    "max_time": 1.0
+   },
+   "the shaker: any percussion layer or shaker lane": {
+    "templates": 7,
+    "share": 0.066,
+    "median_time": 0.716,
+    "max_time": 0.945
+   },
+   "the shaker: in a drop (over a quarter of its beats)": {
+    "templates": 7,
+    "share": 0.066,
+    "median_time": 1.0,
+    "max_time": 1.0
+   }
+  },
+  "parts": {
+   "drop_mean": 2.09,
+   "drop_p90": 3.0,
+   "else_mean": 1.74,
+   "else_p90": 2.41
+  },
+  "roles": {
+   "pad": {
+    "tunes": 212,
+    "median_time": 0.975,
+    "p90": 1.0
+   },
+   "bass": {
+    "tunes": 212,
+    "median_time": 0.737,
+    "p90": 0.88
+   },
+   "lead": {
+    "tunes": 114,
+    "median_time": 0.477,
+    "p90": 0.682
+   },
+   "fx": {
+    "tunes": 92,
+    "median_time": 0.031,
+    "p90": 0.174
+   },
+   "arp": {
+    "tunes": 20,
+    "median_time": 0.959,
+    "p90": 0.988
+   },
+   "keys": {
+    "tunes": 52,
+    "median_time": 0.167,
+    "p90": 0.801
+   },
+   "vox": {
+    "tunes": 22,
+    "median_time": 0.32,
+    "p90": 0.39
+   },
+   "resp": {
+    "tunes": 4,
+    "median_time": 0.379,
+    "p90": 0.407
+   }
+  },
+  "templates": 106,
+  "tunes": 212
+ },
+ "rare_p46": {
+  "hours": 11.99,
+  "tunes_per_hour": 37.1,
+  "per_hour": {
+   "bols (call and answer, twice)": 1.0,
+   "breakdown wash": 2.25,
+   "do-do-do": 0.58,
+   "rewind": 1.17,
+   "siren": 1.17,
+   "whoosh into a breakdown": 31.01
+  }
+ },
+ "rare_p45": {
+  "hours": 11.99,
+  "tunes_per_hour": 37.6,
+  "per_hour": {
+   "bols (call and answer, twice)": 0.17,
+   "breakdown wash": 4.09,
+   "rewind": 1.17,
+   "siren": 1.5,
+   "whoosh into a breakdown": 49.86
+  }
+ },
+ "spectrum": {
+  "rows": [
+   {
+    "set": "Prototype 43 (as Eric heard it)",
+    "n": 20,
+    "mid": 0.0832811423827246,
+    "mid_mag": 0.4770293801297716,
+    "move": 2.5979091942310335,
+    "spread": 5.6412729024887085
+   },
+   {
+    "set": "Prototype 45",
+    "n": 20,
+    "mid": 0.11692081147906601,
+    "mid_mag": 0.5258723765007827,
+    "move": 2.5725543320178987,
+    "spread": 5.236133193969726
+   },
+   {
+    "set": "Prototype 46",
+    "n": 20,
+    "mid": 0.11072098482772282,
+    "mid_mag": 0.5144225255089886,
+    "move": 2.6842414915561674,
+    "spread": 5.812790179252625
+   },
+   {
+    "set": "Prototype 45, all its templates with a Prototype 46 preview",
+    "n": 73,
+    "mid": 0.12484399489152587,
+    "mid_mag": 0.5311957784727793,
+    "move": 2.40152284870409,
+    "spread": 5.1144838267809725
+   },
+   {
+    "set": "Prototype 46, the same templates",
+    "n": 73,
+    "mid": 0.12021441485721698,
+    "mid_mag": 0.5190137110676154,
+    "move": 2.4733023627163613,
+    "spread": 5.657801151275635
+   }
+  ],
+  "pairs": "Prototype 45 to 46, template by template (73): the mid share fell in 51 (by magnitude in 53), the level moves more in 49. Against Prototype 43 (20 templates): Prototype 46 is at or below Prototype 43's mid share in 3.",
+  "p43": {
+   "1": {
+    "mid": 0.041302305002769074,
+    "mid_mag": 0.43916627068767283,
+    "move": 1.754448652267456,
+    "spread": 4.735203266143799
+   },
+   "7": {
+    "mid": 0.06696533735493083,
+    "mid_mag": 0.4861687165882842,
+    "move": 1.6829606294631958,
+    "spread": 5.41972541809082
+   },
+   "13": {
+    "mid": 0.1951998376991986,
+    "mid_mag": 0.5892312217835247,
+    "move": 2.645094156265259,
+    "spread": 5.768042087554932
+   },
+   "22": {
+    "mid": 0.05750674538306129,
+    "mid_mag": 0.44882259667457675,
+    "move": 2.194199800491333,
+    "spread": 5.48854923248291
+   },
+   "26": {
+    "mid": 0.054394392852779805,
+    "mid_mag": 0.4510775809549176,
+    "move": 3.2843916416168213,
+    "spread": 7.111350059509277
+   },
+   "28": {
+    "mid": 0.05000636362012613,
+    "mid_mag": 0.4499845664814191,
+    "move": 2.7508063316345215,
+    "spread": 6.318045616149902
+   },
+   "29": {
+    "mid": 0.07808063827857854,
+    "mid_mag": 0.47034647074521635,
+    "move": 2.153333902359009,
+    "spread": 5.3556809425354
+   },
+   "35": {
+    "mid": 0.11100196839055851,
+    "mid_mag": 0.5172376568649082,
+    "move": 3.1735382080078125,
+    "spread": 6.365771770477295
+   },
+   "38": {
+    "mid": 0.11226873197905475,
+    "mid_mag": 0.5083350546308191,
+    "move": 2.734708309173584,
+    "spread": 5.79689884185791
+   },
+   "45": {
+    "mid": 0.0693592941392967,
+    "mid_mag": 0.43859789350403583,
+    "move": 2.39532470703125,
+    "spread": 6.947484970092773
+   },
+   "47": {
+    "mid": 0.0766688368273574,
+    "mid_mag": 0.45323540625145076,
+    "move": 2.3425533771514893,
+    "spread": 6.067444801330566
+   },
+   "55": {
+    "mid": 0.1393704946367792,
+    "mid_mag": 0.5625712452392951,
+    "move": 3.133216381072998,
+    "spread": 5.5228962898254395
+   },
+   "57": {
+    "mid": 0.09163056548040958,
+    "mid_mag": 0.5226033355568338,
+    "move": 2.6312646865844727,
+    "spread": 5.271143913269043
+   },
+   "65": {
+    "mid": 0.06288580309382853,
+    "mid_mag": 0.4359848547348748,
+    "move": 2.8563404083251953,
+    "spread": 6.06967830657959
+   },
+   "66": {
+    "mid": 0.08678365738165736,
+    "mid_mag": 0.4951193306636076,
+    "move": 2.6307551860809326,
+    "spread": 5.5492401123046875
+   },
+   "67": {
+    "mid": 0.05725867343067325,
+    "mid_mag": 0.4313720489504328,
+    "move": 2.5606138706207275,
+    "spread": 5.533085346221924
+   },
+   "68": {
+    "mid": 0.0895337527093847,
+    "mid_mag": 0.47921919092862514,
+    "move": 2.5038702487945557,
+    "spread": 5.569918155670166
+   },
+   "69": {
+    "mid": 0.07195692534163271,
+    "mid_mag": 0.45311556310330714,
+    "move": 2.889728307723999,
+    "spread": 6.5047807693481445
+   },
+   "79": {
+    "mid": 0.0482133885632018,
+    "mid_mag": 0.40440119958306375,
+    "move": 2.539271354675293,
+    "spread": 5.5899248123168945
+   },
+   "80": {
+    "mid": 0.07216230807913863,
+    "mid_mag": 0.4654805208837443,
+    "move": 2.25992488861084,
+    "spread": 5.05847692489624
+   },
+   "81": {
+    "mid": 0.10055144015280786,
+    "mid_mag": 0.48817231181132265,
+    "move": 2.482083559036255,
+    "spread": 5.5277862548828125
+   },
+   "82": {
+    "mid": 0.08665500037615909,
+    "mid_mag": 0.47953379374668914,
+    "move": 2.763179063796997,
+    "spread": 6.715540409088135
+   },
+   "86": {
+    "mid": 0.07791471733995103,
+    "mid_mag": 0.4696982920027475,
+    "move": 3.723243474960327,
+    "spread": 6.499152660369873
+   },
+   "92": {
+    "mid": 0.10833909129189256,
+    "mid_mag": 0.5234034375540667,
+    "move": 2.615203857421875,
+    "spread": 5.410317897796631
+   },
+   "93": {
+    "mid": 0.10889001788170052,
+    "mid_mag": 0.5164093372303139,
+    "move": 2.5232582092285156,
+    "spread": 5.426211833953857
+   },
+   "94": {
+    "mid": 0.17586233332020246,
+    "mid_mag": 0.5802964208229964,
+    "move": 2.508176326751709,
+    "spread": 5.289377212524414
+   },
+   "95": {
+    "mid": 0.09826770333549427,
+    "mid_mag": 0.515995064829058,
+    "move": 2.5647666454315186,
+    "spread": 5.387656211853027
+   },
+   "96": {
+    "mid": 0.09523392788829561,
+    "mid_mag": 0.505797233926875,
+    "move": 2.5925564765930176,
+    "spread": 5.382692337036133
+   },
+   "102": {
+    "mid": 0.06219992553577352,
+    "mid_mag": 0.4165333339193493,
+    "move": 2.6224958896636963,
+    "spread": 5.7991838455200195
+   },
+   "105": {
+    "mid": 0.064176485228751,
+    "mid_mag": 0.41663666390460596,
+    "move": 3.2751615047454834,
+    "spread": 4.764323711395264
+   }
+  },
+  "p45": {
+   "1": {
+    "mid": 0.06721141519334677,
+    "mid_mag": 0.5522184370938732,
+    "move": 1.3647477626800537,
+    "spread": 4.661123752593994
+   },
+   "2": {
+    "mid": 0.07755696785680967,
+    "mid_mag": 0.5240614498094636,
+    "move": 1.3178715705871582,
+    "spread": 3.8085732460021973
+   },
+   "3": {
+    "mid": 0.07759927413083903,
+    "mid_mag": 0.5290201208978023,
+    "move": 1.5036494731903076,
+    "spread": 5.197543621063232
+   },
+   "4": {
+    "mid": 0.04634873876712445,
+    "mid_mag": 0.45314621212941397,
+    "move": 1.2183829545974731,
+    "spread": 5.3900299072265625
+   },
+   "5": {
+    "mid": 0.11793634858963938,
+    "mid_mag": 0.6505037103056529,
+    "move": 1.256932020187378,
+    "spread": 3.9216158390045166
+   },
+   "7": {
+    "mid": 0.09474465168918324,
+    "mid_mag": 0.5399159390309276,
+    "move": 1.3325282335281372,
+    "spread": 4.509125232696533
+   },
+   "8": {
+    "mid": 0.06444200598943145,
+    "mid_mag": 0.5048061406434422,
+    "move": 1.1886624097824097,
+    "spread": 4.185734748840332
+   },
+   "9": {
+    "mid": 0.023014525742384516,
+    "mid_mag": 0.4101027053143955,
+    "move": 1.3951952457427979,
+    "spread": 3.5398831367492676
+   },
+   "11": {
+    "mid": 0.09220076917366582,
+    "mid_mag": 0.5274980599220088,
+    "move": 1.376032829284668,
+    "spread": 4.505472183227539
+   },
+   "12": {
+    "mid": 0.09866968366098106,
+    "mid_mag": 0.47016488219283487,
+    "move": 2.0134434700012207,
+    "spread": 5.793846607208252
+   },
+   "13": {
+    "mid": 0.18718999981676696,
+    "mid_mag": 0.5814350518640665,
+    "move": 3.2390384674072266,
+    "spread": 6.549783229827881
+   },
+   "14": {
+    "mid": 0.12415938761241205,
+    "mid_mag": 0.5110338683419918,
+    "move": 2.8006839752197266,
+    "spread": 5.893460273742676
+   },
+   "16": {
+    "mid": 0.21351975960732908,
+    "mid_mag": 0.6165673284983668,
+    "move": 2.372854709625244,
+    "spread": 4.8282575607299805
+   },
+   "18": {
+    "mid": 0.18945162459152082,
+    "mid_mag": 0.5461438815768134,
+    "move": 4.061506748199463,
+    "spread": 6.756138801574707
+   },
+   "19": {
+    "mid": 0.25707104581036616,
+    "mid_mag": 0.5760083313175706,
+    "move": 1.9855934381484985,
+    "spread": 4.708950996398926
+   },
+   "20": {
+    "mid": 0.2321745326482088,
+    "mid_mag": 0.5689684430427793,
+    "move": 2.706749439239502,
+    "spread": 5.042190074920654
+   },
+   "21": {
+    "mid": 0.24750391677041653,
+    "mid_mag": 0.6200778533579585,
+    "move": 2.7237930297851562,
+    "spread": 5.793895244598389
+   },
+   "22": {
+    "mid": 0.08064988272291912,
+    "mid_mag": 0.48266556297589075,
+    "move": 1.4954512119293213,
+    "spread": 4.659764766693115
+   },
+   "23": {
+    "mid": 0.15655425014573188,
+    "mid_mag": 0.5621326997468392,
+    "move": 2.6435635089874268,
+    "spread": 5.3422651290893555
+   },
+   "25": {
+    "mid": 0.10253558222462136,
+    "mid_mag": 0.4962044917895056,
+    "move": 2.047851085662842,
+    "spread": 4.815298557281494
+   },
+   "28": {
+    "mid": 0.08625729322359732,
+    "mid_mag": 0.47445651205687556,
+    "move": 2.216590404510498,
+    "spread": 4.415446758270264
+   },
+   "29": {
+    "mid": 0.10540584180196601,
+    "mid_mag": 0.5085266593043104,
+    "move": 2.1551568508148193,
+    "spread": 4.581554889678955
+   },
+   "31": {
+    "mid": 0.12493382344828267,
+    "mid_mag": 0.5048080182802909,
+    "move": 1.6419957876205444,
+    "spread": 4.396404266357422
+   },
+   "33": {
+    "mid": 0.09480802151666608,
+    "mid_mag": 0.5170955857742184,
+    "move": 1.472461462020874,
+    "spread": 4.384167671203613
+   },
+   "34": {
+    "mid": 0.16792739193369288,
+    "mid_mag": 0.5439314400718973,
+    "move": 2.629209518432617,
+    "spread": 5.744356632232666
+   },
+   "35": {
+    "mid": 0.1633202887775838,
+    "mid_mag": 0.6137191885749225,
+    "move": 2.3440985679626465,
+    "spread": 5.43978214263916
+   },
+   "37": {
+    "mid": 0.15000475844756728,
+    "mid_mag": 0.5265891021336095,
+    "move": 2.262308359146118,
+    "spread": 5.409751892089844
+   },
+   "38": {
+    "mid": 0.18126200647311708,
+    "mid_mag": 0.5924516252322477,
+    "move": 2.4114744663238525,
+    "spread": 5.843315124511719
+   },
+   "40": {
+    "mid": 0.1514390257324793,
+    "mid_mag": 0.5591077371054484,
+    "move": 2.6377837657928467,
+    "spread": 5.976293087005615
+   },
+   "41": {
+    "mid": 0.18877841487720387,
+    "mid_mag": 0.6278309151989088,
+    "move": 2.402665853500366,
+    "spread": 5.350829124450684
+   },
+   "42": {
+    "mid": 0.13333114947851477,
+    "mid_mag": 0.5508195722516773,
+    "move": 2.700380563735962,
+    "spread": 5.691796779632568
+   },
+   "43": {
+    "mid": 0.18017819806909277,
+    "mid_mag": 0.5749493060622232,
+    "move": 2.1742119789123535,
+    "spread": 4.955822944641113
+   },
+   "44": {
+    "mid": 0.11362520410834731,
+    "mid_mag": 0.5145715215107405,
+    "move": 3.0441043376922607,
+    "spread": 5.98335075378418
+   },
+   "45": {
+    "mid": 0.08626296059634599,
+    "mid_mag": 0.45989115921210416,
+    "move": 2.2237331867218018,
+    "spread": 5.577593803405762
+   },
+   "47": {
+    "mid": 0.10954866472281491,
+    "mid_mag": 0.49799730989950547,
+    "move": 2.6413073539733887,
+    "spread": 5.279788970947266
+   },
+   "49": {
+    "mid": 0.09162148313598056,
+    "mid_mag": 0.46317105443381995,
+    "move": 2.490617513656616,
+    "spread": 5.877366065979004
+   },
+   "51": {
+    "mid": 0.1301260755404186,
+    "mid_mag": 0.5360954144108061,
+    "move": 2.2035281658172607,
+    "spread": 5.959488868713379
+   },
+   "52": {
+    "mid": 0.1218814918289729,
+    "mid_mag": 0.5193849288747638,
+    "move": 2.603482246398926,
+    "spread": 5.2355170249938965
+   },
+   "54": {
+    "mid": 0.09658379188340745,
+    "mid_mag": 0.4702177942045983,
+    "move": 2.575655937194824,
+    "spread": 5.827337741851807
+   },
+   "55": {
+    "mid": 0.13384917442824454,
+    "mid_mag": 0.5328014856434564,
+    "move": 2.7552433013916016,
+    "spread": 4.860766887664795
+   },
+   "56": {
+    "mid": 0.1481175020581721,
+    "mid_mag": 0.544741258198609,
+    "move": 2.638798713684082,
+    "spread": 4.645949840545654
+   },
+   "58": {
+    "mid": 0.16634926650844836,
+    "mid_mag": 0.6081997725300673,
+    "move": 2.7510056495666504,
+    "spread": 5.68824577331543
+   },
+   "59": {
+    "mid": 0.14039406397450063,
+    "mid_mag": 0.571324415317052,
+    "move": 3.2757439613342285,
+    "spread": 6.4120683670043945
+   },
+   "60": {
+    "mid": 0.1348822968673594,
+    "mid_mag": 0.5422083232004324,
+    "move": 2.3786351680755615,
+    "spread": 4.844531059265137
+   },
+   "61": {
+    "mid": 0.13207026297087185,
+    "mid_mag": 0.5176699793479698,
+    "move": 2.724959135055542,
+    "spread": 4.8190484046936035
+   },
+   "63": {
+    "mid": 0.13711879403409796,
+    "mid_mag": 0.564370174134613,
+    "move": 2.6084437370300293,
+    "spread": 4.775604248046875
+   },
+   "65": {
+    "mid": 0.08406441555395024,
+    "mid_mag": 0.45943464135833634,
+    "move": 2.655846357345581,
+    "spread": 5.641692638397217
+   },
+   "66": {
+    "mid": 0.09145673904198123,
+    "mid_mag": 0.5002194460255442,
+    "move": 2.5731537342071533,
+    "spread": 4.726833820343018
+   },
+   "67": {
+    "mid": 0.07458802942332295,
+    "mid_mag": 0.4478309596229945,
+    "move": 2.9961352348327637,
+    "spread": 5.802236557006836
+   },
+   "68": {
+    "mid": 0.21717634162247104,
+    "mid_mag": 0.5845630697787878,
+    "move": 2.307074546813965,
+    "spread": 4.64908504486084
+   },
+   "69": {
+    "mid": 0.10613696963962926,
+    "mid_mag": 0.504789685686039,
+    "move": 2.9240636825561523,
+    "spread": 5.867341995239258
+   },
+   "73": {
+    "mid": 0.1540479214645832,
+    "mid_mag": 0.5226397170929974,
+    "move": 2.3331024646759033,
+    "spread": 4.838035583496094
+   },
+   "75": {
+    "mid": 0.1517071842605436,
+    "mid_mag": 0.5240079709687557,
+    "move": 2.4739809036254883,
+    "spread": 3.8736283779144287
+   },
+   "76": {
+    "mid": 0.20316097896300486,
+    "mid_mag": 0.5959508435166415,
+    "move": 2.1484615802764893,
+    "spread": 4.352542400360107
+   },
+   "77": {
+    "mid": 0.09302105185640853,
+    "mid_mag": 0.4844111193577993,
+    "move": 2.6923940181732178,
+    "spread": 5.413913726806641
+   },
+   "80": {
+    "mid": 0.1123908371758168,
+    "mid_mag": 0.5089318383714045,
+    "move": 2.328413724899292,
+    "spread": 4.607504844665527
+   },
+   "81": {
+    "mid": 0.10045669815363593,
+    "mid_mag": 0.507503121216515,
+    "move": 2.6723697185516357,
+    "spread": 4.940646171569824
+   },
+   "82": {
+    "mid": 0.0995656573845703,
+    "mid_mag": 0.4980491025294757,
+    "move": 3.047150135040283,
+    "spread": 6.3115234375
+   },
+   "85": {
+    "mid": 0.10881400479073014,
+    "mid_mag": 0.5059975110749368,
+    "move": 2.8393399715423584,
+    "spread": 4.995082855224609
+   },
+   "88": {
+    "mid": 0.11133196569304446,
+    "mid_mag": 0.5113141468392388,
+    "move": 3.428473472595215,
+    "spread": 5.327579498291016
+   },
+   "89": {
+    "mid": 0.1121384629571363,
+    "mid_mag": 0.5323872704141943,
+    "move": 2.7721829414367676,
+    "spread": 4.979541778564453
+   },
+   "92": {
+    "mid": 0.15879453688146009,
+    "mid_mag": 0.6026786938138361,
+    "move": 2.6916964054107666,
+    "spread": 5.655307769775391
+   },
+   "93": {
+    "mid": 0.14923470973457176,
+    "mid_mag": 0.5799360113737657,
+    "move": 2.6373329162597656,
+    "spread": 5.790622234344482
+   },
+   "94": {
+    "mid": 0.16867025315531178,
+    "mid_mag": 0.6116322161880363,
+    "move": 2.7398788928985596,
+    "spread": 5.469505786895752
+   },
+   "95": {
+    "mid": 0.1394962160324418,
+    "mid_mag": 0.5798192621080834,
+    "move": 2.623239517211914,
+    "spread": 5.559887886047363
+   },
+   "96": {
+    "mid": 0.14191461965031793,
+    "mid_mag": 0.5830939064069874,
+    "move": 2.745836019515991,
+    "spread": 5.581094741821289
+   },
+   "97": {
+    "mid": 0.09890131717795865,
+    "mid_mag": 0.5125767121998767,
+    "move": 3.450911045074463,
+    "spread": 5.7772345542907715
+   },
+   "101": {
+    "mid": 0.17557043055253124,
+    "mid_mag": 0.6201309428273757,
+    "move": 2.6093409061431885,
+    "spread": 5.4847612380981445
+   },
+   "102": {
+    "mid": 0.08165306182088397,
+    "mid_mag": 0.4464691121771362,
+    "move": 3.2477266788482666,
+    "spread": 5.3621344566345215
+   },
+   "103": {
+    "mid": 0.09533048856285763,
+    "mid_mag": 0.48241846369068775,
+    "move": 3.4818036556243896,
+    "spread": 5.897839069366455
+   },
+   "104": {
+    "mid": 0.1091362130049174,
+    "mid_mag": 0.5142637283273096,
+    "move": 2.3177051544189453,
+    "spread": 5.330167770385742
+   },
+   "105": {
+    "mid": 0.08893294191166921,
+    "mid_mag": 0.4798580947182188,
+    "move": 4.044447898864746,
+    "spread": 5.475525379180908
+   },
+   "106": {
+    "mid": 0.16842457000260655,
+    "mid_mag": 0.5823902031660166,
+    "move": 2.6741414070129395,
+    "spread": 5.32586145401001
+   },
+   "107": {
+    "mid": 0.17711120729497787,
+    "mid_mag": 0.6214502179406002,
+    "move": 1.1670082807540894,
+    "spread": 3.738301992416382
+   },
+   "108": {
+    "mid": 0.1636001172993869,
+    "mid_mag": 0.6072319201468143,
+    "move": 1.0102981328964233,
+    "spread": 3.9063804149627686
+   },
+   "109": {
+    "mid": 0.15000160588988523,
+    "mid_mag": 0.5844552293369579,
+    "move": 0.9046429395675659,
+    "spread": 4.81403112411499
+   },
+   "110": {
+    "mid": 0.09614918203780656,
+    "mid_mag": 0.5001682593435257,
+    "move": 3.4476001262664795,
+    "spread": 6.211915969848633
+   },
+   "111": {
+    "mid": 0.086229349664184,
+    "mid_mag": 0.5038968152301029,
+    "move": 4.122547149658203,
+    "spread": 5.512735366821289
+   },
+   "112": {
+    "mid": 0.11475999291171285,
+    "mid_mag": 0.5408245797387171,
+    "move": 2.653190851211548,
+    "spread": 4.935579299926758
+   },
+   "113": {
+    "mid": 0.10779191187193128,
+    "mid_mag": 0.5073899253673594,
+    "move": 2.939828634262085,
+    "spread": 4.8524017333984375
+   },
+   "114": {
+    "mid": 0.11565115704809,
+    "mid_mag": 0.5173107031731455,
+    "move": 2.817445993423462,
+    "spread": 5.086084842681885
+   },
+   "115": {
+    "mid": 0.08942180404783473,
+    "mid_mag": 0.49112058633124583,
+    "move": 2.586475133895874,
+    "spread": 5.521266937255859
+   },
+   "116": {
+    "mid": 0.1362519998819462,
+    "mid_mag": 0.5388313771733556,
+    "move": 2.2117905616760254,
+    "spread": 4.588967800140381
+   },
+   "117": {
+    "mid": 0.18557003469810565,
+    "mid_mag": 0.5704720714997268,
+    "move": 2.694542407989502,
+    "spread": 5.550198078155518
+   },
+   "118": {
+    "mid": 0.09116796212646314,
+    "mid_mag": 0.4722694735681902,
+    "move": 2.442417860031128,
+    "spread": 5.877073764801025
+   },
+   "119": {
+    "mid": 0.1738595253867821,
+    "mid_mag": 0.5333609059785355,
+    "move": 1.8990060091018677,
+    "spread": 5.198586463928223
+   },
+   "120": {
+    "mid": 0.05523064697302333,
+    "mid_mag": 0.4387950505802143,
+    "move": 2.355525493621826,
+    "spread": 5.267009258270264
+   },
+   "121": {
+    "mid": 0.060014469457664296,
+    "mid_mag": 0.5481919518634113,
+    "move": 1.7016438245773315,
+    "spread": 4.784304141998291
+   },
+   "122": {
+    "mid": 0.058983789422927216,
+    "mid_mag": 0.5190341341129637,
+    "move": 1.3420186042785645,
+    "spread": 4.954733371734619
+   },
+   "123": {
+    "mid": 0.18630038375517843,
+    "mid_mag": 0.612272004199035,
+    "move": 1.8767445087432861,
+    "spread": 4.318462371826172
+   },
+   "124": {
+    "mid": 0.07115270481088824,
+    "mid_mag": 0.4122993977139395,
+    "move": 2.698986768722534,
+    "spread": 4.841131210327148
+   },
+   "125": {
+    "mid": 0.07158528693812614,
+    "mid_mag": 0.46389209609570076,
+    "move": 3.3619065284729004,
+    "spread": 5.235705375671387
+   },
+   "126": {
+    "mid": 0.14971601768151757,
+    "mid_mag": 0.5530042021460226,
+    "move": 2.322615385055542,
+    "spread": 5.586813449859619
+   },
+   "127": {
+    "mid": 0.08367463175842513,
+    "mid_mag": 0.48485804453106723,
+    "move": 2.1134393215179443,
+    "spread": 4.488689422607422
+   },
+   "128": {
+    "mid": 0.20039673038600328,
+    "mid_mag": 0.599644070149958,
+    "move": 2.790550470352173,
+    "spread": 5.293670177459717
+   },
+   "129": {
+    "mid": 0.04915740765728414,
+    "mid_mag": 0.4962197476695658,
+    "move": 1.2685751914978027,
+    "spread": 4.754832744598389
+   }
+  },
+  "p46": {
+   "1": {
+    "mid": 0.06040976985759339,
+    "mid_mag": 0.5102465530533575,
+    "move": 1.3171323537826538,
+    "spread": 4.76893949508667
+   },
+   "2": {
+    "mid": 0.05637557343593423,
+    "mid_mag": 0.4960224253310784,
+    "move": 1.437882423400879,
+    "spread": 4.539987087249756
+   },
+   "3": {
+    "mid": 0.07503799728251181,
+    "mid_mag": 0.5237480228189241,
+    "move": 1.4934982061386108,
+    "spread": 5.064268112182617
+   },
+   "4": {
+    "mid": 0.04492116788652521,
+    "mid_mag": 0.43946714665219516,
+    "move": 1.1666169166564941,
+    "spread": 5.129836559295654
+   },
+   "5": {
+    "mid": 0.11236587886525662,
+    "mid_mag": 0.6400637316531838,
+    "move": 1.2776116132736206,
+    "spread": 4.206739902496338
+   },
+   "6": {
+    "mid": 0.031569212154629586,
+    "mid_mag": 0.43510155346147644,
+    "move": 1.402909278869629,
+    "spread": 5.485281944274902
+   },
+   "7": {
+    "mid": 0.0786970493886863,
+    "mid_mag": 0.5238745587144112,
+    "move": 1.3901751041412354,
+    "spread": 4.838728904724121
+   },
+   "8": {
+    "mid": 0.04316474974051524,
+    "mid_mag": 0.38643560981814257,
+    "move": 1.361065149307251,
+    "spread": 7.024374961853027
+   },
+   "11": {
+    "mid": 0.08344561781299176,
+    "mid_mag": 0.5137790655394889,
+    "move": 1.326115608215332,
+    "spread": 4.655752658843994
+   },
+   "12": {
+    "mid": 0.07348454968767083,
+    "mid_mag": 0.42775419233355483,
+    "move": 2.156775712966919,
+    "spread": 7.949333667755127
+   },
+   "14": {
+    "mid": 0.11226250430966138,
+    "mid_mag": 0.4815945014145386,
+    "move": 2.8587474822998047,
+    "spread": 7.326449394226074
+   },
+   "16": {
+    "mid": 0.20269001311611565,
+    "mid_mag": 0.5646886740820909,
+    "move": 2.8555421829223633,
+    "spread": 6.702175140380859
+   },
+   "17": {
+    "mid": 0.2070751874656761,
+    "mid_mag": 0.5671198595693591,
+    "move": 2.8439559936523438,
+    "spread": 6.203390598297119
+   },
+   "19": {
+    "mid": 0.2542383083666093,
+    "mid_mag": 0.5768064934596773,
+    "move": 1.9664229154586792,
+    "spread": 4.496061325073242
+   },
+   "20": {
+    "mid": 0.24862540904467265,
+    "mid_mag": 0.5711196518028427,
+    "move": 2.683881998062134,
+    "spread": 6.66839599609375
+   },
+   "21": {
+    "mid": 0.24973261601719965,
+    "mid_mag": 0.6225634342509313,
+    "move": 2.876739501953125,
+    "spread": 8.3654146194458
+   },
+   "24": {
+    "mid": 0.07459603551050918,
+    "mid_mag": 0.45033426051214165,
+    "move": 2.234330654144287,
+    "spread": 5.615225315093994
+   },
+   "25": {
+    "mid": 0.10271981809644369,
+    "mid_mag": 0.494111572578494,
+    "move": 2.028197765350342,
+    "spread": 4.66947078704834
+   },
+   "26": {
+    "mid": 0.05480580283943274,
+    "mid_mag": 0.44628159008083584,
+    "move": 2.2962725162506104,
+    "spread": 5.192826271057129
+   },
+   "28": {
+    "mid": 0.0706431245202114,
+    "mid_mag": 0.45977715111537437,
+    "move": 2.2205076217651367,
+    "spread": 4.787951469421387
+   },
+   "29": {
+    "mid": 0.09997572828600639,
+    "mid_mag": 0.4992803585846737,
+    "move": 2.129544734954834,
+    "spread": 4.554544925689697
+   },
+   "30": {
+    "mid": 0.06977057989647183,
+    "mid_mag": 0.44584911484167505,
+    "move": 2.338775873184204,
+    "spread": 5.011170387268066
+   },
+   "31": {
+    "mid": 0.10334021501312322,
+    "mid_mag": 0.49009442921908847,
+    "move": 1.7011594772338867,
+    "spread": 4.840803146362305
+   },
+   "32": {
+    "mid": 0.06955634265105338,
+    "mid_mag": 0.4182830247658573,
+    "move": 2.2051801681518555,
+    "spread": 4.783831596374512
+   },
+   "33": {
+    "mid": 0.09249008297648206,
+    "mid_mag": 0.5081652484708019,
+    "move": 1.4246639013290405,
+    "spread": 4.347121238708496
+   },
+   "34": {
+    "mid": 0.16656589294322968,
+    "mid_mag": 0.5428297768157017,
+    "move": 2.5804972648620605,
+    "spread": 5.5734171867370605
+   },
+   "35": {
+    "mid": 0.1556692269719525,
+    "mid_mag": 0.6073584905864864,
+    "move": 2.5328872203826904,
+    "spread": 5.567006587982178
+   },
+   "36": {
+    "mid": 0.15554105110532543,
+    "mid_mag": 0.5310745898662852,
+    "move": 2.7956342697143555,
+    "spread": 5.8575520515441895
+   },
+   "38": {
+    "mid": 0.17453997317964196,
+    "mid_mag": 0.5944514035695605,
+    "move": 2.404038906097412,
+    "spread": 8.182241439819336
+   },
+   "40": {
+    "mid": 0.15185506399048995,
+    "mid_mag": 0.5573604905402245,
+    "move": 2.5672404766082764,
+    "spread": 5.868662357330322
+   },
+   "41": {
+    "mid": 0.18712993072544298,
+    "mid_mag": 0.6209025004602037,
+    "move": 2.718613862991333,
+    "spread": 5.686424255371094
+   },
+   "43": {
+    "mid": 0.20384280277316816,
+    "mid_mag": 0.5783506650622912,
+    "move": 2.2240712642669678,
+    "spread": 4.712759494781494
+   },
+   "44": {
+    "mid": 0.1713234486257512,
+    "mid_mag": 0.5661139644067625,
+    "move": 2.6170315742492676,
+    "spread": 8.12504768371582
+   },
+   "55": {
+    "mid": 0.12291911466141148,
+    "mid_mag": 0.5145036550324584,
+    "move": 2.8945834636688232,
+    "spread": 5.854493618011475
+   },
+   "57": {
+    "mid": 0.12375934378937592,
+    "mid_mag": 0.5590618671061222,
+    "move": 2.827983856201172,
+    "spread": 5.544986724853516
+   },
+   "58": {
+    "mid": 0.15504868905871577,
+    "mid_mag": 0.5947220335508911,
+    "move": 3.0381548404693604,
+    "spread": 6.361886501312256
+   },
+   "60": {
+    "mid": 0.12925680462795786,
+    "mid_mag": 0.5290299902955071,
+    "move": 2.449064254760742,
+    "spread": 4.878015995025635
+   },
+   "61": {
+    "mid": 0.12471942970491467,
+    "mid_mag": 0.5010974273469545,
+    "move": 2.8573193550109863,
+    "spread": 5.028451919555664
+   },
+   "62": {
+    "mid": 0.1547247009214731,
+    "mid_mag": 0.5505143577320487,
+    "move": 2.724971055984497,
+    "spread": 6.572681427001953
+   },
+   "63": {
+    "mid": 0.1293695799663855,
+    "mid_mag": 0.5173978155118817,
+    "move": 2.659895658493042,
+    "spread": 5.433600902557373
+   },
+   "65": {
+    "mid": 0.08340203728087969,
+    "mid_mag": 0.4586744824614927,
+    "move": 2.6682095527648926,
+    "spread": 5.609986305236816
+   },
+   "66": {
+    "mid": 0.08554956187964786,
+    "mid_mag": 0.49156241929274475,
+    "move": 2.7851030826568604,
+    "spread": 4.886760234832764
+   },
+   "67": {
+    "mid": 0.07664837262254433,
+    "mid_mag": 0.44758688166274263,
+    "move": 2.989176034927368,
+    "spread": 5.73326301574707
+   },
+   "68": {
+    "mid": 0.20154330771936338,
+    "mid_mag": 0.5593803872562911,
+    "move": 2.5980234146118164,
+    "spread": 6.33146858215332
+   },
+   "69": {
+    "mid": 0.10538634223594529,
+    "mid_mag": 0.504238430849346,
+    "move": 2.9232795238494873,
+    "spread": 5.8163347244262695
+   },
+   "71": {
+    "mid": 0.06122291218967879,
+    "mid_mag": 0.42360515067774135,
+    "move": 2.905594825744629,
+    "spread": 5.132469177246094
+   },
+   "73": {
+    "mid": 0.15247583412812035,
+    "mid_mag": 0.5180723032401838,
+    "move": 2.495467185974121,
+    "spread": 6.584238529205322
+   },
+   "74": {
+    "mid": 0.19252569364720287,
+    "mid_mag": 0.5364210778361104,
+    "move": 2.1776957511901855,
+    "spread": 4.892066478729248
+   },
+   "76": {
+    "mid": 0.20608057220591722,
+    "mid_mag": 0.5814285787468843,
+    "move": 2.148930788040161,
+    "spread": 4.743836879730225
+   },
+   "77": {
+    "mid": 0.09252013332117194,
+    "mid_mag": 0.49337346748754635,
+    "move": 2.3032190799713135,
+    "spread": 5.3943071365356445
+   },
+   "79": {
+    "mid": 0.054958686315087144,
+    "mid_mag": 0.4135679321087508,
+    "move": 2.5251846313476562,
+    "spread": 5.062620162963867
+   },
+   "80": {
+    "mid": 0.09814956491627924,
+    "mid_mag": 0.46190944062609574,
+    "move": 2.503350019454956,
+    "spread": 6.501308441162109
+   },
+   "81": {
+    "mid": 0.0975401262415205,
+    "mid_mag": 0.5053951164647446,
+    "move": 2.7298450469970703,
+    "spread": 4.9714531898498535
+   },
+   "82": {
+    "mid": 0.10157461792480765,
+    "mid_mag": 0.4990267523366663,
+    "move": 3.068193197250366,
+    "spread": 6.309863090515137
+   },
+   "83": {
+    "mid": 0.11779682999847316,
+    "mid_mag": 0.5259588947424558,
+    "move": 2.631396532058716,
+    "spread": 5.516132831573486
+   },
+   "84": {
+    "mid": 0.09673793301431341,
+    "mid_mag": 0.49578801349991525,
+    "move": 3.1831214427948,
+    "spread": 7.105912685394287
+   },
+   "85": {
+    "mid": 0.10616654272506751,
+    "mid_mag": 0.5075542194024772,
+    "move": 2.946465492248535,
+    "spread": 5.060309410095215
+   },
+   "86": {
+    "mid": 0.07468824152399811,
+    "mid_mag": 0.4690163828420453,
+    "move": 3.616602659225464,
+    "spread": 5.722393035888672
+   },
+   "87": {
+    "mid": 0.09717427207522356,
+    "mid_mag": 0.49516191121675135,
+    "move": 3.75831937789917,
+    "spread": 5.702757835388184
+   },
+   "88": {
+    "mid": 0.13727835803629598,
+    "mid_mag": 0.5437914536085328,
+    "move": 2.8600118160247803,
+    "spread": 5.6808695793151855
+   },
+   "89": {
+    "mid": 0.10523854558929985,
+    "mid_mag": 0.5185738229976923,
+    "move": 2.91387677192688,
+    "spread": 5.94377326965332
+   },
+   "91": {
+    "mid": 0.11129667032353494,
+    "mid_mag": 0.5185211955238942,
+    "move": 2.7789194583892822,
+    "spread": 5.644723892211914
+   },
+   "92": {
+    "mid": 0.1327246572044356,
+    "mid_mag": 0.5683836763732693,
+    "move": 3.1318163871765137,
+    "spread": 5.992453098297119
+   },
+   "93": {
+    "mid": 0.16428331269542182,
+    "mid_mag": 0.5671260709168248,
+    "move": 2.937784433364868,
+    "spread": 7.93797492980957
+   },
+   "96": {
+    "mid": 0.13447482321160376,
+    "mid_mag": 0.5729151086825008,
+    "move": 3.0774049758911133,
+    "spread": 6.8697943687438965
+   },
+   "97": {
+    "mid": 0.09416292194393427,
+    "mid_mag": 0.5007119527141795,
+    "move": 3.6805009841918945,
+    "spread": 6.224728107452393
+   },
+   "98": {
+    "mid": 0.13702222896878846,
+    "mid_mag": 0.5466366938658961,
+    "move": 2.870008945465088,
+    "spread": 5.898706436157227
+   },
+   "99": {
+    "mid": 0.15814109125067724,
+    "mid_mag": 0.5895913681838423,
+    "move": 2.7987897396087646,
+    "spread": 5.975539207458496
+   },
+   "102": {
+    "mid": 0.08054993385528411,
+    "mid_mag": 0.46120467237964635,
+    "move": 3.370358467102051,
+    "spread": 5.322865962982178
+   },
+   "103": {
+    "mid": 0.09710557680829592,
+    "mid_mag": 0.4814417914308657,
+    "move": 3.477400541305542,
+    "spread": 5.831575870513916
+   },
+   "104": {
+    "mid": 0.12060619766211406,
+    "mid_mag": 0.5469982352257214,
+    "move": 2.3196144104003906,
+    "spread": 5.133546829223633
+   },
+   "105": {
+    "mid": 0.08973905190121967,
+    "mid_mag": 0.48155490022108377,
+    "move": 4.013416290283203,
+    "spread": 5.418371200561523
+   },
+   "108": {
+    "mid": 0.1562884040900534,
+    "mid_mag": 0.5830975388208509,
+    "move": 1.137317419052124,
+    "spread": 5.395659923553467
+   },
+   "109": {
+    "mid": 0.14785438325807368,
+    "mid_mag": 0.5697411440535001,
+    "move": 0.9814589023590088,
+    "spread": 5.887744903564453
+   },
+   "110": {
+    "mid": 0.09290804622620374,
+    "mid_mag": 0.4958250086237289,
+    "move": 3.392951011657715,
+    "spread": 6.15260124206543
+   },
+   "111": {
+    "mid": 0.08695801355825662,
+    "mid_mag": 0.505181243253298,
+    "move": 4.117688179016113,
+    "spread": 5.427958965301514
+   },
+   "112": {
+    "mid": 0.14057362675540663,
+    "mid_mag": 0.5508868897330299,
+    "move": 2.5754499435424805,
+    "spread": 4.825943470001221
+   },
+   "113": {
+    "mid": 0.10133877443623537,
+    "mid_mag": 0.5107622372400856,
+    "move": 3.197227716445923,
+    "spread": 4.900789260864258
+   },
+   "114": {
+    "mid": 0.11155446877064527,
+    "mid_mag": 0.5119572152463862,
+    "move": 2.848036289215088,
+    "spread": 5.045511722564697
+   },
+   "115": {
+    "mid": 0.07949610422983562,
+    "mid_mag": 0.5009686953091582,
+    "move": 2.83947491645813,
+    "spread": 5.907516956329346
+   },
+   "116": {
+    "mid": 0.12205997227004353,
+    "mid_mag": 0.5168234533811195,
+    "move": 2.307328462600708,
+    "spread": 4.680746078491211
+   },
+   "117": {
+    "mid": 0.1637362190945297,
+    "mid_mag": 0.5484378102016761,
+    "move": 3.1810407638549805,
+    "spread": 6.47076940536499
+   },
+   "119": {
+    "mid": 0.067260390286919,
+    "mid_mag": 0.42664964273998823,
+    "move": 2.1545050144195557,
+    "spread": 5.879390716552734
+   },
+   "120": {
+    "mid": 0.05568219888935348,
+    "mid_mag": 0.4446825677544222,
+    "move": 2.324303150177002,
+    "spread": 5.29538106918335
+   },
+   "122": {
+    "mid": 0.03072209746316542,
+    "mid_mag": 0.3630450577874805,
+    "move": 1.4176678657531738,
+    "spread": 6.691076278686523
+   },
+   "123": {
+    "mid": 0.18324674736518942,
+    "mid_mag": 0.6069170680832585,
+    "move": 1.9047508239746094,
+    "spread": 4.255467414855957
+   },
+   "124": {
+    "mid": 0.07235382701577676,
+    "mid_mag": 0.4122694727759561,
+    "move": 2.656743288040161,
+    "spread": 4.857475280761719
+   },
+   "125": {
+    "mid": 0.07199892117305604,
+    "mid_mag": 0.45873194362715775,
+    "move": 3.5057826042175293,
+    "spread": 5.687852382659912
+   },
+   "126": {
+    "mid": 0.15137715596631612,
+    "mid_mag": 0.5401698545341489,
+    "move": 2.468008518218994,
+    "spread": 6.970100402832031
+   },
+   "127": {
+    "mid": 0.0872525736678332,
+    "mid_mag": 0.49120467074952134,
+    "move": 2.126272678375244,
+    "spread": 4.328206539154053
+   },
+   "128": {
+    "mid": 0.19386933749782562,
+    "mid_mag": 0.5940513191249105,
+    "move": 2.8898632526397705,
+    "spread": 5.428135871887207
+   },
+   "129": {
+    "mid": 0.059060499519678025,
+    "mid_mag": 0.5319828764469385,
+    "move": 1.3680753707885742,
+    "spread": 4.423716068267822
+   },
+   "130": {
+    "mid": 0.11645909859899481,
+    "mid_mag": 0.5134116884360712,
+    "move": 3.341411828994751,
+    "spread": 7.264530658721924
+   },
+   "131": {
+    "mid": 0.08658381167278105,
+    "mid_mag": 0.4735076739848686,
+    "move": 3.145392656326294,
+    "spread": 5.0721564292907715
+   },
+   "132": {
+    "mid": 0.09258455137715511,
+    "mid_mag": 0.4974864300067532,
+    "move": 3.237715482711792,
+    "spread": 6.186940670013428
+   }
+  }
+ }
+}

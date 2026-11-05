@@ -1,5 +1,19 @@
 # Changelog
 
+## Prototype 46
+From your 120 notes in the music guide and the tunes you named in chat: space in the mix, melodies that mean it, and no more drone or shaker. Races are unchanged.
+- **The synth drone is gone from under the drops.** It was the pad, a held chord under everything. It now holds under a drop only in the tunes you said could keep it (Hard Pressure, Modal Friction, Tape Haze, Tabla Psy, plus Rain Glass, Glass Coast, Double Kick's strings and Deep Shuffle at half level). Elsewhere it plays only in breakdowns and builds, and not even there when the keys play. Iron Lung gets a quiet pluck pulse in its place, Melancholy Chaos quiet piano broken chords.
+- **No more shaker.** It's gone from every drum style, and nothing new fills its space. Percussion plays in 11 tunes, mostly ones you praised. Mentasm keeps its shaker at a quarter of the volume. The agogo bells (the "classic bit") stay in Talk Box only.
+- **Melodies repeat on purpose:** a short phrase and its answer, landing on the chord's notes on the strong beats (19 tunes, and the sitar, sax, bansuri and erhu lines). Riffs follow the chords. Only 3 solos are left, and only 5 tunes use the sitar. Breakdown chords now hold until the next chord instead of clashing with it (the "headbutting" in Rhodes Swing, Yah-Yah Funk and Velvet 120).
+- **More space:** fewer parts at once (1.8 in a drop, was 2.4), everything but the bass cut below about 200 Hz (and the reverb and echo), and the accompanying arpeggios rest through the first half of a drop.
+- **Tabla bols:** the announcer speaks, then the tabla answers loud and almost alone, twice in a row with a short break, a tihai the second time. Still about once an hour.
+- **Retired (26):** all dubstep, the jazz pair, Stadium Anthem, Erhu Drift, Melodic Ruins, Rave Rush, Sitar Smoke, Sax Overtake, Two-Octave Bend, Thirty-Two Bars and the ones you didn't like (Euro Vocal Pluck, JP Ninety, Brass Octaves, Organ Bounce, Slap Shot, Work Groove, Amp Sim 84, Harp Uplift). Their codes still play. The Dubstep genre switch is gone. 95 tunes are in rotation.
+- **Your list:** Lightspeed without the clocks and chimes and with a quieter bass, Sugar Rush led by its piano, Jungle Keys' piano louder, Peak Time's stabs up, Deep Shuffle's chords down, Pedal Pluck faster, Midnight Wave without the chimes, Glass Coast without the high horn (the wash stays), Tape Haze without the squeal and the long "doooo", Liquid Erhu without the whine, Wobble Classic without the wubs, Wet Asphalt cleaner, and Hang Garden plays the amen on the hang drum. The tunes on your keep list only got the general fixes.
+- **New (3), from your new guides:** Omni Piano (piano with a counter-melody), Hi-Tech Run (188 bpm psy) and Trance Roller.
+- **Deleted sounds:** the "tsshh" hat, the clock ticks, the squeal, the tambourines and the shakers (about 43 KB out of the page, 24 shaker recordings out of the library).
+- **Checked before you hear it** (the fatigue audit, `tools/music/p46/fatigue_audit.md`): every sound's share of tunes and of each tune. Nothing is in more than a quarter of the tunes or plays through most of one (Prototype 45 had 34 such flags). A pad under the drops went from 66% of tunes to 8%, percussion from 100% to 12%. The middle of the sound is less full than in Prototype 45 but still a little fuller than Prototype 43, and the level moves more than in either. Rare touches have a budget per hour: bols 1, the "do do do" hook about 0.6, washes about 2.
+- Races are unchanged: the simulator gives the same results race for race, so the board era stays 45. Public rooms are named for version 46, since the music in a room must match.
+
 ## Prototype 45
 From your listening notes, your master guide and your race logs: a new sound for every genre, a radio that learns, and the race fixes you asked for. Nobody has heard the new music yet, me included; start with the Prototype 45 section of the music guide.
 

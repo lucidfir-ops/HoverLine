@@ -1,4 +1,6 @@
-# Music tools (Prototype 43, and Prototype 45 in `p45/`)
+# Music tools (Prototype 43, Prototype 45 in `p45/`, Prototype 46 in `p46/`)
+
+`p46/` is the Prototype 46 round: `src/` (make_patch.py builds the patch against Prototype 45; spec.py has the 132 templates), `tools/` (adds probe.js, fatigue.py, fatigue_report.py, spectrum_cmp.py, find.py), `catalogue.json` and the fatigue audit (`fatigue_audit.md`, `.json`). Run the audit before any music change ships.
 
 `p45/` holds the Prototype 45 music patch's sources (`src/`: make_patch.py, spec.py with the 129 templates, the data and method blocks, trims.json), its tools (`tools/`: fingerprints, previews, levels and trims, Pregen, rooms, bols, the library page test) and `catalogue.json`; `docs/music-templates.md` is its catalogue. The patch was built against Prototype 44 plus the sample library (`tools/samples/`) and the synths (`tools/synths/`).
 

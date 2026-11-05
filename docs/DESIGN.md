@@ -270,6 +270,18 @@ The call is spoken when the bols are in samples/vox-bols (one FLAC per bol: dha,
 - Pregen renders a tune before the race, as before: now the tune that race opens with.
 - Songs mode is unchanged.
 
+## Song templates (Prototype 46)
+
+Eric's 120 notes on the Prototype 45 previews had three themes: a "synth drone" (36 notes), random-sounding melodies (29) and the shaker (16), with "you feel the need to fill every frequency channel at all times" behind all three. This round takes things away.
+
+- **Pads:** a held pad under a drop only where Eric allowed it (Hard Pressure, Modal Friction, Tape Haze, Tabla Psy, Rain Glass, Glass Coast, Double Kick's strings, Deep Shuffle at half level). Elsewhere pads carry the chords only in breakdowns and builds, and step aside when the keys play.
+- **Percussion layers:** none in the drum languages; only a template's own list adds one (11 templates). No shaker lane anywhere; Mentasm's shaker at a quarter.
+- **Melodies:** the motif writer: one rhythm per phrase, chord tones on beats 1 and 3, steps between, a statement and its answer. Riffs move along the scale with the chords. Solos are rare (3). Breakdown chords hold until the next chord.
+- **Space:** pad, keys, arpeggio and answer parts are high-passed at 180 to 220 Hz in drops (opened up in breakdowns), and so are the reverb and echo returns. Accompanying arpeggios rest through the first half of a drop.
+- **Tabla bols:** call and answer twice (the second a tihai); the answer has its own bus at about drop level (-22 dB) while the rest of the music nearly stops. About once an hour of play (`TBOLP`).
+- **Retired:** dubstep (the genre switch too), the jazz pair and the templates Eric buried or disliked; codes still play. 95 templates in rotation, 3 new from the trance/psy and atmospheric piano guides.
+- **The fatigue audit** (`tools/music/p46/fatigue.py`, `fatigue_report.py`; the report is `tools/music/p46/fatigue_audit.md`): every template, two seeds, 100 s after GO, every sound recorded. A sound is flagged when more than a quarter of the templates use it, or when it sounds through most of a tune (a background sound over half its beats, a featured part over 85%). Drums, build furniture and the bass voice are listed apart. Rare events get a budget per hour from 12 hours of radio. Run it before every music change ships, and fix what it flags: Eric asked for exactly this ("check your work before submitting to ensure you haven't become fixated on something new").
+
 ## Sample library (Prototype 45)
 
 The drums are now real recordings and carefully made electronic sounds. They sit in a folder called `samples`, next to the game: 25 kits and 10 instruments in 50 packs, about 22 MB in all, most of it drums. A tune downloads only what it plays, so phones don't fetch sounds they never hear.
