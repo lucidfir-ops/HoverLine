@@ -83,7 +83,7 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
     return`<tr class="${e.id===me?'me':''}"><td><i class="dot" style="background:${col}"></i>${i+1}</td><td>${(p.n||'Pilot').replace(/[<>&]/g,'')}${e.id===st.hostId?' ★':''}${e.id===me?' (you)':''}</td><td>${e.st==='lobby'&&e.rd?'<b class="rdy">ready ✓</b>':mpSt[e.st]||e.st}</td><td class="w">${w}</td></tr>`}).join('')+
     (st.roster.length<mpMax()?`<tr><td></td><td class="dim" colspan="3">${mpMax()-st.roster.length} open · ${mp.split==='screen'?'devices that join are controllers':mp.fill?'AI tops the field up to 8':'no AI'}</td></tr>`:'');
   const info=st.isHost?mpTrackInfo():st.info;
-  mpEl.mpTrack.textContent=info&&info.seed!=null?`Track ${((info.wk||'S')+(info.cx?'X':'')+(info.lk&&info.lk!=='M'?info.lk:'')+(info.seed>>>0).toString(16).toUpperCase().padStart(6,'0')+(info.sp?'-'+info.sp:''))} · ${(BIOMES[(info.bm||'U')[0]]||BIOMES.U).n} · ${info.laps||3} lap${(info.laps||3)>1?'s':''} · ${clsOf(info.cls).n}`:'';clsFill($('mpCls'),mp.cls);
+  mpEl.mpTrack.textContent=info&&info.seed!=null?`Track ${((info.wk||'S')+(info.cx?'X':'')+(info.lk&&info.lk!=='M'?info.lk:'')+(info.seed>>>0).toString(16).toUpperCase().padStart(6,'0')+(info.sp?'-'+info.sp:''))} · ${(BIOMES[(info.bm||'U')[0]]||BIOMES.U).n} · ${info.laps||3} lap${(info.laps||3)>1?'s':''} · ${clsOf(info.cls).n}${info.fill!==false&&!info.split?' · '+(AIL[info.ail]||AIL.normal).n+' rivals':''}`:'';clsFill($('mpCls'),mp.cls);
   mpEl.mpHostRow.hidden=!st.isHost;
   document.querySelectorAll('[data-mpw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mpw===wid)));
   document.querySelectorAll('[data-mpl]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mpl==='C'?!!spec:!spec&&(b.dataset.mpl==='X')===cplx)));document.querySelectorAll('[data-mplen]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mplen===lenK)));
@@ -124,7 +124,7 @@ function mpStart(pl,field){chirpStop();mp.bg=false;
   for(const r of free){r.off=true;r.ship.visible=false;r.shadow.visible=false}
   clearShots();
   racers.forEach((r,k)=>{const row=Math.floor(k/2),col=k%2;freshRacer(r,T.L-14-row*11,-14-row*11,col?W*0.21:-W*0.21);if(r.proxy)r.u=r.utot;r.ship.visible=true});
-  S.raceT=-3;S.shake=0;S.aiK=1;mp.cls=clsOf(pl.cls).k;S.cls=clsOf(pl.cls).f;lowWarn=false;
+  S.raceT=-3;S.shake=0;S.aiK=1;mp.cls=clsOf(pl.cls).k;S.cls=clsOf(pl.cls).f;S.ail=AIL[pl.ail]?pl.ail:'normal';lowWarn=false;
   ['menu','results','pause','mp','lab','set','ctl','gfxm','lbv','opts','mus','ed'].forEach(i=>$(i).hidden=true);setFrom=null;ctlFrom=null;optsFrom=null;rebind.on=false;if(guide.on){guide.from=null;closeGuide()}
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;setHud(true);camInit=false;
   $('bestL').textContent='Best '+fmt(getBest());$('posT').textContent=racers.length;

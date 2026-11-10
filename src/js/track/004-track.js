@@ -31,7 +31,10 @@ const BDIAL=[['Scenery','towers, trees, islands or slabs · 0 to 3',3],['Falls',
    geyser or two, the reef a bubble vent or two; the forest and Stratos just their own scenery. */
 function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='P'?[2,a<0.5?2:3,b<0.5?2:3,0]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
 /* feature kinds built into the road shape (splits are added afterwards, beside it) */
-const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire'];
+const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump'];
+/* Prototype 60: bit 24 of a seed marks a code made from Prototype 60 on (seven hex digits, starting with 1). */
+const TV1=0x1000000;
+const KB=k=>k==='vspire'?'spire':k==='dhelix'?'helix':k;
 function buildTrack(seed,wk,cx,lk,sp,bm){
   if(T)disposeGroup(T.group);
   const D=DIFF[wk]||DIFF.S,LN=LENS[lk]||LENS.M;W=D.w;
@@ -99,6 +102,11 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   else{const rt=rng((seed^0x7E3A5)>>>0),th=TTHEMES[Math.floor(rt()*TTHEMES.length)];fopt={r,lf:LN.f,pool:th.pool,count:14,dense:true,theme:th.n,avoid}}
   /* Custom tracks (the editor): exactly the features asked for, as many as fit. */
   if(sp)fopt=FKG.some(k=>sp.n[k]>0)?{r,lf:LN.f,want:sp.n,avoid}:null;
+  /* Prototype 60: codes from Prototype 60 on (v1) may have the new pieces */
+  const v1=seed>=TV1;if(fopt&&v1)fopt.v1=true;
+  /* and a complex one may have a drop, a speed jump or a long jump, each on its own draw (14%, 15%, 12%); the long ones
+     often don't fit (short tracks, other pieces in the way), so about 10%, 7% and 4% of new complex tracks have one */
+  if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.14)ex.push('drop');if(rn()<0.15)ex.push('sjump');if(rn()<0.12)ex.push('cjump');if(ex.length)fopt.extra=ex}
   let dropped={};
   if(fopt){let best=null;const ban={};
     /* Try up to six layouts and keep the first with no faults (see trackFaults). If none is clean, leave out one of each
@@ -196,6 +204,44 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
             if(Cb.g.some(g=>g>1.55))continue;  /* too deep for this bend: try shallower */
             const pts=routePts(i0,n,m,Cb);if(!pts)continue;finishB(B);Cb.long=true;Cb.cut=true;Mb.long=false;
             mark({kind:'cut',i0,n,u0:i0*ds,u1:(i0+n)*ds,side:sd,longB:cb,b:B,pts});placed=true;break}}}}}
+   /* Prototype 60: the splits that belong to the new jumps, each where its jump puts it (they are on the jump's own
+      stretch, which the splits above keep clear of):
+      - after a drop, sometimes (tail split) an ordinary split straight after the last landing;
+      - trunk: from the landing before the last drop to 200 m past it, the trunk is the road itself, dropping again (a jump
+        only for frames on it), while the side road (the long route, with its pickups) swings 50-90 m out and comes down
+        gently to join it at the lower level;
+      - stack: the speed jump's two roads, one over the other from the landing: the upper road (hu over the lower) holds its
+        height, swings out to one side and comes down to join the lower one, which is wider at first to catch the rest;
+      - catch: the long jump's landing, one road half as wide again as the track for 300 m, narrowing back.
+      Each is checked clear of the rest of the track (routePts) and left out if it isn't: the jump then lands on the road. */
+   for(const f of feats){if(f.kind!=='drop'&&f.kind!=='sjump'&&f.kind!=='cjump')continue;const js=jumps.filter(j=>j.kind===f.kind&&j.u0>=f.u0&&j.u0<=f.u1).sort((a,b)=>a.u0-b.u0);if(!js.length)continue;
+     const rf=rng((seed^0x60E1^Math.round(f.u0))>>>0),m=Math.round(90/ds),B2=n=>[0,1].map(()=>({c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)})),inGI=(i0,n)=>i0+n+Math.round(20/ds)<gI0;
+     if(f.kind==='drop'&&f.tail==='split'){const jl=js[js.length-1],i0=Math.round((jl.u1+15)/ds),n=Math.round(f.Ls/ds);if(!inGI(i0,n))continue;
+       const A=45+rf()*45+W*1.1,HL=7+rf()*9,HS=rf()<0.5?-(3+rf()*4):0,Aw=(6+rf()*5)*0.55,kw=rf()<0.5?2:3,wL=W*0.42,wS=Math.max(5.6,W*0.32),pref=rf()<0.5?1:-1;
+       for(const side of[pref,-pref]){const B=B2(n),lb=side>0?1:0,Lb=B[lb],Sb=B[1-lb];
+         for(let k=0;k<=n;k++){const x=k/n,e=ss01(x/0.18)*ss01((1-x)/0.18),S2=Math.sin(Math.PI*x)**2;Lb.c[k]=side*(W/4+A*S2);Lb.w[k]=W/4+(wL-W/4)*e;Lb.h[k]=HL*Math.pow(S2,1.3);
+           Sb.c[k]=-side*(W/4+3*e)+Aw*Math.sin(TAU*kw*x)*e*e;Sb.w[k]=W/4+(wS-W/4)*e;Sb.h[k]=HS*S2}
+         const pts=routePts(i0,n,m,Lb);if(!pts)continue;finishB(B);Lb.long=true;Sb.long=false;mark({kind:'split',cross:false,i0,n,u0:i0*ds,u1:(i0+n)*ds,side,longB:lb,b:B,pts,feat:1});break}}
+     else if(f.kind==='drop'&&f.tail==='trunk'&&js.length>=2){const jA=js[js.length-2],jB=js[js.length-1],i0=Math.round((jA.u1+15)/ds),n=Math.round((jB.u1+200)/ds)-i0;if(!inGI(i0,n))continue;
+       const A=50+rf()*40+W*1.1,wL=W*0.42,pref=rf()<0.5?1:-1;
+       for(const side of[pref,-pref]){const B=B2(n),lb=side>0?1:0,Lb=B[lb],Tb=B[1-lb];Tb.gp=new Uint8Array(n+1);
+         for(let k=0;k<=n;k++){const x=k/n,e=ss01(x/0.18)*ss01((1-x)/0.18),S2=Math.sin(Math.PI*x)**2,u=(i0+k)*ds,yo=u<jB.u0?jB.lipH:u>=jB.u1?0:jC(jB,(u-jB.u0)/jB.G);
+           Tb.c[k]=-side*W/4*(1-e);Tb.w[k]=W/4+W/4*e;Tb.h[k]=0;if(gap[(i0+k)%N])Tb.gp[k]=1;
+           Lb.c[k]=side*(W/4+A*S2);Lb.w[k]=W/4+(wL-W/4)*e;Lb.h[k]=jB.lipH*(1-ss01(x))-yo}
+         const pts=routePts(i0,n,m,Lb);if(!pts)continue;finishB(B);Lb.long=true;Tb.long=false;const S0={kind:'dsplit',i0,n,u0:i0*ds,u1:(i0+n)*ds,side,longB:lb,tb:1-lb,b:B,pts,feat:1};mark(S0);jB.sp=S0;jB.b=1-lb;break}}
+     else if(f.kind==='sjump'){/* the upper road where a frame leaving the lip at 172 m/s gets to, over the gap as built (0.3 m lower for the step of a 60 Hz frame) */
+       const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Ls/ds),Hu=flyY(172,j.G,j.lipH,j.slope,32)-0.3;if(!inGI(i0,n))continue;
+       const A=W+14+rf()*20,Ad=6+rf()*6,pref=rf()<0.5?1:-1,bonus=f.bonus;
+       for(const side of[pref,-pref]){const B=B2(n),ub=side>0?1:0,Ub=B[ub],Db=B[1-ub];
+         for(let k=0;k<=n;k++){const x=k/n,a1=ss01((x-0.1)/0.22)*ss01((0.97-x)/0.22),q=ss01((x-0.6)/0.3);
+           Ub.c[k]=side*(W/4*q+A*a1);Ub.w[k]=W/2-W/4*q;Ub.h[k]=Hu*(1-ss01((x-0.3)/0.45));
+           Db.c[k]=-side*(W/4*q+Ad*a1);Db.w[k]=W*0.56-(W*0.56-W/4)*q;Db.h[k]=0}
+         let sep=true;for(let k=0;k<=n&&sep;k++){const d=side*(Ub.c[k]-Db.c[k]);if(d-(Ub.w[k]+Db.w[k])<-0.01&&Ub.h[k]-Db.h[k]<8.5)sep=false}if(!sep)continue;
+         const pts=routePts(i0,n,m,Ub);if(!pts)continue;finishB(B);const lb=bonus==='up'?ub:1-ub;Ub.long=lb===ub;Db.long=!Ub.long;
+         const S0={kind:'stack',i0,n,u0:i0*ds,u1:(i0+n)*ds,side,longB:lb,upB:ub,lowB:1-ub,bonus,b:B,pts,feat:1};mark(S0);j.stk=S0;j.hu=Hu;break}}
+     else if(f.kind==='cjump'){const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Lc/ds);if(!inGI(i0,n))continue;
+       const B=[{c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)}];for(let k=0;k<=n;k++){const x=k/n;B[0].w[k]=W/2*(1.55-0.55*ss01((x-0.5)/0.42))}
+       finishB(B);B[0].long=false;const pts=[];for(let k=0;k<=n;k+=Math.max(1,Math.round(12/ds)))pts.push(P[(i0+k)%N].clone());mark({kind:'catch',i0,n,u0:i0*ds,u1:(i0+n)*ds,side:1,longB:0,b:B,pts,feat:1});j.ctch=1}}
    for(const S0 of splits){if(S0.b.length!==2)continue;const[A0,A1]=S0.b,adj=new Uint8Array(S0.n+1);let any=0;
      for(let k=0;k<=S0.n;k++){const l=A0.c[k]<A1.c[k]?A0:A1,r2=l===A0?A1:A0,g=(r2.c[k]-r2.w[k])-(l.c[k]+l.w[k]);if(g<1.2&&g>-0.5&&Math.abs(A0.h[k]-A1.h[k])<1){adj[k]=1;any=1}}
      if(any)S0.adj=adj}
@@ -203,7 +249,7 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
      for(let k=e0;k<=e1;k++){const i=((k%N)+N)%N,w=ss01(Math.min(k-e0,e1-k)/ramp),t=Tg[i],uf=Y0.clone().addScaledVector(t,-Y0.dot(t)).normalize();
        U[i]=U[i].clone().multiplyScalar(1-w).addScaledVector(uf,w).normalize();R[i]=new THREE.Vector3().crossVectors(t,U[i]).normalize()}
      if(fopt)for(let k=e0;k<=e1;k++){const i=((k%N)+N)%N,d=new THREE.Vector3().subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);Kg[i]=-d.dot(R[i])}
-     feats.push({kind:'split',u0:S0.u0,u1:S0.u1})}
+     if(!S0.feat||S0.kind==='split')feats.push({kind:'split',u0:S0.u0,u1:S0.u1})}
    if(fopt&&splits.length){const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let a=0;for(let k=-K;k<=K;k++)a+=Kg[(i+k+N)%N];Cs[i]=a/(2*K+1)}}
    if(sp&&splitDrop)dropped.split=(dropped.split||0)+splitDrop}
   const Kn=new Float32Array(N);{const raw=new Float32Array(N),d=new THREE.Vector3();for(let i=0;i<N;i++){d.subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);raw[i]=d.dot(U[i])}
@@ -257,11 +303,14 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   {const ve=VMAX*1.2,cg=0.5*GRAV/(ve*ve),mg=2,xE=(0.1+Math.sqrt(0.01+4.8*cg))/(2*cg),rp=Math.round(24/ds),tl=Math.round(30/ds),wi=i=>((i%N)+N)%N,v=new THREE.Vector3(),
      env=(x,G)=>Math.max(0,1.2+0.1*x-cg*x*x-(x<G?gapC(x/G,G):0))+mg;
    const jf=feats.filter(f=>f.kind==='jump'),LL=N*ds,inJ=u=>jf.some(f=>(((u-f.u0+4)%LL)+LL)%LL<=f.u1-f.u0+8);
-   for(const j of jumps){const a=Math.round(j.u0/ds),fj=jf.find(f=>j.u0>=f.u0-2&&j.u0<=f.u1+2);let e=a+Math.round(xE/ds)+tl,fo=tl;
+   /* Prototype 60: a new jump's fence traces a frame leaving its own lip at 1.45 times top speed (boosted frames reach 1.4
+      times): its height and slope, down to the landing; none inside a split, whose walls hold a frame in at any height */
+   const inJ2=u=>jumps.some(q=>q.kind&&u>=q.u0-32&&u<=q.u1+32),ve2=VMAX*1.45,cg2=0.5*GRAV/(ve2*ve2),env2=(x,j)=>Math.max(0,j.lipH+j.slope*x-cg2*x*x-(x<j.G?jC(j,x/j.G):0))+mg,xE2=j=>(j.slope+Math.sqrt(j.slope*j.slope+4*cg2*j.lipH))/(2*cg2);
+   for(const j of jumps){if(j.sp)continue;const a=Math.round(j.u0/ds),fj=jf.find(f=>j.u0>=f.u0-2&&j.u0<=f.u1+2),xEj=j.kind?xE2(j):xE,envj=j.kind?x=>env2(x,j):x=>env(x,j.G);let e=a+Math.round(xEj/ds)+tl,fo=tl;
      /* it carries on over a jump that follows (that jump's own fence takes over) and stops short of anything else */
-     for(let k=Math.ceil(Math.max(j.u0+j.G+14,fj?fj.u1+4:0)/ds);k<e;k++){const q=wi(k);if(spl[q]||mag[q]||(kind[q]||gap[q])&&!inJ(q*ds)){e=k-Math.round(4/ds);fo=Math.round(12/ds);break}}
+     for(let k=Math.ceil(Math.max(j.u0+j.G+14,fj?fj.u1+4:0)/ds);k<e;k++){const q=wi(k);if(spl[q]||mag[q]||(kind[q]||gap[q])&&!inJ(q*ds)&&!(j.kind&&inJ2(q*ds))){e=k-Math.round(4/ds);fo=Math.round(12/ds);break}}
      for(let k=a-rp;k<=e;k++){const q=wi(k),w=wallH[q];
-       let t=k<a?w+(Math.max(w,env(0,j.G))-w)*ss01((k-a+rp)/rp):w+(Math.max(w,env(Math.min((k-a)*ds,xE),j.G))-w)*ss01((e-k)/fo);
+       let t=k<a?w+(Math.max(w,envj(0))-w)*ss01((k-a+rp)/rp):w+(Math.max(w,envj(Math.min((k-a)*ds,xEj)))-w)*ss01((e-k)/fo);
        for(let o=0;o<N;o+=2){const dj=Math.min(Math.abs(o-q),N-Math.abs(o-q));if(dj<30/ds||gap[o])continue;v.subVectors(P[o],P[q]);if(v.lengthSq()>(W+t+6)**2)continue;
          const h=v.dot(U[q]);if(h>0&&h<t+3&&Math.abs(v.dot(R[q]))<W/2+3&&Math.abs(v.dot(Tg[q]))<4)t=Math.max(w,Math.min(t,h-3))}
        ctop[q]=Math.max(ctop[q],t)}}}
@@ -276,11 +325,13 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   const kRuns=(M,pred)=>{const out=[];let a=-1;for(let k=0;k<=M;k++){const p=pred(k);if(p&&a<0)a=k;if((!p||k===M)&&a>=0){const b=p?k:k-1;if(b>a)out.push([a,b]);a=-1}}return out};
   for(const S0 of splits){const k0=S0.i0,n=S0.n,A=S0.adj,ix=i=>Math.max(0,Math.min(n,i-k0)),o={from:k0,to:k0+n+1};
     S0.b.forEach((B,bi)=>{const O=S0.b[1-bi],c=i=>B.c[ix(i)],w=i=>B.w[ix(i)],h=i=>B.h[ix(i)],L=d=>i=>c(i)-w(i)+d,Rr=d=>i=>c(i)+w(i)+d,H=d=>i=>h(i)+d;
-      add(strip(L(0),h,Rr(0),h,{...o,uv:1/24}),roadM);
-      add(strip(L(-0.15),H(0.04),L(0.45),H(0.04),{...o,col:edgeCol}),edgeM);add(strip(Rr(-0.45),H(0.04),Rr(0.15),H(0.04),{...o,col:edgeCol}),edgeM);
+      /* Prototype 60: a route with a gap of its own (the trunk's drop) is drawn in runs either side of it */
+      const gpq=k=>!!(B.gp&&B.gp[Math.min(n,k)]),oR=B.gp?kRuns(n+1,k=>!gpq(k)).map(([a,b2])=>({from:k0+a,to:k0+b2})):[o];
+      for(const o of oR){add(strip(L(0),h,Rr(0),h,{...o,uv:1/24}),roadM);
+      add(strip(L(-0.15),H(0.04),L(0.45),H(0.04),{...o,col:edgeCol}),edgeM);add(strip(Rr(-0.45),H(0.04),Rr(0.15),H(0.04),{...o,col:edgeCol}),edgeM)}
       const open=(k,right)=>{const q=Math.min(n,k);return!!(A&&O&&A[q]&&((O.c[q]>B.c[q])===right))};
-      for(const right of[false,true]){const E=right?Rr:L;for(const[a,b2]of kRuns(n+1,k=>!open(k,right))){const oo={from:k0+a,to:k0+b2};add(strip(E(0),h,E(0),H(1.5),oo),glass);add(strip(E(0),H(1.5),E(0),H(1.68),oo),rail)}}
-      add(strip(L(0),h,L(0),H(-1.8),o),dark);add(strip(Rr(0),h,Rr(0),H(-1.8),o),dark);add(strip(L(0),H(-1.8),Rr(0),H(-1.8),o),dark)});
+      for(const right of[false,true]){const E=right?Rr:L;for(const[a,b2]of kRuns(n+1,k=>!open(k,right)&&!gpq(k))){const oo={from:k0+a,to:k0+b2};add(strip(E(0),h,E(0),H(1.5),oo),glass);add(strip(E(0),H(1.5),E(0),H(1.68),oo),rail)}}
+      for(const o of oR){add(strip(L(0),h,L(0),H(-1.8),o),dark);add(strip(Rr(0),h,Rr(0),H(-1.8),o),dark);add(strip(L(0),H(-1.8),Rr(0),H(-1.8),o),dark)}});
     if(A&&S0.b.length===2){const[b0,b1]=S0.b,lr=i=>{const q=ix(i);return b0.c[q]<b1.c[q]?[b0,b1,q]:[b1,b0,q]};
       const la=i=>{const[l,,q]=lr(i);return l.c[q]+l.w[q]},lb=i=>{const[,r2,q]=lr(i);return Math.max(la(i),r2.c[q]-r2.w[q])},ha=i=>{const[l,,q]=lr(i);return l.h[q]},hb=i=>{const[,r2,q]=lr(i);return r2.h[q]};
       for(const[a,b2]of kRuns(n,k=>!!A[k]))add(strip(la,ha,lb,hb,{from:k0+a,to:k0+b2,uv:1/24}),roadM)}}
@@ -313,6 +364,12 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   /* the long route's pickups: two boost pads, an ammo strip on the outside and a shield strip on the inside */
   for(const S0 of splits){const B=S0.b[S0.longB],k0=S0.i0,at=(u,A)=>{const f=clamp((u-S0.u0)/ds,0,S0.n),j=Math.min(S0.n-1,Math.floor(f)),q=f-j;return A[j]+(A[j+1]-A[j])*q};
     if(S0.kind==='cut'){for(const fx of[0.2,0.55]){const a=k0+Math.round(S0.n*fx),b=a+padLen;add(strip(i=>B.c[i-k0]-2.4,i=>B.h[i-k0]+0.03,i=>B.c[i-k0]+2.4,i=>B.h[i-k0]+0.03,{from:a,to:b,uv:1/12}),padM);pads.push({u0:a*ds,u1:b*ds,lat:0,latF:u=>at(u,B.c),sp:S0,b:S0.longB})}continue}
+    /* Prototype 60: the long jump's catch road has none; a speed jump's bonus road two boost pads and an ammo strip once the roads part */
+    if(S0.kind==='catch')continue;
+    if(S0.kind==='stack'){for(const fx of[0.4,0.6]){const a=k0+Math.round(S0.n*fx),b=a+padLen;add(strip(i=>B.c[i-k0]-2.4,i=>B.h[i-k0]+0.03,i=>B.c[i-k0]+2.4,i=>B.h[i-k0]+0.03,{from:a,to:b,uv:1/12}),padM);pads.push({u0:a*ds,u1:b*ds,lat:0,latF:u=>at(u,B.c),sp:S0,b:S0.longB})}
+      {const a=k0+Math.round(S0.n*0.66),b=k0+Math.round(S0.n*0.84),hw=sw/2,sd=S0.longB===S0.upB?1:-1,off=i=>B.c[i-k0]+sd*S0.side*(B.w[i-k0]-hw-0.8);
+        add(strip(i=>off(i)-hw,i=>B.h[i-k0]+0.035,i=>off(i)+hw,i=>B.h[i-k0]+0.035,{from:a,to:b,uv:1/6}),pM);
+        zones.push({kind:'ammo',u0:a*ds,u1:b*ds,side:0,edge:eIn,lane:null,hw,laneF:u=>at(u,B.c)+sd*S0.side*(at(u,B.w)-hw-0.8),sp:S0,b:S0.longB})}continue}
     if(S0.kind==='pit'){const hw=B.w[0]-0.7;for(const[f0,f1,kz,mm]of[[0.2,0.49,'hp',gM],[0.51,0.8,'ammo',pM]]){const a=k0+Math.round(S0.n*f0),b=k0+Math.round(S0.n*f1);
         add(strip(i=>B.c[i-k0]-hw,i=>B.h[i-k0]+0.035,i=>B.c[i-k0]+hw,i=>B.h[i-k0]+0.035,{from:a,to:b,uv:1/6}),mm);zones.push({kind:kz,u0:a*ds,u1:b*ds,side:0,edge:eIn,lane:null,hw,laneF:u=>at(u,B.c),sp:S0,b:S0.longB,rate:2.5})}continue}
     for(const fx of[0.3,0.68]){const a=k0+Math.round(S0.n*fx),b=a+padLen;add(strip(i=>B.c[i-k0]-2.4,i=>B.h[i-k0]+0.03,i=>B.c[i-k0]+2.4,i=>B.h[i-k0]+0.03,{from:a,to:b,uv:1/12}),padM);pads.push({u0:a*ds,u1:b*ds,lat:0,latF:u=>at(u,B.c),sp:S0,b:S0.longB})}
@@ -334,21 +391,25 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
      nearer or further to find such a spot (500 m: 350-700, 250 m: 150-340, 80 m: 60-110; the panel gives the real
      distance) and is left out if there is none. Before, about 1 track in 5 had a sign upside down in a loop, on its side
      in a corkscrew or standing in another split's routes. */
-  const signI=[],signAt=(S0,ahead,SW,top)=>{const[d0,d1]={500:[350,700],250:[150,340],80:[60,110]}[ahead],dd=[];for(let d=d0;d<=d1;d+=10)dd.push(d);dd.sort((a,b)=>Math.abs(a-ahead)-Math.abs(b-ahead));
-    for(const d of dd){const i=((S0.i0-Math.round(d/ds))%N+N)%N;if(standOK(i,SW,top,0.26,0.88)){signI.push(i);return{i,d}}}
+  const signI=[],signAt=(S0,ahead,SW,top,off=0)=>{const[d0,d1]={500:[350,700],250:[150,340],80:[60,110]}[ahead],dd=[];for(let d=d0;d<=d1;d+=10)dd.push(d);dd.sort((a,b)=>Math.abs(a-ahead)-Math.abs(b-ahead));
+    for(const d of dd){const i=((S0.i0-Math.round((d+off)/ds))%N+N)%N;if(standOK(i,SW,top,0.26,0.88)){signI.push(i);return{i,d}}}
     return null};
-  for(const S0 of splits)for(const ahead of[500,250,80]){if(S0.kind==='cut')break;const SW=W+3.1,SH=SW*340/1024,top=7.2+SH,at=signAt(S0,ahead,SW,top);if(!at)continue;
+  for(const S0 of splits)for(const ahead of[500,250,80]){if(S0.kind==='cut'||S0.kind==='catch'||S0.kind==='dsplit')break;
+    /* Prototype 60: a speed jump gets the signs too, about 500 and 250 m before its lip, saying which road holds the bonus */
+    if(S0.kind==='stack'&&ahead===80)break;const stk=S0.kind==='stack';const SW=W+3.1,SH=SW*340/1024,top=7.2+SH,at=signAt(S0,ahead,SW,top,stk?150:0);if(!at)continue;
     const pit=S0.kind==='pit',i=at.i,g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffb000});
     for(const sd of[-1,1]){const pl=new THREE.Mesh(new THREE.BoxGeometry(0.7,top,0.7),m);pl.position.set(sd*(W/2+1.2),top/2,0);g.add(pl)}
     const cv=document.createElement('canvas');cv.width=1024;cv.height=340;const cg=cv.getContext('2d');cg.fillStyle='#0b0e14';cg.fillRect(0,0,1024,340);cg.strokeStyle='#ffb000';cg.lineWidth=8;cg.strokeRect(4,4,1016,332);
-    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((pit?'PIT LANE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
+    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((stk?'SPEED JUMP · ':pit?'PIT LANE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
     cg.beginPath();cg.moveTo(512,92);cg.lineTo(512,316);cg.strokeStyle='#ffb000';cg.lineWidth=4;cg.stroke();
     const lL=S0.side<0,side=(x,long,arrow)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990;
       cg.fillStyle=long?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";const nm=pit?(long?'PIT':'RACE'):(long?'LONG':'SHORT');cg.fillText(arrow&&x<512?'◀ '+nm:nm+' ▶',x0,150);
       cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';
       if(pit){if(long){cg.fillText('FULL REPAIR',x0,230);cg.fillText('AMMO · LIMITER',x0,282)}else cg.fillText('KEEP RACING',x0,230)}
       else if(long){cg.fillText('2 BOOST PADS',x0,230);cg.fillText('AMMO · SHIELD',x0,282)}else{cg.fillText('TIGHT LINE',x0,230);cg.fillText('NO PICKUPS',x0,282)}};
-    side(0,lL,true);side(1024,!lL,true);
+    if(stk){const half=(x,up)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990,bon=(S0.bonus==='up')===up;cg.fillStyle=bon?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText(up?'▲ UPPER':'LOWER ▼',x0,150);
+        cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';cg.fillText(up?'172 M/S AT THE LIP':'EVERYONE ELSE',x0,230);cg.fillText(bon?'2 BOOST PADS · AMMO':'NO PICKUPS',x0,282)};half(0,true);half(1024,false)}
+    else{side(0,lL,true);side(1024,!lL,true)}
     const tx=new THREE.CanvasTexture(cv);tx.anisotropy=4;const pan=new THREE.Mesh(new THREE.PlaneGeometry(SW,SH),new THREE.MeshBasicMaterial({map:tx}));pan.position.set(0,7.2+SH/2,0);g.add(pan);
     /* a light bar under the sign so it reads from far off */
     const bar=new THREE.Mesh(new THREE.BoxGeometry(SW,0.22,0.3),new THREE.MeshBasicMaterial({color:0xffd27a}));bar.position.set(0,7.05,0);g.add(bar);
@@ -871,7 +932,9 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
        line and height in the main road's frame, as the road strips are built). It used the route's points every 12 m,
        which left the rock between them in the road: rock poked through split routes (NX130F38-P at 2.3 km, NXL7D6FF6-
        33224444222-P3443 at 3.7, 4.3, 6.6 and 6.8 km) */
-    for(const S0 of splits)for(const B of S0.b){const n=B.c.length-1;for(let k=0;k<=n;k++){const i=(S0.i0+k)%N,p=P[i],r=R[i],u=U[i],c=B.c[k],hh=B.h[k];sAdd(p.x+r.x*c+u.x*hh,p.y+r.y*c+u.y*hh,p.z+r.z*c+u.z*hh,i)}}
+    for(const S0 of splits)for(const B of S0.b){const n=B.c.length-1;for(let k=0;k<=n;k++){const i=(S0.i0+k)%N,p=P[i],r=R[i],u=U[i],c=B.c[k],hh=B.h[k];sAdd(p.x+r.x*c+u.x*hh,p.y+r.y*c+u.y*hh,p.z+r.z*c+u.z*hh,i);
+      /* Prototype 60: a route wider than the road (the long jump's catch road) adds its edges, so the rock keeps clear of all of it */
+      const xw=B.w[k]-W/2;if(xw>0.5)for(const e of[-xw,xw])sAdd(p.x+r.x*(c+e)+u.x*hh,p.y+r.y*(c+e)+u.y*hh,p.z+r.z*(c+e)+u.z*hh,i)}}
     const scan=(x,z,R,fn)=>{const c0=Math.floor((x-R)/SC),c1=Math.floor((x+R)/SC),d0=Math.floor((z-R)/SC),d1=Math.floor((z+R)/SC);
       for(let a=c0;a<=c1;a++)for(let c=d0;c<=d1;c++){const Lc=SG.get(sk(a,c));if(Lc)for(const o of Lc){const d2=(o.x-x)**2+(o.z-z)**2;if(d2<R*R)fn(o,d2)}}};
     /* is (x,y,z) inside the space the road needs: over the road and less than 26 m above it */
@@ -1198,7 +1261,9 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
   const bmInfo=[LK.n,nWater?pl(nWater,'waterfall'):'',nLava?pl(nLava,'lava fall'):'',geys.length?pl(geys.length,bk==='R'?'bubble vent':'geyser'):'',tunnels.length?pl(tunnels.length,'tunnel')+' ('+tKm.toFixed(1)+' km)':'',PR.mode?{out:'all outside',in:'all inside the mountain',mix:'in and out of the mountain'}[PR.mode]:'',PR.caves&&PR.mode==='mix'?pl(PR.caves,'cavern'):'',PR.lakes&&PR.lakes.length?pl(PR.lakes.length,'lake'):'',PR.rivers?pl(PR.rivers,'river'):'',PR.cal?pl(PR.cal,'caldera'):''].filter(Boolean).join(' · ');
   headL.visible=!!cx;hemi.color.setHex(LK.hemi?LK.hemi[0]:0x9fb4d0);hemi.groundColor.setHex(LK.hemi?LK.hemi[1]:0x15120c);hemi.intensity=LK.hemi?LK.hemi[2]:0.85;sun.color.setHex(LK.sun?LK.sun[0]:0xfff1d6);sun.intensity=LK.sun?LK.sun[1]:0.7;
   for(const S0 of splits)for(const q of S0.pts){minX=Math.min(minX,q.x);maxX=Math.max(maxX,q.x);minZ=Math.min(minZ,q.z);maxZ=Math.max(maxZ,q.z)}
-  T={env,tun,prism:bk==='P'?PR:null,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY}};
+  /* Prototype 60: which new jump's gap each sample is in (its index + 1), for drawing a frame over it level (placeShip) */
+  const jg=new Uint16Array(N);jumps.forEach((j,n)=>{if(j.kind)for(let k=Math.ceil(j.u0/ds);k<=Math.floor(j.u1/ds);k++)jg[k%N]=n+1});
+  T={jg,env,tun,prism:bk==='P'?PR:null,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY}};
   try{VFX.hz=null}catch(e){}
 }
 /* Contiguous index runs that are not jump gaps (the last run wraps past the start line). */
@@ -1207,7 +1272,7 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
    than 30 degrees in 12 m or 55 in 30 m), or a slope steeper than 42 degrees. Loops, corkscrews and twists keep their own
    shape, and so does a spire's drop. Each fault lists the features it sits in, so they can be left out. */
 function trackFaults(f,W){const{P,R,Tg,feats,N,ds,gap}=f,own=feats.filter(x=>x.kind==='loop'||x.kind==='corkscrew'||x.kind==='twist'),out=[],seen=new Set();
-  const inF=u=>feats.filter(x=>u>=x.u0-60&&u<=x.u1+60).map(x=>x.kind);
+  const inF=u=>feats.filter(x=>u>=x.u0-60&&u<=x.u1+60).map(x=>x.src||x.kind);
   const mine=(a,b)=>own.some(x=>{const x0=x.u0-60,x1=x.u1+(x.kind==='loop'?160:60);return a>=x0&&a<=x1&&b>=x0&&b<=x1});
   const add=(k,u,u2)=>{const key=k+Math.round(u/40)+':'+Math.round((u2||0)/40);if(seen.has(key))return;seen.add(key);out.push({k,u,in:u2==null?inF(u):[...inF(u),...inF(u2)]})};
   const g=new Map(),cs=24,key=(x,z)=>(x*73856093)^(z*19349663),w2=(W+4)**2,sep=Math.ceil(80/ds);
@@ -1234,6 +1299,15 @@ function runsOf(gap,N){const gs=[];let i=0;while(i<N){if(gap[i]){let j=i;while(j
 const ss01=x=>x<=0?0:x>=1?1:x*x*(3-2*x);
 /* Height of the (invisible) centreline over a jump gap: leaves the 1.2 m lip at the ramp's 0.1 slope, lands flat at road level. */
 const gapC=(t,G)=>t<=0?1.2:t>=1?0:1.2*(2*t*t*t-3*t*t+1)+0.1*G*(t*t*t-2*t*t+t);
+/* Prototype 60: the same for the new jumps (drops, speed jumps, long jumps), whose lip stands J.lipH over the landing and
+   leaves at J.slope; jCd is its slope (rise per metre). */
+const jC=(J,t)=>t<=0?J.lipH:t>=1?0:J.lipH*(2*t*t*t-3*t*t+1)+J.slope*J.G*(t*t*t-2*t*t+t);
+const jCd=(J,t)=>t<=0||t>=1?0:(J.lipH*(6*t*t-6*t)+J.slope*J.G*(3*t*t-4*t+1))/J.G;
+/* the road length a metre over the ground covers there, so a frame crosses a new jump's gap at its own speed over the ground */
+const jArc=(J,u)=>{const x=((u-J.u0)%T.L+T.L)%T.L;if(x>=J.G)return 1;const d=jCd(J,x/J.G);return Math.sqrt(1+d*d)};
+/* Prototype 60: how high a frame leaving a lip lipH up at slope s and speed v is when it has flown G metres, falling at g
+   with the air's drag (10% of the speed a second: 5%, and 5% more with the nose half up): sizes the speed jump's upper road. */
+const flyY=(v,G,lipH,s,g)=>{let x=0,y=lipH,vy=v*s,vx=v;const dt=1/240;while(x<G){vy-=g*dt;y+=vy*dt;x+=vx*dt;vx-=vx*0.1*dt}return y};
 /* Complex tracks: insert 3D features into the base loop, then resample to even spacing and rebuild the frames.
    Each output sample carries a position and a designed "up"; the tangent comes from the positions, so loops,
    corkscrews and rolls get exact frames. K is the curvature within the road surface, which steers the physics. */
@@ -1247,7 +1321,32 @@ function addFeatures(b,r,W,opt={}){
      most common, because their crests are where nose-down vs nose-up matters most. */
   const POOL=opt.pool||FPOOL,tw=POOL.reduce((a,p)=>a+p[1],0);
   const pickW=()=>{let t=r()*tw;for(const[k,w]of POOL)if((t-=w)<0)return k;return'sweep'};
-  const mkSite=kd=>{const s={kind:kd};
+  /* Prototype 60: the new jumps, as a height profile over the base line (prof: segments of length L, height f(x) over the
+     line, gap on the ones the road leaves out), so each lands back on the line at its foot.
+     drop: the road climbs gently (a tenth at most), runs level, ends, and a road 10-17 m lower carries on 40-55 m further
+       on. About one in five is two or three drops in a row; three in ten split right after the last drop; and some (trunk)
+       split between the last two drops, the trunk dropping again while the side road winds round to join it lower down.
+     sjump: a speed jump. A long run-up, a ramp up 9 m to a 0.15 lip, a 148 m gap, then two roads: the upper one 20 m up,
+       where a frame leaving the lip at 172 m/s arrives (at full speed: the top frames boosting; from about 160 it scrapes up onto
+       it; the nose doesn't float you on this jump, so it is speed that counts), and the lower one under it, which catches the rest from 81 m/s up. Which holds the bonus (two boost pads and an
+       ammo strip) is a coin toss.
+     cjump: a long jump. The road climbs 30-45 m, a 3 m ramp throws you over a 130-170 m gap (as built: the straightened road is a little shorter) to a road far below that is
+       half as wide again as the track for its first 300 m, so a frame from 85 m/s up lands on it; at racing speed it flies
+       250-480 m, 2-2.5 s in the air. */
+  const jumpProf=(s,kd)=>{const seg=[],flat=(L,y)=>seg.push({L,y1:y,f:()=>y}),rise=(L,y0,y1)=>seg.push({L,y1,f:x=>y0+(y1-y0)*(1-Math.cos(Math.PI*x/L))/2}),
+      ramp=(L,y0,Hr)=>seg.push({L,y1:y0+Hr,f:x=>y0+Hr*(x/L)**2}),gapS=(G,y0,y1,slope,jk)=>{const J={lipH:y0-y1,slope,G,kind:jk};seg.push({L:G,y1,gap:J,f:x=>y1+jC(J,x/G)})};
+    if(kd==='drop'){const nd0=opt.want?(r()<0.3?2:1):r()<0.22?(r()<0.45?3:2):1,tail=r()<0.3?'split':r()<0.35?'trunk':null,nd=tail==='trunk'?Math.max(2,nd0):nd0,Dh=10+r()*7,H=nd*Dh;
+      s.nd=nd;s.tail=tail;s.Ls=tail==='split'?520+r()*160:0;rise(Math.max(240,H*10),0,H);flat(50,H);
+      for(let k=0;k<nd;k++){const y0=H-k*Dh,y1=y0-Dh;gapS(40+r()*15,y0,y1,0,'drop');if(k<nd-1)flat(tail==='trunk'&&k===nd-2?330:130+r()*40,y1)}
+      flat(tail==='split'?s.Ls+90:tail==='trunk'?230:320,0)}
+    else if(kd==='sjump'){const Hl=9,sl=0.15,G=148;s.hu=flyY(172,G,Hl,sl,32);s.Ls=560+r()*120;s.bonus=r()<0.5?'up':'down';
+      flat(640+r()*160,0);ramp(2*Hl/sl,0,Hl);gapS(G,Hl,0,sl,'sjump');flat(s.Ls+80,0)}
+    else{const sl=0.12,Hr=3,G=140+r()*30,Hp=Math.max(22,Math.ceil(32*G*G/(2*85*85)-sl*G)-Hr+2);s.Lc=560;
+      rise(Math.max(300,Hp*10),0,Hp);flat(40,Hp);ramp(2*Hr/sl,Hp,Hr);gapS(G,Hp+Hr,0,sl,'cjump');flat(s.Lc+60,0)}
+    s.prof=seg;s.len=seg.reduce((a,q)=>a+q.L,0)};
+  /* Prototype 60: a rising spire (vspire) is a spire run backwards and a down spiral (dhelix) a spiral that falls; each is
+     built as its base kind (KB) with a flag, rev or a negative Hh. */
+  const mkSite=k0=>{const kd=KB(k0),s={kind:k0};
     if(kd==='sweep'){s.lam=460+r()*140;s.n=2+Math.floor(r()*2);s.sg=[1];for(let k=1;k<s.n;k++)s.sg.push(r()<0.5?-1:1);s.amp=s.sg.map(()=>(20+r()*10)*(0.85+0.3*r()));s.len=s.n*s.lam}
     else if(kd==='dive'){s.D=40+r()*20;s.len=600+r()*200}
     else if(kd==='climb'){s.Hh=45+r()*40;s.Lr=Math.max(150+r()*60,s.Hh*2.6);s.Lp=120+r()*200;s.sg=1;s.len=2*s.Lr+s.Lp}
@@ -1255,10 +1354,53 @@ function addFeatures(b,r,W,opt={}){
     /* spire: out to one side, one and a half turns up round a ring, a half turn in to the middle, then over the edge and
        straight down the middle, pulling out underneath the ring and back onto the line */
     else if(kd==='spire'){s.Rs=clamp(104+W*1.4,120,145);s.Hs=122+r()*22;s.dpt=34;s.dir=r()<0.5?-1:1;s.Lc=2.45*s.Rs;s.len=0}
+    else if(kd==='drop'||kd==='sjump'||kd==='cjump')jumpProf(s,kd);
     else s.len={loop:0,twist:200,corkscrew:240,jump:lr+jumpG+12}[kd];
     if(kd==='sweep'&&opt.dense&&s.n>1){s.n=1;s.sg=[1];s.amp=[s.amp[0]];s.len=s.lam}
-    s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;return s};
-  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700})[kd]||200;
+    s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
+    if(k0==='vspire')s.rev=1;if(k0==='dhelix')s.Hh=-s.Hh;
+    /* on a new code, a spire rises up the middle and spirals down half the time, and a spiral falls instead of rising (a fifth of the draws; the falling ones fit more often, so about half the spirals on new tracks fall) */
+    if(opt.v1&&!opt.want&&k0==='spire'&&r()<0.5)s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
+    if(k0!==kd)s.src=k0;
+    return s};
+  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300})[kd]||200;
+  /* The spire's road, from O heading F: ease out to the side and onto the ring, one and a half turns up round it, a half
+     turn in to the middle at the top, over the edge, straight down the middle and out underneath the ring. pts and ups
+     are the samples; d0 is where the drop (the mag-lock) starts; q the end, heading Fh. (Prototype 60: a function, so the
+     rising spire can run it backwards; the spire itself is built exactly as before.) */
+  const spireGeo=(O,F,site,sl0,u0s)=>{const pts=[],ups=[],emit=(p,u)=>{pts.push(p);ups.push(u)};
+        const{Rs,Hs,dpt,dir,Lc}=site,Y=new V(0,1,0),Fh=new V(F.x,0,F.z).normalize(),Lv=new V().crossVectors(Fh,Y).normalize().multiplyScalar(dir),C0=O.clone().addScaledVector(Fh,Lc),rho=Rs/2,top=O.y+Hs,bk=0.28;
+        const tilt=(p,c,b)=>{const inw=c.clone().sub(p);inw.y=0;inw.normalize();return Y.clone().multiplyScalar(Math.cos(b)).addScaledVector(inw,Math.sin(b)).normalize()};
+        /* ease out to the side and onto the ring */
+        const nS=Math.ceil(Lc/ds);for(let k=0;k<nS;k++){const x=k/nS;emit(O.clone().addScaledVector(Fh,Lc*x).addScaledVector(Lv,Rs*ss01(x)).addScaledVector(Y,sl0*Lc*x*(1-x)*(1-x)),u0s?u0s.clone().lerp(Y,ss01(Math.min(1,Lc*x/60))).normalize():Y.clone())}
+        /* one and a half turns up, banked in */
+        const TH=3*Math.PI,nR=Math.ceil(TH*Rs/ds);
+        for(let k=0;k<nR;k++){const x=k/nR,th=TH*x,p=C0.clone().addScaledVector(Fh,Rs*Math.sin(th)).addScaledVector(Lv,Rs*Math.cos(th));p.y=O.y+Hs*ss01(x);emit(p,tilt(p,C0,bk*ss01(Math.min(1,x*8))))}
+        /* a half turn in to the middle at the top */
+        const Tc=C0.clone().addScaledVector(Lv,-Rs/2),nT=Math.ceil(Math.PI*rho/ds);
+        for(let k=0;k<nT;k++){const x=k/nT,ph=Math.PI*x,p=Tc.clone().addScaledVector(Lv,-rho*Math.cos(ph)).addScaledVector(Fh,-rho*Math.sin(ph));p.y=top;emit(p,tilt(p,Tc,(bk+(1.0-bk)*ss01(Math.min(1,x*5)))*ss01(Math.min(1,(1-x)*6.5))))}
+        /* over the edge, straight down the middle, and out underneath the ring (both bends ease in and out) */
+        const Lp=80,nP=Math.ceil(Lp/ds),Lq=110,nQ=Math.ceil(Lq/ds);let h1=0,v1=0,v2=0;
+        for(let k=0;k<nP;k++){const a=Math.PI/2*ss01(k/nP);h1+=Math.cos(a)*Lp/nP;v1+=Math.sin(a)*Lp/nP}
+        for(let k=0;k<nQ;k++){const a=Math.PI/2*ss01(k/nQ);v2+=Math.cos(a)*Lq/nQ}
+        const Ls=Math.max(8,0.42*Rs-h1),q=C0.clone();q.y=top;
+        for(let s2=0;s2<Ls;s2+=ds){emit(q.clone(),Y.clone());q.addScaledVector(Fh,ds)}
+        const d0=pts.length;
+        for(let k=0;k<nP;k++){const a=Math.PI/2*ss01(k/nP);emit(q.clone(),Y.clone().multiplyScalar(Math.cos(a)).addScaledVector(Fh,Math.sin(a)));q.addScaledVector(Fh,Math.cos(a)*Lp/nP).addScaledVector(Y,-Math.sin(a)*Lp/nP)}
+        const ax=q.clone(),bot=O.y-dpt;
+        while(q.y-ds>bot+v2){emit(q.clone(),Fh.clone());q.y-=ds}
+        const d1=pts.length;
+        for(let k=0;k<nQ;k++){const a=Math.PI/2*ss01(k/nQ);emit(q.clone(),Fh.clone().multiplyScalar(Math.cos(a)).addScaledVector(Y,Math.sin(a)));q.addScaledVector(Y,-Math.cos(a)*Lq/nQ).addScaledVector(Fh,Math.sin(a)*Lq/nQ)}
+        return{pts,ups,d0,d1,q,Fh,data:{c:[C0.x,C0.z],ax:[ax.x,ax.z],fh:[Fh.x,Fh.z],top,bot,Rs,v1,v2}}};
+  /* Prototype 60: the rising spire from O heading F: a spire's road built heading the other way and laid end first at O,
+     so it comes in underneath the ring, goes up the middle and spirals down round the ring, ending on the line about
+     460 m on, 34 m up. Its first 60 m bend from the road's own slope (sl0) and bank (u0s) into the spire's. nMag: the
+     samples from the foot to 20 m past the top edge, the mag-lock. */
+  const revSpire=(O,F,site,sl0,u0s)=>{const Fb=F.clone().negate(),g=spireGeo(O,Fb,site,0,null),sh=O.clone().sub(g.q),M=g.pts.length,pts=[],ups=[],Lb=60;let sa=0,prev=O;
+    for(let k=0;k<M;k++){const j=M-1-k,p=g.pts[j].clone().add(sh);sa+=p.distanceTo(prev);prev=p;
+      if(sa<Lb)p.y+=sl0*sa*(1-sa/Lb)*(1-sa/Lb);const u=g.ups[j].clone();pts.push(p);ups.push(u0s&&sa<60?u0s.clone().lerp(u,ss01(sa/60)).normalize():u)}
+    const Fh=new V(F.x,0,F.z).normalize(),q=pts[M-1].clone().addScaledVector(Fh,ds),D=g.data,mv=(a)=>[a[0]+sh.x,a[1]+sh.z];
+    return{pts,ups,q,Fh,nMag:Math.min(M,M-g.d0+Math.round(20/ds)),data:{c:mv(D.c),ax:mv(D.ax),fh:D.fh,top:D.top+sh.y,bot:D.bot+sh.y,Rs:D.Rs,v1:D.v1,v2:D.v2,rev:1}}};
   const avoidN=(opt.avoid||[]).reduce((a,[x,y])=>a+(y-x),0)*ds;
   const usable=(0.82-0.08)*N*ds-avoidN,count=opt.count!=null?opt.count:2+Math.floor(r()*((opt.lf||1)>1.2?5:4)),sites=[],cap=opt.dense?{sweep:1,dive:1,loop:3,jump:3,twist:3,corkscrew:3,climb:1,helix:1,spire:1}:{sweep:2,dive:1,loop:2,jump:2,twist:2,corkscrew:2,climb:1,helix:1,spire:1};let used=0;
   if(opt.want){/* the editor's counts: shorten the long features first, then drop from whichever kind there is most of */
@@ -1280,12 +1422,17 @@ function addFeatures(b,r,W,opt={}){
      for(const[a,b]of opt.avoid||[]){const e=st.i+Math.ceil(st.foot/ds);if(e>a&&st.i<b)st.i=b+1}
      cur=Math.max(cur+gap+st.foot,(st.i)*ds+st.foot)}}
   /* a spiral swings a full circle out to one side: try the other side if the first would run into the track */
-  for(const st of sites)if(st.kind==='helix'){const O=P[st.i%N],F=Tg[st.i%N],Fh=new V(F.x,0,F.z).normalize(),Rx=new V().crossVectors(Fh,new V(0,1,0)).normalize();
+  for(const st of sites)if(KB(st.kind)==='helix'){const O=P[st.i%N],F=Tg[st.i%N],Fh=new V(F.x,0,F.z).normalize(),Rx=new V().crossVectors(Fh,new V(0,1,0)).normalize();
     const hits=d=>{const C0=O.clone().addScaledVector(Rx,d*st.Rh);for(let k=0;k<24;k++){const th=TAU*k/24,q=C0.clone().addScaledVector(Rx,-d*st.Rh*Math.cos(th)).addScaledVector(Fh,st.Rh*Math.sin(th));
       for(let j=0;j<N;j+=4){const dj=Math.abs(j-st.i),dw=Math.min(dj,N-dj)*ds;if(dw<st.Rh*3.4)continue;const p=P[j];if((p.x-q.x)**2+(p.z-q.z)**2<(W+40)**2&&Math.abs(p.y-q.y-st.Hh*k/24)<28)return true}}return false};
     if(hits(st.dir)){st.dir=-st.dir;if(hits(st.dir))st.skip=true}}
   /* a spire needs its whole ring, the half turn at the top, the drop and the run out clear of every other part of the track */
-  for(const st of sites)if(st.kind==='spire'){const O=P[st.i%N],F=Tg[st.i%N],Fh=new V(F.x,0,F.z).normalize(),Rx=new V().crossVectors(Fh,new V(0,1,0)).normalize(),loN=Math.round(80/ds),hiN=Math.round((st.Lc+st.Rs+260)/ds);
+  /* a rising spire checks the samples of its own road (it stands further along than a spire would) */
+  for(const st of sites)if(KB(st.kind)==='spire'&&st.rev){const O=P[st.i%N],F=Tg[st.i%N],loN=Math.round(80/ds),hiN=Math.round((st.Lc+st.Rs+260)/ds);
+    const hits=d=>{const g=revSpire(O,F,{...st,dir:d},0,null);for(let k=0;k<g.pts.length;k+=4){const q=g.pts[k];
+      for(let j=0;j<N;j+=4){const dj=((j-st.i)%N+N)%N;if(dj<=hiN||dj>=N-loN)continue;const p=P[j];if((p.x-q.x)**2+(p.z-q.z)**2<(W+40)**2&&Math.abs(p.y-q.y)<38)return true}}return false};
+    if(hits(st.dir)){st.dir=-st.dir;if(hits(st.dir))st.skip=true}}
+  for(const st of sites)if(st.kind==='spire'&&!st.rev){const O=P[st.i%N],F=Tg[st.i%N],Fh=new V(F.x,0,F.z).normalize(),Rx=new V().crossVectors(Fh,new V(0,1,0)).normalize(),loN=Math.round(80/ds),hiN=Math.round((st.Lc+st.Rs+260)/ds);
     const hits=d=>{const Lv=Rx.clone().multiplyScalar(d),C0=O.clone().addScaledVector(Fh,st.Lc),pts=[];
       for(let k=0;k<=40;k++){const th=3*Math.PI*k/40,h=st.Hs*ss01(k/40);pts.push([C0.clone().addScaledVector(Fh,st.Rs*Math.sin(th)).addScaledVector(Lv,st.Rs*Math.cos(th)),h,h])}
       for(let k=0;k<=10;k++)pts.push([O.clone().addScaledVector(Fh,st.Lc*k/10).addScaledVector(Lv,st.Rs*ss01(k/10)),0,0]);
@@ -1293,7 +1440,7 @@ function addFeatures(b,r,W,opt={}){
       pts.push([C0.clone().addScaledVector(Fh,st.Rs*0.42),-st.dpt,st.Hs]);for(let k=1;k<=4;k++)pts.push([C0.clone().addScaledVector(Fh,st.Rs*(0.42+k*0.2)),-st.dpt,-st.dpt]);
       for(const[q,h0,h1]of pts)for(let j=0;j<N;j+=4){const dj=((j-st.i)%N+N)%N;if(dj<=hiN||dj>=N-loN)continue;const p=P[j];if((p.x-q.x)**2+(p.z-q.z)**2<(W+40)**2&&p.y>O.y+h0-38&&p.y<O.y+h1+38)return true}return false};
     if(hits(st.dir)){st.dir=-st.dir;if(hits(st.dir))st.skip=true}}
-  {const dropped=opt.dropped||{};for(let k=sites.length-1;k>=0;k--){const st=sites[k];if(st.skip||st.i+Math.ceil(st.foot/ds)>0.88*N){dropped[st.kind]=(dropped[st.kind]||0)+1;sites.splice(k,1)}}if(opt.want)opt.dropped=dropped}
+  {const dropped=opt.dropped||{};for(let k=sites.length-1;k>=0;k--){const st=sites[k];if(st.skip||st.i+Math.ceil(st.foot/ds)>(st.prof?0.78:0.88)*N){dropped[st.kind]=(dropped[st.kind]||0)+1;sites.splice(k,1)}}if(opt.want)opt.dropped=dropped}
   sites.sort((a,b)=>a.i-b.i);
   const oP=[],oU=[],marks=[];let blend=null,blendH=null;
   const shiftAt=()=>{if(!blend)return 0;const len=Math.max(170,Math.abs(blend.dx)*5),v=blend.dx*(1-ss01(blend.d/len));blend.d+=ds;if(blend.d>len)blend=null;return v};
@@ -1311,9 +1458,27 @@ function addFeatures(b,r,W,opt={}){
   const upAt=i=>{const u=U[i].clone();if(!upB)return u;const w=1-ss01(upB.d/UPB),q=upB.u;upB.d+=ds;if(upB.d>=UPB)upB=null;return w>0?u.lerp(q,w).normalize():u};
   const upEnd=i=>{const q=oU[oU.length-1],t=Tg[i%N];upB=q&&Math.abs(bankOf(q,t)-bankOf(U[i%N],t))>0.01?{u:q.clone(),d:0}:null};
   const emit=(p,u)=>{oP.push(p);oU.push(u)};
+  /* back onto the base line by a smooth curve (Prototype 31): pick the point on the line ahead that the run-out can
+     reach with the least turning and a gentle slope, and join it, matching direction at both ends. The base samples
+     the set piece covered are skipped. (Shifting the old line sideways onto the run-out could fold the road back on
+     itself, or throw it up and down on a banked bend.) q is where the set piece ends, heading Fh; it returns the base
+     sample joined. */
+  const joinBack=(q,Fh,O,i,site)=>{const Y=new V(0,1,0);
+        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds)),A0=q.clone();
+        const herm=(E,m1,ch,x)=>{const x2=x*x,x3=x2*x;return A0.clone().multiplyScalar(2*x3-3*x2+1).addScaledVector(Fh,ch*(x3-2*x2+x)).addScaledVector(E,3*x2-2*x3).addScaledVector(m1,ch*(x3-x2))};
+        /* score a join by how sharply it would bend (the most it turns per metre anywhere along it) and how steep it is */
+        let bj=-1,bc=1e9;
+        for(let j=i+Math.round(adv*0.5);j<=Math.min(N-1,i+Math.round((site.foot+260)/ds));j+=2){const ch=P[j].distanceTo(q);if(ch<90)continue;
+          let prev=herm(P[j],Tg[j],ch,0),pd=null,kmax=0,smax=0;for(let k=1;k<=16;k++){const p=herm(P[j],Tg[j],ch,k/16),d=p.clone().sub(prev),l=d.length();d.divideScalar(l);
+            if(pd)kmax=Math.max(kmax,Math.acos(clamp(d.dot(pd),-1,1))/l);smax=Math.max(smax,Math.abs(d.y));pd=d;prev=p}
+          const c=kmax*120+Math.max(0,smax-0.3)*6+ch/5000;if(c<bc){bc=c;bj=j}}
+        if(bj<0)bj=Math.min(N-1,i+adv);
+        {const E=P[bj],ch=Math.max(60,E.distanceTo(q)),nC=Math.ceil(ch*1.15/ds);
+          for(let k=0;k<nC;k++){const x=k/nC;emit(herm(E,Tg[bj],ch,x),Y.clone().lerp(U[bj],ss01(x)).normalize())}}
+        return bj};
   let si=0,i=0;
   while(i<N){const site=sites[si];
-    if(site&&i>=site.i){si++;const kd=site.kind,F=Tg[i].clone(),Up=U[i].clone(),Rt=R[i].clone(),start=oP.length;
+    if(site&&i>=site.i){si++;const kd=KB(site.kind),F=Tg[i].clone(),Up=U[i].clone(),Rt=R[i].clone(),start=oP.length;
       /* start from where the road actually is: still shifted sideways by an earlier loop, or still up after a spiral; s0 is
          the road's slope here (rise per metre), which a spiral or spire starts and ends with so the pitch never snaps */
       const s0=blend?blend.dx*(1-ss01(blend.d/Math.max(170,Math.abs(blend.dx)*5))):0,h0=blendH?blendH.dh*(1-ss01(blendH.d/blendH.len)):0,O=P[i].clone().addScaledVector(RH(i),s0).addScaledVector(Y1,h0),sl0=F.y/Math.max(0.2,Math.hypot(F.x,F.z));
@@ -1331,58 +1496,55 @@ function addFeatures(b,r,W,opt={}){
         for(let k=0;k<n;k++){const th=TAU*k/n,p=C0.clone().addScaledVector(Rx,-dir*Rh*Math.cos(th)).addScaledVector(Fh,Rh*Math.sin(th));const x=k/n;p.y=O.y+Hh*ss01(x)+sl0*TAU*Rh*x*(2*x-1)*(x-1);
           const inw=C0.clone().sub(p);inw.y=0;inw.normalize();const hu=Y.clone().multiplyScalar(Math.cos(bk*ss01(Math.min(1,k/n*6))*ss01(Math.min(1,(n-k)/n*6)))).addScaledVector(inw,Math.sin(bk*ss01(Math.min(1,k/n*6))*ss01(Math.min(1,(n-k)/n*6)))).normalize();
           emit(p,u0h?u0h.clone().lerp(hu,ss01(Math.min(1,k/n*6))).normalize():hu)}
-        blendH=lift(h0+Hh);upEnd(i);marks.push({kind:kd,a:start,b:oP.length})}
-      else if(kd==='spire'){const{Rs,Hs,dpt,dir,Lc}=site,Y=new V(0,1,0),Fh=new V(F.x,0,F.z).normalize(),Lv=new V().crossVectors(Fh,Y).normalize().multiplyScalar(dir),C0=O.clone().addScaledVector(Fh,Lc),rho=Rs/2,top=O.y+Hs,bk=0.28;
-        const tilt=(p,c,b)=>{const inw=c.clone().sub(p);inw.y=0;inw.normalize();return Y.clone().multiplyScalar(Math.cos(b)).addScaledVector(inw,Math.sin(b)).normalize()};
-        /* ease out to the side and onto the ring */
-        const nS=Math.ceil(Lc/ds),u0s=bankUp(lastU(i),F);for(let k=0;k<nS;k++){const x=k/nS;emit(O.clone().addScaledVector(Fh,Lc*x).addScaledVector(Lv,Rs*ss01(x)).addScaledVector(Y,sl0*Lc*x*(1-x)*(1-x)),u0s?u0s.clone().lerp(Y,ss01(Math.min(1,Lc*x/UPB))).normalize():Y.clone())}
-        /* one and a half turns up, banked in */
-        const TH=3*Math.PI,nR=Math.ceil(TH*Rs/ds);
-        for(let k=0;k<nR;k++){const x=k/nR,th=TH*x,p=C0.clone().addScaledVector(Fh,Rs*Math.sin(th)).addScaledVector(Lv,Rs*Math.cos(th));p.y=O.y+Hs*ss01(x);emit(p,tilt(p,C0,bk*ss01(Math.min(1,x*8))))}
-        /* a half turn in to the middle at the top */
-        const Tc=C0.clone().addScaledVector(Lv,-Rs/2),nT=Math.ceil(Math.PI*rho/ds);
-        for(let k=0;k<nT;k++){const x=k/nT,ph=Math.PI*x,p=Tc.clone().addScaledVector(Lv,-rho*Math.cos(ph)).addScaledVector(Fh,-rho*Math.sin(ph));p.y=top;emit(p,tilt(p,Tc,(bk+(1.0-bk)*ss01(Math.min(1,x*5)))*ss01(Math.min(1,(1-x)*6.5))))}
-        /* over the edge, straight down the middle, and out underneath the ring (both bends ease in and out) */
-        const Lp=80,nP=Math.ceil(Lp/ds),Lq=110,nQ=Math.ceil(Lq/ds);let h1=0,v1=0,v2=0;
-        for(let k=0;k<nP;k++){const a=Math.PI/2*ss01(k/nP);h1+=Math.cos(a)*Lp/nP;v1+=Math.sin(a)*Lp/nP}
-        for(let k=0;k<nQ;k++){const a=Math.PI/2*ss01(k/nQ);v2+=Math.cos(a)*Lq/nQ}
-        const Ls=Math.max(8,0.42*Rs-h1),q=C0.clone();q.y=top;
-        for(let s2=0;s2<Ls;s2+=ds){emit(q.clone(),Y.clone());q.addScaledVector(Fh,ds)}
-        const d0=oP.length;
-        for(let k=0;k<nP;k++){const a=Math.PI/2*ss01(k/nP);emit(q.clone(),Y.clone().multiplyScalar(Math.cos(a)).addScaledVector(Fh,Math.sin(a)));q.addScaledVector(Fh,Math.cos(a)*Lp/nP).addScaledVector(Y,-Math.sin(a)*Lp/nP)}
-        const ax=q.clone(),bot=O.y-dpt;
-        while(q.y-ds>bot+v2){emit(q.clone(),Fh.clone());q.y-=ds}
-        for(let k=0;k<nQ;k++){const a=Math.PI/2*ss01(k/nQ);emit(q.clone(),Fh.clone().multiplyScalar(Math.cos(a)).addScaledVector(Y,Math.sin(a)));q.addScaledVector(Y,-Math.cos(a)*Lq/nQ).addScaledVector(Fh,Math.sin(a)*Lq/nQ)}
-        marks.push({kind:'sdrop',a:d0,b:oP.length});
-        marks.push({kind:kd,a:start,b:oP.length,data:{c:[C0.x,C0.z],ax:[ax.x,ax.z],fh:[Fh.x,Fh.z],top,bot,Rs,v1,v2}});
+        blendH=lift(h0+Hh);upEnd(i);marks.push({kind:kd,a:start,b:oP.length,data:Hh<0?{down:1,src:site.src}:null})}
+      else if(kd==='spire'&&!site.rev){const g=spireGeo(O,F,site,sl0,bankUp(lastU(i),F)),Fh=g.Fh,q=g.q;
+        const D0=oP.length+g.d0;for(let k=0;k<g.pts.length;k++)emit(g.pts[k],g.ups[k]);
+        marks.push({kind:'sdrop',a:D0,b:oP.length});
+        marks.push({kind:kd,a:start,b:oP.length,data:g.data});
         /* back onto the base line by a smooth curve (Prototype 31): pick the point on the line ahead that the run-out can
            reach with the least turning and a gentle slope, and join it, matching direction at both ends. The base samples
            the set piece covered are skipped. (Shifting the old line sideways onto the run-out could fold the road back on
            itself, or throw it up and down on a banked bend.) */
-        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds)),A0=q.clone();
-        const herm=(E,m1,ch,x)=>{const x2=x*x,x3=x2*x;return A0.clone().multiplyScalar(2*x3-3*x2+1).addScaledVector(Fh,ch*(x3-2*x2+x)).addScaledVector(E,3*x2-2*x3).addScaledVector(m1,ch*(x3-x2))};
-        /* score a join by how sharply it would bend (the most it turns per metre anywhere along it) and how steep it is */
-        let bj=-1,bc=1e9;
-        for(let j=i+Math.round(adv*0.5);j<=Math.min(N-1,i+Math.round((site.foot+260)/ds));j+=2){const ch=P[j].distanceTo(q);if(ch<90)continue;
-          let prev=herm(P[j],Tg[j],ch,0),pd=null,kmax=0,smax=0;for(let k=1;k<=16;k++){const p=herm(P[j],Tg[j],ch,k/16),d=p.clone().sub(prev),l=d.length();d.divideScalar(l);
-            if(pd)kmax=Math.max(kmax,Math.acos(clamp(d.dot(pd),-1,1))/l);smax=Math.max(smax,Math.abs(d.y));pd=d;prev=p}
-          const c=kmax*120+Math.max(0,smax-0.3)*6+ch/5000;if(c<bc){bc=c;bj=j}}
-        if(bj<0)bj=Math.min(N-1,i+adv);
-        {const E=P[bj],ch=Math.max(60,E.distanceTo(q)),nC=Math.ceil(ch*1.15/ds);
-          for(let k=0;k<nC;k++){const x=k/nC;emit(herm(E,Tg[bj],ch,x),Y.clone().lerp(U[bj],ss01(x)).normalize())}}
-        i=bj;blend=null;blendH=null;upB=null}
+        i=joinBack(q,Fh,O,i,site);blend=null;blendH=null;upB=null}
+      /* Prototype 60: the rising spire, the spire's road run backwards: in underneath the ring, up straight up the middle
+         (mag-lock from the foot to past the top edge), the half turn at the top, one and a half turns down round the ring
+         and out to the side, then back onto the line like a spire. It starts on the road's own slope and bank. */
+      else if(kd==='spire'){const g=revSpire(O,F,site,sl0,bankUp(lastU(i),F));
+        for(let k=0;k<g.pts.length;k++)emit(g.pts[k],g.ups[k]);
+        marks.push({kind:'sdrop',a:start,b:start+g.nMag});
+        marks.push({kind:kd,a:start,b:oP.length,data:{...g.data,src:site.src}});
+        i=joinBack(g.q,g.Fh,O,i,site);blend=null;blendH=null;upB=null}
       else{const n=Math.ceil(site.len/ds);
         /* on a sloping stretch a rise or drop is made smaller, so together they stay under about 35 degrees */
         if(kd==='climb'||kd==='dive'||kd==='sweep'){let sb=0;for(let k=0;k<n;k+=2){const t=Tg[Math.min(N-1,i+k)];sb=Math.max(sb,Math.abs(t.y)/Math.max(0.2,Math.hypot(t.x,t.z)))}const room=Math.max(0.12,0.7-sb);
           if(kd==='climb')site.Hh=Math.min(site.Hh,room*2*site.Lr/Math.PI);else if(kd==='dive')site.D=Math.min(site.D,room*site.len/Math.PI);else site.amp=site.amp.map(a=>Math.min(a,room*site.lam/Math.PI))}
+        /* Prototype 60: a new jump runs straight: from its ramp (40-100 m before the lip) to 150-220 m past the landing the
+           road follows the straight line between those two points, unbanked, blending in and out over 150 m, so a frame flying the
+           gap (and the 100-480 m it flies past it) isn't carried into the fence by a bend under it */
+        if(site.prof&&!site.sw){const sw=new Float32Array(n),sx=new Float32Array(n),sz=new Float32Array(n),wins=[],Bl=150,ix=xm=>Math.min(N-1,i+Math.max(0,Math.round(xm/ds)));let acc=0;
+          for(const q of site.prof){if(q.gap){const k=q.gap.kind,w0=[acc-(k==='drop'?40:k==='sjump'?100:70),acc+q.L+(k==='drop'?150:220)],pw=wins[wins.length-1];if(pw&&w0[0]-pw[1]<2*Bl)pw[1]=w0[1];else wins.push(w0)}acc+=q.L}
+          /* (drops in a row share one straight line: two lines blending into each other between them would kink the road;
+             and the blend ends inside the piece, or the road would step where it ends) */
+          for(const w of wins){w[0]=Math.max(w[0],Bl);w[1]=Math.min(w[1],n*ds-Bl-2)}
+          for(const[xa,xb]of wins){const A=P[ix(xa)],B=P[ix(xb)],dx=B.x-A.x,dz=B.z-A.z,L0=Math.hypot(dx,dz)||1,ux=dx/L0,uz=dz/L0;
+            /* on a tight bend the line would move the road too far (into the rest of the track): then it goes only part of
+               the way, at most 20 m from the line, which still takes most of the bend out */
+            let mx=0;for(let j=0;j<n;j+=4){const xm=j*ds;if(xm<xa||xm>xb)continue;const q=P[ix(xm)],t=(xm-xa)/(xb-xa);mx=Math.max(mx,Math.hypot(A.x+dx*t-q.x,A.z+dz*t-q.z))}const kS=Math.min(1,20/Math.max(1e-3,mx));
+            for(let j=0;j<n;j++){const xm=j*ds;if(xm<xa-Bl||xm>xb+Bl)continue;let w,tx,tz;
+              if(xm<xa){w=ss01((xm-xa+Bl)/Bl);tx=A.x+ux*(xm-xa);tz=A.z+uz*(xm-xa)}else if(xm>xb){w=ss01((xb+Bl-xm)/Bl);tx=B.x+ux*(xm-xb);tz=B.z+uz*(xm-xb)}else{const t=(xm-xa)/(xb-xa);w=1;tx=A.x+dx*t;tz=A.z+dz*t}
+              if(w>sw[j]){const q=P[ix(xm)];sw[j]=w;sx[j]=(tx-q.x)*kS;sz[j]=(tz-q.z)*kS}}}
+          site.sw=sw;site.sx=sx;site.sz=sz}
         for(let j=0;j<n&&i<N;j++,i++){const x=j/n,xm=j*ds,s=shiftAt(),p=P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),u=upAt(i);
           if(kd==='twist'){const ph=TAU*ss01(x);emit(p,u.clone().multiplyScalar(Math.cos(ph)).addScaledVector(R[i],Math.sin(ph)))}
           else if(kd==='corkscrew'){const ph=TAU*ss01(x);emit(p.addScaledVector(U[i],rc*(1-Math.cos(ph))).addScaledVector(R[i],-rc*Math.sin(ph)),u.clone().multiplyScalar(Math.cos(ph)).addScaledVector(R[i],Math.sin(ph)))}
           else if(kd==='dive'){emit(p.addScaledVector(Y1,-site.D*(1-Math.cos(TAU*x))/2),u)}
           else if(kd==='climb'){const{Hh,Lr,Lp}=site,y=(site.sg||1)*xm<Lr?Hh*(1-Math.cos(Math.PI*xm/Lr))/2:xm<Lr+Lp?Hh:Hh*(1+Math.cos(Math.PI*Math.min(1,(xm-Lr-Lp)/Lr)))/2;emit(p.addScaledVector(Y1,y),u)}
           else if(kd==='sweep'){const k=Math.min(site.n-1,Math.floor(xm/site.lam)),xx=xm/site.lam-k;emit(p.addScaledVector(Y1,site.sg[k]*site.amp[k]*(1-Math.cos(TAU*xx))/2),u)}
+          else if(site.prof){if(site.sw[j]>0){p.x+=site.sx[j]*site.sw[j];p.z+=site.sz[j]*site.sw[j];u.lerp(Y1,site.sw[j]).normalize()}let x=xm,sg=null;for(const q of site.prof){if(x<q.L){sg=q;break}x-=q.L}const y=sg?sg.f(x):site.prof[site.prof.length-1].y1;emit(p.addScaledVector(Y1,y),u);
+            /* the lip is the first sample of a gap, the landing the first after it */
+            const gp=!!(sg&&sg.gap);if(gp&&!site._g)marks.push({kind:'lip2',a:oP.length-1,d:sg.gap});if(!gp&&site._g)marks.push({kind:'land2',a:oP.length-1,d:site._g});site._g=gp?sg.gap:null}
           else{emit(p.addScaledVector(Y1,xm<lr?1.2*(xm/lr)**2:gapC((xm-lr)/jumpG,jumpG)),u);if(Math.abs(xm-lr)<ds/2)marks.push({kind:'lip',a:oP.length-1});if(Math.abs(xm-lr-jumpG)<ds/2)marks.push({kind:'land',a:oP.length-1})}}
-        marks.push({kind:kd,a:start,b:oP.length});continue}}
+        marks.push({kind:kd,a:start,b:oP.length,data:site.prof?{nd:site.nd,tail:site.tail,Ls:site.Ls,hu:site.hu,bonus:site.bonus,Lc:site.Lc}:null});continue}}
     const s=shiftAt();emit(P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),upAt(i));i++}
   // even resampling of the closed polyline
   const M=oP.length,cum=new Float64Array(M+1);for(let k=1;k<=M;k++)cum[k]=cum[k-1]+oP[k%M].distanceTo(oP[k-1]);
@@ -1392,8 +1554,12 @@ function addFeatures(b,r,W,opt={}){
   const T2=[],R2=[],H2=new Float32Array(N2),K2=new Float32Array(N2),kind=new Uint8Array(N2),gap=new Uint8Array(N2);
   for(let k=0;k<N2;k++){const t=new V().subVectors(P2[(k+1)%N2],P2[(k-1+N2)%N2]).normalize();T2.push(t);const u=U2[k];u.addScaledVector(t,-u.dot(t)).normalize();R2.push(new V().crossVectors(t,u));H2[k]=Math.atan2(t.x,t.z)}
   for(let k=0;k<N2;k++){const d=new V().subVectors(T2[(k+1)%N2],T2[(k-1+N2)%N2]).divideScalar(2*ds2);K2[k]=-d.dot(R2[k])}
-  const feats=[],jumps=[],drops=[];let lip=null;
+  const feats=[],jumps=[],drops=[];let lip=null,lip2=null;const NEWJ={drop:1,sjump:1,cjump:1};
   for(const m of marks){const u0=map[m.a];
+    if(m.kind==='lip2'){lip2=u0;continue}
+    if(m.kind==='land2'){const d=m.d;jumps.push({u0:lip2,u1:u0,G:u0-lip2,slope:d.slope,lipH:d.lipH,kind:d.kind});for(let k=Math.ceil(lip2/ds2);k<=Math.floor(u0/ds2);k++)gap[k%N2]=1;
+      for(let k=Math.floor((lip2-30)/ds2);k<=Math.ceil((u0+30)/ds2);k++)kind[((k%N2)+N2)%N2]=1;continue}
+    if(NEWJ[m.kind]){const u1=m.b<M?map[m.b]:L;feats.push({kind:m.kind,u0,u1,...(m.data||{})});continue}
     if(m.kind==='lip')lip=u0;else if(m.kind==='sdrop')drops.push({u0,u1:m.b<M?map[m.b]:L});else if(m.kind==='land'){jumps.push({u0:lip,u1:u0,G:u0-lip,slope:2*1.2/24,lipH:1.2});for(let k=Math.ceil(lip/ds2);k<=Math.floor(u0/ds2);k++)gap[k%N2]=1}
     else{const u1=m.b<M?map[m.b]:L;feats.push({kind:m.kind,u0,u1,...(m.data||{})});if(m.kind!=='sweep'&&m.kind!=='dive'&&m.kind!=='climb')for(let k=Math.floor(u0/ds2);k<=Math.ceil(u1/ds2);k++)kind[k%N2]=1}}
   return{P:P2,U:U2,R:R2,Tg:T2,H:H2,K:K2,N:N2,ds:ds2,L,kind,gap,feats,jumps,drops}}
@@ -1409,7 +1575,8 @@ function surf(u,lat,r,ro){const k=T.spl[idxAt(u)];SF.h=SF.sl=SF.kv=SF.yb=SF.c=0;
   if(!k){if(r&&r.brS){r.brS=null;r.br=null}return SF}
   const SP=T.splits[k-1],uu=((u%T.L)+T.L)%T.L,f=clamp((uu-SP.u0)/T.ds,0,SP.n),j=Math.min(SP.n-1,Math.floor(f)),a=f-j,near=()=>{let bi=0,bd=1e9;SP.b.forEach((B,i)=>{const c=B.c[j]+(B.c[j+1]-B.c[j])*a,w=B.w[j]+(B.w[j+1]-B.w[j])*a,d=Math.abs(lat-c)-w;if(d<bd){bd=d;bi=i}});return bi};
   const ad=!!(SP.adj&&(SP.adj[j]||SP.adj[j+1]));
-  let b;if(r&&ro)b=r.brS===SP&&r.br!=null?r.br:near();else if(r){if(r.brS!==SP){r.brS=SP;r.br=near()}else if(ad&&r.u!=null&&Math.abs(wrapU(u-r.u))<4)r.br=near();b=r.br}else b=near();
+  let b;if(SP.kind==='stack'){b=r&&(r.isGhost||r.proxy)?(r.stkUp?SP.upB:SP.lowB):r&&ro?(r.brS===SP&&r.br!=null?r.br:SP.lowB):r?(r.stkS===SP?r.stkB:SP.lowB):near();if(r&&!ro){r.brS=SP;r.br=b}}
+  else if(r&&ro)b=r.brS===SP&&r.br!=null?r.br:near();else if(r){if(r.brS!==SP){r.brS=SP;r.br=near()}else if(ad&&r.u!=null&&Math.abs(wrapU(u-r.u))<4)r.br=near();b=r.br}else b=near();
   const B=SP.b[b],L=A=>A[j]+(A[j+1]-A[j])*a,c=L(B.c),w=L(B.w);SF.h=L(B.h);SF.sl=L(B.sl);SF.kv=L(B.kv);SF.yb=-Math.atan(L(B.dc));SF.lo=c-w;SF.hi=c+w;SF.c=c;SF.sp=SP;SF.b=b;if(B.g)SF.g=L(B.g);
   if(ad&&SP.b.length===2){const O=SP.b[1-b],oc=L(O.c),ow=L(O.w);SF.lo=Math.min(SF.lo,oc-ow);SF.hi=Math.max(SF.hi,oc+ow)}return SF}
 const clampLat=(u,lat,m,o)=>{const f=surf(u,lat,o);return clamp(lat,f.lo+m,f.hi-m)};

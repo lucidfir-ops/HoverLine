@@ -3,10 +3,11 @@
    Counts for each feature, plus width, length and how bendy the base circuit is. Every change rebuilds the track at
    once (same seed, so the circuit keeps its rough shape); Reshuffle tries a new layout with the same counts. What does
    not fit on the chosen length is listed rather than squeezed in. Opening the editor changes nothing until you do. */
-const FLBL={spire:['Spires','spiral up, drop down the middle'],sweep:['Sweeps','rolling hills'],climb:['Climbs','up to a plateau'],dive:['Dives','a long drop'],jump:['Jumps','a gap to clear'],loop:['Loops','all the way round'],twist:['Twists','a barrel roll'],corkscrew:['Corkscrews','roll and rise'],helix:['Spirals','a rising full circle'],split:['Splits','a long and a short route']};
+const FLBL={spire:['Spires','spiral up, drop down the middle'],sweep:['Sweeps','rolling hills'],climb:['Climbs','up to a plateau'],dive:['Dives','a long drop'],jump:['Jumps','a gap to clear'],loop:['Loops','all the way round'],twist:['Twists','a barrel roll'],corkscrew:['Corkscrews','roll and rise'],helix:['Spirals','a rising full circle'],split:['Splits','a long and a short route'],
+  /* Prototype 60 */vspire:['Rising spires','up the middle, spiral down'],dhelix:['Down spirals','a falling full circle'],drop:['Drops','the road ends, a lower one catches you'],sjump:['Speed jumps','fast enough reaches the upper road'],cjump:['Long jumps','far, wide and lower: long air']};
 const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
-  if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats)if(n[f.kind]!=null)n[f.kind]=Math.min(FMAX[f.kind],n[f.kind]+1);ed.sp={b:T.fig8?3:1,n}}
+  if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats){const k=f.rev?'vspire':f.down?'dhelix':f.kind;if(n[k]!=null)n[k]=Math.min(FMAX[k],n[k]+1)}ed.sp={b:T.fig8?3:1,n}}
   goFull();$(from).hidden=true;$('ed').hidden=false;edUI();drawPreview('edPreview','edStats')}
 function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild(ed.reseed);$('ed').hidden=true;
   if(ed.from==='mp'){$('mp').hidden=false;mpPushInfo();mpView&&mpView()}else{showPage('menu');if(race)startRace()}}

@@ -55,8 +55,8 @@ for(const id of['preview','mpPreview','edPreview']){const cv=$(id);
 /* Called whenever the track changes: rebuilds the 3D sketch and the stats line under it. */
 function drawPreview(cid='preview',sid='stats'){pv3Build();pv3Draw($(cid),0);
   const st=T.stats;$('lenLbl').textContent='';
-  const fc={};for(const f of T.feats)fc[f.kind]=(fc[f.kind]||0)+1;const FN={loop:['loop','loops'],corkscrew:['corkscrew','corkscrews'],twist:['twist','twists'],jump:['jump','jumps'],dive:['dive','dives'],sweep:['sweep','sweeps'],climb:['climb','climbs'],helix:['spiral','spirals'],split:['split','splits'],spire:['spire','spires']};
-  const fl=Object.entries(fc).map(([k,n])=>`${n} ${FN[k][n>1?1:0]}`).join(' · ');
+  const fc={};for(const f of T.feats){const k=f.rev?'vspire':f.down?'dhelix':f.kind;fc[k]=(fc[k]||0)+1}const FN={vspire:['rising spire','rising spires'],dhelix:['down spiral','down spirals'],drop:['drop','drops'],sjump:['speed jump','speed jumps'],cjump:['long jump','long jumps'],loop:['loop','loops'],corkscrew:['corkscrew','corkscrews'],twist:['twist','twists'],jump:['jump','jumps'],dive:['dive','dives'],sweep:['sweep','sweeps'],climb:['climb','climbs'],helix:['spiral','spirals'],split:['split','splits'],spire:['spire','spires']};
+  const fl=Object.entries(fc).map(([k,n])=>`${n} ${(FN[k]||[k,k])[n>1?1:0]}`).join(' · ');
   $(sid).innerHTML=`<b>${T.D.name}</b> · ${T.cx?'Complex'+(T.theme?' ('+T.theme+')':''):'Simple'}${T.fig8?' · Figure 8':''} · ${T.LN.name} · ${W} m wide · ${(T.L/1000).toFixed(2)} km<br>${fl?fl+' · ':''}${st.corners} corner${st.corners===1?'':'s'} · ${Math.round(st.climb)} m climb<br>${T.bmInfo||''}`}
 let miniBase=null,miniMap=null;
 function buildMini(){const c=$('mini'),dpr=Math.min(devicePixelRatio||1,2);c.width=Math.round((c.clientWidth||110)*dpr);c.height=Math.round((c.clientHeight||110)*dpr);

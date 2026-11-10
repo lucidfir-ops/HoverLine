@@ -1,9 +1,9 @@
 // Hoverline online leaderboard — a Cloudflare Worker with a D1 database.
-//   GET  /top?track=CODE&laps=3&era=28   → { rows:[{name,ship,time,lap,at}], total }
-//   GET  /boards?sort=recent|popular&era=28 → { boards:[{track,laps,pilots,runs,best,holder,last}] }   (for the in-game Leaderboard screen;
-//                                              popular = most races, then most pilots)
-//   GET  /recent?n=30&era=28                 → { runs:[{track,laps,name,ship,time,lap,at}] }   (latest finishes on every track)
-//   POST /run  {track,laps,name,ship,time,lap,len,era}  → { rank, total, rows }
+//   GET  /top?track=CODE&laps=3&era=28&lvl=normal   → { rows:[{name,ship,time,lap,at}], total, lvl }
+//   GET  /boards?sort=recent|popular&era=28&lvl=normal → { boards:[{track,laps,pilots,runs,best,holder,last}], lvl }   (for the in-game
+//                                              Leaderboard screen; popular = most races, then most pilots)
+//   GET  /recent?n=30&era=28&lvl=normal        → { runs:[{track,laps,name,ship,time,lap,at,lvl}], lvl }   (latest finishes on every track)
+//   POST /run  {track,laps,name,ship,time,lap,len,era,lvl}  → { rank, best, total, rows, lvl }
 //   POST /log  {v, log}                       → { ok, id }            (shared race data; no names)
 //   GET  /logs?key=ADMIN_KEY&since=MS&limit=N → { logs:[{id,created,ver,track,log}], more }
 //   GET  /logs/count?key=ADMIN_KEY            → { n, bytes }
@@ -14,36 +14,41 @@
 // Boards are split by era: the game's BOARD_ERA, raised whenever tracks or handling change enough that old times aren't
 // comparable. Every read and write takes ?era= / {era}; a client that sends none (Prototype 28) is era 28.
 // Rows from before eras existed are era 0 and never shown.
+// Prototype 60: boards are split by the rivals' level too (lvl: tilt, easy, normal, hard; the game shows them as Tilt, Beginner,
+// Default and Expert). Every read and write takes ?lvl= / {lvl}; a client that sends none (Prototype 59 and older, which only
+// sent Normal races) is 'normal', and so is every row from before the column existed. An unknown level is refused (400).
 const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' };
 const LOG_MAX = 400000; // bytes of JSON per race log
 const json = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'Content-Type': 'application/json', ...CORS } });
 const TRACK = /^[A-Z0-9-]{4,40}$/i, SHIP = /^[a-z]{2,12}$/;
 const eraOf = v => { const n = parseInt(v, 10); return n > 0 && n < 10000 ? n : 28 };
+const LVLS = ['tilt', 'easy', 'normal', 'hard'];
+const lvlOf = v => v == null || v === '' ? 'normal' : LVLS.includes(String(v)) ? String(v) : null; // null: not a level we know
 const cleanName = n => String(n || '').replace(/[\u0000-\u001f\u007f<>&"]/g, '').trim().slice(0, 12);
 const CUKE = 'cuke-cutter';
 const isCuke = L => !!L && typeof L === 'object' && String(L.game || '').toLowerCase() === CUKE;
 
-async function top(db, track, laps, era, n = 10) {
+async function top(db, track, laps, era, lvl, n = 10) {
   const r = await db.prepare(
-    `SELECT name, ship, MIN(time_ms) AS t, lap_ms, created FROM runs WHERE track=?1 AND laps=?2 AND era=?4
-     GROUP BY name ORDER BY t ASC LIMIT ?3`).bind(track, laps, n, era).all();
-  const c = await db.prepare(`SELECT COUNT(DISTINCT name) AS n FROM runs WHERE track=?1 AND laps=?2 AND era=?3`).bind(track, laps, era).first();
-  return { rows: r.results.map(x => ({ name: x.name, ship: x.ship, time: x.t / 1000, lap: x.lap_ms / 1000, at: x.created })), total: c ? c.n : 0 };
+    `SELECT name, ship, MIN(time_ms) AS t, lap_ms, created FROM runs WHERE track=?1 AND laps=?2 AND era=?4 AND lvl=?5
+     GROUP BY name ORDER BY t ASC LIMIT ?3`).bind(track, laps, n, era, lvl).all();
+  const c = await db.prepare(`SELECT COUNT(DISTINCT name) AS n FROM runs WHERE track=?1 AND laps=?2 AND era=?3 AND lvl=?4`).bind(track, laps, era, lvl).first();
+  return { rows: r.results.map(x => ({ name: x.name, ship: x.ship, time: x.t / 1000, lap: x.lap_ms / 1000, at: x.created })), total: c ? c.n : 0, lvl };
 }
 
-async function boards(db, sort, era) {
+async function boards(db, sort, era, lvl) {
   const order = sort === 'popular' ? 'runs DESC, pilots DESC, last DESC' : 'last DESC';
   const r = await db.prepare(
     `SELECT b.track, b.laps, b.pilots, b.runs, b.t, b.last,
-       (SELECT name FROM runs r WHERE r.track=b.track AND r.laps=b.laps AND r.era=?1 ORDER BY time_ms ASC LIMIT 1) AS holder
-     FROM (SELECT track, laps, COUNT(DISTINCT name) AS pilots, COUNT(*) AS runs, MIN(time_ms) AS t, MAX(created) AS last FROM runs WHERE era=?1 GROUP BY track, laps) b
-     ORDER BY ${order} LIMIT 30`).bind(era).all();
-  return { boards: r.results.map(x => ({ track: x.track, laps: x.laps, pilots: x.pilots, runs: x.runs, best: x.t / 1000, holder: x.holder, last: x.last })) };
+       (SELECT name FROM runs r WHERE r.track=b.track AND r.laps=b.laps AND r.era=?1 AND r.lvl=?2 ORDER BY time_ms ASC LIMIT 1) AS holder
+     FROM (SELECT track, laps, COUNT(DISTINCT name) AS pilots, COUNT(*) AS runs, MIN(time_ms) AS t, MAX(created) AS last FROM runs WHERE era=?1 AND lvl=?2 GROUP BY track, laps) b
+     ORDER BY ${order} LIMIT 30`).bind(era, lvl).all();
+  return { boards: r.results.map(x => ({ track: x.track, laps: x.laps, pilots: x.pilots, runs: x.runs, best: x.t / 1000, holder: x.holder, last: x.last })), lvl };
 }
 
-async function recent(db, era, n) {
-  const r = await db.prepare(`SELECT track, laps, name, ship, time_ms, lap_ms, created FROM runs WHERE era=?1 ORDER BY created DESC LIMIT ?2`).bind(era, n).all();
-  return { runs: r.results.map(x => ({ track: x.track, laps: x.laps, name: x.name, ship: x.ship, time: x.time_ms / 1000, lap: x.lap_ms / 1000, at: x.created })) };
+async function recent(db, era, lvl, n) {
+  const r = await db.prepare(`SELECT track, laps, name, ship, time_ms, lap_ms, created, lvl FROM runs WHERE era=?1 AND lvl=?2 ORDER BY created DESC LIMIT ?3`).bind(era, lvl, n).all();
+  return { runs: r.results.map(x => ({ track: x.track, laps: x.laps, name: x.name, ship: x.ship, time: x.time_ms / 1000, lap: x.lap_ms / 1000, at: x.created, lvl: x.lvl })), lvl };
 }
 
 async function hash(s) {
@@ -56,22 +61,25 @@ export default {
     const u = new URL(req.url);
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     try {
+      const qlvl = lvlOf(u.searchParams.get('lvl'));
+      if (req.method === 'GET' && ['/top', '/recent', '/boards'].includes(u.pathname) && !qlvl) return json({ error: 'bad level' }, 400);
       if (req.method === 'GET' && u.pathname === '/top') {
         const track = u.searchParams.get('track') || '', laps = parseInt(u.searchParams.get('laps') || '3', 10);
         if (!TRACK.test(track) || !(laps >= 1 && laps <= 9)) return json({ error: 'bad track' }, 400);
-        return json(await top(env.DB, track.toUpperCase(), laps, eraOf(u.searchParams.get('era'))));
+        return json(await top(env.DB, track.toUpperCase(), laps, eraOf(u.searchParams.get('era')), qlvl));
       }
       if (req.method === 'GET' && u.pathname === '/recent') {
         const n = Math.min(50, Math.max(1, parseInt(u.searchParams.get('n') || '30', 10) || 30));
-        return json(await recent(env.DB, eraOf(u.searchParams.get('era')), n));
+        return json(await recent(env.DB, eraOf(u.searchParams.get('era')), qlvl, n));
       }
-      if (req.method === 'GET' && u.pathname === '/boards') return json(await boards(env.DB, u.searchParams.get('sort'), eraOf(u.searchParams.get('era'))));
+      if (req.method === 'GET' && u.pathname === '/boards') return json(await boards(env.DB, u.searchParams.get('sort'), eraOf(u.searchParams.get('era')), qlvl));
       if (req.method === 'POST' && u.pathname === '/run') {
         const b = await req.json().catch(() => null);
         if (!b) return json({ error: 'bad json' }, 400);
         const track = String(b.track || '').toUpperCase(), laps = b.laps | 0, name = cleanName(b.name), ship = String(b.ship || '');
-        const time = +b.time, lap = +b.lap, len = +b.len, era = eraOf(b.era);
+        const time = +b.time, lap = +b.lap, len = +b.len, era = eraOf(b.era), lvl = lvlOf(b.lvl);
         if (!TRACK.test(track) || !(laps >= 1 && laps <= 9) || !name || !SHIP.test(ship)) return json({ error: 'bad run' }, 400);
+        if (!lvl) return json({ error: 'bad level' }, 400);
         // Plausibility, not proof: nobody averages more than ~240 m/s, the best lap can't be slower than the average lap, and races end inside 30 minutes.
         if (!(len > 500 && len < 40000) || !(time > 0 && time < 1800) || !(lap > 0 && lap <= time / laps + 0.01) || time < laps * len / 240)
           return json({ error: 'implausible time' }, 422);
@@ -79,13 +87,13 @@ export default {
         const now = Date.now();
         const recent = await env.DB.prepare(`SELECT COUNT(*) AS n FROM runs WHERE who=?1 AND created>?2`).bind(who, now - 60000).first();
         if (recent && recent.n >= 6) return json({ error: 'slow down' }, 429);
-        await env.DB.prepare(`INSERT INTO runs (track,laps,name,ship,time_ms,lap_ms,created,who,era) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9)`)
-          .bind(track, laps, name, ship, Math.round(time * 1000), Math.round(lap * 1000), now, who, era).run();
-        const best = await env.DB.prepare(`SELECT MIN(time_ms) AS t FROM runs WHERE track=?1 AND laps=?2 AND name=?3 AND era=?4`).bind(track, laps, name, era).first();
+        await env.DB.prepare(`INSERT INTO runs (track,laps,name,ship,time_ms,lap_ms,created,who,era,lvl) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10)`)
+          .bind(track, laps, name, ship, Math.round(time * 1000), Math.round(lap * 1000), now, who, era, lvl).run();
+        const best = await env.DB.prepare(`SELECT MIN(time_ms) AS t FROM runs WHERE track=?1 AND laps=?2 AND name=?3 AND era=?4 AND lvl=?5`).bind(track, laps, name, era, lvl).first();
         const ahead = await env.DB.prepare(
-          `SELECT COUNT(*) AS n FROM (SELECT name, MIN(time_ms) AS t FROM runs WHERE track=?1 AND laps=?2 AND era=?4 GROUP BY name) WHERE t < ?3`)
-          .bind(track, laps, best.t, era).first();
-        const board = await top(env.DB, track, laps, era);
+          `SELECT COUNT(*) AS n FROM (SELECT name, MIN(time_ms) AS t FROM runs WHERE track=?1 AND laps=?2 AND era=?4 AND lvl=?5 GROUP BY name) WHERE t < ?3`)
+          .bind(track, laps, best.t, era, lvl).first();
+        const board = await top(env.DB, track, laps, era, lvl);
         return json({ rank: ahead.n + 1, best: best.t / 1000, ...board });
       }
       if (req.method === 'POST' && u.pathname === '/log') {

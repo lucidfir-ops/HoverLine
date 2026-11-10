@@ -22,10 +22,12 @@ function mpSyncConn(){document.querySelectorAll('[data-conn]').forEach(b=>b.setA
   $('lanJoin').hidden=!lan;$('mpCodeRow').hidden=lan;$('mpPub').hidden=mpConn!=='internet';$('mpConnHint').textContent=CONN_HINT[mpConn]+(lan&&!LAN.ok?' This browser has no WebRTC, so it can\'t use it.':'');chirpSync()}
 document.querySelectorAll('[data-conn]').forEach(b=>b.onclick=()=>{mpConn=b.dataset.conn;if(mpConn!=='wifi')store.set('hoverline.conn',mpConn);mpSyncConn()});
 function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidden=!inRoom;if(inRoom)mpRender()}
-function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls,...(mp.split==='screen'?{split:1}:{})}}
+/* Prototype 60: ail, the host's rivals level, so every pilot in the room races (and goes on the board at) the level the host's AI
+   flies; a host from before sends none, which is Default */
+function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls,ail:ailNow(),...(mp.split==='screen'?{split:1}:{})}}
 /* Public rooms (Prototype 38): Public room joins the first public room of this version that has space, or opens it if nobody
    is there (whoever is first is the host, and the next pilot takes over if they leave). Random codes never contain a 1. */
-const PUBV=59,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
+const PUBV=60,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
 function mpConnect(code,host,pub){mp.pub=pub||0;
   audio.init();store.set('hoverline.name',mpEl.mpName.value.trim().slice(0,12));mpEl.mpErr.textContent='';
   const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':mpConn==='lan'?'lan':'net';
