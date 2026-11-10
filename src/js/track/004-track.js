@@ -1009,8 +1009,10 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
          rounded arch or bank, never a sheer step (which stood as a flat slab beside the road) */
       scan(x,z,liftR+RAMP,o=>{const d=Math.hypot(o.x-x,o.z-z),b=o.y+tilt(o,x,z);if(d<liftR&&y>b-1&&y<b+26){lo=Math.min(lo,b);hi=Math.max(hi,b);if(o.n)nIn++;else nOut++}
         const f=d<liftR?1:sm(liftR+RAMP,liftR,d),dir=sgn||(o.n?1:-1);if(f<=0)return;
-        if(dir>0&&y>b-30&&y<b+26.5)up=Math.max(up,y+(b+26.5-y)*f);if(dir<0&&y>b-1.6&&y<b+30)dn=Math.min(dn,y-(y-(b-1.6))*f)});
-      if(lo<1e9){const s=sgn||(nIn&&!nOut?1:nOut&&!nIn?-1:0);liftD=s;return s<0?lo-1.6:s>0?hi+26.5:y}
+        /* (Prototype 60: the mountain itself arches 31 m over a road going in, not 26.5, so the tunnel's roof fits under
+           it; pressed under a 26.5 m arch, the tunnel's roof was in the road's space and left out) */
+        const top=sgn?26.5:31;if(dir>0&&y>b-30&&y<top+b)up=Math.max(up,y+(b+top-y)*f);if(dir<0&&y>b-1.6&&y<b+30)dn=Math.min(dn,y-(y-(b-1.6))*f)});
+      if(lo<1e9){const s=sgn||(nIn&&!nOut?1:nOut&&!nIn?-1:0);liftD=s;return s<0?lo-1.6:s>0?hi+(sgn?26.5:31):y}
       if(up>-1e9&&dn<1e9)return y;if(up>-1e9){liftD=1;return up}if(dn<1e9){liftD=-1;return dn}return y};
     /* Prototype 60: and again, the same way, until the point is clear of every road: where roads are stacked (a spire,
        a helix, a crossover, a lap passing over another) a point lifted over one stretch could land in the road's space
@@ -1081,6 +1083,10 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
        short ragged tunnel runs through to the cavern, which opens out round you as you come through */
     let nMouth=0;if(mode==='mix'){const inMat=rockMat(true),ri=Math.max(21,(W/2+5)/0.88),cy=0.42*ri,nr=36,
       jag=(a,k)=>1+0.16*Math.abs(Math.sin(a*5.3+k*1.7))+0.1*Math.abs(Math.sin(a*11.1+k*0.9)),
+      /* Prototype 60: the tunnel's upper half is tall enough to clear the road's space (26 m) over the whole road and 2.5 m
+         beyond its edges; it came down to 25.7 m there, so strips of its roof along both sides were left out, slots to the
+         sky over the road at the ways in (Eric's photos of NXL1FDB51-...-P3443) */
+      rt=Math.max(0.9,(28.6-cy)/(ri*Math.sqrt(Math.max(0.05,1-((W/2+2.5)/ri)**2)))),
       fr=i=>{i=((i%N)+N)%N;const t=Tg[i],l=Math.hypot(t.x,t.z)||1;return{p:P[i],fx:t.x/l,fz:t.z/l}},
       mesh=(pos,ind,mat,inside)=>{for(let k=0;k<pos.length;k+=3)pos[k+1]=Math.min(pos[k+1],surfH(pos[k],pos[k+2])-(inside?1.5:0.5));const keep=[];for(let k=0;k<ind.length;k+=3){const a=ind[k]*3,b=ind[k+1]*3,c=ind[k+2]*3;if(clearTri(pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]))keep.push(ind[k],ind[k+1],ind[k+2])}unshard(keep);
         const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(keep);g.computeVertexNormals();const gl=new Float32Array(pos.length);if(inside)for(let k=0;k<pos.length;k+=3)glowAt(pos[k],pos[k+1],pos[k+2],gl,k);
@@ -1091,7 +1097,7 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
         const iF=i0-(s0+Math.round(4/ds))*dir;
         const tp=[],ti=[],L=s0+Math.round(32/ds),st=Math.max(1,Math.round(4/ds)),rows=[];for(let s=0;s<=L;s+=st)rows.push(s);
         rows.forEach((s,j)=>{const Fs=fr(iF+s*dir),open=s>L-Math.round(12/ds)?1+(s-(L-Math.round(12/ds)))*ds*0.05:1;
-          for(let a=0;a<nr;a++){const an=a/nr*TAU,R0=ri*jag(an,j*0.7)*open;tp.push(Fs.p.x-Fs.fz*Math.cos(an)*R0,Fs.p.y+cy+Math.sin(an)*R0*0.9,Fs.p.z+Fs.fx*Math.cos(an)*R0)}});
+          for(let a=0;a<nr;a++){const an=a/nr*TAU,R0=ri*jag(an,j*0.7)*open;const sv=Math.sin(an);tp.push(Fs.p.x-Fs.fz*Math.cos(an)*R0,Fs.p.y+cy+sv*R0*(sv>0?rt:0.9),Fs.p.z+Fs.fx*Math.cos(an)*R0)}});
         for(let j=0;j<rows.length-1;j++)for(let a=0;a<nr;a++){const A=j*nr+a,B=j*nr+(a+1)%nr,C=A+nr,D=B+nr;ti.push(A,B,C,B,D,C)}
         mesh(tp,ti,inMat,true);
         /* (Prototype 54: no face on the cavern side any more: the cavern now closes round the way in by itself, and that face
