@@ -4,18 +4,23 @@
    Tracks from the editor add -B and seven counts: bends (0 smooth, 1 normal, 2 twisty), then sweeps, climbs, dives,
    jumps, loops, twists and corkscrews, e.g. SX1A2B3C-11002110. */
 /* Bends digit: 0 smooth, 1 normal, 2 twisty, 3 figure of eight. Older 7-count codes still load (no spirals or splits). */
-const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2};
-const specStr=sp=>String(sp.b)+FK.map(k=>sp.n[k]||0).join('');
-const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,3})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
+/* Prototype 60: five more counts after the spires: rising spires (up the middle, spiral down), down spirals, drops, speed
+   jumps and long jumps. A code only carries them when one is set, so every older editor code reads and writes as before. */
+const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire','vspire','dhelix','drop','sjump','cjump'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2,vspire:2,dhelix:2,drop:3,sjump:2,cjump:2};
+const specStr=sp=>{let s=String(sp.b)+FK.map(k=>sp.n[k]||0).join('');while(s.length>11&&s.endsWith('0'))s=s.slice(0,-1);return s};
+const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,7})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
 const specCx=sp=>FKG.some(k=>sp.n[k]>0);
 /* Scenery: a letter after a dash (O ocean, F forest, N Stratos, once called Night sky, R reef; urban needs none), then optionally four digits for the
    dials (scenery amount, falls, geysers, tunnels), e.g. S1A2B3C-O or SX1A2B3C-U2102. Scenery doesn't change the road, so
    best laps, ghosts and the online board go by the code without it. */
 const parseBio=str=>{const m=/^([UOFNRP])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?([0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,3})?))?(?:-([UOFNRP](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
-  return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0xFFFFFF,sp,bm:parseBio(m[6])}:null};
+/* Prototype 60: a track code's seed is six hex digits, or seven starting with 1 for codes made from Prototype 60 on (bit 24
+   of the seed, TV1): only those may get the new road pieces (drops, speed jumps, long jumps, spires and spirals the other
+   way), so every older code builds exactly the track it always did. */
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,7})?))?(?:-([UOFNRP](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+  return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x1FFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
-let seed=saved?saved.seed:Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
+let seed=saved?saved.seed:TV1+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
 const bioTok=()=>bio.k+(bio.d?bio.d.join(''):'');
 const bioStr=()=>bio.k==='U'&&!bio.d?'':'-'+bioTok();
 const roadStr=()=>spec&&spec.quick?'Q'+spec.quick+'-W':spec&&spec.train?'T-'+trDrill(spec.train).n.toUpperCase().replace(/[^A-Z]/g,'')+'-'+wid:wid+(cplx?'X':'')+(lenK!=='M'?lenK:'')+seed.toString(16).toUpperCase().padStart(6,'0')+(spec?'-'+specStr(spec):'');
@@ -38,7 +43,7 @@ const bestKey=()=>'hoverline.best.'+roadStr()+(S.car?'.car':'')+(S.train&&TRN.cu
 const ghostTag=()=>roadStr()+(S.train?'.'+LAPS+(TRN.cube?'c':''):'')+clsSfx();
 function getBest(){const v=parseFloat(store.get(bestKey())||'');return isFinite(v)?v:null}
 /* sp: undefined keeps the current editor counts, null drops them (back to generated tracks), an object sets them. */
-function loadTrack(s,wk,cx,lk,sp,bm){seed=(s&0xFFFFFF)||1;if(wk)wid=wk;if(sp!==undefined)spec=sp;if(spec)cplx=specCx(spec);else if(cx!=null)cplx=cx;if(lk)lenK=lk;if(bm!==undefined)bio=bm||{k:'U',d:null};if(!(spec&&(spec.train||spec.quick)))store.set('hoverline.code',codeStr());buildTrack(seed,wid,cplx,lenK,spec,bio);bioSync();setField(false);music.fromTrack(seed);miniBase=null;$('seedIn').value=codeStr();resetGrid();updateMenuBest();drawPreview();S.fly=0;camInit=false;
+function loadTrack(s,wk,cx,lk,sp,bm){seed=(s&0x1FFFFFF)||1;if(wk)wid=wk;if(sp!==undefined)spec=sp;if(spec)cplx=specCx(spec);else if(cx!=null)cplx=cx;if(lk)lenK=lk;if(bm!==undefined)bio=bm||{k:'U',d:null};if(!(spec&&(spec.train||spec.quick)))store.set('hoverline.code',codeStr());buildTrack(seed,wid,cplx,lenK,spec,bio);bioSync();setField(false);music.fromTrack(seed);miniBase=null;$('seedIn').value=codeStr();resetGrid();updateMenuBest();drawPreview();S.fly=0;camInit=false;
   poolSync();todSync()}
 function freshRacer(r,u,utot,lat){r.stat={wrecks:0,dmg:0,given:0,boostT:0};Object.assign(r,{u,utot,lat,yaw:0,v:0,steerS:0,brk:0,boost:0,stun:0,spin:0,hp:r.d.hp,ammo:0,cd:[0,0],aiT:[0.5+Math.random(),0.5+Math.random()],
   wreck:0,dive:0,draft:0,inv:0,barrier:0,charging:null,pitch:0,air:false,h:HOVER,hb:HOVER,vh:0,respawnU:null,laps:[],lapStart:0,done:0,finishT:null,scrape:0,selfBoost:false,drift:0,driftK:0,bPrev:false,dN:0,dB:0,dB0:0,dC:0,bHeld:false,tapT:0,biteT:0,dX:0,dAng:0,dVa:null,dFl:0,bRest:false,tapLog:null,mk:0.4+Math.random()*1.2,lapT:0,bias:(Math.random()-.5)*2,aiDm:0,jOut:false,spinD:0,rollA:0,hopY:0});if(r===player)finCam.t0=null}
@@ -158,7 +163,7 @@ $('tiltRe').onclick=()=>{note(tiltCentre()?'Tilt centred: hold it like this to f
 function toMenu(){wakeScreen(false);if(QK.live){qkMenu('menu');return}if(LOG.cur)logEnd(player.finishT!=null?'finish':'quit');const sp=SPL.race;if(sp)splEnd();setField(false);S.state='menu';menuMusic();setHud(false);['pause','results','count','opts','set','ctl','mus','gfxm'].forEach(i=>$(i).hidden=true);if(S.car)carNext();resetGrid();showPage(S.car?'career':S.train?'train':page==='opts'?'title':page);camInit=false;if(sp)splOpen()}
 
 $('raceBtn').onclick=startRace;$('againBtn').onclick=()=>{if(mp.on)mpAgain(false);else startRace()};$('restartBtn').onclick=startRace;
-const rndSeed=()=>Math.floor(Math.random()*0xFFFFFF)+1;
+const rndSeed=()=>TV1+Math.floor(Math.random()*0xFFFFFF)+1;/* Prototype 60: new codes are version 1 (seven digits) */
 /* Scenery for new tracks: any of the ticked biomes (urban counts double); a track keeps its own until you change it. */
 /* the Reef joined the ticked settings once, for anyone who had every setting ticked before it existed */
 let bioOn=(()=>{let v=(store.get('hoverline.biomes')||'UOFNRP').replace(/[^UOFNRP]/g,'');if(v==='UOFN'&&!store.get('hoverline.bioR'))v+='R';store.set('hoverline.bioR','1');
