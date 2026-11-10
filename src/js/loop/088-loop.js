@@ -212,7 +212,7 @@ function step(dt){
     let pdt=dt;if(mp.on&&mp.go!=null){const rt=(performance.now()-mp.go)/1000;pdt=clamp(rt-S.raceT,0,0.25);S.raceT=Math.max(S.raceT,rt)}else S.raceT+=dt;
     const nSub=Math.max(1,Math.ceil(pdt/0.034)),sdt=pdt/nSub,auto=BOT||mp.auto;
     for(let k=0;k<nSub;k++){
-      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}const i=(r===player&&player.finishT==null&&!auto&&!(r.lp&&r.lp.gone))?(player.autoT>0?apInput(r,inp,sdt):inp):r.lp&&r!==player&&r.finishT==null&&!r.lp.gone?(r.autoT>0?apInput(r,r.lp.inp,sdt):r.lp.inp):aiInput(r,sdt);physics(r,i,sdt)}
+      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}if(r.lp&&SPL.race){physics(r,splIn(r,inp,sdt,auto),sdt);continue}/* (P60) a local pilot in split screen */const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)}
       logTick(sdt);
       collide();updateShots(sdt);inp.fire=[false,false];if(SPL.race)splFireClear()}
     if(!mp.on&&player.finishT==null)while(S.raceT>=rec.k*0.1){recSample();rec.k++}

@@ -45,8 +45,8 @@ async function race(p, label) {
   st = await p.evaluate(() => window.__hl.SPL.pilots.map((P) => ({ s: +P.r.steerS.toFixed(2), in: +P.inp.steer.toFixed(2) })));
   ok(st[0].s < -0.3 && st[1].s > 0.3 && st[0].in === -1 && st[1].in === 1, '  pad 1 steers P1 left, pad 2 steers P2 right ' + JSON.stringify(st));
   await p.evaluate(() => { window.__pad(0, { axes: [1, 0, 0, 0] }); window.__pad(1, { axes: [-1, 0, 0, 0] }) }); await wait(900);
-  st = await p.evaluate(() => window.__hl.SPL.pilots.map((P) => +P.r.steerS.toFixed(2)));
-  ok(st[0] > 0.3 && st[1] < -0.3, '  and the other way round ' + JSON.stringify(st));
+  const st0 = st; st = await p.evaluate(() => window.__hl.SPL.pilots.map((P) => [+P.r.steerS.toFixed(2), P.inp.steer]));
+  ok(st[0][1] === 1 && st[1][1] === -1 && st[0][0] > st0[0].s + 0.3 && st[1][0] < st0[1].s - 0.3, '  and the other way round ' + JSON.stringify(st));
   await p.evaluate(() => { window.__pad(0, { axes: [0, 0, 0, 0] }); window.__pad(1, { axes: [0, 0, 0, 0] }) });
   // the finish: both cross the line; the results list both, nothing goes to the board or the best laps
   await p.evaluate(() => { const h = window.__hl; for (const P of h.SPL.pilots) { const r = P.r; r.done = h.LAPS - 1; r.utot = h.LAPS * h.T.L + 2; r.u = r.utot % h.T.L } });

@@ -51,4 +51,7 @@ function splCtlIn(P){const c=P.ci||{},o={steer:clamp((c.s||0)/100,-1,1),pitch:cl
 function splInputs(){const dv=readInput(true);let first=null;
   for(const P of SPL.pilots){P.inp=P.src==='dev'?dv:P.src==='pad'?splPadIn(P):splCtlIn(P);if(P.r===player)first=P.inp}
   return first||{steer:0,brake:0,pitch:0,boost:false,fire:[false,false],hold:[false,false]}}
+/* a local pilot's input for one physics step: its own source while racing, the AI's hands once it has finished or its
+   device has left */
+function splIn(r,inp,dt,auto){const P=r.lp,i=r===player?inp:P.inp;if(r.finishT!=null||auto||P.gone||!i)return aiInput(r,dt);return r.autoT>0?apInput(r,i,dt):i}
 function splFireClear(){for(const P of SPL.pilots)if(P.inp)P.inp.fire=[false,false]}
