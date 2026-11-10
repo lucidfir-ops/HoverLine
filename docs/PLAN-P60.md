@@ -8,16 +8,16 @@ AGENTS.md. Status: todo, running, review, merged, parked. Working branch: `claud
 | # | Task | Agent (model, effort) | Wave | Status |
 | --- | --- | --- | --- | --- |
 | 0 | CLAUDE.md, AGENTS.md, STYLE.md, agent definitions, this plan | lead | 0 | merged |
-| 1 | Track editor: rebuild 1 s after the last + or − press (timer restarts on each press) | quick-fixer (Haiku, low) | 1 | todo |
-| 2 | Smoke module: shorter cloud | quick-fixer (Haiku, low) | 1 | todo |
-| 3 | Style pass: 💔 emoji → white SVG icon everywhere; audit the UI against STYLE.md and fix what disagrees; extend STYLE.md where the game shows rules it doesn't state | feature-builder (Sonnet, medium) | 1 | todo |
-| 4 | AI: boost through shield recharge reliably at every level while still filling the shield; smoke makes AI drive erratically while in it | feature-builder (Sonnet, medium) | 1 | todo |
+| 1 | Track editor: rebuild 1 s after the last + or − press (timer restarts on each press) | quick-fixer (Haiku, low) | 1 | running |
+| 2 | Smoke module: shorter cloud | quick-fixer (Haiku, low) | 1 | running |
+| 3 | Style pass: 💔 emoji → white SVG icon everywhere; audit the UI against STYLE.md and fix what disagrees; extend STYLE.md where the game shows rules it doesn't state | feature-builder (Sonnet, medium) | 1 | running |
+| 4 | AI: boost through shield recharge reliably at every level while still filling the shield; smoke makes AI drive erratically while in it | feature-builder (Sonnet, medium) | 1 | running |
 | 5 | Modules: new Reflector (half Phase's cost and time, sends fire back down the track); Decoy becomes automatic flares (fire 1.5× the incoming attack's cost to block it, if ammo allows; 2× if 1.5× blocks too much), much dearer | feature-builder (Sonnet, medium) | 2 (after 2, same files) | todo |
-| 6 | Orb frame sits on the road instead of floating | feature-builder (Sonnet, medium) | 1 | todo |
-| 7 | Prism: holes in the rock, rock through the road (screenshots with track codes), lava and water lakes flush with the ground from the side | architect (Opus, high) | 1 | todo |
+| 6 | Orb frame sits on the road instead of floating | feature-builder (Sonnet, medium) | 1 | running |
+| 7 | Prism: holes in the rock, rock through the road (screenshots with track codes), lava and water lakes flush with the ground from the side | architect (Opus, high) | 1 | running |
 | 8 | Track features: drops (incl. into splits, in a row), speed jumps to an upper/lower road with bonuses, long catch jumps, spiral/vertical both ways and other reversible pieces, upside-down road under road. Rare. Report top speeds reached | architect (Opus, high) | 2 (after 7, same files) | todo |
-| 9 | Local split screen for up to 8, many controllers, phones and other devices as controllers (controller layout mode), host in or out of the race, layouts for many screen shapes, multi-monitor if the browser allows | architect (Opus, high) | 1 | todo |
-| 10 | Spirit realm: a dossier only (themes, references, looks, portals and other mechanics) for Eric to choose from | designer (Opus, high) | 1 | todo |
+| 9 | Local split screen for up to 8, many controllers, phones and other devices as controllers (controller layout mode), host in or out of the race, layouts for many screen shapes, multi-monitor if the browser allows | architect (Opus, high) | 1 | running |
+| 10 | Spirit realm: a dossier only (themes, references, looks, portals and other mechanics) for Eric to choose from | designer (Opus, high) | 1 | running |
 | 11 | Cover art with the new frame models | designer (Opus, high) | 2 (after 6) | todo |
 | 12 | Test each task's branch before merge | tester (Sonnet, medium) | each | todo |
 | 13 | Merge, Prototype 60, changelog, DESIGN.md, board era, build, hand over the itch zip | lead | 3 | todo |
