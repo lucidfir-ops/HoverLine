@@ -14,8 +14,8 @@ AGENTS.md. Status: todo, running, review, merged, parked. Working branch: `claud
 | 4 | AI: boost through shield recharge reliably at every level while still filling the shield; smoke makes AI drive erratically while in it | feature-builder (Sonnet, medium) | 1 | running |
 | 5 | Modules: new Reflector (half Phase's cost and time, sends fire back down the track); Decoy becomes automatic flares (fire 1.5× the incoming attack's cost to block it, if ammo allows; 2× if 1.5× blocks too much), much dearer | feature-builder (Sonnet, medium) | 2 (after 2, same files) | merged |
 | 6 | Orb frame sits on the road instead of floating | feature-builder (Sonnet, medium) | 1 | merged |
-| 7 | Prism: holes in the rock, rock through the road (screenshots with track codes), lava and water lakes flush with the ground from the side | architect (Opus, high) | 1 | running |
-| 8 | Track features: drops (incl. into splits, in a row), speed jumps to an upper/lower road with bonuses, long catch jumps, spiral/vertical both ways and other reversible pieces, upside-down road under road. Rare. Report top speeds reached | architect (Opus, high) | 2 (after 7, same files) | todo |
+| 7 | Prism: holes in the rock, rock through the road (screenshots with track codes), lava and water lakes flush with the ground from the side | architect (Opus, high) | 1 | merged |
+| 8 | Track features: drops (incl. into splits, in a row), speed jumps to an upper/lower road with bonuses, long catch jumps, spiral/vertical both ways and other reversible pieces, upside-down road under road. Rare. Report top speeds reached | architect (Opus, high) | 2 (after 7, same files) | running |
 | 9 | Local split screen for up to 8, many controllers, phones and other devices as controllers (controller layout mode), host in or out of the race, layouts for many screen shapes, multi-monitor if the browser allows | architect (Opus, high) | 1 | merged |
 | 10 | Spirit realm: a dossier only (themes, references, looks, portals and other mechanics) for Eric to choose from | designer (Opus, high) | 1 | merged |
 | 11 | Cover art with the new frame models | designer (Opus, high) | 2 (after 6) | merged |
