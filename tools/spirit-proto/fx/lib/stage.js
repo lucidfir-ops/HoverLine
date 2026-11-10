@@ -31,6 +31,7 @@
     // sky domes and other huge things (anything over 1500 m across) go
     sc.traverse((o) => { if (!o.visible || !o.geometry || ST.hidden.includes(o)) return; if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere();
       const bs = o.geometry.boundingSphere; if (bs && bs.radius * o.scale.x > 1500 && o.parent !== trackG) { o.visible = false; ST.hidden.push(o) } });
+    c.camera.children.forEach((o) => { o.visible = false; ST.hidden.push(o) }); // the night sky's aurora and stars ride on the camera
     ST.lights = []; sc.traverse((o) => { if (o.isLight) ST.lights.push(o) });
     sc.background = new THREE.Color(0x000000); if (sc.fog) { sc.fog.color.set(0x000000); sc.fog.near = 400; sc.fog.far = 2600 }
     c.camera.far = 9000; c.camera.near = 0.3; c.camera.updateProjectionMatrix();
@@ -53,6 +54,10 @@
     if (o.level) { const t = a.t.clone(); t.y = 0; t.normalize(); obj.group.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(new THREE.Vector3(0, 1, 0).cross(t).normalize(), new THREE.Vector3(0, 1, 0), t)) }
     else obj.group.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(a.r.clone().negate(), a.u, a.t));
     ST.add(obj); return obj };
+  // far away: D metres ahead in a straight line from the road's frame at u (default the start), lat right, h up
+  ST.placeFar = function (obj, D, lat, h, u) { const a = ST.at(u == null ? ST.u0 : u); const t = a.t.clone(); t.y = 0; t.normalize(); const r = new THREE.Vector3(0, 1, 0).cross(t).negate();
+    obj.group.position.copy(a.p).addScaledVector(t, D).addScaledVector(r, lat).add(new THREE.Vector3(0, h, 0));
+    obj.group.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(r.clone().negate(), new THREE.Vector3(0, 1, 0), t)); ST.add(obj); return obj };
   ST.add = function (obj) { if (!obj.group.parent) ST.root.add(obj.group); ST.objs.push(obj); return obj };
   ST.clear = function () { for (const o of ST.objs) { o.group.parent && o.group.parent.remove(o.group) } ST.objs = []; };
 

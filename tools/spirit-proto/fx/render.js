@@ -3,7 +3,7 @@
 // 140 bpm click track so the beat can be heard) and a GIF. --still N writes only frame N as a PNG (for checking).
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const { openPage, launch } = require('./page.js');
-const LIB = ['lib/neon.js', 'lib/stage.js', 'lib/objects.js', 'lib/rooms.js', 'clips.js'].map((f) => path.join(__dirname, f));
+const LIB = ['lib/neon.js', 'lib/stage.js', 'lib/objects.js', 'lib/objects2.js', 'lib/rooms.js', 'clips.js'].map((f) => path.join(__dirname, f));
 const W = 640, H = 360;
 const args = process.argv.slice(2), out = args[0], names = (args[1] || 'all').split(',');
 const still = args.includes('--still') ? +args[args.indexOf('--still') + 1] : null;

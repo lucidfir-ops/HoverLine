@@ -21,9 +21,9 @@
     obj.group.traverse((m) => { if (m.material && m.material.uniforms && m.material.uniforms.uSwell) mats.push(m.material) });
     const up = obj.update;
     obj.update = function (t, bt, dt) { if (up) up.call(obj, t, bt, dt);
-      const s = amt * (bt.breath * 0.8 + (o.kick == null ? 0.35 : o.kick) * bt.k + (o.drop || 0.6) * bt.drop);
+      const A = typeof amt === 'function' ? amt(t) : amt, s = A * (bt.breath * 0.8 + (o.kick == null ? 0.35 : o.kick) * bt.k + (o.drop || 0.6) * bt.drop);
       if (o.scale !== false) obj.group.scale.copy(base).multiplyScalar(1 + s);
-      for (const m of mats) { m.uniforms.uSwell.value = 1 + s * (o.swell == null ? 4 : o.swell); m.uniforms.uGain && (m.uniforms.uGain.value = (m.userData.g0 || 1) * (1 + s * 3)) } };
+      for (const m of mats) m.uniforms.uSwell.value = Math.max(0.3, 1 + s * (o.swell == null ? 4 : o.swell)) };
     return obj;
   };
 
@@ -257,7 +257,7 @@
     const pa = geo.attributes.pa, pb = geo.attributes.pb; const ring = [], fr = (sh, u) => sh(((u % 1) + 1) % 1);
     const pts = new Array(N), off = [];
     return { group: grp, k, update(t, bt) {
-        const per = 8 * 4, ph = (bt.b / per) % shapes.length, i0 = Math.floor(ph), f = ph - i0, m = easeIO(Math.max(0, Math.min(1, (f - 0.35) / 0.5)));
+        const per = (o.bars || 2) * 4, ph = ((Math.max(0, bt.b) + (o.phase || 0) * per) / per) % shapes.length, i0 = Math.floor(ph), f = ph - i0, m = easeIO(Math.max(0, Math.min(1, (f - 0.35) / 0.5)));
         const A = shapes[i0], B = shapes[(i0 + 1) % shapes.length];
         for (let i = 0; i < N; i++) { const u = i / N; pts[i] = fr(A, u).lerp(fr(B, u), m) }
         // a frame along the curve, strands round it

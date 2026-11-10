@@ -18,6 +18,7 @@
     jade: { name: 'jade + turquoise + gold', stops: ['#0fbf7a', '#2fe0b0', '#3fd0ff', '#ffb43a'] },
     iceViolet: { name: 'ice + violet', stops: ['#e8f6ff', '#8fd8ff', '#7a5cff', '#c050ff'] },
     rainbow: { name: 'rainbow (Prism)', stops: ['#ff3a5a', '#ffd23a', '#3aff9a', '#3a8aff'] },
+    amber: { name: 'road amber', stops: ['#ffb000', '#ffc640', '#ffb000', '#ffe39a'] },
   };
   const c3 = (h) => new THREE.Color(h);
   SPFX.palVec = (p) => (typeof p === 'string' ? PAL[p] : p).stops.map((s) => { const c = c3(s); return new THREE.Vector3(c.r, c.g, c.b) });
@@ -71,8 +72,8 @@
       float px=clamp(uWidth*sc*uSwell*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx,uMaxPx*uSwell);
       c.xy+=(n*side+d*(endp<0.5?-1.:1.))*px*0.5/uRes*2.*c.w;gl_Position=c;
       vS=side;vF=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);vCol=pal(pc)*pk;}`;
-  const LINE_FS = `uniform float uGain;varying vec3 vCol;varying float vS;varying float vF;
-    void main(){float e=1.-abs(vS);float a=smoothstep(0.,0.4,e);gl_FragColor=vec4(vCol*uGain*vF*a*(0.85+0.6*e*e),1.);}`;
+  const LINE_FS = `uniform float uGain,uSwell;varying vec3 vCol;varying float vS;varying float vF;
+    void main(){float e=1.-abs(vS);float a=smoothstep(0.,0.4,e);gl_FragColor=vec4(vCol*uGain*(1.+(uSwell-1.)*0.6)*vF*a*(0.85+0.6*e*e),1.);}`;
 
   // a material for neon lines; o: width (world m), minPx, maxPx, gain, pieces (bool), pal (uniform), shift
   SPFX.lineMat = function (o = {}) {
@@ -81,7 +82,7 @@
       uSwell: { value: 1 }, uGain: { value: o.gain == null ? 1 : o.gain },
       uExplode: { value: 0 }, uMorph: { value: 0 }, uStag: { value: o.stag == null ? 0.6 : o.stag }, uSpin: { value: o.spin == null ? 1 : o.spin } };
     const m = new THREE.ShaderMaterial({ uniforms: u, vertexShader: LINE_VS, fragmentShader: LINE_FS, transparent: true,
-      blending: THREE.AdditiveBlending, depthWrite: false, defines: o.pieces ? { PIECES: 1 } : {} });
+      blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, defines: o.pieces ? { PIECES: 1 } : {} });
     return m;
   };
 

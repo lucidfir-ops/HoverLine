@@ -31,7 +31,7 @@ async function openPage(b, w, h, libs) {
     return r.abort() });
   await p.goto(`${ORIGIN}/?quick=0&share=0&lb=http://127.0.0.1:9`);
   for (let k = 0; k < 80; k++) { if (await p.evaluate(() => !!window.__cv).catch(() => false)) break; await new Promise((r) => setTimeout(r, 250)) }
-  await p.evaluate(() => { const c = window.__cv; for (const k of Object.keys(c.G2)) c.G2[k] = 1; c.G2.grain = 0; c.G2.scan = 0; c.G2.vig = 0; c.RES.k = 1; c.RES.low = false; c.g2Save() });
+  await p.evaluate(() => { const c = window.__cv; for (const k of Object.keys(c.G2)) c.G2[k] = 1; c.G2.grain = 0; c.G2.scan = 0; c.G2.vig = 0; c.G2.sky = 0; c.G2.motes = 0; c.RES.k = 1; c.RES.low = false; c.g2Save() });
   await p.addStyleTag({ content: 'body>*:not(canvas):not(#fxo){visibility:hidden!important} body{padding:0!important;background:#000}' });
   for (const f of libs || []) await p.addScriptTag({ content: fs.readFileSync(f, 'utf8') + '\n//# sourceURL=' + path.basename(f) });
   return p;
