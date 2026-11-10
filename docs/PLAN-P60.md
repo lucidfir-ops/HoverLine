@@ -20,7 +20,15 @@ AGENTS.md. Status: todo, running, review, merged, parked. Working branch: `claud
 | 10 | Spirit realm: a dossier only (themes, references, looks, portals and other mechanics) for Eric to choose from | designer (Opus, high) | 1 | merged |
 | 11 | Cover art with the new frame models | designer (Opus, high) | 2 (after 6) | running |
 | 12 | Test each task's branch before merge | tester (Sonnet, medium) | each | todo |
+| 14 | Laps selectable like the other track options (only 3-lap races on the board) | feature-builder (Sonnet, medium) | 1b | running |
+| 15 | Name the new-player experience, replay it from Tutorial, skippable with a notice saying where to find it | feature-builder (Sonnet, medium) | 1b | running |
+| 16 | Boards for every rival level; Normal renamed Default and shown by default (worker + D1 schema + in-game board) | architect (Opus, high) | 2 (after 4 and 14: same files) | todo |
+| 17 | Expert races like Eric at his best on every width (per-width tuning from non-Prism logs; more logs coming from Eric) | architect (Opus, high) | 2 (after 4: same files) | todo |
+| 18 | Urban: many more buildings on a city street grid, aligned to the road where it runs straight | feature-builder (Sonnet, medium) | 1b | running |
 | 13 | Merge, Prototype 60, changelog, DESIGN.md, board era, build, hand over the itch zip | lead | 3 | todo |
+
+Wave 1b came from Eric's notes of 2026-11-10 (with logs feedback/11-10). 16 is architect because it changes the online
+board's server and database as well as the game. 17 needs the simulator and a fit, so architect.
 
 Why these tiers: 1 and 2 are a number each. 3, 4 and 6 stay in one area with a clear spec. 5 adds and reworks modules
 and needs a balance check, still one area. 7, 8 and 9 cross areas, change how tracks are built or how the game is
@@ -38,3 +46,7 @@ structured, and need careful testing. 10 and 11 are creative.
 
 - feedback/11-9: notes of 2026-11-09 (this plan), 49 screenshots (Prism, for task 7), logs export of 2026-11-09 22:03
   (45 races, 32 of them on Prototype 59; 26 on Prism tracks). Prism races are kept out of any driving-model fit.
+- feedback/11-10: notes of 2026-11-10 (tasks 14 to 18) and logs export of 2026-11-10 02:23 (36 races, 31 new, all
+  Prototype 59, Tether mostly; 7 on Prism, kept out of fits). Without Prism: Expert on Wide 6 races, 2 wins (mean place
+  2.8); Normal on Wide 7 of 7 wins, Standard 3 of 4, Narrow 0 of 7 (mean 3.7). The simulator expected about 8% wins
+  against Expert for Eric at his best, so 2 of 6 is unlikely to be luck (about 8%): Expert is too easy on Wide (task 17).
