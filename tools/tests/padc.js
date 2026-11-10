@@ -61,5 +61,19 @@ const { wait, until, launch, open, toLan, ok, done } = require('./lib.js');
   h = await H.evaluate(() => ({ gone: window.__hl.SPL.pilots[0].gone, st: window.__hl.S.state }));
   ok(h.gone && h.st === 'race', 'the controller leaves: its pilot is marked gone, the race goes on ' + JSON.stringify(h));
   ok(H.errs.length + G.errs.length === 0, 'no page errors ' + JSON.stringify([...H.errs, ...G.errs].slice(0, 3)));
+  await H.ctx.close(); await G.ctx.close();
+  // a normal same-room room still races two pilots on two screens, nobody in controller mode
+  { const A = await open(b, 'Host', { perms: ['microphone', 'camera'], query: '&bot=1' }), B = await open(b, 'Pilot', { perms: ['microphone', 'camera'], query: '&bot=1' });
+    for (const [p, n] of [[A, 'Host'], [B, 'Pilot']]) { await toLan(p, n); await p.click('[data-pair="qr"]') }
+    await A.click('#chirpHostBtn'); await until(A, () => !!window.__nb.lan.code, 15000, 'invitation');
+    await B.click('#chirpJoinBtn'); await B.fill('#lanIn', await A.evaluate(() => window.__nb.lan.code)); await B.click('#lanUse'); await until(B, () => !!window.__nb.lan.code, 10000, 'reply');
+    await A.fill('#lanIn', await B.evaluate(() => window.__nb.lan.code)); await A.click('#lanUse');
+    for (const p of [A, B]) await until(p, () => { const s = window.__hl.mp.sess; return !!s && s.state.phase === 'lobby' && s.state.roster.length === 2 }, 20000, 'lobby');
+    await A.click('#lanCancel').catch(() => {}); await wait(200);
+    for (const p of [A, B]) await p.click('#mpReady');
+    for (const p of [A, B]) await until(p, () => /countdown|race/.test(window.__hl.S.state), 30000, 'room race');
+    const r = await Promise.all([A, B].map((p) => p.evaluate(() => ({ mode: window.__hl.LOG.cur && window.__hl.LOG.cur.mode, padc: window.__hl.PADC.on, split: window.__hl.SPL.race, max: window.__hl.mp.sess.state.max, proxies: window.__hl.racers.filter((x) => x.proxy && !x.isAI).length }))));
+    ok(r.every((x) => x.mode === 'room' && !x.padc && !x.split && x.max === 8 && x.proxies === 1), 'a normal room still races: two pilots, one proxy each, no controllers ' + JSON.stringify(r));
+    ok(A.errs.length + B.errs.length === 0, 'no page errors in the normal room'); }
   await b.close(); done();
 })().catch((e) => { console.log('FAIL', e.message); process.exit(1) });
