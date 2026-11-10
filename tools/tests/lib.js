@@ -33,6 +33,8 @@ async function open(b, label, o = {}) {
   const ctx = await b.newContext({ viewport: vp, hasTouch: !!o.touch, isMobile: !!o.touch && vp.width < 1000, deviceScaleFactor: o.dpr || 1, userAgent: o.ua || undefined });
   if (o.perms) await ctx.grantPermissions(o.perms, { origin: ORIGIN });
   if (o.init) await ctx.addInitScript(o.init, o.initArg);
+  // P60: a fresh page offers First flight at launch; tests that are not about it start with it seen (o.fresh keeps it)
+  if (!o.fresh) await ctx.addInitScript(() => { try { if (!localStorage.getItem('hoverline.tut')) localStorage.setItem('hoverline.tut', '1') } catch (e) {} });
   if (o.storage) await ctx.addInitScript((st) => { try { for (const [k, v] of Object.entries(st)) localStorage.setItem(k, v) } catch (e) {} }, o.storage);
   const p = await ctx.newPage(); p.label = label; p.ctx = ctx; p.errs = [];
   p.on('pageerror', (e) => { p.errs.push(e.message); console.log(label, 'PAGEERROR', e.message) });

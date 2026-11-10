@@ -99,11 +99,11 @@
 <div id="fsel" class="overlay" hidden>
   <div id="fsRow" role="group" aria-label="Frames"></div>
   <div class="card">
-    <div class="sub">New career · choose your frame</div>
+    <div class="sub" id="fsSub">New career · choose your frame</div>
     <div class="fsName"><span id="fsName"></span><small id="fsTag"></small></div>
     <p id="fsBlurb"></p>
     <p id="fsMods"></p>
-    <p class="fsBare">Career frames start bare, every stat at 1. Races pay credits for more.</p>
+    <p class="fsBare" id="fsBare">Career frames start bare, every stat at 1. Races pay credits for more.</p>
     <div class="row"><button class="btn go" id="fsGo">Choose</button><button class="chip" id="fsRep">▶ Repeat</button><button class="btn" id="fsBack" data-back>Back</button></div>
   </div>
 </div>
@@ -135,12 +135,20 @@
     <div class="row"><button class="btn go" id="carAskYes">Yes · race</button><button class="btn" id="carAskNo" data-back>No</button></div>
   </div>
 </div>
+<div id="ffAsk" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">FIRST <b>FLIGHT</b></div>
+    <p class="ask">New here? First flight is a short guided start: pick a frame, then six quick steps on the controls. About a minute.</p>
+    <p class="ask ffDim">Skip it and you can replay it any time from Options › Tutorial.</p>
+    <div class="row"><button class="btn go" id="ffYes">Start First flight</button><button class="btn" id="ffNo" data-back>Skip</button></div>
+  </div>
+</div>
 <div id="tutAsk" class="overlay" hidden>
   <div class="card">
-    <div class="logo">GUID<b>ANCE</b></div>
+    <div class="logo">FIRST <b>FLIGHT</b></div>
     <p class="ask">Do you require guidance?</p>
     <p id="tutAskP">Six quick steps on the controls before your first race, about half a minute.</p>
-    <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>No · straight to the races</button></div>
+    <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>Skip · straight to the races</button></div>
   </div>
 </div>
 <div id="tut" hidden>
@@ -154,7 +162,7 @@
       <button class="btn mode" id="setBtn">Settings<small>Performance, sound, music, race data</small></button>
       <button class="btn mode" id="ctlBtn">Controls<small>Touch, tilt, keys, pad, camera</small></button>
       <button class="btn mode" id="guideBtn">Nose guide<small>When to lift or drop the nose</small></button>
-      <button class="btn mode" id="tutBtn">Tutorial<small>The controls in six quick steps</small></button>
+      <button class="btn mode" id="tutBtn">Tutorial<small>First flight: pick a frame, then the controls in six quick steps</small></button>
     </div>
     <div class="row"><button class="btn go" id="optDone" data-back>Done</button></div>
   </div>

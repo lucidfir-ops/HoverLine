@@ -128,7 +128,7 @@ button.btn.orOpt{display:flex;flex-direction:column;align-items:center;justify-c
 #flash{position:fixed;inset:0;pointer-events:none;opacity:0}
 #count{position:fixed;inset:0 0 45% 0;display:grid;place-items:center;pointer-events:none;font-size:min(24vmin,140px);font-weight:700;color:var(--amber);text-shadow:0 0 30px rgba(255,176,0,.5)}
 #count.go{color:var(--cyan);text-shadow:0 0 30px rgba(63,240,255,.5)}
-#splitHud{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);display:flex;gap:10px;align-items:center;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:rgba(10,12,18,.88);border:1px solid var(--amber);border-radius:6px;padding:5px 10px;pointer-events:none;white-space:nowrap}
+#splitHud{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);display:flex;gap:10px;align-items:center;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:rgba(10,12,18,.88);border:1px solid var(--amber);border-radius:6px;padding:5px 10px;pointer-events:none;max-width:90vw;white-space:normal;text-align:center}
 #splitHud .lg{color:var(--green)}#splitHud .sh{color:var(--amber)}#splitHud .ds{color:var(--ink);font-family:var(--mono);min-width:4.5em;text-align:center}
 #note{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 56px);transform:translateX(-50%);font-size:14px;color:var(--ink);background:var(--panel);padding:6px 12px;border-radius:6px;pointer-events:none;white-space:nowrap}
 /* touch */
@@ -430,7 +430,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 .overlay.pop{justify-content:center;align-items:center;background:rgba(6,8,12,.74)}
 .overlay.pop .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-sizing:border-box;width:min(460px,100%)}
 p.ask{margin:0;font:600 clamp(17px,3vmin,21px)/1.35 var(--display)}
-#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
+#ffAsk p{margin:0;line-height:1.45}#ffAsk .ffDim{color:var(--dim);font-size:14px}#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
 #carAskN{font-size:clamp(30px,7vmin,48px)}#bview .big{font-size:clamp(26px,6vmin,40px)}#bview p.ask{font:500 14px/1.45 var(--display);color:var(--dim);margin:8px 0}#bview p.ask b{color:var(--ink,#fff)}#carAsk p.ask{font:500 14px/1.45 var(--display);color:var(--dim)}
 .carRule{font-size:13px;color:var(--ink);line-height:1.35}
 #carSub b{color:var(--ink)}
