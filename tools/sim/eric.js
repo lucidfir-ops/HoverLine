@@ -98,6 +98,8 @@ const out=(f,o)=>fs.appendFileSync(f,JSON.stringify(o)+'\n');
 const readLogs=f=>{const d=JSON.parse(fs.readFileSync(f,'utf8'));return{d,logs:(d.logs||[d]).filter(l=>new RegExp(process.env.MATCH||'Prototype 38').test(l.game||'')&&l.mode!=='quick'&&l.result&&l.result.how==='finish'&&(!process.env.ONLY||process.env.ONLY.split(',').includes(l.id)))}};
 async function replay(logs,profile,reps,outF,extra={}){const res=[];
   for(let k=0;k<reps;k++)for(const l of logs){const car=l.mode==='career'?carIndex(l.track.code):null;
+    /* Prototype 60: logs since Prototype 58 carry the rival level (l.ail): replay against that level unless AIL is set */
+    if(H.setAil&&!process.env.AIL)H.setAil(H.AIL&&H.AIL[l.ail]?l.ail:'normal');
     const t0=Date.now();const R=await race({code:l.track.code,car,me:{frame:l.ship.frame,stats:process.env.HAND?{...l.ship.stats,handling:+process.env.HAND}:l.ship.stats,weapons:l.ship.weapons},field:l.field,profile,speeds:!!extra.speeds});
     R.line.of=l.id;R.line.rep=k;R.line.mode=l.mode;R.line.cpu=Date.now()-t0;res.push(R);
     if(outF){out(outF,{...R.line,...(extra.speeds?{cs:R.cs}:{})});if(process.env.LOGS!=='0'&&R.log)out(outF.replace(/\.jsonl$/,'')+'.logs.jsonl',{...R.log,of:l.id,rep:k})}}

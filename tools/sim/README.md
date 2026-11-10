@@ -159,3 +159,24 @@ node probe60.js CODE                             # the features, jumps and split
 node trace60.js CODE U0 U1 [racer]               # every racer's speed, height and road between two distances, first lap
 node vmax60.js                                   # every frame's top speed by Speed stat, with held boost and a pad
 ```
+
+## Expert per width (Prototype 60)
+
+`eric_p59.json` is the Eric pilot refitted from his Prototype 59 pad logs without Prism (17 Wide, 7 Standard, 19 Narrow;
+`fit_eric.js` with `MATCH='Prototype 59'` on an export with the `-P` codes taken out), with the wander per width found by
+replaying his races at a grid of wanders (Wide 0.274, Standard 0.166, Narrow 0.22), his own module rates (`cal.fire` 1)
+and `cal.mod` (new: one module's rate per width, `{"turbo":{"W":1.8,...}}`; his Wide and Standard Tether races fire Turbo
+half again as often as the pooled fit). `eric_p59_clean.json` is its clean self, made the Prototype 58 way (wander x0.4,
+nose up 45% of the way to always in corners and climbs, down 31% more on descents, every shield strip and 95% of ammo
+strips, every incoming shot answered). Replays now race each log against its own rival level (`l.ail`) unless `AIL` is set.
+
+```
+PARAMS=eric_p59.json MATCH='Prototype 59' node eric.js replay LOGS.json results/rep.jsonl 2
+python3 replaytime.py LOGS.json results/rep.jsonl          # the pilot's time over his, per width and level (FR=tether)
+PARAMS=eric_p59_clean.json AIL=hard FRAME=tether PROFILE=LOGS.json node eric.js frames 240 0 results/x.jsonl
+AILX='{"hard":{"pace":{"W":1.22,"S":1.17,"N":1.10}}}' ...   # other Expert numbers (any level number can be {W,S,N})
+python3 places.py results/x.jsonl                          # place, wins and gap per width (BY=frame per frame)
+```
+
+Expert was set so the clean pilot finishes about 4th of 8 with under 10% wins on each width, in the Tether and over all
+frames, then moved by half the pilot's remaining gap to his own times (Wide +1%, Standard +2%; Narrow kept at 1.10).
