@@ -4,10 +4,12 @@
 // hole. Fails a map where more than 2% of its inside points see the sky.
 // Before Prototype 60, Eric's maps had holes over 3 to 17% of their inside road: caves made where an inside stretch
 // crossed an outside one, ways in on spires, loops, jumps and splits, slots in the mouths' tunnels.
+// And the lakes sit in the ground: no more than 2% of the points round a lake's edge may stand over the outside of the
+// mountain by more than 0.5 m (before, 9% did, by up to 149 m on the valley side: a sheet floating over the slope).
 // node tools/tests/prism-cover.js [codes or seeds...]   (WK=N CX=1 for Narrow complex seeds)
 const { launch, open, ok, done } = require('./lib.js');
 const args = process.argv.slice(2);
-const seeds = args.length ? args : ['NXD8C77A-P', 'NX130F38-P', 'WXQD87244-33224444222-P', 'SXLB8350A-P', 'NXL1FDB51-23224444222-P3443', 'NXL7D6FF6-33224444222-P3443', '1000', '8919', '16838', '24757', '32676', '40595'];
+const seeds = args.length ? args : ['NXD8C77A-P', 'NX130F38-P', 'WXQD87244-33224444222-P', 'SXLB8350A-P', 'NXL1FDB51-23224444222-P3443', 'NXL7D6FF6-33224444222-P3443', '1000', '8919', '16838', '24757', '32676', '40595', '505', '909', '1818', 'SLC32957-P'];
 (async () => {
   const b = await launch(); const p = await open(b, 'cover', {});
   for (const s of seeds) {
@@ -30,9 +32,12 @@ const seeds = args.length ? args : ['NXD8C77A-P', 'NX130F38-P', 'WXQD87244-33224
       const esc = []; let n = 0; const st = Math.max(1, Math.round(4 / ds));
       for (let i = 0; i < N; i += st) { if (!ins[i] || !mouthD[i]) continue; n++; const q = T.P[i], R = T.R[i], U = T.U[i], o = [q.x + U.x * 3, q.y + U.y * 3, q.z + U.z * 3];
         for (const [l, u] of dirs) if (!hit(o[0], o[1], o[2], R.x * l + U.x * u, R.y * l + U.y * u, R.z * l + U.z * u, 2500)) { esc.push(Math.round(i * ds)); break } }
-      return { mode: PR.mode, n, esc } }, [s, process.env.WK || null, process.env.CX ? true : null]);
+      let le = 0, lf = 0; T.group.traverse((o) => { if (!o.isMesh || !o.material.uniforms || !o.material.uniforms.uW || o.geometry.type !== 'CircleGeometry') return; o.updateMatrixWorld(); const A = o.geometry.attributes.position;
+        for (let k = 1; k < A.count; k++) { va.fromBufferAttribute(A, k).applyMatrix4(o.matrixWorld); const g = PR.surfH(va.x, va.z); le++; if (isFinite(g) && va.y - g > 0.5) lf++ } });
+      return { mode: PR.mode, n, esc, le, lf } }, [s, process.env.WK || null, process.env.CX ? true : null]);
     const share = r.n ? r.esc.length / r.n : 0;
     ok(share <= 0.02, `${s} (${r.mode}) ${r.esc.length} of ${r.n} inside points see the sky (${(share * 100).toFixed(1)}%)${r.esc.length ? ' at ' + r.esc.slice(0, 8).join(', ') + ' m' : ''}`);
+    if (r.le) ok(r.lf <= r.le * 0.02, `${s} lakes sit in the ground: ${r.lf} of ${r.le} edge points over it`);
   }
   ok(p.errs.length === 0, 'no page errors');
   await b.close(); done();
