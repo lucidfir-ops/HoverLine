@@ -229,8 +229,8 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
            Tb.c[k]=-side*W/4*(1-e);Tb.w[k]=W/4+W/4*e;Tb.h[k]=0;if(gap[(i0+k)%N])Tb.gp[k]=1;
            Lb.c[k]=side*(W/4+A*S2);Lb.w[k]=W/4+(wL-W/4)*e;Lb.h[k]=jB.lipH*(1-ss01(x))-yo}
          const pts=routePts(i0,n,m,Lb);if(!pts)continue;finishB(B);Lb.long=true;Tb.long=false;const S0={kind:'dsplit',i0,n,u0:i0*ds,u1:(i0+n)*ds,side,longB:lb,tb:1-lb,b:B,pts,feat:1};mark(S0);jB.sp=S0;jB.b=1-lb;break}}
-     else if(f.kind==='sjump'){/* the upper road where a frame leaving the lip at 175 m/s gets to, over the gap as built (0.3 m lower for the step of a 60 Hz frame) */
-       const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Ls/ds),Hu=flyY(175,j.G,j.lipH,j.slope,32)-0.3;if(!inGI(i0,n))continue;
+     else if(f.kind==='sjump'){/* the upper road where a frame leaving the lip at 172 m/s gets to, over the gap as built (0.3 m lower for the step of a 60 Hz frame) */
+       const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Ls/ds),Hu=flyY(172,j.G,j.lipH,j.slope,32)-0.3;if(!inGI(i0,n))continue;
        const A=W+14+rf()*20,Ad=6+rf()*6,pref=rf()<0.5?1:-1,bonus=f.bonus;
        for(const side of[pref,-pref]){const B=B2(n),ub=side>0?1:0,Ub=B[ub],Db=B[1-ub];
          for(let k=0;k<=n;k++){const x=k/n,a1=ss01((x-0.1)/0.22)*ss01((0.97-x)/0.22),q=ss01((x-0.6)/0.3);
@@ -391,21 +391,25 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
      nearer or further to find such a spot (500 m: 350-700, 250 m: 150-340, 80 m: 60-110; the panel gives the real
      distance) and is left out if there is none. Before, about 1 track in 5 had a sign upside down in a loop, on its side
      in a corkscrew or standing in another split's routes. */
-  const signI=[],signAt=(S0,ahead,SW,top)=>{const[d0,d1]={500:[350,700],250:[150,340],80:[60,110]}[ahead],dd=[];for(let d=d0;d<=d1;d+=10)dd.push(d);dd.sort((a,b)=>Math.abs(a-ahead)-Math.abs(b-ahead));
-    for(const d of dd){const i=((S0.i0-Math.round(d/ds))%N+N)%N;if(standOK(i,SW,top,0.26,0.88)){signI.push(i);return{i,d}}}
+  const signI=[],signAt=(S0,ahead,SW,top,off=0)=>{const[d0,d1]={500:[350,700],250:[150,340],80:[60,110]}[ahead],dd=[];for(let d=d0;d<=d1;d+=10)dd.push(d);dd.sort((a,b)=>Math.abs(a-ahead)-Math.abs(b-ahead));
+    for(const d of dd){const i=((S0.i0-Math.round((d+off)/ds))%N+N)%N;if(standOK(i,SW,top,0.26,0.88)){signI.push(i);return{i,d}}}
     return null};
-  for(const S0 of splits)for(const ahead of[500,250,80]){if(S0.kind==='cut'||S0.kind==='stack'||S0.kind==='catch'||S0.kind==='dsplit')break;const SW=W+3.1,SH=SW*340/1024,top=7.2+SH,at=signAt(S0,ahead,SW,top);if(!at)continue;
+  for(const S0 of splits)for(const ahead of[500,250,80]){if(S0.kind==='cut'||S0.kind==='catch'||S0.kind==='dsplit')break;
+    /* Prototype 60: a speed jump gets the signs too, about 500 and 250 m before its lip, saying which road holds the bonus */
+    if(S0.kind==='stack'&&ahead===80)break;const stk=S0.kind==='stack';const SW=W+3.1,SH=SW*340/1024,top=7.2+SH,at=signAt(S0,ahead,SW,top,stk?150:0);if(!at)continue;
     const pit=S0.kind==='pit',i=at.i,g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffb000});
     for(const sd of[-1,1]){const pl=new THREE.Mesh(new THREE.BoxGeometry(0.7,top,0.7),m);pl.position.set(sd*(W/2+1.2),top/2,0);g.add(pl)}
     const cv=document.createElement('canvas');cv.width=1024;cv.height=340;const cg=cv.getContext('2d');cg.fillStyle='#0b0e14';cg.fillRect(0,0,1024,340);cg.strokeStyle='#ffb000';cg.lineWidth=8;cg.strokeRect(4,4,1016,332);
-    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((pit?'PIT LANE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
+    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((stk?'SPEED JUMP · ':pit?'PIT LANE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
     cg.beginPath();cg.moveTo(512,92);cg.lineTo(512,316);cg.strokeStyle='#ffb000';cg.lineWidth=4;cg.stroke();
     const lL=S0.side<0,side=(x,long,arrow)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990;
       cg.fillStyle=long?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";const nm=pit?(long?'PIT':'RACE'):(long?'LONG':'SHORT');cg.fillText(arrow&&x<512?'◀ '+nm:nm+' ▶',x0,150);
       cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';
       if(pit){if(long){cg.fillText('FULL REPAIR',x0,230);cg.fillText('AMMO · LIMITER',x0,282)}else cg.fillText('KEEP RACING',x0,230)}
       else if(long){cg.fillText('2 BOOST PADS',x0,230);cg.fillText('AMMO · SHIELD',x0,282)}else{cg.fillText('TIGHT LINE',x0,230);cg.fillText('NO PICKUPS',x0,282)}};
-    side(0,lL,true);side(1024,!lL,true);
+    if(stk){const half=(x,up)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990,bon=(S0.bonus==='up')===up;cg.fillStyle=bon?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText(up?'▲ UPPER':'LOWER ▼',x0,150);
+        cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';cg.fillText(up?'172 M/S AT THE LIP':'EVERYONE ELSE',x0,230);cg.fillText(bon?'2 BOOST PADS · AMMO':'NO PICKUPS',x0,282)};half(0,true);half(1024,false)}
+    else{side(0,lL,true);side(1024,!lL,true)}
     const tx=new THREE.CanvasTexture(cv);tx.anisotropy=4;const pan=new THREE.Mesh(new THREE.PlaneGeometry(SW,SH),new THREE.MeshBasicMaterial({map:tx}));pan.position.set(0,7.2+SH/2,0);g.add(pan);
     /* a light bar under the sign so it reads from far off */
     const bar=new THREE.Mesh(new THREE.BoxGeometry(SW,0.22,0.3),new THREE.MeshBasicMaterial({color:0xffd27a}));bar.position.set(0,7.05,0);g.add(bar);
@@ -1321,7 +1325,7 @@ function addFeatures(b,r,W,opt={}){
        on. About one in five is two or three drops in a row; three in ten split right after the last drop; and some (trunk)
        split between the last two drops, the trunk dropping again while the side road winds round to join it lower down.
      sjump: a speed jump. A long run-up, a ramp up 9 m to a 0.15 lip, a 148 m gap, then two roads: the upper one 20 m up,
-       where a frame leaving the lip at 175 m/s arrives (at full speed: the top frames boosting; from 165 it scrapes up onto
+       where a frame leaving the lip at 172 m/s arrives (at full speed: the top frames boosting; from about 160 it scrapes up onto
        it; the nose doesn't float you on this jump, so it is speed that counts), and the lower one under it, which catches the rest from 81 m/s up. Which holds the bonus (two boost pads and an
        ammo strip) is a coin toss.
      cjump: a long jump. The road climbs 30-45 m, a 3 m ramp throws you over a 140-170 m gap to a road far below that is
@@ -1332,8 +1336,8 @@ function addFeatures(b,r,W,opt={}){
     if(kd==='drop'){const nd0=opt.want?(r()<0.3?2:1):r()<0.22?(r()<0.45?3:2):1,tail=r()<0.3?'split':r()<0.35?'trunk':null,nd=tail==='trunk'?Math.max(2,nd0):nd0,Dh=10+r()*7,H=nd*Dh;
       s.nd=nd;s.tail=tail;s.Ls=tail==='split'?520+r()*160:0;rise(Math.max(240,H*10),0,H);flat(50,H);
       for(let k=0;k<nd;k++){const y0=H-k*Dh,y1=y0-Dh;gapS(40+r()*15,y0,y1,0,'drop');if(k<nd-1)flat(tail==='trunk'&&k===nd-2?330:130+r()*40,y1)}
-      flat(tail==='split'?s.Ls+90:tail==='trunk'?230:70,0)}
-    else if(kd==='sjump'){const Hl=9,sl=0.15,G=148;s.hu=flyY(175,G,Hl,sl,32);s.Ls=560+r()*120;s.bonus=r()<0.5?'up':'down';
+      flat(tail==='split'?s.Ls+90:tail==='trunk'?230:320,0)}
+    else if(kd==='sjump'){const Hl=9,sl=0.15,G=148;s.hu=flyY(172,G,Hl,sl,32);s.Ls=560+r()*120;s.bonus=r()<0.5?'up':'down';
       flat(640+r()*160,0);ramp(2*Hl/sl,0,Hl);gapS(G,Hl,0,sl,'sjump');flat(s.Ls+80,0)}
     else{const sl=0.12,Hr=3,G=140+r()*30,Hp=Math.max(22,Math.ceil(32*G*G/(2*85*85)-sl*G)-Hr+2);s.Lc=560;
       rise(Math.max(300,Hp*10),0,Hp);flat(40,Hp);ramp(2*Hr/sl,Hp,Hr);gapS(G,Hp+Hr,0,sl,'cjump');flat(s.Lc+60,0)}
@@ -1516,11 +1520,17 @@ function addFeatures(b,r,W,opt={}){
            road follows the straight line between those two points, unbanked, blending in and out over 150 m, so a frame flying the
            gap (and the 100-480 m it flies past it) isn't carried into the fence by a bend under it */
         if(site.prof&&!site.sw){const sw=new Float32Array(n),sx=new Float32Array(n),sz=new Float32Array(n),wins=[],Bl=150,ix=xm=>Math.min(N-1,i+Math.max(0,Math.round(xm/ds)));let acc=0;
-          for(const q of site.prof){if(q.gap){const k=q.gap.kind;wins.push([acc-(k==='drop'?40:k==='sjump'?100:70),acc+q.L+(k==='drop'?150:220)])}acc+=q.L}
+          for(const q of site.prof){if(q.gap){const k=q.gap.kind,w0=[acc-(k==='drop'?40:k==='sjump'?100:70),acc+q.L+(k==='drop'?150:220)],pw=wins[wins.length-1];if(pw&&w0[0]-pw[1]<2*Bl)pw[1]=w0[1];else wins.push(w0)}acc+=q.L}
+          /* (drops in a row share one straight line: two lines blending into each other between them would kink the road;
+             and the blend ends inside the piece, or the road would step where it ends) */
+          for(const w of wins){w[0]=Math.max(w[0],Bl);w[1]=Math.min(w[1],n*ds-Bl-2)}
           for(const[xa,xb]of wins){const A=P[ix(xa)],B=P[ix(xb)],dx=B.x-A.x,dz=B.z-A.z,L0=Math.hypot(dx,dz)||1,ux=dx/L0,uz=dz/L0;
+            /* on a tight bend the line would move the road too far (into the rest of the track): then it goes only part of
+               the way, at most 20 m from the line, which still takes most of the bend out */
+            let mx=0;for(let j=0;j<n;j+=4){const xm=j*ds;if(xm<xa||xm>xb)continue;const q=P[ix(xm)],t=(xm-xa)/(xb-xa);mx=Math.max(mx,Math.hypot(A.x+dx*t-q.x,A.z+dz*t-q.z))}const kS=Math.min(1,20/Math.max(1e-3,mx));
             for(let j=0;j<n;j++){const xm=j*ds;if(xm<xa-Bl||xm>xb+Bl)continue;let w,tx,tz;
               if(xm<xa){w=ss01((xm-xa+Bl)/Bl);tx=A.x+ux*(xm-xa);tz=A.z+uz*(xm-xa)}else if(xm>xb){w=ss01((xb+Bl-xm)/Bl);tx=B.x+ux*(xm-xb);tz=B.z+uz*(xm-xb)}else{const t=(xm-xa)/(xb-xa);w=1;tx=A.x+dx*t;tz=A.z+dz*t}
-              if(w>sw[j]){const q=P[ix(xm)];sw[j]=w;sx[j]=tx-q.x;sz[j]=tz-q.z}}}
+              if(w>sw[j]){const q=P[ix(xm)];sw[j]=w;sx[j]=(tx-q.x)*kS;sz[j]=(tz-q.z)*kS}}}
           site.sw=sw;site.sx=sx;site.sz=sz}
         for(let j=0;j<n&&i<N;j++,i++){const x=j/n,xm=j*ds,s=shiftAt(),p=P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),u=upAt(i);
           if(kd==='twist'){const ph=TAU*ss01(x);emit(p,u.clone().multiplyScalar(Math.cos(ph)).addScaledVector(R[i],Math.sin(ph)))}
