@@ -26,7 +26,7 @@ if(process.env.WHY)globalThis.__pin=(r,i)=>{if(r.charging==='hp'&&r!==H.player){
     const T=H.getT();T.D.band=[0,0];const R=H.racers,p=H.player;p.isAI=true;
     for(const r of R){r.skill=0.94;r.hp=r.d.hp;r._e=null;r._pl=null}
     let t=0,fin1=null,nx=20;A.race++;
-    while(t<520){
+    while(t<(+process.env.MAXT||520)){
       /* smoke: every 25 s all the AI pilots get a smoke hit (2.4 s of ink, as the cloud gives), then 25 s clear */
       if(mode==='smoke'&&t>=nx){nx+=50;for(const r of R)if(r!==p&&!r.isGhost&&r.finishT==null&&r.wreck<=0)r.ink=2.4}
       H.step(1/60);t+=1/60;if(fin1==null&&R.some(r=>r.finishT!=null))fin1=t;

@@ -220,7 +220,7 @@ const SHIPB={
   K.done(span+0.35,1.0,3.0,0,[K.mB,K.mS,K.mA])},
  /* A clean faceted ball that rolls with the speed (its band widens with shield), engines on a cradle cupping its back, and
     a tiny pilot pod riding just behind it on two energy tethers with the canopy, ammo bars, rudder and brake winglets. */
- orb(K,st,paint){const{put}=K,T=THREE,sp=st.speed,th=st.thrust,hd=st.handling,sh=st.shield,R=0.92,cy=0.42;
+ orb(K,st,paint){const{put}=K,T=THREE,sp=st.speed,th=st.thrust,hd=st.handling,sh=st.shield,R=0.92,cy=R-1.05;/* Prototype 60: the ball's bottom is on the road. The ship origin is HOVER (1.05, race/056-physics.js) above it, so the centre sits at R-HOVER, as the Monowheel's ring does. It used to float 0.55 above (cy 0.42). */
   const roll=new T.Group();roll.position.set(0,cy,0);K.g.add(roll);put(new T.IcosahedronGeometry(R,1),K.mB,0,0,0,null,roll);
   const bw=0.12+0.05*sh;for(let k=0;k<12;k++){const a=k/12*Math.PI*2,m=put(new T.BoxGeometry(bw,0.06,2*Math.PI*R/12*0.98),k%2?K.mS:K.mA,0,Math.cos(a)*R*0.99,Math.sin(a)*R*0.99,null,roll);m.rotation.x=a}
   for(let k=0;k<6;k++){const a=k/6*Math.PI*2+0.5,sd=k%2?1:-1,d=new T.Vector3(sd*0.55,Math.sin(a)*0.75,Math.cos(a)*0.75).normalize().multiplyScalar(R*0.985),m=K.quiet(put(new T.CircleGeometry(0.12,6),K.mS,d.x,d.y,d.z,null,roll));m.lookAt(d.clone().multiplyScalar(2).add(roll.position))}

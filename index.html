@@ -133,7 +133,7 @@ button.btn.orOpt{display:flex;flex-direction:column;align-items:center;justify-c
 #flash{position:fixed;inset:0;pointer-events:none;opacity:0}
 #count{position:fixed;inset:0 0 45% 0;display:grid;place-items:center;pointer-events:none;font-size:min(24vmin,140px);font-weight:700;color:var(--amber);text-shadow:0 0 30px rgba(255,176,0,.5)}
 #count.go{color:var(--cyan);text-shadow:0 0 30px rgba(63,240,255,.5)}
-#splitHud{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);display:flex;gap:10px;align-items:center;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:rgba(10,12,18,.88);border:1px solid var(--amber);border-radius:6px;padding:5px 10px;pointer-events:none;white-space:nowrap}
+#splitHud{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);display:flex;gap:10px;align-items:center;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:rgba(10,12,18,.88);border:1px solid var(--amber);border-radius:6px;padding:5px 10px;pointer-events:none;max-width:90vw;white-space:normal;text-align:center}
 #splitHud .lg{color:var(--green)}#splitHud .sh{color:var(--amber)}#splitHud .ds{color:var(--ink);font-family:var(--mono);min-width:4.5em;text-align:center}
 #note{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 56px);transform:translateX(-50%);font-size:14px;color:var(--ink);background:var(--panel);padding:6px 12px;border-radius:6px;pointer-events:none;white-space:nowrap}
 /* touch */
@@ -197,7 +197,8 @@ button.btn:focus-visible,input:focus-visible,.bk:focus-visible,.chip:focus-visib
 .heart{background:none;border:0;padding:6px;margin:0;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;min-width:40px;min-height:40px;border-radius:10px}
 .heart svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}
 .heart[aria-pressed="true"] svg{fill:currentColor}
-.heart:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+/* Prototype 60: the heart focus ring is cyan like every other control (it was amber) */
+.heart:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .chip[aria-pressed="true"]{background:rgba(255,176,0,.18);border-color:var(--amber)}
 .sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
 .map{display:flex;flex-direction:column;gap:6px}
@@ -211,13 +212,13 @@ td.b{color:var(--amber)}
 .big{font-size:clamp(40px,10vmin,64px);font-weight:700;line-height:1}
 .big small{font-size:.4em;color:var(--dim);margin-left:8px;font-family:var(--mono)}
 /* ship lab */
-#labFdesc{margin:0;font-size:12px;line-height:1.4;color:var(--dim,#9aa0aa)}#labFdesc b{color:var(--ink);font-weight:600}
+#labFdesc{margin:0;font-size:12px;line-height:1.4;color:var(--dim)}#labFdesc b{color:var(--ink);font-weight:600}
 #lab{pointer-events:none;align-items:flex-start;background:linear-gradient(90deg,rgba(9,11,16,.92) 0%,rgba(9,11,16,.55) 42%,rgba(9,11,16,0) 62%)}
 #lab .card{pointer-events:auto;gap:10px;width:min(460px,100%);max-height:100%;overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain}
 .efeats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px}
 .erow{display:flex;align-items:center;gap:6px}.erow .en{flex:1;min-width:0;font:600 14px var(--display);line-height:1.1}.erow .en small{display:block;font:400 11px var(--body,inherit);color:var(--dim)}
 .erow .sb{width:34px;height:32px}.erow .ec{width:20px;text-align:center;font:700 17px var(--display);color:var(--amber)}.erow .ec.z{color:var(--dim)}
-#edFit{margin:0;font-size:12px;line-height:1.4;color:var(--dim)}#edFit.warn{color:#ffb86b}
+#edFit{margin:0;font-size:12px;line-height:1.4;color:var(--dim)}#edFit.warn{color:var(--amber)}
 .srow{display:grid;grid-template-columns:6.6em 40px minmax(0,1fr) 40px;gap:4px 8px;align-items:center}
 .sname{font-weight:700;font-size:15px;line-height:1.05}.sname small{display:block;font-weight:500;font-size:10px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
 .sb{width:40px;height:34px;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:700 18px var(--display);cursor:pointer}
@@ -227,7 +228,7 @@ td.b{color:var(--amber)}
 .pips i.new{animation:pipNew 1.2s}@keyframes pipNew{0%,40%{background:var(--green);box-shadow:0 0 10px var(--green)}}
 .pips i.gone{animation:pipGone 1.2s}@keyframes pipGone{0%,40%{background:var(--red)}}
 .sval{grid-column:2/-1;font:500 12px var(--mono);color:var(--dim);min-height:1.2em}
-.srow.up .sval{color:var(--green)}.srow.down .sval{color:#ff7a6d}
+.srow.up .sval{color:var(--green)}.srow.down .sval{color:var(--red)}
 #labPts.warn{color:var(--amber)}
 .wchip{display:inline-flex;align-items:center;gap:6px}.wchip small{font-family:var(--mono);opacity:.75}
 .wchip em{font-style:normal;font:700 11px var(--mono);background:var(--amber);color:#111;border-radius:3px;padding:0 4px}
@@ -237,7 +238,7 @@ td.b{color:var(--amber)}
 .pgrid{display:grid;grid-template-columns:repeat(8,26px);gap:2px;margin:6px 0}.pc{width:26px;height:26px;border:1px solid rgba(255,255,255,.12);padding:0;cursor:pointer;border-radius:2px}
 .swatch[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--amber)}
 .col{display:flex;flex-direction:column;gap:12px}
-#mpList td{padding:3px 12px 3px 0;font-size:14px}#mpList b.rdy{color:#7dff9a;font-weight:700}#mpReady[aria-pressed="true"]{background:rgba(125,255,154,.18);border-color:#7dff9a}#mpReady.nudge{animation:nudge .5s 3}@keyframes nudge{50%{background:rgba(255,190,60,.45);transform:scale(1.06)}}
+#mpList td{padding:3px 12px 3px 0;font-size:14px}#mpList b.rdy{color:var(--green);font-weight:700}#mpReady[aria-pressed="true"]{background:rgba(70,255,140,.18);border-color:var(--green)}#mpReady.nudge{animation:nudge .5s 3}@keyframes nudge{50%{background:rgba(255,190,60,.45);transform:scale(1.06)}}
 #osk{justify-content:center;background:rgba(9,11,16,.9);z-index:60}#osk .card{width:min(620px,100%);align-items:stretch}#oskTxt{font:700 24px var(--mono);letter-spacing:.06em;min-height:1.4em;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.04)}#oskTxt::after{content:'_';color:var(--amber)}
 .oskrow{display:flex;gap:6px;justify-content:center}.oskrow button.btn{flex:1 1 0;min-width:0;padding:12px 0;font-size:17px;text-transform:none}.oskrow button.btn.wide{flex:2.4 1 0}button.btn.kb{padding:8px 10px;letter-spacing:0}
 #lbv .card{max-height:100%;overflow-y:auto}#lbRecent td{padding:3px 10px 3px 0;font-size:13px;white-space:nowrap}#lbRecent td.w{color:var(--dim);font-size:12px}#lbRecent tr{cursor:pointer}#lbRecent tr:hover td{color:var(--amber)}#lbv .logo{font-size:clamp(28px,7vmin,52px)}#lbList{gap:6px}button.btn.lbrow{display:flex;justify-content:space-between;gap:12px;width:100%;text-align:left;font:13px var(--mono);letter-spacing:0;text-transform:none;padding:9px 12px}.lbrow span{color:var(--dim)}#lbTop td{padding:3px 12px 3px 0;font-size:14px}#lbTop td.w{color:var(--dim);font-size:12px}#mpList td.w{color:var(--dim);font-size:12px}#mpList td.dim{color:var(--dim);font-size:12px}
@@ -308,7 +309,7 @@ svg.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-
 @media (orientation:landscape){
   #menu,#mp,#ed,#career,#train{flex-wrap:nowrap;align-items:flex-start}
   #menu>.card,#mp>.card,#ed>.card,#career>.card,#train>.card{flex:0 1 440px;min-width:0}
-  #menu>.map,#mp>.map,#ed>.map,#career>.map,#train>.map{flex:1 1 0;min-width:170px;max-width:640px;position:sticky;top:0;align-self:flex-start}
+  #menu>.map,#mp>.map,#spl>.map,#ed>.map,#career>.map,#train>.map{flex:1 1 0;min-width:170px;max-width:640px;position:sticky;top:0;align-self:flex-start}
   #menu>.map canvas,#mp>.map canvas,#ed>.map canvas,#career>.map canvas,#train>.map canvas{width:100%;height:auto;aspect-ratio:4/3;max-height:calc(100vh - 96px);max-height:calc(100dvh - 96px)}
 }
 @media (max-height:480px){#ed .logo,#ed>.card>.sub{display:none}.erow .en small{display:none}#ed .card{gap:7px}.small{display:none}.overlay{align-items:flex-start}#lab .logo{display:none}.srow{gap:2px 8px}.sb{height:30px}#lab .card{gap:6px}.srow .sval{display:none}.srow.up .sval,.srow.down .sval{display:block}#lab .chip{padding:6px 10px;font-size:12px}.swatch{width:26px;height:26px}#lab .sub{font-size:11px}}
@@ -316,10 +317,10 @@ svg.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-
 /* big screens: menus and HUD grow with the screen; canvases keep their pixels and get bigger boxes instead */
 @media (min-width:1600px) and (min-height:1000px){
   .overlay>.card,.map>:not(canvas),.gtext,#hudL,#hudR>:not(#mini),#pauseBtn,#note,#splitHud{zoom:1.25}
-  #menu>.map,#mp>.map,#ed>.map,#career>.map,#train>.map{max-width:900px}.gwrap{max-width:1400px;max-height:800px}#mini{width:165px;height:165px}}
+  #menu>.map,#mp>.map,#spl>.map,#ed>.map,#career>.map,#train>.map{max-width:900px}.gwrap{max-width:1400px;max-height:800px}#mini{width:165px;height:165px}}
 @media (min-width:2200px) and (min-height:1300px){
   .overlay>.card,.map>:not(canvas),.gtext,#hudL,#hudR>:not(#mini),#pauseBtn,#note,#splitHud{zoom:1.6}
-  #menu>.map,#mp>.map,#ed>.map,#career>.map,#train>.map{max-width:1200px}.gwrap{max-width:1800px;max-height:1020px}#mini{width:210px;height:210px}}
+  #menu>.map,#mp>.map,#spl>.map,#ed>.map,#career>.map,#train>.map{max-width:1200px}.gwrap{max-width:1800px;max-height:1020px}#mini{width:210px;height:210px}}
 /* a little wider card where there is room, so rows don't leave one button on a line of its own */
 @media (min-width:700px) and (min-height:560px){.card{width:min(500px,100%)}#menu>.card,#mp>.card,#ed>.card,#career>.card,#train>.card{flex-basis:500px}#title .card:has(#fsBtn:not([hidden])){width:min(600px,100%)}}
 /* track page chips: one line per group */
@@ -434,7 +435,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 .overlay.pop{justify-content:center;align-items:center;background:rgba(6,8,12,.74)}
 .overlay.pop .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-sizing:border-box;width:min(460px,100%)}
 p.ask{margin:0;font:600 clamp(17px,3vmin,21px)/1.35 var(--display)}
-#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
+#ffAsk p{margin:0;line-height:1.45}#ffAsk .ffDim{color:var(--dim);font-size:14px}#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
 #carAskN{font-size:clamp(30px,7vmin,48px)}#bview .big{font-size:clamp(26px,6vmin,40px)}#bview p.ask{font:500 14px/1.45 var(--display);color:var(--dim);margin:8px 0}#bview p.ask b{color:var(--ink,#fff)}#carAsk p.ask{font:500 14px/1.45 var(--display);color:var(--dim)}
 .carRule{font-size:13px;color:var(--ink);line-height:1.35}
 #carSub b{color:var(--ink)}
@@ -514,9 +515,49 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
 .lib .lrm{background:none;border:0;color:inherit;font:inherit;font-size:12px;opacity:.55;cursor:pointer;padding:9px 2px;text-decoration:underline}.lib .lrm:hover{opacity:1}
 .lib td.st{opacity:.8;font-size:12px}.libw{max-height:48vh;overflow-y:auto;overflow-x:hidden}@media (max-width:560px){.lib .k{display:none}.lib{font-size:12px}}
 #rotBtn{padding-inline:14px;min-width:0;display:inline-flex;align-items:center;justify-content:center}#rotBtn svg{display:block}
+
+/* ---- Prototype 60: split screen ---- */
+#views{position:fixed;inset:0;pointer-events:none}
+.vw{position:absolute;box-sizing:border-box;border:1px solid rgba(9,11,16,.9);font-family:var(--display);color:var(--ink);text-shadow:0 1px 3px rgba(0,0,0,.8);overflow:hidden}
+.vw::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--pc)}
+.vwt{position:absolute;left:.6em;top:.5em;display:flex;gap:.45em;align-items:baseline;font-size:.9em;letter-spacing:.04em;text-transform:uppercase}
+.vwt b{color:var(--bg);background:var(--pc);padding:0 .4em;border-radius:3px;text-shadow:none}.vwsrc{color:var(--dim)}
+.vwpos{position:absolute;left:.6em;top:1.8em;line-height:1}.vwpos b{font-size:2.3em;font-weight:700}.vwpos small{font-size:.85em;color:var(--dim);margin-left:.15em}
+.vwlap{position:absolute;right:.6em;top:.5em;font-family:var(--mono);font-size:.95em}
+.vwspd{position:absolute;right:.6em;bottom:.5em;text-align:right;line-height:1}.vwspd b{font-size:1.7em;font-family:var(--mono)}.vwspd small{display:block;font-size:.65em;color:var(--dim)}
+.vwbars{position:absolute;left:.6em;bottom:.6em;width:min(9em,40%);display:flex;flex-direction:column;gap:.25em}
+.vwbars i{display:block;height:.42em;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}.vwbars u{display:block;height:100%;width:0;background:var(--green)}.vwbars .am u{background:var(--purple)}
+.vw.low .hp u{background:var(--red)}.vw.wreck{box-shadow:inset 0 0 0 3px var(--red)}
+.vwmods{position:absolute;left:.6em;bottom:1.8em;display:flex;gap:.3em}.vwmods span{width:1.6em;height:1.6em;opacity:.35;color:var(--ink)}.vwmods span.rdy{opacity:1;color:var(--amber)}.vwmods svg{width:100%;height:100%}
+.vwfin{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:2.2em;font-weight:700;color:var(--pc);white-space:nowrap}
+.vws{position:absolute;box-sizing:border-box;border:1px solid rgba(9,11,16,.9);display:grid;place-items:center;background:var(--bg);font-family:var(--display);color:var(--ink)}
+.vwst{display:flex;flex-direction:column;gap:.2em;min-width:60%}.vwst>div{display:flex;gap:.5em;align-items:center}.vwst>div.me{color:var(--amber)}.vwst i{width:.7em;height:.7em;border-radius:50%;display:inline-block}.vwst small{margin-left:auto;font-family:var(--mono);color:var(--dim)}
+#spl .card{width:min(520px,100%)}
+#splList{gap:6px}
+.splp{display:flex;align-items:center;gap:10px;padding:6px 8px;border:1px solid rgba(255,255,255,.12);border-left:4px solid var(--pc);border-radius:6px;background:rgba(255,255,255,.03);transition:background .15s}
+.splp>b{font:700 18px var(--display);color:var(--pc);min-width:2em}.splp>span{flex:1;display:flex;flex-direction:column}.splp small{color:var(--dim);font-size:12px}
+.splp.lit{background:rgba(255,176,0,.18)}.splp.wait{opacity:.6}
+.splLayRow{align-items:flex-start;gap:14px}
+#splSketch{position:relative;flex:none;border:1px solid rgba(255,176,0,.3);border-radius:4px;background:rgba(0,0,0,.35)}
+#splSketch i{position:absolute;box-sizing:border-box;border:1px solid var(--bg);background:color-mix(in srgb,var(--pc) 45%,transparent);display:grid;place-items:center;font:700 12px var(--display);font-style:normal;color:var(--ink)}
+#splSketch i.sp{background:rgba(255,255,255,.06)}
+#padc{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 8px) max(10px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(10px,env(safe-area-inset-left,0px));touch-action:none;user-select:none;-webkit-user-select:none;font-family:var(--display);color:var(--ink);border-top:4px solid var(--pc,var(--amber))}
+#padc[hidden]{display:none}
+.pcTop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.pcTop>span{flex:1;min-width:8em;font-size:15px}
+#pcN{font:700 22px var(--display);color:var(--bg);background:var(--pc,var(--amber));padding:2px 10px;border-radius:4px}
+.pcPad{flex:1;display:flex;gap:10px;min-height:0}
+.pcZone{flex:1.1;position:relative;border:2px dashed rgba(255,255,255,.18);border-radius:14px;display:grid;place-items:center;text-align:center;color:var(--dim);font-size:18px;touch-action:none}
+.pcZone small{display:block;font-size:12px;margin-top:4px}.pcZone.on{border-color:var(--pc,var(--amber));border-style:solid}
+#pcDot{position:absolute;left:50%;top:50%;width:64px;height:64px;border-radius:50%;background:var(--pc,var(--amber));opacity:0;transform:translate(-50%,-50%);pointer-events:none}.pcZone.on #pcDot{opacity:.75}
+.pcBtns{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px}
+.pcB{font:700 20px var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--ink);background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.18);border-radius:14px;touch-action:none;min-height:64px}
+#pcW1,#pcW2{border-color:rgba(190,90,255,.5)}.pcBst{border-color:rgba(63,240,255,.6)}#pcBrk{border-color:rgba(255,74,61,.5)}
+.pcB.on{background:var(--pc,var(--amber));color:var(--bg)}
+@media (orientation:portrait){.pcPad{flex-direction:column}.pcZone{flex:1}.pcBtns{flex:1.1}}
 </style></head><body>
 
 <canvas id="c" aria-label="Race view"></canvas>
+<div id="views" hidden></div>
 <div id="scrV" aria-hidden="true" hidden></div><div id="scrS" aria-hidden="true" hidden></div><div id="fps" aria-hidden="true" hidden></div>
 <div id="ink" aria-hidden="true"></div><div id="threat" aria-hidden="true"></div><div id="threatQ" aria-hidden="true" hidden></div><div id="threatTxt" hidden></div>
 <div id="flash"></div>
@@ -555,7 +596,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
     <div class="sub">Prototype 59</div>
-    <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
+    <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" data-icon="fullscreen" hidden>Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open with tilt</a>
     <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip" id="radioBack" hidden>Back to radio</button><button class="chip mmode" aria-label="Music mode">Generative</button><button class="heart" id="likeTune" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button></div>
       <div class="t best tinfo" id="titleTune"></div></div>
@@ -610,11 +651,11 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
 <div id="fsel" class="overlay" hidden>
   <div id="fsRow" role="group" aria-label="Frames"></div>
   <div class="card">
-    <div class="sub">New career · choose your frame</div>
+    <div class="sub" id="fsSub">New career · choose your frame</div>
     <div class="fsName"><span id="fsName"></span><small id="fsTag"></small></div>
     <p id="fsBlurb"></p>
     <p id="fsMods"></p>
-    <p class="fsBare">Career frames start bare, every stat at 1. Races pay credits for more.</p>
+    <p class="fsBare" id="fsBare">Career frames start bare, every stat at 1. Races pay credits for more.</p>
     <div class="row"><button class="btn go" id="fsGo">Choose</button><button class="chip" id="fsRep">▶ Repeat</button><button class="btn" id="fsBack" data-back>Back</button></div>
   </div>
 </div>
@@ -646,12 +687,20 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="row"><button class="btn go" id="carAskYes">Yes · race</button><button class="btn" id="carAskNo" data-back>No</button></div>
   </div>
 </div>
+<div id="ffAsk" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">FIRST <b>FLIGHT</b></div>
+    <p class="ask">New here? First flight is a short guided start: pick a frame, then six quick steps on the controls. About a minute.</p>
+    <p class="ask ffDim">Skip it and you can replay it any time from Options › Tutorial.</p>
+    <div class="row"><button class="btn go" id="ffYes">Start First flight</button><button class="btn" id="ffNo" data-back>Skip</button></div>
+  </div>
+</div>
 <div id="tutAsk" class="overlay" hidden>
   <div class="card">
-    <div class="logo">GUID<b>ANCE</b></div>
+    <div class="logo">FIRST <b>FLIGHT</b></div>
     <p class="ask">Do you require guidance?</p>
     <p id="tutAskP">Six quick steps on the controls before your first race, about half a minute.</p>
-    <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>No · straight to the races</button></div>
+    <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>Skip · straight to the races</button></div>
   </div>
 </div>
 <div id="tut" hidden>
@@ -665,7 +714,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
       <button class="btn mode" id="setBtn">Settings<small>Performance, sound, music, race data</small></button>
       <button class="btn mode" id="ctlBtn">Controls<small>Touch, tilt, keys, pad, camera</small></button>
       <button class="btn mode" id="guideBtn">Nose guide<small>When to lift or drop the nose</small></button>
-      <button class="btn mode" id="tutBtn">Tutorial<small>The controls in six quick steps</small></button>
+      <button class="btn mode" id="tutBtn">Tutorial<small>First flight: pick a frame, then the controls in six quick steps</small></button>
     </div>
     <div class="row"><button class="btn go" id="optDone" data-back>Done</button></div>
   </div>
@@ -679,6 +728,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
       <span class="sep"></span><button class="chip pool" data-len="Q" aria-pressed="false">Short</button><button class="chip pool" data-len="M" aria-pressed="false">Medium</button><button class="chip pool" data-len="L" aria-pressed="false">Long</button></div>
     <div class="row" role="group" aria-label="Scenery for new tracks"><span class="sub">Scenery</span><button class="chip bio" data-bio="U">Urban</button><button class="chip bio" data-bio="O">Ocean</button><button class="chip bio" data-bio="F">Forest</button><button class="chip bio" data-bio="N">Stratos</button><button class="chip bio" data-bio="R">Reef</button><button class="chip bio" data-bio="P">Prism</button><span class="sep"></span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
     <div class="row" id="clsRow"><span class="sub">Class</span><select class="pick" id="clsSel" aria-label="Speed class"></select><span class="small" id="clsNote"></span><button class="chip" id="pacBtn" aria-pressed="false" title="No modules for anyone">Pacifist</button></div>
+    <div class="row" id="lapRow"><span class="sub">Laps</span><select class="pick" id="lapSel" aria-label="Laps"></select><span class="small" id="lapNote"></span></div>
     <div class="row" id="ailRow"><span class="sub">Rivals</span><select class="pick" id="ailSel" aria-label="Rivals"></select><span class="small" id="ailNote"></span></div>
     <div class="row"><button class="btn go" id="raceBtn">Start</button><button class="btn" id="newBtn">New track</button><button class="btn" id="setBack" data-back>Back</button></div>
     <div class="code"><label for="seedIn">Track code</label><input id="seedIn" maxlength="34" spellcheck="false" autocomplete="off"><button class="btn" id="loadBtn">Load</button></div>
@@ -686,7 +736,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
   </div>
   <div class="map">
     <canvas id="preview"></canvas>
-    <div class="legend"><span><i style="background:#f2efe6"></i>Start</span><span><i style="background:#3ff0ff"></i>Boost</span><span><i style="background:#46ff8c"></i>Shield recharge</span><span><i style="background:#be5aff"></i>Ammo</span><span id="lenLbl"></span></div>
+    <div class="legend"><span><i style="background:var(--ink)"></i>Start</span><span><i style="background:var(--cyan)"></i>Boost</span><span><i style="background:var(--green)"></i>Shield recharge</span><span><i style="background:var(--purple)"></i>Ammo</span><span id="lenLbl"></span></div>
     <div class="small" id="stats"></div>
   </div>
 </div>
@@ -738,18 +788,19 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
       <div class="row lanrow"><canvas id="lanQR" width="330" height="330" hidden></canvas><video id="lanCam" playsinline muted hidden></video>
         <div class="col lancol"><p id="lanTxt" hidden></p>
           <div class="row"><button class="btn go" id="lanScan">Scan a code</button><button class="btn" id="lanCopy" hidden>Copy code</button><button class="btn" id="lanCancel">Cancel</button></div>
-          <div class="code" id="lanInRow"><label for="lanIn">Code</label><input id="lanIn" spellcheck="false" autocomplete="off" autocapitalize="characters" placeholder="type a code" data-osk="code"><button class="btn kb" data-osk-for="lanIn" aria-label="On-screen keyboard">⌨</button><button class="btn" id="lanUse">Use</button></div>
+          <div class="code" id="lanInRow"><label for="lanIn">Code</label><input id="lanIn" spellcheck="false" autocomplete="off" autocapitalize="characters" placeholder="type a code" data-osk="code"><button class="btn kb" data-osk-for="lanIn" aria-label="On-screen keyboard" data-icon="keyboard"></button><button class="btn" id="lanUse">Use</button></div>
           <p class="small warn" id="lanMsg" aria-live="polite"></p></div></div>
     </div>
     <div id="mpOut" class="col">
       <div class="sub">One device each · up to 8 pilots · empty places fill with AI</div>
-      <div class="code"><label for="mpName">Name</label><input id="mpName" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="mpName" aria-label="On-screen keyboard">⌨</button></div>
+      <div class="code"><label for="mpName">Name</label><input id="mpName" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="mpName" aria-label="On-screen keyboard" data-icon="keyboard"></button></div>
       <div class="row" id="mpConnRow"><span class="sub">Connection</span><button class="chip" data-conn="internet" aria-pressed="true">Internet</button><button class="chip" data-conn="lan" aria-pressed="false">Same room · no internet</button><button class="chip" data-conn="wifi" aria-pressed="false" hidden>Wi-Fi host</button></div>
       <div class="row" id="chirpRow" hidden><button class="btn mode go" id="chirpHostBtn">Host a room<small id="chirpHostSub">Your phone calls the others</small></button><button class="btn mode" id="chirpJoinBtn">Join<small id="chirpJoinSub">Hold your phone near the host's</small></button></div>
       <div class="row" id="chirpPairRow" hidden><span class="sub">Pair by</span><button class="chip" data-pair="sound" aria-pressed="true">Sound</button><button class="chip" data-pair="qr" aria-pressed="false">Code only</button><span class="sep"></span><button class="chip" id="chirpTest">Test sound</button></div>
       <div class="row"><button class="btn go" id="mpCreate">Create room</button><button class="btn" id="mpPub">Public room</button><button class="btn" id="lanJoin" hidden>Join a Wi-Fi room</button></div>
-      <div class="code" id="mpCodeRow"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard">⌨</button><button class="btn" id="mpJoin">Join</button></div>
+      <div class="code" id="mpCodeRow"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard" data-icon="keyboard"></button><button class="btn" id="mpJoin">Join</button></div>
       <p class="small" id="mpConnHint"></p>
+      <div class="row" id="splRow"><button class="btn mode" id="splBtn">Split screen (this screen)<small>Up to 8 on this screen · pads, keyboard, phones</small></button><button class="btn mode" id="padcBtn" aria-pressed="false">Be a controller<small>Race on another device's split screen</small></button></div>
       <div class="row"><button class="btn" id="mpBack" data-back>Back</button></div>
     </div>
     <div id="mpIn" class="col" hidden>
@@ -757,7 +808,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
       <div class="big" id="mpRoom">·····</div>
       <div class="t best" id="mpStatus"></div>
       <table id="mpList"></table>
-      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Frame lab</button><button class="btn" id="mpOpt">Options</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
+      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Frame lab</button><button class="btn" id="mpOpt">Options</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn go" id="mpSplBack" hidden>Split screen ›</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
       <p class="small" id="mpHint"></p>
       <div class="t" id="mpTrack"></div>
       <div class="row" role="group" aria-label="Sky on this device"><span class="sub">Sky</span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
@@ -765,12 +816,37 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
         <div class="row"><button class="chip" data-mpw="W">Wide</button><button class="chip" data-mpw="S">Standard</button><button class="chip" data-mpw="N">Narrow</button><span class="sep"></span><button class="chip" data-mpl="S">Simple</button><button class="chip" data-mpl="X">Complex</button><button class="chip" data-mpl="C">Custom…</button><span class="sep"></span><button class="chip" data-mplen="Q">Short</button><button class="chip" data-mplen="M">Medium</button><button class="chip" data-mplen="L">Long</button></div>
         <div class="row"><span class="sub">Scenery</span><button class="chip bio" data-mpbio="U">Urban</button><button class="chip bio" data-mpbio="O">Ocean</button><button class="chip bio" data-mpbio="F">Forest</button><button class="chip bio" data-mpbio="N">Stratos</button><button class="chip bio" data-mpbio="R">Reef</button><button class="chip bio" data-mpbio="P">Prism</button></div>
         <div class="row"><button class="btn" id="mpNew">New track</button></div>
-        <div class="row"><span class="sub">Laps</span><button class="chip" data-mplaps="1">1</button><button class="chip" data-mplaps="2">2</button><button class="chip" data-mplaps="3">3</button><button class="chip" data-mplaps="5">5</button><span class="sep"></span><button class="chip" id="mpAI" aria-pressed="true">Fill with AI</button><span class="sep"></span><span class="sub">Class</span><select class="pick" id="mpCls" aria-label="Speed class for this room"></select></div>
+        <div class="row"><span class="sub">Laps</span><button class="chip" data-mplaps="1">1</button><button class="chip" data-mplaps="2">2</button><button class="chip" data-mplaps="3">3</button><button class="chip" data-mplaps="5">5</button><button class="chip" data-mplaps="7">7</button><button class="chip" data-mplaps="10">10</button><span class="sep"></span><button class="chip" id="mpAI" aria-pressed="true">Fill with AI</button><span class="sep"></span><span class="sub">Class</span><select class="pick" id="mpCls" aria-label="Speed class for this room"></select></div>
       </div>
     </div>
     <p class="small warn" id="mpErr"></p>
   </div>
   <div class="map"><canvas id="mpPreview"></canvas><div class="small" id="mpStats"></div></div>
+</div>
+<div id="spl" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">SPLIT <b>SCREEN</b></div>
+    <div class="sub">Everyone on this screen · up to 8 pilots</div>
+    <div id="splList" class="col"></div>
+    <p class="small">Pads: any button joins · B leaves · Y small-pad buttons · Start races. Small pads: A boost, B module, X brake, Y module 2, d-pad steers.</p>
+    <div class="row"><button class="chip" id="splDev" aria-pressed="false">This device plays</button><button class="chip" id="splAI" aria-pressed="true">Fill with AI</button><span class="sep"></span><span class="sub">Laps</span><button class="chip" data-spllaps="1">1</button><button class="chip" data-spllaps="2">2</button><button class="chip" data-spllaps="3">3</button><button class="chip" data-spllaps="5">5</button></div>
+    <div class="row splLayRow"><div id="splSketch" aria-hidden="true"></div><div class="col"><label class="sub" for="splLay">Layout</label><select id="splLay"></select><button class="btn" id="splScr" hidden>Span my screens</button></div></div>
+    <div class="row"><button class="btn" id="splJoin">Let devices join</button><button class="btn" id="splShut" hidden>Close room</button><span class="t best" id="splRoom" hidden></span></div>
+    <p class="small" id="splHint">Phones and tablets join as controllers: on each one open Hoverline, Multiplayer, Be a controller, then join this screen's room. Same room · no internet needs every device on one Wi-Fi. Steam Deck: make a hotspot in Desktop mode (network icon, Wi-Fi, Hotspot) and join the phones to it.</p>
+    <div class="row"><button class="btn go" id="splGo" disabled>Race</button><button class="btn" id="splNew">New track</button><button class="btn" id="splBack" data-back>Back</button></div>
+  </div>
+  <div class="map"><canvas id="splPreview"></canvas><div class="small" id="splStats"></div></div>
+</div>
+<div id="padc" hidden>
+  <div class="pcTop"><b id="pcN">–</b><span id="pcMsg">Connecting…</span><button class="chip" id="pcTilt" aria-pressed="false">Tilt</button><button class="chip" id="pcView">View</button><button class="btn" id="pcLeave">Leave</button></div>
+  <div class="pcPad">
+    <div id="pcSteer" class="pcZone"><i id="pcDot"></i><span>Steer<small>slide left and right · up and down for the nose</small></span></div>
+    <div class="pcBtns">
+      <button class="pcB" id="pcW1">Module 1</button><button class="pcB" id="pcW2">Module 2</button>
+      <button class="pcB" id="pcBrk">Brake</button><button class="pcB pcBst" id="pcBst">Boost</button>
+    </div>
+  </div>
+  <button class="btn go" id="pcGo" hidden>Start the race</button>
 </div>
 <div id="tags"></div>
 
@@ -853,7 +929,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
   <div class="card">
     <div class="logo">LEADER<b>BOARD</b></div>
     <div class="sub">Online times from everyone who plays, on every track</div>
-    <div class="code"><label for="lbNameIn">Your name</label><input id="lbNameIn" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="lbNameIn" aria-label="On-screen keyboard">⌨</button></div>
+    <div class="code"><label for="lbNameIn">Your name</label><input id="lbNameIn" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="lbNameIn" aria-label="On-screen keyboard" data-icon="keyboard"></button></div>
     <div class="row" role="group" aria-label="Boards"><button class="chip" data-lbs="latest">Latest times</button><button class="chip" data-lbs="popular">Most raced</button><button class="chip" data-lbs="here">This track</button></div>
     <div class="t best" id="lbHead"></div>
     <div id="lbList" class="col"></div>
@@ -883,7 +959,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="row" role="group" aria-label="Music"><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
     <div class="sub">Genres</div><div class="row" role="group" aria-label="Genres" id="genreRow"></div>
     <p class="small">Each tune is a template from one genre, or a fusion of two (one genre's rhythm, another's melody or colour). A tune plays only when its genres are on. In a room everyone hears the same tunes, so there all genres play.</p>
-    <div class="row"><button class="chip" id="likeTune2" aria-pressed="false">♥ Like this tune</button><button class="chip" id="dislikeTune2" aria-pressed="false" title="Plays less often, never ruled out">💔 Less like this</button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
+    <div class="row"><button class="heart" id="likeTune2" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune2" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
     <p class="small">Like (and Keep) make tunes like that one come up more often in the menu and in races on your own; skipping a tune in its first 20 seconds counts a little against it. Nothing repeats too soon: the listening memory still comes first.</p>
     <div class="code"><label for="tuneIn">Tune</label><input id="tuneIn" maxlength="17" spellcheck="false" autocomplete="off"><button class="btn" id="tuneLoad">Load</button><button class="btn" id="tuneNew">New</button><button class="btn" id="tuneKeep">Keep</button></div>
     <div class="t best" id="tuneInfo"></div>
@@ -1793,17 +1869,73 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
             'vGl=aGl;float sT=mod(aPh.x+aMv.w*uT+aPh.y*sin(aPh.z*aPh.x+aPh.w*uT),aMv.z);vec4 mvPosition=instanceMatrix*vec4(transformed*clamp(min(sT,aMv.z-sT)*0.25,0.,1.),1.);mvPosition.xyz+=vec3(aMv.x*sT,0.3*sin(uT*1.6+aPh.x),aMv.y*sT);mvPosition=modelViewMatrix*mvPosition;gl_Position=projectionMatrix*mvPosition;');
           sh.fragmentShader=sh.fragmentShader.replace('void main() {','varying vec3 vGl;\nvoid main() {').replace('#include <tonemapping_fragment>','if(vGl.r+vGl.g+vGl.b>0.)gl_FragColor.rgb=vGl;\n#include <tonemapping_fragment>')};
         const tm=new THREE.InstancedMesh(vg,vm,nV);tm.instanceMatrix.array.set(Mi);tm.instanceColor=new THREE.BufferAttribute(new Float32Array(Ci),3);tm.frustumCulled=false;group.add(tm)}
-      /* towers in the blocks between the streets (set back 10 m from every street, traffic or not), a few very tall ones first */
-      const cells=[];for(let x=gx0+Math.floor((X0-gx0)/GX)*GX;x<X1;x+=GX)for(let z=gz0+Math.floor((Z0-gz0)/GZ)*GZ;z<Z1;z+=GZ)cells.push([x,z]);
-      for(let k=cells.length-1;k>0;k--){const j=Math.floor(ur()*(k+1));[cells[k],cells[j]]=[cells[j],cells[k]]}
-      const box=(x,z,w,d,b,t,amber)=>cityB.push({x,y:(b+t)/2,z,sx:w,sy:t-b,sz:d,amber});
-      let nT=[1,2,4,6][dens],nF=[40,110,200,300][dens];
-      for(const[gx,gz]of cells){const bw=GX-20,bd=GZ-20;
-        if(nT>0){const w=bw*(0.55+ur()*0.25),d=Math.min(bd*0.7,w*(1+ur()*0.4)),x=gx+GX/2,z=gz+GZ/2,R0=Math.hypot(w,d)/2;if(nr(x,z,R0+W/2+150)||!free(x,z,R0*0.6))continue;
-          const h1=floorY+140+ur()*80,h2=h1+120+ur()*120,h3=h2+80+ur()*150;box(x,z,w,d,floorY,h1,false);box(x,z,w*0.72,d*0.72,h1,h2,false);box(x,z,w*0.48,d*0.48,h2,h3,true);box(x,z,3,3,h3,h3+30+ur()*30,true);claim(x,z,R0*0.8);nT--;continue}
-        if(nF<=0)break;const nl=1+Math.floor(ur()*3),ll=bd/nl;
-        for(let j=0;j<nl&&nF>0;j++){const w=bw*(0.5+ur()*0.5),d=ll*(0.6+ur()*0.4)-2,x=gx+10+w/2+ur()*(bw-w),z=gz+10+j*ll+d/2+ur()*(ll-d),R0=Math.hypot(w,d)/2;if(nr(x,z,R0+W/2+50)||!free(x,z,R0*0.5))continue;
-          const h=floorY+30+ur()*ur()*260;if(h-floorY>150&&ur()<0.5){const hb=floorY+(h-floorY)*(0.45+ur()*0.2);box(x,z,w,d,floorY,hb,false);box(x,z,w*0.66,d*0.66,hb,h,ur()<0.2)}else box(x,z,w,d,floorY,h,ur()<0.15);claim(x,z,R0*0.7);nF--}}}
+      /* Prototype 60: a bigger, more city-like Urban. Eric: "way more buildings, aligned in a more typical city design".
+         Before, only 200 lots (at the default density) were dropped into random blocks, so most of the grid stood empty.
+         Now, in this order (every footprint is an oriented rectangle, tested against everything placed before it):
+         1. rows of buildings facing the road: where the road runs straight (the heading changes under 6 degrees over the
+            building and a little either side) two rows a side, their long faces parallel to it, a street between them;
+         2. the few very tall stepped towers, in the blocks nearest the downtown centre;
+         3. every other block of the grid, nearest the road first, filled with a grid of lots on the street axes (every 4th
+            street along z and 5th along x is an avenue, twice as wide). Heights fall from the downtown centre outwards:
+            it is a random point near the middle of the map, tall and stepped there, low (24 to 55 m) out at the edges.
+         Nothing stands within W/2+48 m of any road point (the main road with loops and jump flights, both routes of every
+         split, pit lane and cut) measured from the nearest face (so a tunnel shell, 17 to 31 m out, never meets one), nor
+         in a flight lane of the traffic, nor in a dock tower, a spiral's tower or any other claimed feature. It is all
+         inside the one instanced mesh, so the draw calls don't grow (12 triangles a building). Own random numbers (ur)
+         as before; the road and every other biome are untouched. Budgets are lighter at low detail (density 1). */
+      const NG=new Map(),MC=W/2+48,
+        hit=(a,b,m)=>{/* do two oriented rectangles come within m of each other? (separating axes) */
+          for(const o of[a,b]){const r=o.ry||0,c=Math.cos(r),s=Math.sin(r);for(const[ux,uz]of[[c,-s],[s,c]]){let ra=0,rb=0;
+            for(const q of[a,b]){const r2=q.ry||0,c2=Math.cos(r2),s2=Math.sin(r2),e=Math.abs(c2*ux-s2*uz)*q.sx/2+Math.abs(s2*ux+c2*uz)*q.sz/2;if(q===a)ra=e;else rb=e}
+            if(Math.abs((b.x-a.x)*ux+(b.z-a.z)*uz)>ra+rb+m)return false}}return true},
+        cellsOf=(o,f)=>{const br=Math.hypot(o.sx,o.sz)/2+6;for(let a=Math.floor((o.x-br)/64);a<=Math.floor((o.x+br)/64);a++)for(let c=Math.floor((o.z-br)/64);c<=Math.floor((o.z+br)/64);c++)if(f(kk(a,c)))return true;return false},
+        hitAny=o=>cellsOf(o,k=>{for(const Lc of[OG.get(k),NG.get(k)])if(Lc)for(const q of Lc)if(hit(o,q,3))return true;return false})||TW.some(q=>hit(o,q,3)),
+        reg=o=>cellsOf(o,k=>{let Lc=NG.get(k);if(!Lc)NG.set(k,Lc=[]);Lc.push(o);return false}),
+        /* clear of the road: the nearest face of the rectangle is at least MC from every road point */
+        roadOK=o=>{const c=Math.cos(o.ry||0),s=Math.sin(o.ry||0),R=Math.hypot(o.sx,o.sz)/2+MC,bad=q=>{const dx=q.x-o.x,dz=q.z-o.z;if(dx*dx+dz*dz>R*R)return false;
+            const lx=dx*c-dz*s,lz=dx*s+dz*c,ex=Math.max(Math.abs(lx)-o.sx/2,0),ez=Math.max(Math.abs(lz)-o.sz/2,0);return ex*ex+ez*ez<MC*MC};
+          for(let a=Math.floor((o.x-R)/CELL);a<=Math.floor((o.x+R)/CELL);a++)for(let b=Math.floor((o.z-R)/CELL);b<=Math.floor((o.z+R)/CELL);b++){
+            const Lc=KG.get(kk(a,b));if(Lc)for(const k of Lc)if(bad(KP[k]))return false;const Lq=KQ.get(kk(a,b));if(Lq)for(const q of Lq)if(bad(q))return false}return true},
+        /* not in a flight lane of the traffic (a building lower than the lane's layer may stand under it) */
+        laneOK=(o,top)=>{const br=Math.hypot(o.sx,o.sz)/2,hw=CH+2;for(const A of acc){if(top<A.y-9)continue;
+            if(o.x+br<(A.ax?A.c-hw:A.s0)||o.x-br>(A.ax?A.c+hw:A.s1)||o.z+br<(A.ax?A.s0:A.c-hw)||o.z-br>(A.ax?A.s1:A.c+hw))continue;return false}return true},
+        ccx=cxT+(ur()-0.5)*0.4*(maxX-minX),ccz=czT+(ur()-0.5)*0.4*(maxZ-minZ),Rd=Math.max(450,0.3*Math.max(maxX-minX,maxZ-minZ)),
+        dtf=(x,z)=>1/(1+((x-ccx)**2+(z-ccz)**2)/(Rd*Rd)),
+        /* height above the floor: 24-55 m at the edges, up to 450 m at the downtown centre */
+        hgt=(x,z)=>24+ur()*30+Math.pow(dtf(x,z),1.5)*(70+ur()*ur()*380),
+        box=(x,z,w,d,b,t,amber,ry)=>cityB.push({x,y:(b+t)/2,z,sx:w,sy:t-b,sz:d,ry,amber}),
+        /* one building of a footprint: low ones a plain block, tall ones usually a podium with a narrower shaft, the
+           tallest an amber crown. Fails (false) if it meets the road, a lane or another building. */
+        put=(x,z,w,d,ry,H)=>{const o={x,z,sx:w,sz:d,ry};if(!roadOK(o)||solHit(x,z,Math.hypot(w,d)/2+4)||hitAny(o)||!laneOK(o,floorY+H))return false;
+          if(H>150&&ur()<0.6){const hb=floorY+H*(0.3+ur()*0.25),s=0.55+ur()*0.15;box(x,z,w,d,floorY,hb,false,ry);box(x,z,w*s,d*s,hb,floorY+H,H>260,ry)}else box(x,z,w,d,floorY,floorY+H,ur()<0.15,ry);
+          reg(o);claim(x,z,Math.hypot(w,d)*0.35);return true};
+      const hd=new Float32Array(N),dh=(a,b)=>{const d=Math.abs(hd[a]-hd[b]);return d>Math.PI?TAU-d:d};
+      for(let i=0;i<N;i++)hd[i]=Math.atan2(Tg[i].x,Tg[i].z);
+      /* 1. rows facing the road */
+      const nRow=[0,500,1100,1500][dens]*(RES.low?0.5:1);let rowN=0;
+      for(const sd of[-1,1])for(let row=0;row<2;row++){const dep=24+ur()*10;let i=Math.floor(ur()*20);
+        while(i<N&&rowN<nRow){const len=22+ur()*18,k=Math.max(1,Math.round((len/2+20)/ds)),a0=(i-k+N)%N,a1=(i+k)%N;
+          if(dh(a0,i)>0.05||dh(i,a1)>0.05||dh(a0,a1)>0.1||spl[i]){i+=Math.round(12/ds);continue}
+          const t=Tg[i],tl=Math.hypot(t.x,t.z)||1,off=W/2+48+dep/2+row*(dep+16),[x,z]=side(i,sd,off);
+          if(ur()<0.1||!put(x,z,dep,len,Math.atan2(t.x/tl,t.z/tl),hgt(x,z))){i+=Math.round((len/2+3)/ds);continue}rowN++;i+=Math.round((len+4+ur()*9)/ds)}}
+      /* the blocks of the grid, nearest the road first; the grid streets are the axes */
+      const cells=[];for(let x=gx0+Math.floor((X0-gx0)/GX)*GX;x<X1;x+=GX)for(let z=gz0+Math.floor((Z0-gz0)/GZ)*GZ;z<Z1;z+=GZ){const q=near(x+GX/2,z+GZ/2,700);cells.push({x,z,ix:Math.round((x-gx0)/GX),iz:Math.round((z-gz0)/GZ),d:(q?q.d:700+Math.hypot(x-cxT,z-czT)*0.1)*(0.85+ur()*0.3),f:dtf(x+GX/2,z+GZ/2)})}
+      const used=new Set();let nT=[1,2,4,6][dens];
+      /* 2. the stepped towers, in the blocks nearest downtown */
+      for(const c of cells.slice().sort((p,q)=>q.f-p.f)){if(nT<=0)break;
+        const bw=GX-20,bd=GZ-20,w=bw*(0.55+ur()*0.25),d=Math.min(bd*0.7,w*(1+ur()*0.4)),x=c.x+GX/2,z=c.z+GZ/2,o={x,z,sx:w,sz:d};
+        if(!roadOK({...o,sx:w+100,sz:d+100})||solHit(x,z,Math.hypot(w,d)*0.3)||hitAny(o)||!laneOK(o,1e9))continue;
+        const h1=floorY+140+ur()*80,h2=h1+120+ur()*120,h3=h2+80+ur()*150;box(x,z,w,d,floorY,h1,false);box(x,z,w*0.72,d*0.72,h1,h2,false);box(x,z,w*0.48,d*0.48,h2,h3,true);box(x,z,3,3,h3,h3+30+ur()*30,true);reg(o);claim(x,z,Math.hypot(w,d)*0.4);used.add(c);nT--}
+      /* 3. a grid of lots in every other block */
+      let nF=[100,350,700,1000][dens];const av=(i,n)=>((i%n)+n)%n===0;
+      for(const c of cells.sort((p,q)=>p.d-q.d)){if(nF<=0)break;if(used.has(c))continue;
+        const x0=c.x+(av(c.ix,4)?24:10),x1=c.x+GX-(av(c.ix+1,4)?24:10),z0=c.z+(av(c.iz,5)?24:10),z1=c.z+GZ-(av(c.iz+1,5)?24:10);
+        /* in the downtown a block is often one tower on a podium, nearly the whole block */
+        if(c.f>0.3&&ur()<0.5){const w=(x1-x0)*(0.8+ur()*0.15),d=(z1-z0)*(0.8+ur()*0.15);if(put((x0+x1)/2,(z0+z1)/2,w,d,0,hgt((x0+x1)/2,(z0+z1)/2)*1.15+60))nF--;continue}
+        const nx=Math.max(1,Math.round((x1-x0)/34)),nz=Math.max(1,Math.round((z1-z0)/34)),lw=(x1-x0)/nx,ld=(z1-z0)/nz;
+        for(let a=0;a<nx;a++)for(let b=0;b<nz;b++){if(ur()<0.1)continue;const w=(lw-5)*(0.8+ur()*0.2),d=(ld-5)*(0.8+ur()*0.2),x=x0+(a+0.5)*lw+(ur()-0.5)*(lw-5-w),z=z0+(b+0.5)*ld+(ur()-0.5)*(ld-5-d);
+          if(put(x,z,w,d,0,hgt(x,z)))nF--}}
+      }
     /* every tower's own tone, and lit windows: a texture of 16 floors (some lit end to end) laid on each face by its size,
        a floor every 3 m, never on the roofs; bright at night, faint by day */
     for(const o of cityB)o.c=(day?[0x1c2129,0x262b33,0x30353d,0x3a3f46]:[0x0b0e14,0x0d1118,0x0a0c12,0x10131a])[Math.floor(Math.abs(o.x*7.1+o.z*3.7))%4];
@@ -2765,7 +2897,7 @@ const SHIPB={
   K.done(span+0.35,1.0,3.0,0,[K.mB,K.mS,K.mA])},
  /* A clean faceted ball that rolls with the speed (its band widens with shield), engines on a cradle cupping its back, and
     a tiny pilot pod riding just behind it on two energy tethers with the canopy, ammo bars, rudder and brake winglets. */
- orb(K,st,paint){const{put}=K,T=THREE,sp=st.speed,th=st.thrust,hd=st.handling,sh=st.shield,R=0.92,cy=0.42;
+ orb(K,st,paint){const{put}=K,T=THREE,sp=st.speed,th=st.thrust,hd=st.handling,sh=st.shield,R=0.92,cy=R-1.05;/* Prototype 60: the ball's bottom is on the road. The ship origin is HOVER (1.05, race/056-physics.js) above it, so the centre sits at R-HOVER, as the Monowheel's ring does. It used to float 0.55 above (cy 0.42). */
   const roll=new T.Group();roll.position.set(0,cy,0);K.g.add(roll);put(new T.IcosahedronGeometry(R,1),K.mB,0,0,0,null,roll);
   const bw=0.12+0.05*sh;for(let k=0;k<12;k++){const a=k/12*Math.PI*2,m=put(new T.BoxGeometry(bw,0.06,2*Math.PI*R/12*0.98),k%2?K.mS:K.mA,0,Math.cos(a)*R*0.99,Math.sin(a)*R*0.99,null,roll);m.rotation.x=a}
   for(let k=0;k<6;k++){const a=k/6*Math.PI*2+0.5,sd=k%2?1:-1,d=new T.Vector3(sd*0.55,Math.sin(a)*0.75,Math.cos(a)*0.75).normalize().multiplyScalar(R*0.985),m=K.quiet(put(new T.CircleGeometry(0.12,6),K.mS,d.x,d.y,d.z,null,roll));m.lookAt(d.clone().multiplyScalar(2).add(roll.position))}
@@ -2838,6 +2970,11 @@ const STATS=[{k:'speed',name:'Speed',part:'Thrusters',more:'bigger',less:'smalle
   {k:'handling',name:'Handling',part:'Wings & fins',more:'wider',less:'narrower'},{k:'shield',name:'Shield',part:'Armour',more:'thicker',less:'thinner'},
   {k:'ammo',name:'Ammo',part:'Ammo bars',more:'longer',less:'shorter'}];
 const BUDGET=15,SMIN=1,SMAX=5;let BUD=BUDGET,buildKey='hoverline.build';
+/* Prototype 60: the numbers for the two new modules, in one place. REFLECT_T: how long the Reflector's shell is up (half of
+   Phase's 1.5 s; its cost, 10, is half Phase's 20). FLARE_K: Flares (the old Decoy, same key) spend this many times the
+   incoming homing attack's ammo cost, and drop one flare for every FLARE_UNIT of it (at most FLARE_MAX), which live FLARE_T
+   seconds. The 1.5 started as Eric's guess; tools/sim/flares.js measured it (see the changelog). */
+const REFLECT_T=0.75,FLARE_K=1.5,FLARE_UNIT=15,FLARE_MAX=4,FLARE_T=4;
 const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backwards when nobody is ahead.'},
   cannon:{name:'Cannon',cost:5,desc:'Rapid straight bolts. Hold the button to keep firing.'},
   mines:{name:'Mines',cost:30,desc:'Drops three mines behind you.'},
@@ -2845,7 +2982,8 @@ const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backward
   turbo:{name:'Turbo',cost:25,desc:'A 2.4-second speed burst. While it runs your held boost rests and costs no shield.'},
   barrier:{name:'Barrier',cost:35,desc:'Blocks all damage for 3 seconds.'},
   phase:{name:'Phase',cost:20,desc:'For 1.5 seconds weapons pass straight through you, and so do other frames and smoke.'},
-  decoy:{name:'Decoy',cost:15,desc:'Drops a flare. Homing missiles, the Swarm and the Hunter chasing you go for it instead.'},
+  reflector:{name:'Reflector',cost:10,desc:'For 0.75 seconds shots that would hit you turn round and fly back down the track as yours: Cannon, Rockets, Missile, Swarm, Hunter and Bouncer. Mines, Quake, Shockwave and EMP still get through.'},
+  decoy:{name:'Flares',cost:0,passive:true,auto:true,desc:''},
   rockets:{name:'Rockets',cost:20,desc:'Three straight rockets in a spread. No homing: aim with your frame.'},
   swarm:{name:'Swarm',cost:35,desc:'Four small homing missiles, one for each of the nearest frames ahead.'},
   quake:{name:'Quake',cost:35,desc:'A wave that rolls up the track ahead with one gap in it, hitting every frame it catches and clearing mines.'},
@@ -2857,12 +2995,16 @@ const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backward
   overdrive:{name:'Overdrive',cost:60,desc:'3 seconds untouchable and faster. Ram other frames to dent their shields and slow them.'},
   scoopS:{name:'Shield scoop',cost:0,passive:true,desc:'Not a weapon: green strips recharge your shield twice as fast. It takes a module slot, and you cannot fit it with the Ammo scoop.'},
   scoopA:{name:'Ammo scoop',cost:0,passive:true,desc:'Not a weapon: purple strips refill your ammo twice as fast. It takes a module slot, and you cannot fit it with the Shield scoop.'}};
+/* what Flares spend against each homing attack: K times its module cost; a Swarm missile is a quarter of the Swarm's */
+const flareCostOf=(type,mini)=>FLARE_K*(type==='hunter'?WDEF.hunter.cost:mini?WDEF.swarm.cost/4:WDEF.missile.cost);
+WDEF.decoy.desc=`Automatic: no button. When a homing attack locks on you, Flares spend ${FLARE_K} times its ammo cost to pull it off you: ${Math.round(flareCostOf('missile'))} for a Missile, ${Math.round(flareCostOf('missile',true))} for each Swarm missile, ${Math.round(flareCostOf('hunter'))} for a Hunter. A small attack gets one flare, a Hunter most of the payload. With less ammo than that, nothing fires and you get hit.`;
 const SCOOPS=['scoopS','scoopA'],bothScoops=w=>SCOOPS.every(k=>w.includes(k));
 /* Icons (Prototype 32): one line drawing per weapon and for boost, shield and ammo, drawn in the colour of whatever holds them. */
 const SH='M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z';
-const ICON={missile:'<path d="M4 10h11l5 2-5 2H4zM7 10L5 6M7 14l-2 4M1 12h1"/>',cannon:'<path d="M3 8h6M3 12h10M3 16h6M13 8h2M17 12h4M13 16h2"/>',
+/* Prototype 60: keyboard and full screen were the glyphs ⌨ and ⛶, which some phones draw as colour emoji; now line icons like the rest */
+const ICON={keyboard:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14.5h10"/>',fullscreen:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',missile:'<path d="M4 10h11l5 2-5 2H4zM7 10L5 6M7 14l-2 4M1 12h1"/>',cannon:'<path d="M3 8h6M3 12h10M3 16h6M13 8h2M17 12h4M13 16h2"/>',
   mines:'<path d="M12 6l6 6-6 6-6-6zM12 2v3M12 19v3M2 12h3M19 12h3"/>',shock:'<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.5 6.5 0 0 0 0 9M16.5 7.5a6.5 6.5 0 0 1 0 9M4.5 4.5a10.5 10.5 0 0 0 0 15M19.5 4.5a10.5 10.5 0 0 1 0 15"/>',
-  turbo:'<path d="M4 6l6 6-6 6M12 6l6 6-6 6"/>',barrier:'<path d="'+SH+'"/>',phase:'<circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/><path d="M2 12h20M19 9l3 3-3 3"/>',
+  turbo:'<path d="M4 6l6 6-6 6M12 6l6 6-6 6"/>',barrier:'<path d="'+SH+'"/>',phase:'<circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/><path d="M2 12h20M19 9l3 3-3 3"/>',reflector:'<path d="M17 3v18M2 5l13 7M15 12L2 19M2 19v-4.5M2 19h4.5"/>',
   decoy:'<path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l4 4M15 15l4 4M19 5l-4 4M9 15l-4 4"/>',rockets:'<path d="M3 12L18 5M3 12h17M3 12l15 7"/>',
   swarm:'<circle cx="16" cy="5" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="16" cy="19" r="2"/><path d="M3 5h10M4 12h12M3 19h10"/>',quake:'<path d="M2 15l4-6 4 8 4-10 4 8 4-4"/>',
   bouncer:'<circle cx="17" cy="7" r="3.5"/><path d="M3 8l5 11 5-9"/>',hunter:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',
@@ -2887,7 +3029,7 @@ const FRAMES={
  skiff:{name:'Skiff',tag:'hover bike',desc:'A hover bike. Small and nimble: the hardest frame to hit, with the best grip and a quick pick-up, and it rides another frame\'s slipstream best. Light armour, small magazine.',m:{vmax:0.985,accel:1.04,turn:1.12,hp:0.76,ammo:0.85},size:0.64,vis:0.88,slip:1.5,mass:0.75,aero:1,glide:1,drift:0.5},
  hauler:{name:'Hauler',tag:'heavy',desc:'Heavy engines and a lot of armour. It shrugs off hits, carries the most ammo and wins every shove, and its own reactors top up ammo and shield as it races. The widest target.',m:{vmax:0.995,accel:1.0,turn:0.94,hp:1.3,ammo:1.2},size:1.2,mass:1.6,aero:1,glide:1,aRegen0:0.5,hRegen:0.25,drift:0.25},
  dart:{name:'Dart',tag:'delta wing',desc:'A delta wing built for the air. Nose-down streamlining is worth half as much again, and it glides further off jumps and crests. Thin armour.',m:{vmax:1.01,accel:0.97,turn:1.02,hp:0.95,ammo:0.95},size:1.05,mass:0.9,aero:1.5,glide:0.82,drift:0.25},
- orb:{name:'Orb',tag:'sphere',desc:'A ball with engines bolted on. It rolls along the walls instead of grinding against them: a wall costs it only 15% of the speed and shield it costs other frames, so it can ride the edge of the road. Round, so nose-down streamlining does nothing for it, and it is a big target.',m:{vmax:0.985,accel:1.02,turn:0.98,hp:1.1,ammo:1},size:1.15,mass:1.2,aero:0,glide:1,wallK:0.15,drift:0.25},
+ orb:{name:'Orb',tag:'sphere',desc:'A ball with engines bolted on. It rolls along the walls instead of grinding against them: a wall costs it only 15% of the speed and shield it costs other frames, so it can ride the edge of the road. Round, so nose-down streamlining does nothing for it, and it is a big target.',m:{vmax:0.985,accel:1.02,turn:0.98,hp:1.1,ammo:1},size:1.15,mass:1.2,aero:0,glide:1,wallK:0.15,drift:0.25,roll:true},
  roller:{name:'Drifter',tag:'hover car',desc:'A low hover car on four flat anti-grav discs. Built to drift: every frame drifts (hold the brake while you steer), but a drift builds the Drifter more speed than any other frame, the longer you hold it the more. Landings cost nothing and it stays planted over crests. Heavy, so it wins shoves.',m:{vmax:0.99,accel:1.0,turn:1.04,hp:1.1,ammo:1},size:1.1,mass:1.35,aero:0.9,glide:1,soft:true,plant:1.35,drift:0.8},
  mono:{name:'Monowheel',tag:'giant wheel',desc:'One huge spinning ring with the cockpit slung inside it, rolling on the road. Heavy: hard to shove. It drops back to the road fast over crests and keeps more of its steering in the air. Narrow from behind, but tall.',m:{vmax:1.0,accel:1.04,turn:1.0,hp:0.95,ammo:1.0},size:0.85,mass:1.3,aero:0.95,glide:1.15,jumpG:1,roll:true,airTurn:0.7,drift:0.5}};
 const FRAME_KEYS=Object.keys(FRAMES);
@@ -6252,27 +6394,31 @@ function navKey(e){const L=navLayer();if(!L)return false;const t=e.target,txt=t&
   if(d){if(txt&&(d==='l'||d==='r'))return true;navDir(d);e.preventDefault();return true}
   if(e.code==='Escape'&&navBack()){e.preventDefault();return true}
   return false}
-function readInput(){navWatch();
+/* np (Prototype 60, split screen): the pads still pause, change the song and work the menus, but steer nothing here:
+   each pad flies its own pilot (051-local-pilots.js) */
+function readInput(np){navWatch();
   let steer=0,brake=0,pitch=0;
   if(keys.ArrowLeft||keys.KeyA)steer-=1;if(keys.ArrowRight||keys.KeyD)steer+=1;
   if(keys.ArrowUp||keys.KeyW)pitch-=1;if(keys.ArrowDown||keys.KeyS)pitch+=1;
   if(keyHeld('brake'))brake=1;let boost=!!(keyHeld('boost')||touch.boost);
   const hold=[!!(keyHeld('w1')||touch.f1),!!(keyHeld('w2')||touch.f2)];
   const gps=navigator.getGamepads?navigator.getGamepads():[];
-  for(const p of gps){if(!p||PZ.ghosts.has(p.id))continue;const ax=p.axes[0]||0,ay=p.axes[1]||0,ry=p.axes[3]||0,inv=bind.padInvert?-1:1;steer+=dead(ax,0.12);pitch+=inv*((Math.abs(ay)>Math.abs(ax)*0.55?dead(ay,0.2):0)+dead(ry,0.2));
+  for(const p of gps){if(!p||PZ.ghosts.has(p.id))continue;const ax=p.axes[0]||0,ay=p.axes[1]||0,ry=p.axes[3]||0,inv=bind.padInvert?-1:1;
     const b=i=>p.buttons[i]||{value:0,pressed:false},B=a=>b(bind.pad[a]),an=a=>{const x=B(a);return Math.max(x.value||0,x.pressed?1:0)};
+    if(!np){steer+=dead(ax,0.12);pitch+=inv*((Math.abs(ay)>Math.abs(ax)*0.55?dead(ay,0.2):0)+dead(ry,0.2));
     if(b(14).pressed)steer-=1;if(b(15).pressed)steer+=1;if(b(12).pressed)pitch-=1;if(b(13).pressed)pitch+=1;
     brake=Math.max(brake,an('brake')>0.08?an('brake'):0);if(an('boost')>0.3)boost=true;
-    if(B('w1').pressed)hold[0]=true;if(B('w2').pressed)hold[1]=true;
+    if(B('w1').pressed)hold[0]=true;if(B('w2').pressed)hold[1]=true}
     const prev=padPrev[p.index]||[];const tg=performance.now()-PZ.touch<300,edge=i=>!tg&&b(i).pressed&&!prev[i],E=a=>edge(bind.pad[a]);
     if(tg&&p.buttons.some((x,i)=>x.pressed&&!prev[i])){PZ.gc[p.id]=(PZ.gc[p.id]||0)+1;if(PZ.gc[p.id]>=2){PZ.ghosts.add(p.id);if(LOG.cur)logEv('ghostpad',{id:String(p.id||'').slice(0,48)})}}
     if(!tg&&(p.buttons.some((x,i)=>x.pressed&&!prev[i])||Math.abs(ax)>0.5||Math.abs(ay)>0.5)){padSeen(p);setDev('pad')}
     if(rebind.on&&rebind.dev==='pad'){const i=p.buttons.findIndex((x,i)=>x.pressed&&!prev[i]);if(i>=0)rebindPad(i);padPrev[p.index]=p.buttons.map(x=>x.pressed);continue}
-    if(E('view')&&(S.state==='race'||S.state==='countdown'||S.state==='done'))setCam(camMode+1,true);
+    if(SPL.open&&splPadLobby(p,prev)){padPrev[p.index]=p.buttons.map(x=>x.pressed);continue}
+    if(!np&&E('view')&&(S.state==='race'||S.state==='countdown'||S.state==='done'))setCam(camMode+1,true);
     if(E('song')&&S.state!=='lab')newSong();
     if(guide.on){if(E('pause')||edge(1))closeGuide();else if(edge(15)||edge(5))guideShow(guide.i+1);else if(edge(14)||edge(4))guideShow(guide.i-1)}
     else if(E('pause')){if(performance.now()-PZ.touch<300){/* a Start press that came with a screen touch: not a controller */}else if(!$('ctl').hidden)closeCtl();else if(S.state==='lab')closeLab();else togglePause('pad '+bind.pad.pause+'|'+String(p.id||'').slice(0,40))}
-    if(S.state==='race'){if(E('w1'))fireQ[0]=true;if(E('w2'))fireQ[1]=true}
+    if(S.state==='race'){if(!np){if(E('w1'))fireQ[0]=true;if(E('w2'))fireQ[1]=true}}
     else if(!guide.on&&navLayer())padNav(p,b,edge)
     padPrev[p.index]=p.buttons.map(x=>x.pressed)}
   steer+=touch.steer;pitch+=touch.pitch+(touch.psl||0);brake=Math.max(brake,touch.brake);
@@ -6403,6 +6549,62 @@ for(const[id,k]of[['brk','brake'],['bst','boost'],['w1','f1'],['w2','f2']]){cons
   const off=()=>{touch[k]=0;el.classList.remove('on')};
   el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('lostpointercapture',off);el.addEventListener('contextmenu',e=>e.preventDefault())}
 
+/* ---------- local pilots (Prototype 60) ----------
+   Split screen puts up to 8 pilots on this one screen. Each pilot is bound to one source: 'dev' (this device's keyboard,
+   touch and tilt), 'pad' (one gamepad, by its index) or 'ctl' (a phone or other device in controller mode, by its id in
+   the room). readInput() merges everything into one input, which is right for one pilot and wrong for eight, so here each
+   source is read on its own. Pilot 1 always flies `player`; pilots 2 to 8 take AI places (095-split-screen.js). With no
+   split-screen race on (SPL.race false) nothing here runs in a race, so single-player races are unchanged.
+   See docs/SPLITSCREEN.md. */
+const SPL={pilots:[],race:false,open:false,fill:store.get('hoverline.splfill')!=='0',laps:3,lay:(()=>{try{return JSON.parse(store.get('hoverline.spllay')||'{}')||{}}catch(e){return{}}})(),
+  views:[],spare:[],mpWas:false,doneAt:0};
+const SPL_MAX=8;
+/* the pad's name for its card: "8BitDo Micro gamepad (Vendor: 2dc8 ...)" reads as "8BitDo Micro gamepad" */
+const padLabel=id=>String(id||'Gamepad').replace(/\s*\((?:STANDARD GAMEPAD|Vendor|vendor)[^)]*\)\s*/g,' ').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i,'').replace(/\s+/g,' ').trim().slice(0,28)||'Gamepad';
+/* Small pads (8BitDo Micro and Zero 2, and anything else with a d-pad and a few buttons) get the small mapping by default:
+   a pad the browser maps as standard with both sticks and 16 buttons or more gets the full one (Controls' bindings). */
+const padSmall=p=>!(p&&p.mapping==='standard'&&p.buttons.length>=16&&p.axes.length>=4);
+/* a d-pad reported as a hat on axis 9 (D-input pads on Linux and Firefox): -1 up, then clockwise in steps of 2/7;
+   anything beyond ±1 is centred */
+function padHat(p){if(!p||p.mapping==='standard'||p.axes.length<10)return[0,0];const v=p.axes[9];if(!(Math.abs(v)<=1.05))return[0,0];
+  const k=Math.round((v+1)/2*7)&7;return[[0,1,1,1,0,-1,-1,-1][k],[-1,-1,0,1,1,1,0,-1][k]]}
+const padBtn=(p,i)=>{const x=p&&p.buttons[i];return x?Math.max(x.value||0,x.pressed?1:0):0};
+/* The one-button module (small pads' B, a phone's Module): whichever module can fire now, slot 1 first (the quick
+   race's rule, for any racer); held, it stays on the slot it picked so the Cannon keeps firing. */
+function splPick(r){const a=canFire(r,0),b=canFire(r,1);return a?0:b?1:r.weapons[0]&&WDEF[r.weapons[0]]&&!WDEF[r.weapons[0]].passive?0:1}
+function splOne(P,pressed,held,inp){const r=P.r;if(!r)return;if(pressed||P.one<0&&held)P.one=splPick(r);const k=P.one<0?0:P.one;if(!held&&!pressed)P.one=-1;
+  if(pressed)inp.fire[k]=true;if(held)inp.hold[k]=true}
+/* one pad, one pilot */
+function splPadIn(P){const gp=navigator.getGamepads?navigator.getGamepads():[],p=gp[P.pad];const o={steer:0,brake:0,pitch:0,boost:false,fire:[false,false],hold:[false,false]};
+  if(!p||!p.connected){P.prev=[];return o}
+  const prev=P.prev||[],b=i=>padBtn(p,i),pr=i=>b(i)>0.5,edge=i=>pr(i)&&!prev[i],h=padHat(p),ax=p.axes[0]||0,ay=p.axes[1]||0;
+  let steer=dead(ax,0.15)+h[0],pitch=(Math.abs(ay)>Math.abs(ax)*0.55?dead(ay,0.2):0)+h[1];
+  if(pr(14))steer-=1;if(pr(15))steer+=1;if(pr(12))pitch-=1;if(pr(13))pitch+=1;
+  if(P.small){o.boost=pr(0)||pr(5)||b(7)>0.3;o.brake=Math.max(pr(2)||pr(4)?1:0,b(6)>0.08?b(6):0);
+    splOne(P,edge(1),pr(1),o);if(edge(3))o.fire[1]=true;if(pr(3))o.hold[1]=true}
+  else{const inv=bind.padInvert?-1:1,ry=p.axes[3]||0;pitch=inv*pitch+inv*dead(ry,0.2);const B=a=>b(bind.pad[a]);
+    o.brake=B('brake')>0.08?B('brake'):0;o.boost=B('boost')>0.3;o.hold=[B('w1')>0.5,B('w2')>0.5];o.fire=[edge(bind.pad.w1),edge(bind.pad.w2)]}
+  /* the view button (full mapping) or the select/minus button (small) changes this pilot's camera */
+  if(edge(P.small?8:bind.pad.view))P.cm=(P.cm+1)%CAMS.length;
+  if(p.buttons.some((x,i)=>x.pressed&&!prev[i]))P.lit=performance.now();
+  P.prev=p.buttons.map(x=>x.pressed);o.steer=clamp(steer,-1,1);o.pitch=clamp(pitch,-1,1);return o}
+/* a phone or other device in controller mode: its last state (095-pad-controller.js), presses counted so none is lost */
+function splCtlIn(P){const c=P.ci||{},o={steer:clamp((c.s||0)/100,-1,1),pitch:clamp((c.p||0)/100,-1,1),brake:c.b&1?1:0,boost:!!(c.b&2),fire:[false,false],hold:[false,false]};
+  const f=c.f||[0,0];P.fc=P.fc||[f[0],f[1],f[2]||0];
+  splOne(P,(f[2]||0)>P.fc[2],!!(c.b&16),o);
+  for(let k=0;k<2;k++){if(f[k]>P.fc[k])o.fire[k]=true;if(c.b&(4<<k))o.hold[k]=true}P.fc=[f[0],f[1],f[2]||0];
+  if(c.v!=null&&c.v!==P.cv){if(P.cv!=null)P.cm=(P.cm+1)%CAMS.length;P.cv=c.v}
+  if(performance.now()-(c.at||0)>1500){o.steer=o.pitch=o.brake=0;o.boost=false}/* gone quiet: coast straight rather than hold the last turn */
+  return o}
+/* Each frame of a split-screen race: readInput (without the pads, which pause, change the song and work the menus)
+   gives the 'dev' pilot's input; every other pilot reads its own source. Returns pilot 1's input (player's). */
+function splInputs(){const dv=readInput(true);let first=null;
+  for(const P of SPL.pilots){P.inp=P.src==='dev'?dv:P.src==='pad'?splPadIn(P):splCtlIn(P);if(P.r===player)first=P.inp}
+  return first||{steer:0,brake:0,pitch:0,boost:false,fire:[false,false],hold:[false,false]}}
+/* a local pilot's input for one physics step: its own source while racing, the AI's hands once it has finished or its
+   device has left */
+function splIn(r,inp,dt,auto){const P=r.lp,i=r===player?inp:P.inp;if(r.finishT!=null||auto||P.gone||!i)return aiInput(r,dt);return r.autoT>0?apInput(r,i,dt):i}
+function splFireClear(){for(const P of SPL.pilots)if(P.inp)P.inp.fire=[false,false]}
 /* ---------- weapons ----------
    Each ship carries the two weapons from its build and one shared ammo pool. Purple strips refill ammo. */
 const shots=[],booms=[],rings=[];
@@ -6451,8 +6653,48 @@ function shotMesh(type,mini){
   const m=new THREE.Group();m.add(new THREE.Mesh(mineGeo,mineMat),new THREE.Mesh(mineGeo,mineCore));m.children[1].scale.setScalar(0.5);return m}
 const live=o=>!o.isGhost&&!o.left&&o.wreck<=0&&(o.finishT==null||o===player);
 const QGAP=3.2;
-/* A decoy pulls every homing shot chasing its owner (and any that lock on while it burns). */
-function decoyPull(d){for(const o of shots)if((o.type==='missile'||o.type==='hunter')&&o.target===d.owner&&o.owner!==d.owner)o.target=d}
+/* A flare pulls the homing shots it was dropped for (d.only) off its owner. A flare with no list (one from an older build over
+   the network) pulls every homing shot chasing its owner, as the Decoy did. */
+function decoyPull(d){if(d.only){for(const o of d.only)if(o.target===d.owner)o.target=d;return}
+  for(const o of shots)if((o.type==='missile'||o.type==='hunter')&&o.target===d.owner&&o.owner!==d.owner)o.target=d}
+/* ---------- Prototype 60: Flares (the old Decoy) ----------
+   Passive. The moment a homing shot (Missile, Swarm missile, Hunter) locks on a ship carrying Flares, the ship spends
+   FLARE_K times the attack's module cost in ammo (Swarm: a quarter of the Swarm's, for each missile) and drops one flare
+   for every FLARE_UNIT of it; the shot is pulled onto the flares and fizzles when it reaches them (or they burn out). Not
+   enough ammo: nothing happens and the shot hits. Not while weapons are locked or off (start, EMP, Pacifist), and not
+   while Barrier, Phase, Overdrive or the Reflector already beat the shot. r.fl counts what happened, for tools/sim/flares.js. */
+const flS=r=>r.fl||(r.fl={lock:0,fire:0,dry:0,block:0,hit:0,spent:0});
+function fizzle(o){if(!o.fzl){o.fzl=1;const c=o.target&&o.target.owner;if(c&&c.fl&&o.fl===c)c.fl.block++}o.life=0;o.dud=true}
+function flaresStep(){for(const s of shots){if(s.type!=='missile'&&s.type!=='hunter')continue;const r=s.target;
+    if(s.dud||s.wait||!r||r.isDecoy||s.fl===r||r.proxy||!r.weapons||!r.weapons.includes('decoy')||!live(r))continue;
+    if(r.barrier>0||r.inv>0||r.od>0||r.phase>0||r.refl>0)continue;
+    s.fl=r;const f=flS(r);f.lock++;
+    if(pacifist()||S.raceT<WLOCK||r.emp>0)continue;
+    const cost=flareCostOf(s.type,s.mini);if(r.ammo<cost){f.dry++;continue}
+    r.ammo-=cost;f.fire++;f.spent+=cost;const n0=shots.length,n=clamp(Math.ceil(cost/FLARE_UNIT),1,FLARE_MAX);
+    for(let k=0;k<n;k++){const m=shotMesh('decoy'),d={type:'decoy',u:r.u-5-k*2.2,lat:clampLat(r.u,r.lat+(k%2?1:-1)*0.9*Math.ceil(k/2),1.5),v:Math.max(20,r.v*0.55),owner:r,life:FLARE_T,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5-k*2.2,only:k?new Set():new Set([s])};
+      scene.add(m);shots.push(d)}
+    s.target=shots[n0];
+    const near=r===player||Math.abs(wrapU(r.u-player.u))<120;if(near)audio.blip(1800,0.25,0.08,'triangle',600);
+    if(r===player){const k=r.weapons.indexOf('decoy');if(k>=0)slotFx(k,'fired')}
+    if(mp.on)mpFired(r,'decoy',n0)}}
+/* ---------- Prototype 60: Reflector ----------
+   While r.refl is up, a shot that would hit r (Cannon bolt, Rocket, Missile, Swarm missile, Hunter, Bouncer) is turned round
+   instead and sent back toward the ship that fired it (down the track, behind r, for a shot that came from behind), now owned
+   by r. Mines, Quake, Shockwave and EMP are not shots at a ship so they get through: a mine is a hazard sitting on the road,
+   a Quake and a Shockwave are waves with no direction to turn round, and an EMP is not a shot. */
+const REFLECTABLE=['bolt','rocket','missile','hunter','bounce'];
+function reflectShot(s,r,i){const ow=s.owner,fromOw=!!ow&&ow!==r&&live(ow),old=s.nid,
+    dir=fromOw?(wrapU(ow.u-s.u)>=0?1:-1):(s.v>0?-1:1),sp=Math.abs(s.v);
+  const homing=s.type==='missile'||s.type==='hunter',tg=fromOw?ow:homing?(dir<0?targetBehind(r,250):targetAhead(r,260)):null;
+  s.owner=r;s.rear=dir<0;s.wait=false;s.dud=false;s.fl=null;s.fzl=0;s.u=r.u+dir*3;
+  s.v=dir<0?-clamp(sp,70,260):Math.max(sp,r.v+110);s.life=Math.max(s.life,s.type==='bolt'?0.9:s.type==='rocket'?1.2:s.type==='bounce'?6:3);
+  if(homing){s.target=tg;if(!tg)s.life=0}
+  s.brS=r.brS||null;s.br=r.brS?r.br:null;
+  const m=new THREE.Mesh(boomGeo,new THREE.MeshBasicMaterial({color:0xdff8ff,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));m.position.copy(s.mesh.position);scene.add(m);booms.push({m,t:0,big:false});
+  if(r===player||Math.abs(wrapU(r.u-player.u))<150){audio.blip(2600,0.14,r===player?0.12:0.06,'triangle',900)}
+  if(r.stat)r.stat.refl=(r.stat.refl||0)+1;
+  if(mp.on&&mp.sess&&!r.proxy){if(old)mp.sess.send({t:'boom',n:old});shots.splice(i,1);shots.push(s);mpFired(r,'reflector',shots.length-1)}}
 /* Threats to a ship: each {k:kind, t:seconds to impact, u, lat, gap?, ahead?}. Homing shots chasing it, straight shots in its line,
    a Quake rolling up behind it (unless it is already in the gap), mines in its line ahead. */
 function threatsTo(r){const out=[];if(!live(r))return out;
@@ -6526,9 +6768,9 @@ function fire(r,slot){
   else if(w==='hunter'){const t=leaderFor(r),m=shotMesh('hunter');scene.add(m);const wait=!!t&&t.utot<r.utot;shots.push({type:'hunter',u:r.u+3,lat:r.lat,v:wait?Math.max(30,r.v-40):Math.max(r.v,70)+140,owner:r,life:14,target:t,mesh:m,wait});
     if(near&&!fx)audio.blip(240,0.6,0.16,'sawtooth',900);}
   else if(w==='phase'){r.phase=1.5;if(near&&!fx)audio.blip(1300,0.35,0.1,'sine',260)}
-  else if(w==='decoy'){const m=shotMesh('decoy');scene.add(m);const d={type:'decoy',u:r.u-5,lat:r.lat,v:Math.max(20,r.v*0.55),owner:r,life:3,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5};shots.push(d);decoyPull(d);if(near&&!fx)audio.blip(1800,0.25,0.08,'triangle',600)}
+  else if(w==='reflector'){r.refl=REFLECT_T;if(near&&!fx)audio.blip(900,0.3,0.1,'triangle',2400)}
   else if(w==='emp'){empBlast(r);if(near&&!fx)audio.blip(1200,0.3,0.14,'square',90)}
-  else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
+  else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:4.8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
   else if(w==='autopilot'){r.autoT=4.5;if(near&&!fx)audio.blip(520,0.3,0.1,'triangle',1040)}
   else if(w==='overdrive'){r.od=3;r.stun=0;if(near&&!fx)audio.blip(400,0.5,0.15,'sawtooth',1800)}
   if(mp.on)mpFired(r,w,n0);
@@ -6617,23 +6859,27 @@ function startSpin(r,dur,big){r.spinT=0;r.spinD=dur;r.glBig=!!big;r.glSeed=Math.
 function spinStep(r,dt){if(!(r.spinD>0))return;r.spinT+=dt;if(r.spinT>=r.spinD){r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0}}
 /* steering from the nose: up to +80% nose up (grip), -15% nose down */
 function trimTurn(r){const pu=Math.max(0,r.pitch),pd=Math.max(0,-r.pitch);return 1+0.8*pu-0.15*pd}
-function wreck(r){if(r.stat)r.stat.wrecks++;if(r===player&&LOG.cur){LOG.cur.acc.wrecks++;logEv('wreck',{cause:LOG.lastSrc})}r.hp=0;r.phase=0;r.wreck=3.8;r.dive=0;r.stun=0;r.boost=0;r.selfBoost=false;r.barrier=0;r.ammo=Math.floor(r.ammo/2);r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0;const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);
+function wreck(r){if(r.stat)r.stat.wrecks++;if(r===player&&LOG.cur){LOG.cur.acc.wrecks++;logEv('wreck',{cause:LOG.lastSrc})}r.hp=0;r.phase=0;r.refl=0;r.wreck=3.8;r.dive=0;r.stun=0;r.boost=0;r.selfBoost=false;r.barrier=0;r.ammo=Math.floor(r.ammo/2);r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0;const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);
   {const v=r===player?0.9:clamp(0.6-Math.abs(wrapU(r.u-player.u))/300,0,0.5);audio.sfx('wreck',v/0.9)||audio.boom(v)}
   if(r===player){rumble(1,1,420);cue('amM','lost');cue('hpM','lost');flash('rgba(255,74,61,.6)',0);S.shake=1;music.event('hit')}}
 const tp=new THREE.Vector3();
 function updateShots(dt){
+  flaresStep();
   for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.life-=dt;if(s.brS===undefined){s.brS=s.owner&&s.owner.brS||null;s.br=s.owner&&s.owner.brS?s.owner.br:null}
     if(s.type==='missile'){s.u+=s.v*dt;
       if(s.target){const d=wrapU(s.target.u-s.u)*(s.rear?-1:1);if(d>-4&&d<300)s.lat+=clamp(s.target.lat-s.lat,-1,1)*(s.mini?10:16)*dt;}
       s.lat=clampLat(s.u,s.lat,0.6,s)}
-    else if(s.type==='hunter'){if(s.dud||(s.target&&s.target.isDecoy&&Math.abs(wrapU(s.target.u-s.u))<3)){s.life=0;s.dud=true}if(!s.target||!live(s.target)){s.target=leaderFor(s.owner);s.wait=!!s.target&&s.target.utot<s.owner.utot}if(s.target){const d=wrapU(s.target.u-s.u);if(s.wait&&d>3)s.wait=false;
+    else if(s.type==='hunter'){if(s.dud||(s.target&&s.target.isDecoy&&Math.abs(wrapU(s.target.u-s.u))<3)){fizzle(s)}/* (P60) a Hunter the Reflector sent back (rear) flies backward at the ship that fired it, and goes out if that ship is gone */
+      if(s.rear&&(!s.target||!live(s.target)||s.target.isDecoy&&s.target.wreck)){s.life=0}
+      else if(!s.target||!live(s.target)){s.target=leaderFor(s.owner);s.wait=!!s.target&&s.target.utot<s.owner.utot}if(s.target){const d=wrapU(s.target.u-s.u)*(s.rear?-1:1);if(s.wait&&d>3)s.wait=false;
       // fired by the leader at the pilot behind: it drops back and waits in their line; otherwise it chases
       if(s.wait){s.v+=(Math.max(30,s.target.v-60)-s.v)*Math.min(1,dt*2);if(d>-200)s.lat+=clamp(s.target.lat-s.lat,-1,1)*22*dt}
+      else if(s.rear){s.v=-70;if(d>-6&&d<160)s.lat+=clamp(s.target.lat-s.lat,-1,1)*26*dt}
       else{s.v=d>0&&d<30?Math.min(s.v,s.target.v+45):Math.max(s.v,s.target.v+70);if(d>-6&&d<160)s.lat+=clamp(s.target.lat-s.lat,-1,1)*26*dt}}s.u+=s.v*dt;s.lat=clampLat(s.u,s.lat,0.6,s)}
     else if(s.type==='bolt'||s.type==='rocket'||s.type==='quake')s.u+=s.v*dt;
     else if(s.type==='decoy'){s.v=Math.max(0,s.v-30*dt);s.u+=s.v*dt;s.utot+=s.v*dt;if(s.owner)decoyPull(s);s.mesh.children[1].material.opacity=0.35+0.3*Math.abs(Math.sin(S.t*23));
-      for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3){o.life=0;o.dud=true}
-      if(s.life<=0){s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
+      for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3)fizzle(o);
+      if(s.life<=0){for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter'))fizzle(o);s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
     else if(s.type==='bounce'){s.u+=s.v*dt;s.lat+=s.vl*dt;const bf=surf(s.u,s.lat,s);if(s.lat<bf.lo+1||s.lat>bf.hi-1){s.lat=s.lat>bf.hi-1?bf.hi-1:bf.lo+1;s.vl=-s.vl;if(Math.abs(wrapU(s.u-player.u))<150)audio.blip(500,0.06,0.05,'square',250)}}
     else if(s.type==='mine')s.arm-=dt;
     const sh=surf(s.u,s.lat,s).h,sp=sampleAt(s.u);tp.copy(sp.p).addScaledVector(sp.r,s.lat).addScaledVector(sp.u,sh+(s.type==='mine'?0.9:s.type==='quake'?1.3:s.type==='smoke'?0:1.1));s.mesh.position.copy(tp);
@@ -6647,15 +6893,18 @@ function updateShots(dt){
         s.hits.add(r);LOG.src='quake';LOG.by=s.owner;damage(r,13,r.ship.position.clone(),0.45);LOG.src=LOG.by=null;if(!r.proxy)r.v*=0.85;if(r===player){S.shake=Math.max(S.shake,0.6);audio.hit(0.5)}}}
       for(let j=shots.length-1;j>=0;j--){const o=shots[j];if(o.type==='mine'&&Math.abs(wrapU(o.u-s.u))<4){explode(o.mesh.position.clone(),false);scene.remove(o.mesh);shots.splice(j,1);if(j<i)i--}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();s.mesh.userData.edge.dispose();shots.splice(i,1)}continue}
-    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=2.4}}
+    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=1.6}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();shots.splice(i,1)}continue}
     let hit=null;const wide=s.type==='bolt'?1.5:s.type==='rocket'?1.6:s.type==='bounce'?2:1.9,len=s.type==='bolt'?2.4:2.6;
     if(s.type==='missile'&&s.dud){explode(tp.clone(),false);scene.remove(s.mesh);shots.splice(i,1);continue}
     if(s.type!=='mine'||s.arm<=0)for(const r of racers){if(!live(r)||r.phase>0)continue;if(s.type==='hunter'&&r!==s.target)continue;
       if(s.brS&&r.brS===s.brS&&r.br!==s.br)continue;
       if(r===s.owner&&(s.type==='bounce'?s.life>5:(s.type!=='mine'&&!(s.rear&&s.life<2.4))||s.life>29))continue;
-      const du=wrapU(r.u-s.u);if(Math.abs(du)<len&&Math.abs(r.lat-s.lat)<wide*(r.d.size||1)){hit=r;break}}
+      if(r.refl>0&&r.proxy&&REFLECTABLE.includes(s.type)&&!s.dud)continue; // (P60) another device's Reflector turns it round there
+      const du=wrapU(r.u-s.u);if(Math.abs(du)<len&&Math.abs(r.lat-s.lat)<wide*(r.d.size||1)){if(s.target&&s.target.isDecoy&&s.target.owner===r){fizzle(s);break}hit=r;break}}  // (P60) a shot on the flares it dropped for is already beaten: it can't hit them
+    if(hit&&hit.refl>0&&!hit.proxy&&REFLECTABLE.includes(s.type)&&!s.dud){reflectShot(s,hit,i);continue}
     if(hit){const d=Math.abs(wrapU(hit.u-player.u));if(mp.on&&s.nid&&!hit.proxy)mp.sess&&mp.sess.send({t:'boom',n:s.nid});
+      if(s.fl&&s.fl===hit&&hit.fl)hit.fl.hit++;
       LOG.src=s.type;LOG.by=s.owner||null;if(s.owner&&s.owner.stat&&s.owner!==hit)s.owner.stat.given++;if(LOG.cur){const A=LOG.cur.acc;if(s.owner===player&&hit!==player){A.hitsOn[s.type]=(A.hitsOn[s.type]||0)+1;logEv('give',{w:s.type,to:hit.name})}if(hit===player)A.hitsBy[s.type]=(A.hitsBy[s.type]||0)+1}
       if(s.type==='missile'){damage(hit,s.mini?10:24,tp.clone(),s.mini?0.45:1.0);audio.boom(hit===player?(s.mini?0.4:0.7):clamp((s.mini?0.3:0.5)-d/300,0,0.4))}
       else if(s.type==='hunter'){damage(hit,42,tp.clone(),1.2);explode(tp.clone(),true);audio.boom(hit===player?0.9:clamp(0.6-d/300,0,0.5))}
@@ -6674,6 +6923,7 @@ function clearShots(){for(const s of shots)scene.remove(s.mesh);shots.length=0;f
   for(const g of rings){scene.remove(g.m);g.m.material.dispose()}rings.length=0;clearFx()}
 
 /* ---------- AI ---------- */
+const REFLECTABLE_K=['missile','swarm','hunter','rocket','bolt','bounce'];
 const modU=u=>((u%T.L)+T.L)%T.L;
 function aiWants(r,w){
   if(w==='missile'){const t=targetAhead(r,200);return(t&&Math.abs(t.lat-r.lat)<5)||(!targetAhead(r,260)&&!!targetBehind(r,120))}
@@ -6683,7 +6933,10 @@ function aiWants(r,w){
   if(w==='turbo')return Math.abs(T.Cs[idxAt(r.u+60)])<0.003;
   if(w==='barrier'){if(threatsTo(r).some(h=>h.t<0.6&&!h.safe))return true;return r.hp<r.d.hp*0.35&&Math.random()<0.1}
   if(w==='phase')return threatsTo(r).some(h=>h.t<0.35&&!h.safe&&h.k!=='mine');
-  if(w==='decoy')return threatsTo(r).some(h=>(h.k==='missile'||h.k==='swarm'||h.k==='hunter')&&h.t<1.2);
+  /* Prototype 60: the Reflector's shell is up 0.75 s, so the AI fires it when a shot it can turn round is within half a second
+     (Phase gets 0.35 s of a 1.5 s cover). A lone cannon bolt (8 damage) isn't worth it; two or more, or anything bigger, is.
+     Flares (the old Decoy) fire by themselves, so the AI has nothing to decide about them. */
+  if(w==='reflector'){if(r.refl>0)return false;const th=threatsTo(r).filter(h=>h.t<0.5&&!h.safe&&REFLECTABLE_K.includes(h.k));return th.some(h=>h.k!=='bolt')||th.length>=2}
   const ahead=range=>racers.filter(o=>o!==r&&live(o)&&(d=>d>2&&d<range)(wrapU(o.u-r.u)));
   if(w==='rockets'){const t=targetAhead(r,150);return!!t&&Math.abs(t.lat-r.lat)<3.5}
   if(w==='swarm')return ahead(280).length>=2||!!targetAhead(r,150);
@@ -6859,9 +7112,9 @@ function aiInput(r,dt){
   const fireW=[false,false],holdW=[false,false];/* passive slots (scoops) never fire */
   if((r.isAI||BOT&&r===player)&&r.finishT==null)for(let k=0;k<2;k++){const w=r.weapons[k];if(!canFire(r,k)||r.isAI&&(S.car||QK.live)&&S.aiF<1&&(S.raceT/5+r.skill*37)%1>S.aiF)continue;
     if(w==='cannon'){holdW[k]=aiWants(r,w);continue}
-    /* (P58) Phase, Barrier and Decoy: Hard watches for its moment every frame; Easy misses some */
-    const dfn=hn&&(w==='phase'||w==='barrier'||w==='decoy');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
-    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
+    /* (P58) Phase, Barrier and Decoy (P60: now the Reflector; Flares fire themselves): Hard watches for its moment every frame; Easy misses some */
+    const dfn=hn&&(w==='phase'||w==='barrier'||w==='reflector');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
+    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+Math.random()*0.3:0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
   const kn=Math.max(T.Kn[idxAt(r.u+r.v*0.2)],T.Kn[idxAt(r.u+r.v*0.4)]),kc=T.Kn[idxAt(r.u+r.v*0.35)];
   const slA=T.Tg[idxAt(r.u+12)].y,pitch=rUp?1:r.air&&r.air!==true?F.ja:r.air===true||kc<-0.0011?-1:brake>0.05?0.7:Math.abs(T.Cs[idxAt(r.u+look*0.6)])>0.009?0.5*(r.sty?r.sty.up:1):slA>0.03?clamp(slA/0.08,0,1)*(r.sty?clamp(r.sty.up,0.4,1.2):1):slA<-0.03&&r.d.aero>0?-clamp(-slA*F.dv/0.08,0,1)*(r.sty?clamp(r.sty.dive,0.4,1.2):1):0;
   /* Held boost costs shield, so the AI saves it for straights while its shield is healthy; on a green strip the strip pays
@@ -6880,7 +7133,7 @@ const S={state:'menu',shake:0,count:0,raceT:0,t:0,fly:0,car:null,train:null,cls:
 let ammoWarnT=0;
 function lapCheck(r){if(r.finishT!=null)return;const lap=Math.floor(r.utot/T.L);
   if(lap>r.done&&lap>=1){r.laps.push(S.raceT-r.lapStart);r.lapStart=S.raceT;r.done=lap;if(r===player)logEv('lap',{n:lap,t:r2(r.laps[r.laps.length-1]),place:rankOf(r)+1});
-    if(lap>=LAPS){r.finishT=S.raceT;if(mp.on&&mp.sess&&!r.proxy&&r.key)mp.sess.send({t:'fin',k:r.key,T:r.finishT});if(r===player)finish()}
+    if(lap>=LAPS){r.finishT=S.raceT;if(mp.on&&mp.sess&&!r.proxy&&r.key)mp.sess.send({t:'fin',k:r.key,T:r.finishT});if(r===player||r.lp)finish()}
     else if(r===player){const fl=lap===LAPS-1;audio.sfx(fl?'final':'lap')||audio.blip(780,0.15);if(fl){music.final=true;audio.voice('final')}cue('lapBox','pulse');$('lapBox').classList.toggle('final',fl);
       const b=$('bestL');b.textContent='Lap '+fmt(r.laps[r.laps.length-1]);clearTimeout(b._t);b._t=setTimeout(()=>b.textContent='Best '+fmt(getBest()),4000)}}}
 const HOVER=1.05,GRAV=32,HOLD=4.0,WLOCK=0; /* no weapons lock: everyone starts with empty weapon pods instead */
@@ -6908,7 +7161,7 @@ function ulCheck(raw){if(!AUTOUL||S.state!=='race'||FCAP.v||store.get('hoverline
 function logFrame(raw){ulCheck(raw);const L=LOG.cur;if(!L||S.state!=='race'||!(raw>0))return;L.fN++;L.fh[Math.min(100,Math.round(raw*1000))]++}
 const r1=x=>Math.round(x*10)/10,r2=x=>Math.round(x*100)/100;
 function logStart(){if(!LOG.on){LOG.cur=null;return}const fc={};for(const f of T.feats)fc[f.kind]=(fc[f.kind]||0)+1;
-  LOG.cur={v:2,game:'Hoverline '+($('title').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:QK.live?'quick':S.car?'career':S.train?'training':S.trial?'trial':mp.on?'room':'race',quick:QK.live?qkTag():undefined,cls:S.cls,clsName:clsName(S.cls),ail:S.ail,
+  LOG.cur={v:2,game:'Hoverline '+($('title').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:QK.live?'quick':SPL.race?'split':S.car?'career':S.train?'training':S.trial?'trial':mp.on?'room':'race',quick:QK.live?qkTag():undefined,cls:S.cls,clsName:clsName(S.cls),ail:S.ail,
     track:{code:codeStr(),name:T.D.name,complex:!!T.cx,len:Math.round(T.L),laps:LAPS,feats:fc,splits:T.splits.length,fig8:!!T.fig8,marks:(T.marks||[]).length},
     ship:{frame:build.frame,stats:{...build.stats},weapons:[...build.weapons]},
     input:{dev:lastDev,pads:(()=>{try{return[...(navigator.getGamepads?navigator.getGamepads():[])].filter(Boolean).map(p=>String(p.id||'').slice(0,48))}catch(e){return[]}})(),pad:lastDev==='pad'?PAD.kind:null,padId:lastDev==='pad'?String(PAD.id||'').slice(0,64):null,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode,or:TS.race||orNow(),orSet:orPick||undefined,mods:TL.last?TL.last.mode:null},
@@ -7267,7 +7520,7 @@ function physics(r,inp,dt){
     else if(pr)slotFx(k,r.ammo<WDEF[w].cost?'empty':'cd');
     if(!ok&&pr&&r.ammo<WDEF[w].cost&&S.t>ammoWarnT){ammoWarnT=S.t+0.6;audio.deny();cue('amM','deny',400)}}
   if(r===player)LOG.src=LOG.by=null;if(r.stat&&(r.boost>0||r.selfBoost))r.stat.boostT+=dt;
-  r.scrape=Math.max(0,(r.scrape||0)-dt);r.emp=Math.max(0,(r.emp||0)-dt);r.od=Math.max(0,(r.od||0)-dt);r.autoT=Math.max(0,(r.autoT||0)-dt);r.ink=Math.max(0,(r.ink||0)-dt);r.phase=Math.max(0,(r.phase||0)-dt);r.boost=Math.max(0,r.boost-dt);r.barrier=Math.max(0,r.barrier-dt);r.inv=Math.max(0,r.inv-dt);
+  r.scrape=Math.max(0,(r.scrape||0)-dt);r.emp=Math.max(0,(r.emp||0)-dt);r.od=Math.max(0,(r.od||0)-dt);r.autoT=Math.max(0,(r.autoT||0)-dt);r.ink=Math.max(0,(r.ink||0)-dt);r.phase=Math.max(0,(r.phase||0)-dt);r.refl=Math.max(0,(r.refl||0)-dt);r.boost=Math.max(0,r.boost-dt);r.barrier=Math.max(0,r.barrier-dt);r.inv=Math.max(0,r.inv-dt);
   if(r.stun>0)r.stun-=dt;spinStep(r,dt);
   lapCheck(r)}
 function collide(){
@@ -7376,7 +7629,7 @@ function freshRacer(r,u,utot,lat){r.stat={wrecks:0,dmg:0,given:0,boostT:0};Objec
 function resetGrid(){clearShots();
   /* the player starts 5th of 8 (in a time trial too); the pilots racing take the other places in roster order, those
      sitting out go behind, unseen */
-  const ai=[...roster.filter((r,i)=>i>0&&!r.off),...roster.filter((r,i)=>i>0&&r.off)],order=[...ai.slice(0,4),player,...ai.slice(4)];
+  const ai=[...roster.filter((r,i)=>i>0&&!r.off),...roster.filter((r,i)=>i>0&&r.off)],order=SPL.race?[...splOrder(),...ai.filter(r=>r.off)]:[...ai.slice(0,4),player,...ai.slice(4)];
   for(const r of racers)if(r.isGhost)ghostReset(r);
   order.forEach((r,k)=>{const row=Math.floor(k/2),col=k%2;freshRacer(r,T.L-14-row*11,-14-row*11,col?W*0.21:-W*0.21);r.ship.visible=!r.off});lowWarn=false;rec.d=[];rec.k=0;
   S.raceT=0;S.shake=0}
@@ -7389,12 +7642,16 @@ function setHud(on){$('lapBox').classList.remove('final');['hudL','hudR','pauseB
   $('touch').hidden=!(on&&coarse);if(on&&coarse)touchLayout();orSync()}
 function note(text,ms=2200){const n=$('note');n.textContent=text;n.hidden=false;clearTimeout(note.t);note.t=setTimeout(()=>n.hidden=true,ms)}
 
-async function startRace(){wakeScreen(true);
+/* Prototype 60: the laps pick on the track page (1 to 10, default 3, hoverline.laps). It is the lap count of Race only: Career, Training,
+   the quick race and rooms (the host's pick) set their own, and the Time trial stays at 3 so ghosts and best laps compare. */
+const LAP_PICKS=[1,2,3,5,7,10];
+let lapsFree=(n=>LAP_PICKS.includes(n)?n:3)(+store.get('hoverline.laps'));
+async function startRace(){if(!S.car&&!S.train&&!QK.live&&!mp.on&&!SPL.race)LAPS=S.trial?3:lapsFree;wakeScreen(true);
   if(LOG.cur)logEnd('restart');audio.init();try{document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}catch(e){}
-  if(coarse){goFull();if(!QK.live&&!(await tiltCheck()))return}
+  if(coarse){goFull();if(!QK.live&&!SPL.race&&!(await tiltCheck()))return}
   hidePages();['results','pause','mus','set','ctl','gfxm'].forEach(i=>$(i).hidden=true);
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;
-  const gh=setField(!QK.live);if(QK.live)qkField();resetGrid();setHud(true);camInit=false;
+  const gh=setField(!QK.live);if(QK.live)qkField();if(SPL.race)splField();resetGrid();setHud(true);camInit=false;if(SPL.race)splViews();
   {const t=S.car?CAR_T[S.car.i>>2]:QK.live?CAR_T[0]:null,cw=t&&(QK.live?CAR_W0:carW());S.cls=t?t.k:S.train?1:clsOf(clsFree).f;S.aiK=t?t.ai:1;S.ail=QK.live?'normal':ailNow();S.aiF=t?(QK.live&&QK.lvl<2?0:t.f):1;if(!S.trial&&!S.train&&!mp.on&&!QK.live)store.set('hoverline.lastmode',t?'career':'race');{const D0=DIFF[T.wk]||T.D,e=t&&t.e;T.D=e?{...D0,dmg:D0.dmg*e.dmg,band:[D0.band[0]*(e.dn||1),D0.band[1]*e.up],assist:D0.assist*(e.as||1)}:D0}
     if(cw)for(const r of racers)if(r.isAI&&r.weapons){const o=[];for(const x of r.weapons)o.push(cw.includes(x)?x:CAR_W0.find(y=>!o.includes(y)&&!r.weapons.includes(y)));r.weapons=o;r.scoop=null}}
   if(S.train)setTimeout(()=>note('Training · '+trDrill(TRN.d).n+' · '+(TRN.cube?'Training cube':'your frame')+' · '+LAPS+' laps'+(gh&&gh.best?' · your best run is the ghost':''),2600),900);
@@ -7414,7 +7671,7 @@ async function startRace(){wakeScreen(true);
   clearTimeout(startRace.h);startRace.h=setTimeout(()=>{$('padHint').hidden=true},6000);
   if(QK.live)qkGoRace();
 }
-function finish(){if(QK.live){qkFinish();return}
+function finish(){if(QK.live){qkFinish();return}if(SPL.race){splFinish();return}
   S.state='done';setTimeout(()=>logEnd('finish'),1600);
   const best=Math.min(...player.laps),prev=getBest();const isRec=prev==null||best<prev;if(isRec)store.set(bestKey(),String(best));
   if(!mp.on&&!S.car){recSample();ghostSave({T:player.finishT,paint:build.paint,lv:build.liv||null,stats:{...build.stats},fr:build.frame,d:rec.d})}
@@ -7438,6 +7695,7 @@ function lbShow(o,name){const el=$('resBoard');if(!o||!o.rows){el.hidden=true;re
     o.rows.slice(0,5).map((x,i)=>`<span class="${x.name===name?'me':''}">${i+1}. ${esc(x.name)} · ${fmt(x.time)}</span>`).join('<br>')+
     (o.rank>5&&!mine?`<br><span class="me">${o.rank}. ${esc(name)} · ${fmt(o.best)}</span>`:'')+`<br><span style="opacity:.7">Racing as ${esc(name)} · change your name on the Leaderboard screen</span>`}
 function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb')))return;
+  if(LAPS!==3){const e=$('resBoard');e.hidden=false;e.textContent='Online board · 3-lap races only · this one was '+LAPS+' lap'+(LAPS>1?'s':'');return} /* Prototype 60 */
   if(S.cls<1){const e=$('resBoard');e.hidden=false;e.textContent='Online board · Redline races only · this one was '+clsName(S.cls);return}
   if(pacifist()){const e=$('resBoard');e.hidden=false;e.textContent='Online board · races with modules only · this one was Pacifist';return}
   if(!S.trial&&S.ail&&S.ail!=='normal'){const e=$('resBoard');e.hidden=false;e.textContent='Online board · Normal rivals only · this one was '+ailOf().n;return}
@@ -7463,7 +7721,7 @@ function mpAgain(fresh){if(!mp.sess||!mp.sess.state.isHost)return;mp.sess.send({
 function renderResults(){const rk=ranking(),place=rk.indexOf(player)+1;
   $('resPos').innerHTML=ord(place)+`<small>${fmt(player.finishT)}</small>`;
   $('resTable').innerHTML=rk.map((r,i)=>{const t=r.left?'left':r.finishT!=null?fmt(r.finishT):mp.on&&r.remote?'racing…':'~'+fmt(S.raceT+(LAPS*T.L-r.utot)/Math.max(r.v,60));
-    return`<tr class="${r===player?'me':''}"><td>${i+1}</td><td>${esc(r.name)}${r.remote?' ◆':''}</td><td>${t}</td></tr>`}).join('')}
+    return`<tr class="${r===player||r.lp?'me':''}"><td>${i+1}</td><td>${esc(r.name)}${r.lp&&r===player?' · P1':''}${r.remote?' ◆':''}</td><td>${t}</td></tr>`}).join('')}
 /* Prototype 43: what paused the race, for the pause menu and the log. A touch time lets a controller's Start press that
    comes with a screen touch be ignored (a phone reporting its touch screen as a controller). */
 const PZ={touch:-1e9,vis:0,blur:0,gc:{},ghosts:new Set()};addEventListener('pointerdown',e=>{if(e.pointerType==='touch')PZ.touch=performance.now()},true);addEventListener('touchstart',()=>{PZ.touch=performance.now()},{capture:true,passive:true});
@@ -7481,7 +7739,7 @@ function pauseTuneUI(){const so=music.soOn&&music.soCur,c=music.code(),row=$('pa
   try{t=so?'♪ '+so.t+' · '+so.a:c&&music.style!=='off'?'♪ '+String(music.info()).split(' · ').slice(0,2).join(' · ')+' · '+c:''}catch(e){t=''}
   $('pauseTune').textContent=t;$('likeTune3').hidden=$('dislikeTune3').hidden=!c||!!so;$('tiltRe').hidden=!(coarse&&tilt.enabled&&tilt.ok);row.hidden=!t&&$('tiltRe').hidden}
 $('tiltRe').onclick=()=>{note(tiltCentre()?'Tilt centred: hold it like this to fly straight':'No tilt reading',1800)};
-function toMenu(){wakeScreen(false);if(QK.live){qkMenu('menu');return}if(LOG.cur)logEnd(player.finishT!=null?'finish':'quit');setField(false);S.state='menu';menuMusic();setHud(false);['pause','results','count','opts','set','ctl','mus','gfxm'].forEach(i=>$(i).hidden=true);if(S.car)carNext();resetGrid();showPage(S.car?'career':S.train?'train':page==='opts'?'title':page);camInit=false}
+function toMenu(){wakeScreen(false);if(QK.live){qkMenu('menu');return}if(LOG.cur)logEnd(player.finishT!=null?'finish':'quit');const sp=SPL.race;if(sp)splEnd();setField(false);S.state='menu';menuMusic();setHud(false);['pause','results','count','opts','set','ctl','mus','gfxm'].forEach(i=>$(i).hidden=true);if(S.car)carNext();resetGrid();showPage(S.car?'career':S.train?'train':page==='opts'?'title':page);camInit=false;if(sp)splOpen()}
 
 $('raceBtn').onclick=startRace;$('againBtn').onclick=()=>{if(mp.on)mpAgain(false);else startRace()};$('restartBtn').onclick=startRace;
 const rndSeed=()=>Math.floor(Math.random()*0xFFFFFF)+1;
@@ -7540,10 +7798,10 @@ const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
   if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats)if(n[f.kind]!=null)n[f.kind]=Math.min(FMAX[f.kind],n[f.kind]+1);ed.sp={b:T.fig8?3:1,n}}
   goFull();$(from).hidden=true;$('ed').hidden=false;edUI();drawPreview('edPreview','edStats')}
-function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild();$('ed').hidden=true;
+function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild(ed.reseed);$('ed').hidden=true;
   if(ed.from==='mp'){$('mp').hidden=false;mpPushInfo();mpView&&mpView()}else{showPage('menu');if(race)startRace()}}
-function edBuild(newSeed){ed.dirty=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
-function edChange(newSeed){ed.dirty=true;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(newSeed),newSeed?0:500)}/* (P59) half a second after the last change, so tapping + or - a few times builds once */
+function edBuild(newSeed){ed.dirty=false;ed.reseed=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
+function edChange(newSeed){ed.dirty=true;ed.reseed=ed.reseed||!!newSeed;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(ed.reseed),1000)}/* (P59) a delay after the last change, so tapping + or - a few times builds once. Prototype 60: one second (was half a second), restarted by every press, and Reshuffle goes through the same timer; ed.reseed keeps a pending reshuffle when a + or - press follows it */
 function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
     row.innerHTML=`<div class="en">${FLBL[k][0]}<small>${FLBL[k][1]}</small></div><button class="sb" data-d="-1" aria-label="Fewer ${FLBL[k][0]}">−</button><div class="ec"></div><button class="sb" data-d="1" aria-label="More ${FLBL[k][0]}">+</button>`;
@@ -7587,8 +7845,8 @@ const syncMusic=()=>{const st=music.style;document.querySelectorAll('[data-music
   const lc=$('likeChip');if(lc)lc.setAttribute('aria-pressed',String(MLIKE.on()));for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.liked()))}for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.disliked()))}};
 document.querySelectorAll('[data-music]').forEach(b=>b.onclick=()=>{audio.init();music.setStyle(music.style==='off'?'both':'off');music.setMood(S.state==='menu'?'menu':'race');syncMusic()});
 {const lc=$('likeChip');if(lc)lc.onclick=()=>{store.set('hoverline.mlikeon',MLIKE.on()?'0':'1');syncMusic();note(MLIKE.on()?'Your likes steer the radio · tunes like the ones you like come up more often':'Your likes no longer steer the radio',2400)}}
-for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.dislike();if(on==null){note('This works on the generated tunes',1600);return}syncMusic();note(on?'💔 Noted · it and tunes like it come up a bit less':'Removed',1800);if(on&&!music.pinned)newSong()}}
-for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.like();if(on==null){note('Like works on the generated tunes',1600);return}syncMusic();note(on?'♥ Liked · more like this on the radio':'Like removed',1600)}}
+for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.dislike();if(on==null){note('This works on the generated tunes',1600);return}syncMusic();note(on?'Noted · it and tunes like it come up a bit less':'Removed',1800);if(on&&!music.pinned)newSong()}}
+for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.like();if(on==null){note('Like works on the generated tunes',1600);return}syncMusic();note(on?'Liked · more like this on the radio':'Like removed',1600)}}
 syncMusic();
 /* ---- the library page (Prototype 45): the kept tunes as a table. Play library plays them one after another; the
    generator with library influence makes new tunes like them; a name plays that tune on repeat until Back to radio.
@@ -7994,7 +8252,10 @@ if(REAL){$('ailSel').onchange=e=>{ailFree=AIL[e.target.value]?e.target.value:'no
 function clsSync(){ailSync();clsFill($('clsSel'),clsFree);const n=$('clsNote');if(n)n.textContent=clsFree==='redline'?'':'Online board: Redline only';clsFill($('mpCls'),mp.cls)}
 if(REAL){$('clsSel').onchange=e=>{clsFree=clsOf(e.target.value).k;store.set('hoverline.cls',clsFree);clsSync();updateMenuBest()};
   $('mpCls').onchange=e=>{mp.cls=clsOf(e.target.value).k;store.set('hoverline.mpcls',mp.cls);mpPushInfo()};clsSync()}
-const setMode=tr=>{S.trial=tr;S.car=null;$('setLogo').innerHTML=tr?'TIME <b>TRIAL</b>':'RA<b>CE</b>';$('setSub').textContent=tr?'Alone with the ghost of your best run · pick the kind of track':'Against 7 AI pilots · pick the kind of track';showPage('menu')};
+/* Prototype 60: laps pick (Race only; the Time trial keeps 3, and the online board takes 3-lap races only) */
+function lapSync(){const s=$('lapSel');if(!s||!REAL)return;if(!s.options.length)for(const n of LAP_PICKS){const o=document.createElement('option');o.value=n;o.textContent=n+(n>1?' laps':' lap');s.appendChild(o)}s.value=lapsFree;$('lapRow').hidden=!!S.trial;const n=$('lapNote');if(n)n.textContent=lapsFree===3?'':'Online board: 3 laps only'}
+if(REAL){$('lapSel').onchange=e=>{const n=+e.target.value;lapsFree=LAP_PICKS.includes(n)?n:3;store.set('hoverline.laps',String(lapsFree));lapSync()};lapSync()}
+const setMode=tr=>{S.trial=tr;lapSync();S.car=null;$('setLogo').innerHTML=tr?'TIME <b>TRIAL</b>':'RA<b>CE</b>';$('setSub').textContent=tr?'Alone with the ghost of your best run · pick the kind of track':'Against 7 AI pilots · pick the kind of track';showPage('menu')};
 $('raceMode').onclick=()=>{setMode(false);ailSync()};$('trialBtn').onclick=()=>setMode(true);$('setBack').onclick=()=>showPage('play');
 $('nextTune').onclick=newSong;
 /* ---------- career (Prototype 32) ----------
@@ -8007,7 +8268,7 @@ $('nextTune').onclick=newSong;
    the first complex tracks, Elite narrow and complex */
 const CAR_T=[{n:'Rookie',k:0.7,ai:0.9,f:0.25,e:{dmg:0.6,up:0.3},pay:1,tr:['WQC4DA5B','WQD467DC','WQ8FF347','W2E2AC0']},{n:'Club',k:0.8,ai:0.93,f:0.4,e:{dmg:0.7,up:0.5},pay:1.25,tr:['SQCFC064','WQ6A99B4','S6DF7DD','W935170']},
   {n:'Pro',k:0.9,ai:0.94,f:0.5,e:{dmg:0.7,up:0.6,dn:1.5},pay:1.5,tr:['S454021','SXQE3779B','SL6526AF','SX1FE68E']},{n:'Elite',k:1,ai:1,f:1,e:null,pay:2,tr:['NXQFA8CFB','NXBE1E08','SXL5C5581','NXL7C3C10']}];
-const CAR_W0=['missile','cannon','turbo'],CAR_W=['mines','rockets','barrier','decoy','smoke','shock','bouncer','scoopS','phase','swarm','scoopA','autopilot','emp','hunter','quake','overdrive'];
+const CAR_W0=['missile','cannon','turbo'],CAR_W=['mines','rockets','barrier','decoy','smoke','shock','bouncer','scoopS','phase','reflector','swarm','scoopA','autopilot','emp','hunter','quake','overdrive'];
 const CAR_PAY=[600,450,350,260,190,140,100,70],CAR_UP=[300,400,500,600,700,800,900,1000,1100,1200],CAR_N=16,CAR_P0=5;
 const car=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.career')||'null')}catch(e){}if(!o||typeof o!=='object')o={};
   const best=Array.isArray(o.best)?o.best.slice(0,CAR_N).map(x=>clamp(x|0,0,8)):[];while(best.length<CAR_N)best.push(0);
@@ -8016,7 +8277,8 @@ const car=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.career')||'null
 const carSave=()=>store.set('hoverline.career',JSON.stringify({v:39,cr:car.cr,up:car.up,best:car.best,fr:car.fr||null}));
 if(car.old)carSave();
 const carOpen=()=>{let i=0;while(i<CAR_N-1&&car.best[i]&&car.best[i]<=3)i++;return i};
-const carW=()=>CAR_W0.concat(CAR_W.slice(0,car.best.filter(x=>x&&x<=3).length));
+/* (P60) the Reflector made 17 unlocks for 16 tracks: the last clear of all unlocks the final module too */
+const carW=()=>{const n=car.best.filter(x=>x&&x<=3).length;return CAR_W0.concat(CAR_W.slice(0,n+(n>=CAR_N?1:0)))};
 const carCode=i=>CAR_T[i>>2].tr[i&3]+'-'+'UOFRN'[i%5];
 function carBuild(){let b=null;try{b=JSON.parse(store.get('hoverline.cbuild')||'null')}catch(e){}const d=defaultBuild(),bare={speed:1,thrust:1,handling:1,shield:1,ammo:1};d.stats={...bare};
   d.frame=build.frame;d.paint=build.paint;d.liv=build.liv||null;
@@ -8162,14 +8424,28 @@ function tutStart(from){if(tut.on)return;tut.from=from;TUT.length=TUT_N;if(TUT_F
   tutScene();if(tilt.enabled&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}
   if(coarse){$('touch').hidden=false;touchLayout();for(let k=0;k<2;k++){const w=build.weapons[k],b=$('w'+(k+1));b._h=null;b.innerHTML=`${icon(w)}<small>${WDEF[w].name}</small>`;b.classList.toggle('rdy',!WDEF[w].passive)}}
   tut.hold=[true,true];tut.pp=true;tut.now=0;tut.fin=false;$('tut').hidden=false;tutShow(0)}
-function tutEnd(){if(!tut.on)return;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
+function tutEnd(){if(!tut.on)return;const early=!tut.fin;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');if(tut.sv){build.frame=tut.sv;tut.sv=null}tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
   for(const k of['steer','pitch','psl','brake','boost','f1','f2'])touch[k]=0;showStick(0,0);
   for(const s of tut.shots)labScene.remove(s.m);tut.shots=[];labScene.remove(tut.g);if(tut.ship){labScene.remove(tut.ship);disposeObj(tut.ship);tut.ship=null}for(const o of tut.hid)o.visible=true;tut.hid=[];
-  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else showPage('career')}
+  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else if(tut.from==='ff')showPage('title');else showPage('career');
+  if(early)note(FF_NOTE,5000)}
 function tutAsk(){hidePages();$('tutAsk').hidden=false}
 $('tutYes').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('career')};
-$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career')};
-$('tutBtn').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('opts')};
+$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career');note(FF_NOTE,5000)};
+/* Prototype 60: the new-player experience has a name, First flight: the spoken frame select (a new career), the guidance
+   question and the tutorial. It is offered once on a first launch and replays from Options > Tutorial. A replay picks a
+   frame only for the tutorial (the frame is put back afterwards) and never touches the career, its credits, the saved
+   build or any setting. Skipping anywhere sets hoverline.tut and says where to find it again. */
+const FF_NOTE='First flight skipped. Replay it any time from Options › Tutorial.';
+const ff={from:null};
+async function ffBegin(from){if(coarse){goFull();if(!(await tiltCheck()))return}ff.from=from;fsOpen()}
+function ffBack(){const f=ff.from;ff.from=null;if(f==='opts')$('opts').hidden=false;else ffOpen()}
+function ffOpen(){hidePages();$('ffAsk').hidden=false;S.state='menu'}
+$('tutBtn').onclick=()=>ffBegin('opts');
+$('ffYes').onclick=()=>{$('ffAsk').hidden=true;ffBegin('ff')};
+$('ffNo').onclick=()=>{store.set('hoverline.tut','1');$('ffAsk').hidden=true;showPage('title');note(FF_NOTE,5000)};
+/* only when nothing has been saved yet: no tutorial flag, no career and no saved best laps or build */
+setTimeout(()=>{if(S.state==='menu'&&page==='title'&&!store.get('hoverline.tut')&&!carExists()&&!store.get('hoverline.best')&&!store.get('hoverline.build')&&!store.get('hoverline.name'))ffOpen()},0);
 $('tutSkip').onclick=tutEnd;addEventListener('resize',()=>{if(tut.on&&!tut.fin)tutText()});
 addEventListener('keydown',e=>{if(S.state==='tut'&&(e.code==='Escape'||keyIs('pause',e.code))){e.preventDefault();tutEnd()}});
 function tutFrame(dt){const inp=readInput(),st=TUT[tut.i],P=tut.p,sh=tut.ship,now=performance.now(),rt=Math.min(0.25,Math.max(0,(now-(tut.now||now))/1000));tut.now=now;tut.t+=rt;
@@ -8265,7 +8541,7 @@ $('carNewYes').onclick=fsOpen;$('carNewNo').onclick=()=>{$('carNew').hidden=true
 $('carHomeBack').onclick=()=>{$('carHome').hidden=true;showPage('play')};
 /* the frame select page */
 const fs={on:false,k:'blade',ship:null,yaw:0.6,hid:[],t:0,drag:null,thumbs:null};
-function fsOpen(){audio.init();hidePages();$('carHome').hidden=true;$('carNew').hidden=true;fs.on=true;S.state='fsel';
+function fsOpen(){audio.init();fsMode();hidePages();$('carHome').hidden=true;$('carNew').hidden=true;fs.on=true;S.state='fsel';
   fs.hid=[labShip,labGhost].filter(o=>o&&o.visible);for(const o of fs.hid)o.visible=false;$('labTag').hidden=true;
   fsRow();$('fsel').hidden=false;fs.k=null;fsShow('blade');fsThumbs();fsvLoad()}
 function fsLeave(){fsvStop();fs.on=false;$('fsel').hidden=true;if(fs.ship){labScene.remove(fs.ship);disposeObj(fs.ship);fs.ship=null}for(const o of fs.hid)o.visible=true;fs.hid=[];
@@ -8283,12 +8559,17 @@ function fsShow(k){if(fs.k===k)return;fsvStop();fs.k=k;const F=FRAMES[k],d=deriv
   audio.sfx('ui_move');
   /* the line is read out the first time you look at a frame */
   const h=fsHeard();if(!h.includes(k)&&annOn&&fsvSay(k)){h.push(k);store.set('hoverline.fheard',JSON.stringify(h))}}
-function fsChoose(){if(!fs.on)return;const k=fs.k;audio.sfx('ui_ok')||audio.chime(true);fsLeave();carNewStart(k);fsGuide(k)}
+/* Prototype 60: opened for First flight (ff.from set) the page picks a frame for the tutorial only */
+function fsMode(){const r=!!ff.from;$('fsSub').textContent=r?'First flight · choose a frame':'New career · choose your frame';
+  $('fsBare').textContent=r?'Only for the tutorial. Your career and settings stay as they are.':'Career frames start bare, every stat at 1. Races pay credits for more.'}
+function fsChoose(){if(!fs.on)return;const k=fs.k;audio.sfx('ui_ok')||audio.chime(true);fsLeave();
+  if(ff.from){const f=ff.from;ff.from=null;tut.sv=build.frame;build.frame=k;tutStart(f);return}
+  carNewStart(k);fsGuide(k)}
 $('fsGo').onclick=fsChoose;$('fsRep').onclick=()=>fsvSay(fs.k);
 /* the arrow keys always move along the row, wherever the focus is (on the row itself the menu focus does it) */
 addEventListener('keydown',e=>{if(S.state!=='fsel'||!(e.code==='ArrowLeft'||e.code==='ArrowRight')||$('fsel').hidden)return;const a=document.activeElement;if(a&&a.classList&&a.classList.contains('fsb'))return;
   e.preventDefault();e.stopPropagation();setDev('key');const i=FRAME_KEYS.indexOf(fs.k),k=FRAME_KEYS[(i+(e.code==='ArrowRight'?1:-1)+FRAME_KEYS.length)%FRAME_KEYS.length];fsShow(k);
-  const b=$('fsRow').querySelector(`[data-fk="${k}"]`);if(b)navFocus(b)},true);$('fsBack').onclick=()=>{fsLeave();carHomeOpen()};
+  const b=$('fsRow').querySelector(`[data-fk="${k}"]`);if(b)navFocus(b)},true);$('fsBack').onclick=()=>{fsLeave();if(ff.from)ffBack();else carHomeOpen()};
 /* the guidance question, in the same voice */
 function fsGuide(k){const n=frameOf(k).name,x=TUT_FX[k];hidePages();
   $('tutAskP').textContent=`Six quick steps on the controls with your ${n}`+(x?`, then one on what the ${n} does best. About 40 seconds.`:', about half a minute.');
@@ -9124,7 +9405,7 @@ const LAN=(()=>{
   async function offer(opt){const pc=new RTCPeerConnection({iceServers:[]}),ch=pc.createDataChannel('hl',{ordered:true}),tag=opt&&opt.tag!=null?opt.tag&255:(()=>{for(let k=0;k<32;k++){const t=crypto.getRandomValues(new Uint8Array(1))[0];if(!L.pending.has(t))return t}return 0})();let gid=null;
     ch.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch(x){return}
       if(d.t==='_hi'&&!gid){gid=String(d.id).slice(0,16);L.guests.set(gid,ch);send(ch,{t:'_hello',host:L.id,peers:[...L.guests.keys()].filter(x=>x!==gid)});bcast({t:'_join',id:gid},gid);L.handlers&&L.handlers.onPeer&&L.handlers.onPeer(gid);L.onChange&&L.onChange('joined')}
-      else if(d.t==='_m'&&gid){L.handlers&&L.handlers.onMessage&&L.handlers.onMessage(d.m,gid);bcast({t:'_m',m:d.m,from:gid},gid)}};
+      else if(d.t==='_m'&&gid){L.handlers&&L.handlers.onMessage&&L.handlers.onMessage(d.m,gid);if(!(d.m&&d.m.to&&d.m.to===L.id))bcast({t:'_m',m:d.m,from:gid},gid)}};/* (P60) one addressed to the host isn't relayed: controllers' inputs stay off the others' links */
     const gone=()=>{if(!gid||L.guests.get(gid)!==ch)return;L.guests.delete(gid);bcast({t:'_leave',id:gid});L.handlers&&L.handlers.onLeave&&L.handlers.onLeave(gid);L.onChange&&L.onChange('left')};
     ch.onclose=gone;pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'||pc.connectionState==='closed')gone()};
     await pc.setLocalDescription(await pc.createOffer());await gather(pc);
@@ -9333,6 +9614,8 @@ function createSession(o) {
    at its own speed so it doesn't stutter. Weapons fire as events: every device spawns the same shots; a shot that
    hits a ship only does damage on the device that owns that ship, which then tells the others it exploded. */
 const MAXP=8;
+/* a split-screen room (Prototype 60) takes the screen and 8 controllers: 8 phones on one phone is allowed */
+const mpMax=()=>mp.split==='screen'?MAXP+1:MAXP;
 const mpEl={};for(const id of['mp','mpOut','mpIn','mpName','mpCode','mpCreate','mpJoin','mpBack','mpRoom','mpStatus','mpList','mpTrack','mpHostRow','mpStart','mpReady','mpLab','mpLeave','mpHint','mpConnRow','mpNew','mpAI','mpErr'])mpEl[id]=$(id);
 mpEl.mpName.value=(store.get('hoverline.name')||('Pilot '+(10+Math.floor(Math.random()*90)))).slice(0,12);
 const mpProfile=()=>({n:mpEl.mpName.value.trim().slice(0,12)||'Pilot',pt:build.paint,lv:build.liv||null,st:{...build.stats},w:[...build.weapons],fr:build.frame});
@@ -9347,7 +9630,7 @@ function mpSyncConn(){document.querySelectorAll('[data-conn]').forEach(b=>b.setA
   $('lanJoin').hidden=!lan;$('mpCodeRow').hidden=lan;$('mpPub').hidden=mpConn!=='internet';$('mpConnHint').textContent=CONN_HINT[mpConn]+(lan&&!LAN.ok?' This browser has no WebRTC, so it can\'t use it.':'');chirpSync()}
 document.querySelectorAll('[data-conn]').forEach(b=>b.onclick=()=>{mpConn=b.dataset.conn;if(mpConn!=='wifi')store.set('hoverline.conn',mpConn);mpSyncConn()});
 function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidden=!inRoom;if(inRoom)mpRender()}
-function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls}}
+function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls,...(mp.split==='screen'?{split:1}:{})}}
 /* Public rooms (Prototype 38): Public room joins the first public room of this version that has space, or opens it if nobody
    is there (whoever is first is the host, and the next pilot takes over if they leave). Random codes never contain a 1. */
 const PUBV=59,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
@@ -9355,7 +9638,7 @@ function mpConnect(code,host,pub){mp.pub=pub||0;
   audio.init();store.set('hoverline.name',mpEl.mpName.value.trim().slice(0,12));mpEl.mpErr.textContent='';
   const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':mpConn==='lan'?'lan':'net';
   mp.on=true;mp.code=code;mp.left=new Set();mp.go=null;
-  mp.sess=createSession({code,host,max:MAXP,profile:mpProfile(),info:host?mpTrackInfo():{},carrier,openLink:HLNet.openLink,claimMs:pub?3500:0,
+  mp.sess=createSession({code,host,max:mpMax(),profile:mpProfile(),info:host?mpTrackInfo():{},carrier,openLink:HLNet.openLink,claimMs:pub?3500:0,
     onChange:mpRender,onInfo:mpApplyInfo,onStart:mpStart,onGo:mpGo,onLeave:mpPeerLeft,onHost:mpBecameHost,
     onFull:()=>{if(mp.pub&&mp.pub<PUBN){const k=mp.pub+1;mp.sess.close();mp.sess=null;mpConnect(pubCode(k),false,k);return}mpEl.mpErr.textContent=mp.pub?'Every public room is full right now.':'That room is full ('+MAXP+' pilots).'},
     onError:t=>{mpEl.mpErr.textContent=t+(carrier==='lan'?' Leave the room and join again.':' Tap Reconnect to try again.');if(S.state==='race'||S.state==='countdown'||S.state==='mpwait')note('Connection trouble · pause and tap Reconnect',2600)},onMessage:mpMessage});
@@ -9804,7 +10087,7 @@ async function chirpHostLoop(){const id=++chirp.loop,lobby=()=>{const st=mp.sess
     live=()=>{if(chirp.mode!=='host'||chirp.loop!==id)return false;if(lobby())return true;chirpStop();return false};
   while(live()){const st=mp.sess&&mp.sess.state;
     if(!st||st.phase==='connecting'){await chirpWait(300);continue}
-    if(st.roster.length>=MAXP){chirpStop();note('The room is full',1800);return}
+    if(st.roster.length>=mpMax()){chirpStop();note('The room is full',1800);return}
     if(!chirp.offer){chirp.tag=(chirp.tag<0?Math.floor(chirpRnd()*256):chirp.tag+1)&255;
       try{const o=await LAN.offer({raw:true,tag:chirp.tag});if(!live())return;chirp.offer={...o,slot:Math.min(7,st.roster.length),cands:Chirp.pickCands(o.sdp,2)};
         PDG.ev('invitation made',{tag:chirp.tag,addresses:chirp.offer.cands.map(c=>PDG.addr(c.a))});chirpHelp()}
@@ -9928,7 +10211,7 @@ function mpNudge(name){const s=mp.sess;if(!s||s.state.me.rd||S.state==='race'||S
   try{navigator.vibrate&&navigator.vibrate([120,80,120])}catch(e){}rumble(0.7,0.7,300);
   note(name+' is ready · '+(S.state==='done'?'go back to the lobby and press Ready':S.state==='lab'?'finish in the frame lab and press Ready':'press Ready'),2600);
   const b=mpEl.mpReady;b.classList.remove('nudge');void b.offsetWidth;b.classList.add('nudge')}
-function mpAutoStart(st){if(!st.isHost||st.phase!=='lobby'||st.busy||!st.roster.length)return;
+function mpAutoStart(st){if(mp.split)return;if(!st.isHost||st.phase!=='lobby'||st.busy||!st.roster.length)return;
   const all=st.roster.every(e=>e.st==='lobby'&&e.rd);
   if(!all){if(mp.autoT){clearTimeout(mp.autoT);mp.autoT=null}return}
   if(mp.autoT)return;note(st.roster.length>1?'Everyone is ready · starting':'Ready · starting',1400);
@@ -9940,7 +10223,7 @@ document.querySelectorAll('[data-mplen]').forEach(b=>b.onclick=()=>{newTrack(wid
 document.querySelectorAll('[data-mplaps]').forEach(b=>b.onclick=()=>{mp.laps=+b.dataset.mplaps;mpPushInfo()});
 mpEl.mpAI.onclick=()=>{mp.fill=!mp.fill;mpPushInfo()};
 function mpPushInfo(){if(mp.sess&&mp.sess.state.isHost)mp.sess.setInfo(mpTrackInfo());drawPreview('mpPreview','mpStats');mpRender()}
-function mpApplyInfo(info){if(!info||info.seed==null)return;mp.laps=info.laps||3;mp.fill=info.fill!==false;mp.cls=clsOf(info.cls).k;clsSync();
+function mpApplyInfo(info){if(info&&info.split&&mp.sess&&!mp.sess.state.isHost){padcOpen();return}if(!info||info.seed==null)return;mp.laps=info.laps||3;mp.fill=info.fill!==false;mp.cls=clsOf(info.cls).k;clsSync();
   if(S.state==='menu'&&(info.seed!==seed||info.wk!==wid||!!info.cx!==cplx||(info.lk||'M')!==lenK||(info.sp||null)!==(spec?specStr(spec):null)||(info.bm||'U')!==bioTok())){loadTrack(info.seed,info.wk,!!info.cx,info.lk||'M',info.sp?parseSpec(info.sp):null,parseBio(info.bm||'U'));drawPreview('mpPreview','mpStats')}}
 /* Every pilot gets a different paint for the race: anyone whose chosen paint is taken by someone earlier in the room
    gets the first free one. Every device computes the same answer from the same list. */
@@ -9949,6 +10232,7 @@ function mpPaints(list){const used=new Set(),css=new Set(),out={};for(const e of
   used.add(pt);css.add(PAINTS[pt].css);out[e.id]=pt}return out}
 function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='lobby'&&s.state.busy){mpBackToLobby();note('The race started without this device · you are in the next one',2600);return}
   if(s)mpAutoStart(s.state);
+  if(s&&mp.split==='screen')splRoomSync(s.state);
   if(!s||mpEl.mp.hidden&&S.state!=='menu')return;const st=s.state,me=st.id;
   mpEl.mpRoom.textContent=mp.pub?'Public':st.code;
   const paths=st.link&&st.link.paths,carrier=st.link&&st.link.carrier;
@@ -9964,7 +10248,7 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
   const pts=mpPaints(st.roster);
   mpEl.mpList.innerHTML=st.roster.map((e,i)=>{const p=e.p||{},col=((p.lv&&parseLiv(p.lv))||PAINTS[pts[e.id]]||PAINTS[0]).css,w=(p.fr&&FRAMES[p.fr]?FRAMES[p.fr].name+' · ':'')+(p.w||[]).map(k=>WDEF[k]?WDEF[k].name:k).join(' + ');
     return`<tr class="${e.id===me?'me':''}"><td><i class="dot" style="background:${col}"></i>${i+1}</td><td>${(p.n||'Pilot').replace(/[<>&]/g,'')}${e.id===st.hostId?' ★':''}${e.id===me?' (you)':''}</td><td>${e.st==='lobby'&&e.rd?'<b class="rdy">ready ✓</b>':mpSt[e.st]||e.st}</td><td class="w">${w}</td></tr>`}).join('')+
-    (st.roster.length<MAXP?`<tr><td></td><td class="dim" colspan="3">${MAXP-st.roster.length} open · ${mp.fill?'AI tops the field up to 8':'no AI'}</td></tr>`:'');
+    (st.roster.length<mpMax()?`<tr><td></td><td class="dim" colspan="3">${mpMax()-st.roster.length} open · ${mp.split==='screen'?'devices that join are controllers':mp.fill?'AI tops the field up to 8':'no AI'}</td></tr>`:'');
   const info=st.isHost?mpTrackInfo():st.info;
   mpEl.mpTrack.textContent=info&&info.seed!=null?`Track ${((info.wk||'S')+(info.cx?'X':'')+(info.lk&&info.lk!=='M'?info.lk:'')+(info.seed>>>0).toString(16).toUpperCase().padStart(6,'0')+(info.sp?'-'+info.sp:''))} · ${(BIOMES[(info.bm||'U')[0]]||BIOMES.U).n} · ${info.laps||3} lap${(info.laps||3)>1?'s':''} · ${clsOf(info.cls).n}`:'';clsFill($('mpCls'),mp.cls);
   mpEl.mpHostRow.hidden=!st.isHost;
@@ -9978,11 +10262,13 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
   mpEl.mpReady.textContent=meRd?'Ready ✓':'Ready';
   mpEl.mpStart.hidden=!st.isHost||total<2||ready===0||ready===total;mpEl.mpStart.disabled=st.phase!=='lobby';
   mpEl.mpStart.textContent=`Start now (${ready} of ${total} ready)`;
-  mpEl.mpHint.textContent=st.phase==='full'?'':st.busy?'A race is on. You will be in the next one.':st.phase!=='lobby'?'':
+  /* (P60) a split-screen room: no Ready or Start here, the race starts from the split-screen lobby */
+  {const sp=mp.split==='screen'&&st.isHost;$('mpSplBack').hidden=!sp;if(sp){mpEl.mpReady.hidden=mpEl.mpStart.hidden=mpEl.mpLab.hidden=true;mpEl.mpHostRow.hidden=true}else mpEl.mpReady.hidden=mpEl.mpLab.hidden=false}
+  mpEl.mpHint.textContent=mp.split==='screen'&&st.isHost?'Devices that join this room become controllers on this screen. Go back to Split screen when everyone is in.':st.phase==='full'?'':st.busy?'A race is on. You will be in the next one.':st.phase!=='lobby'?'':
     total<2?(st.isHost?(carrier==='lan'?'Pilots join from Multiplayer → Same room · no internet → Join. Press Ready to race the AI on your own.':'Share the room code. Players join from Multiplayer → Join on their own device. Press Ready to race the AI on your own.'):''):
     ready===total?'Everyone is ready.':
     (meRd?'Ready · waiting for '+waiting.join(', ')+'.':'Press Ready when you are set. The race starts when every pilot is ready.')+(st.isHost&&ready?' Start now races just the pilots who are ready.':'')}
-function mpLeaveRoom(){lanStop();chirpStop();mp.cls=clsOf(store.get('hoverline.mpcls')).k;clsSync();if(mp.sess){mp.sess.close();mp.sess=null}mp.on=false;mp.pub=0;mp.go=null;mp.auto=false;mpRestore();mpTags(true);mpView()}
+function mpLeaveRoom(){lanStop();chirpStop();if(PADC.on)padcClose();mp.cls=clsOf(store.get('hoverline.mpcls')).k;clsSync();if(mp.sess){mp.sess.close();mp.sess=null}mp.on=false;mp.pub=0;mp.go=null;mp.auto=false;mpRestore();mpTags(true);mpView()}
 /* Racer objects: the local player plus five more. In a room they become the other pilots (proxies) and AI. */
 function mpRestore(){LAPS=3;for(const r of extras){r.off=true;r.ship.visible=false;r.shadow.visible=false;r.remote=null;r.proxy=false;r.key=null;r.left=false;r.net=null}for(let i=1;i<roster.length;i++){const r=roster[i],c=ROSTER[i];r.name=c.name;r.css=c.css;r.skill=c.skill;setShip(r,c.b,c.paint);Object.assign(r,{isAI:true,remote:null,proxy:false,key:null,left:false,net:null,off:false})}
   player.key=null;setField(false);resetGrid()}
@@ -10075,7 +10361,7 @@ function oskOpen(e){if(!e)return;osk.el=e;osk.caps=e.dataset.osk==='code'||!e.va
 function oskClose(){const e=osk.el;$('osk').hidden=true;if(!e)return;osk.el=null;e.dispatchEvent(new Event('change',{bubbles:true}));const b=document.querySelector(`[data-osk-for="${e.id}"]`);if(b&&lastDev!=='touch')navFocus(b)}
 document.querySelectorAll('[data-osk-for]').forEach(b=>b.onclick=()=>oskOpen($(b.dataset.oskFor)));
 /* ---- poses ---- */
-const mpFlags=r=>(r.air?1:0)|(r.wreck>0?2:0)|(r.inv>0?4:0)|(r.barrier>0?8:0)|(r.boost>0||r.selfBoost?16:0)|(r.charging==='hp'?32:0)|(r.charging==='ammo'?64:0)|(r.stun>0?128:0)|(r.finishT!=null?256:0)|(r.od>0?512:0)|(r.emp>0?1024:0)|(r.phase>0?2048:0)|(r.dN&&r.drift?(r.drift>0?8192:4096):0);
+const mpFlags=r=>(r.air?1:0)|(r.wreck>0?2:0)|(r.inv>0?4:0)|(r.barrier>0?8:0)|(r.boost>0||r.selfBoost?16:0)|(r.charging==='hp'?32:0)|(r.charging==='ammo'?64:0)|(r.stun>0?128:0)|(r.finishT!=null?256:0)|(r.od>0?512:0)|(r.emp>0?1024:0)|(r.phase>0?2048:0)|(r.refl>0?16384:0)|(r.dN&&r.drift?(r.drift>0?8192:4096):0);
 const mpPack=r=>[Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round(r.v*10),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),Math.round(r.brk*100),mpFlags(r),Math.round(r.hp),r.done];
 function mpTick(){const s=mp.sess;if(!s)return;const t=performance.now();if(t-(mp.lastPose||0)<100)return;mp.lastPose=t;
   {const lk=s.state.link,pa=lk&&lk.paths;if(lk&&lk.carrier==='net'&&pa&&!pa.broker&&!pa.direct){if(!mp.lost)mp.lost=t;else if(t-mp.lost>4000&&t-(mp.lostSaid||0)>10000){mp.lostSaid=t;note('Connection lost · pause and tap Reconnect',2600)}}else mp.lost=0}
@@ -10093,9 +10379,9 @@ function proxyStep(r,dt){const n=r.net;if(!n||r.left)return;
   const f=n.f;r.air=!!(f&1);const wr=!!(f&2);
   if(wr&&r.wreck<=0){const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);audio.boom(clamp(0.6-Math.abs(wrapU(r.u-player.u))/300,0,0.5))}
   r.wreck=wr?1:0;r.inv=f&4?1:0;r.barrier=f&8?1:0;r.boost=f&16?1:0;r.charging=f&32?'hp':f&64?'ammo':null;
-  if(f&128){if(!(r.stun>0)&&!(r.spinD>0))startSpin(r,0.75,false);r.stun=0.1}else r.stun=0;spinStep(r,dt);r.od=f&512?1:0;r.emp=f&1024?1:0;r.phase=f&2048?0.2:0;{const dd=f&8192?1:f&4096?-1:0,P=drOf(r);if(dd&&!r.drift)r.dT=0;r.drift=dd;r.dN=dd?1:0;if(dd){r.dT=(r.dT||0)+dt;r.dB=P.cap*(1-Math.exp(-r.dT/P.tau));r.dAng=P.ang}else r.dB=0;r.driftK=clamp((r.driftK||0)+(dd?4:-3)*dt,0,1)}r.hp=n.hp;r.done=n.done}
+  if(f&128){if(!(r.stun>0)&&!(r.spinD>0))startSpin(r,0.75,false);r.stun=0.1}else r.stun=0;spinStep(r,dt);r.od=f&512?1:0;r.emp=f&1024?1:0;r.phase=f&2048?0.2:0;r.refl=f&16384?0.2:0;{const dd=f&8192?1:f&4096?-1:0,P=drOf(r);if(dd&&!r.drift)r.dT=0;r.drift=dd;r.dN=dd?1:0;if(dd){r.dT=(r.dT||0)+dt;r.dB=P.cap*(1-Math.exp(-r.dT/P.tau));r.dAng=P.ang}else r.dB=0;r.driftK=clamp((r.driftK||0)+(dd?4:-3)*dt,0,1)}r.hp=n.hp;r.done=n.done}
 /* Reference distance for the AI's catch-up: the average of the human pilots, not just this device's player. */
-function bandRef(){if(!mp.on)return player.utot;let s=0,n=0;for(const r of racers)if(!r.isAI&&!r.left){s+=r.utot;n++}return n?s/n:player.utot}
+function bandRef(){if(SPL.race){let s=0,n=0;for(const r of racers)if(r.lp){s+=r.utot;n++}return n?s/n:player.utot}if(!mp.on)return player.utot;let s=0,n=0;for(const r of racers)if(!r.isAI&&!r.left){s+=r.utot;n++}return n?s/n:player.utot}
 /* ---- weapons over the network ---- */
 // shot meshes come from shotMesh() in the weapons section
 function mpFired(r,w,from){if(!mp.on||!mp.sess||r.proxy)return;
@@ -10104,6 +10390,8 @@ function mpFired(r,w,from){if(!mp.on||!mp.sess||r.proxy)return;
     sh.push([s.nid,s.type,+s.u.toFixed(1),+s.lat.toFixed(2),+(s.v||0).toFixed(1),+s.life.toFixed(2),s.rear?1:s.wait?2:0,s.target&&s.target.key||'',+(s.vl||0).toFixed(2),s.mini?1:0])}
   if(sh.length)mp.sess.send({t:'fire',o:r.key,w,sh,ts:Math.round(S.raceT*1000)})}
 function mpMessage(m,from){
+  /* Prototype 60: split screen: a controller's input reaches the screen; the screen tells each controller its place */
+  if(m.t==='ci'){if(mp.split==='screen')splCi(m,from);return}if(m.t==='cs'){if(PADC.on)padcState(m);return}
   if(m.t==='rdy'){mpNudge(String(m.n||'A pilot').replace(/[<>&]/g,'').slice(0,12));return}
   if(m.t==='again'){if(mp.sess&&from===mp.sess.state.hostId&&S.state==='done')mpBackToLobby();return}
   if(m.t==='pose'){mpApply(mp.byKey&&mp.byKey.get(from),m.s,m.ts);
@@ -10280,7 +10568,7 @@ function placeShip(r,t){
     r.ship.position.addScaledVector(right,(Math.random()-0.5)*0.32*e).addScaledVector(up,(Math.random()-0.5)*0.24*e);
     _gq.setFromAxisAngle(AX_Y,(Math.random()-0.5)*0.24*e);r.ship.quaternion.multiply(_gq);_gq.setFromAxisAngle(AX_Z,(Math.random()-0.5)*0.22*e);r.ship.quaternion.multiply(_gq)}
   else if(sc.x!==1||sc.y!==1||sc.z!==1)sc.set(1,1,1);
-  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
+  const fpvMe=r===player&&!SPL.race&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);reflectLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
   r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
   const ud=r.ship.userData;shipCtl(ud,r.brk,r.steerS,S.state==='menu'||S.state==='lab'?1:r.ammo/(r.d.ammo||100));
   if(ud.extra&&ud.extra.spin){const dt=clamp(t-(r._lt??t),0,0.1);r._lt=t;for(const q of ud.extra.spin)q.o.rotation[q.ax]+=(q.k*r.v+(q.w||0))*dt}/* the flicker is a hash of the time, not Math.random, so drawing never moves the game's random numbers (Prototype 51) */
@@ -10291,6 +10579,8 @@ function placeShip(r,t){
   const bub=ud.shield,col=r.spinD>0&&r.wreck<=0&&Math.floor(t*30)%3===0?0xbe5aff:r.od>0?0xffd24a:r.emp>0&&Math.floor(t*14)%2?0x6fb8ff:r.barrier>0?0x3ff0ff:r.charging==='hp'?0x46ff8c:r.charging==='ammo'?0xbe5aff:0;bub.visible=!!col&&r.wreck<=0;
   if(col){bub.material.color.setHex(col);bub.material.opacity=(r.barrier>0?0.2:0.12)+Math.sin(t*20)*0.05+(r.barrier>0&&r.barrier<1?Math.sin(t*40)*0.1:0)}
   if(r===player){pf.set(0,0,-1).applyQuaternion(qT.clone().multiply(_qCam.setFromAxisAngle(AX_Y,r.yaw))).addScaledVector(up,sfp.sl).normalize();pUp.copy(up);pRight.copy(right);pT.copy(s.t);pPos.copy(pos)}
+  /* Prototype 60: every local pilot's pose, for its own chase camera in split screen */
+  if(r.lp){const c=r.lp;c.pf.set(0,0,-1).applyQuaternion(qT.clone().multiply(_qCam.setFromAxisAngle(AX_Y,r.yaw))).addScaledVector(up,sfp.sl).normalize();c.pUp.copy(up);c.pRight.copy(right);c.pT.copy(s.t);c.pPos.copy(pos)}
 }
 
 /* Nose trim, shown around your own craft: faint green speed lines stream past when nose-down streamlining is making
@@ -10314,6 +10604,14 @@ function phaseLook(r,t){const on=r.phase>0&&r.wreck<=0;if(!on&&!r._ph)return;r._
     if(!u.phM){const src=m.material,arr=Array.isArray(src)?src:[src];if(arr.some(x=>x.blending!==THREE.NormalBlending||x===ud.trailM||x===ud.glowM)){u.phSkip=true}else{/* three makes each new material's id from Math.random, which the races share: lend it a private sequence while cloning,
       so Phase looks change nothing about a race */const R0=Math.random;Math.random=()=>((phaseN=(phaseN*1103515245+12345)>>>0)/4294967296);try{u.phM=Array.isArray(src)?src.map(x=>x.clone()):src.clone()}finally{Math.random=R0};for(const x of[].concat(u.phM)){x.transparent=true;x.depthWrite=false}}}
     if(u.phSkip)return;if(!u.phO)u.phO=m.material;m.material=u.phM;for(const x of[].concat(u.phM)){x.opacity=op;x.wireframe=wf}})}
+/* Prototype 60: the Reflector's shell, a brief mirrored bubble (a faint silver ball with a wire cage that flickers) round the
+   frame while r.refl is up; it is a child of the ship so it follows it and goes with it when the ship is rebuilt. */
+function reflectLook(r,t){const on=r.refl>0&&r.wreck<=0;let g=r._rf;if(!on){if(g)g.visible=false;return}
+  if(!g||g.parent!==r.ship){const geo=new THREE.IcosahedronGeometry(1,1),am={transparent:true,blending:THREE.AdditiveBlending,depthWrite:false},
+      face=new THREE.MeshBasicMaterial({color:0xbfe6ff,opacity:.25,side:THREE.DoubleSide,...am}),cage=new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,opacity:.7,...am});
+    g=r._rf=new THREE.Group();g.add(new THREE.Mesh(geo,face),new THREE.Mesh(geo,cage));g.userData={face,cage};g.position.y=0.5;r.ship.add(g)}
+  const k=Math.min(1,r.refl/0.15),fl=0.75+0.25*Math.sin(t*40);g.visible=true;g.scale.setScalar((2.2+0.15*Math.sin(t*25))*(r.d.size||1));g.rotation.y=t*3;
+  g.userData.face.opacity=0.28*k*fl;g.userData.cage.opacity=0.75*k*fl}
 function trimStep(dt){const r=player,F=trimFx,on=(S.state==='race'||S.state==='countdown')&&r.wreck<=0&&r.ship.visible;
   const pd=Math.max(0,-r.pitch),pu=Math.max(0,r.pitch),ground=!r.air;
   const scr=false,tbB=r.trimB||0,wantG=on&&ground&&(tbB>0.01||r.trimUp&&(r.slopeG||0)>0.2&&r.climb<1.6)?clamp(Math.max(tbB/0.15,r.trimUp?r.slopeG*(3-r.climb)/2:0),0,1)*clamp(r.v/70,0,1):0,wantR=on&&ground&&pu>0.12?pu*clamp(r.v/60,0,1):0;
@@ -10329,7 +10627,7 @@ function trimStep(dt){const r=player,F=trimFx,on=(S.state==='race'||S.state==='c
 function step(dt){
   S.t+=dt;
   const racing=S.state==='race';
-  const inp=QK.live?qkIn(readInput()):readInput();
+  const inp=QK.live?qkIn(readInput()):SPL.race?splInputs():readInput();
   if(mp.on&&mp.sess&&mp.goHost!=null&&!mp.sess.state.isHost&&mp.sess.state.hostId===mp.sess.state.goHost)mp.go=mp.goHost-mp.sess.state.offset;
   if(S.state==='mpwait'){const c=$('count');c.hidden=false;c.textContent='…';c.classList.remove('go')}
   if(S.state==='countdown'){
@@ -10344,9 +10642,9 @@ function step(dt){
     let pdt=dt;if(mp.on&&mp.go!=null){const rt=(performance.now()-mp.go)/1000;pdt=clamp(rt-S.raceT,0,0.25);S.raceT=Math.max(S.raceT,rt)}else S.raceT+=dt;
     const nSub=Math.max(1,Math.ceil(pdt/0.034)),sdt=pdt/nSub,auto=BOT||mp.auto;
     for(let k=0;k<nSub;k++){
-      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)}
+      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}if(r.lp&&SPL.race){physics(r,splIn(r,inp,sdt,auto),sdt);continue}/* (P60) a local pilot in split screen */const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)}
       logTick(sdt);
-      collide();updateShots(sdt);inp.fire=[false,false]}
+      collide();updateShots(sdt);inp.fire=[false,false];if(SPL.race)splFireClear()}
     if(!mp.on&&player.finishT==null)while(S.raceT>=rec.k*0.1){recSample();rec.k++}
     if(racing){const left=WLOCK-S.raceT,n=Math.ceil(left);
       if(left>0&&n<=3&&n!==S.wl){S.wl=n;note('Modules online in '+n,950);audio.blip(660,0.1,0.07,'triangle')}
@@ -10357,7 +10655,7 @@ function step(dt){
     if(!racers.some(r=>r.remote&&!r.left&&r.finishT==null)){mp.bg=false;mp.go=null;clearShots()}else mpTick()}
   if(mp.on&&mp.sess&&(S.state==='race'||S.state==='done'||S.state==='countdown'||S.state==='mpwait'||S.state==='paused'))mpTick();
   S.shake=Math.max(0,S.shake-dt*2.5);
-  audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:player.v,player.boost);
+  {const ear=SPL.race?splLead():player;audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:ear.v,ear.boost)}
   {const ck=player.charging||(S.t-(player.chgEnd??-9)<0.3?player.chgKind:null);audio.charge(S.state==='race'&&player.wreck<=0?ck:null,ck==='hp'?player.hp/player.d.hp:player.ammo/player.d.ammo)}
   for(const r of racers){placeShip(r,S.t);if(r.isGhost||RES.low)r.shadow.visible=false}
   trimStep(dt);inkStep(dt);drFxStep(dt);empFxStep(dt);
@@ -10389,6 +10687,7 @@ function step(dt){
       camera.fov+=((68+18*vk+(boo?7:0)+14*pk)-camera.fov)*Math.min(1,dt*4)}
   }
   camInit=true;camera.updateProjectionMatrix();
+  if(SPL.race&&S.state!=='menu')splStep(dt);
   if(mp.on&&S.state!=='menu')mpTags();
 
   if(S.state!=='menu'){
@@ -10408,7 +10707,7 @@ function step(dt){
       if(hpF<0.25&&!lowWarn&&player.wreck<=0&&S.state==='race'){lowWarn=true;if(!audio.sfx('low')){audio.blip(980,0.1,0.1,'square');setTimeout(()=>audio.blip(980,0.1,0.1,'square'),160)}}else if(hpF>0.35)lowWarn=false;
       const emp=player.emp>0;$('amM').classList.toggle('empty',S.state==='race'&&player.wreck<=0&&player.ammo<minCost(player));$('bst').classList.toggle('emp',emp);
       for(let k=0;k<2;k++){const w=player.weapons[k],d=WDEF[w],dir=w==='missile'?(targetAhead(player,260)?' ▲':targetBehind(player,200)?' ▼':''):'';
-        const rdy=player.ammo>=d.cost&&player.wreck<=0&&!emp,b=$('w'+(k+1)),sub=d.passive?'passive':S.raceT<WLOCK?Math.ceil(WLOCK-S.raceT)+' s':d.cost+dir;const bh=`${icon(w)}<small>${sub}</small>`;if(b._h!==bh){b._h=bh;b.innerHTML=bh;b.setAttribute('aria-label',d.name)}b.classList.toggle('rdy',rdy&&!d.passive&&S.raceT>=WLOCK);b.classList.toggle('emp',emp&&!d.passive);
+        const rdy=player.ammo>=d.cost&&player.wreck<=0&&!emp,b=$('w'+(k+1)),sub=d.passive?(d.auto?'auto':'passive'):S.raceT<WLOCK?Math.ceil(WLOCK-S.raceT)+' s':d.cost+dir;const bh=`${icon(w)}<small>${sub}</small>`;if(b._h!==bh){b._h=bh;b.innerHTML=bh;b.setAttribute('aria-label',d.name)}b.classList.toggle('rdy',rdy&&!d.passive&&S.raceT>=WLOCK);b.classList.toggle('emp',emp&&!d.passive);
         const act=k?'w2':'w1',kb=actLabel(act),locked=S.raceT<WLOCK&&S.state!=='menu',sl=$('s'+(k+1));
         const sh=`<kbd class="${lastDev==='pad'?padCls(bind.pad[act]):''}">${lastDev==='pad'?padFace(bind.pad[act]):esc(kb)}</kbd>${icon(w)}<small>${sub}</small>`;if(sl._h!==sh){sl._h=sh;sl.innerHTML=sh;sl.title=d.name}sl.classList.toggle('rdy',rdy&&!locked&&!d.passive);sl.classList.toggle('emp',emp&&!d.passive);sl.classList.toggle('hold',S.t-slotLast[k]<0.25&&w==='cannon')}}
   }
@@ -10483,7 +10782,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
       if(race)this.wisps(dt);
       this.step(V,dt,0);this.step(this.chunks,dt,26);this.step(this.sparks,dt,20);this.stepWisp(this.wisp,dt)}
     if(this.sky){this.sky.visible=g2('sky')&&!(T&&T.env&&T.env.sky);if(this.sky.visible)this.sky.position.copy(camera.position)}
-    if(this.motes){const on=g2('motes')&&race;this.motes.visible=on;if(on){const a=this.motes.geometry.attributes.position,A=a.array,c=camera.position,t=S.t;
+    if(this.motes){const on=g2('motes')&&race&&!SPL.race;this.motes.visible=on;if(on){const a=this.motes.geometry.attributes.position,A=a.array,c=camera.position,t=S.t;
       for(let k=0;k<A.length;k+=3){for(let d=0;d<3;d++){const h=d===1?35:70,cc=d===0?c.x:d===1?c.y:c.z;let x=A[k+d];if(x<cc-h)x+=2*h;else if(x>cc+h)x-=2*h;A[k+d]=x}A[k+1]+=Math.sin(t*0.7+k)*0.004}a.needsUpdate=true;this.motes.material.color.setHex(this.moteCol)}}
     /* atmosphere: a coloured haze */
     {const hz=g2('haze'),f=scene.fog,lk=(T&&T.look)||BIOMES.U;if(hz!==this.hz){this.hz=hz;if(hz){f.color.setHex(lk.haze);f.near=40;f.far=lk.k==='N'?1400:700;scene.background.setHex(lk.haze)}else{f.color.setHex(lk.bg);f.near=lk.fog[0];f.far=lk.fog[1];scene.background.setHex(lk.bg)}}}
@@ -10497,6 +10796,8 @@ const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_v
 function fpsTick(d){const ov=(g2('scan')?'s':'')+(g2('vig')?'v':'');if(ov!==FPS.ov){FPS.ov=ov;$('scrS').hidden=!g2('scan');$('scrV').hidden=!g2('vig');$('scrS').style.setProperty('--sl',(4/Math.min(devicePixelRatio||1,2)).toFixed(2)+'px')}
   if(!FPS.on||!(d>0))return;FPS.n++;FPS.acc+=d;if(FPS.acc>=0.5){$('fps').textContent=Math.round(FPS.n/FPS.acc)+' FPS';FPS.n=0;FPS.acc=0}}
 function frame(now){
+  /* (P60) a device in controller mode draws nothing: it is a gamepad now */
+  if(PADC.on){lastT=now;requestAnimationFrame(frame);return}
   if(FCAP.v){const ms=1000/FCAP.v;if(now<FCAP.due-1.5){requestAnimationFrame(frame);return}FCAP.due=now-FCAP.due>ms*2?now+ms:FCAP.due+ms}
   const rawDt=(now-lastT)/1000,dt=Math.min(FCAP.v?Math.max(0.05,1.5/FCAP.v):0.05,rawDt);lastT=now;fit();fpsTick(rawDt);logFrame(rawDt);
   greenTex.offset.y-=dt*1.6;purpleTex.offset.y-=dt*1.6;
@@ -10504,8 +10805,8 @@ function frame(now){
   else{if(S.state!=='paused')step(dt);else readInput();
     {const p=player,b=p.boost>0||p.selfBoost;GFX.fx=S.state==='race'&&p.wreck<=0?clamp(clamp((p.v/VMAX-0.95)*2.2,0,1)*(0.55+0.45*(p.dive||0))+(b?0.3:0),0,1):0;
       GFX.gl=S.state==='race'&&p.spinD>0&&p.wreck<=0?0.6*Math.pow(1-Math.min(1,p.spinT/p.spinD),1.5):0}
-    VFX.update(dt);if(!NO_RENDER||window.__hlRender)gfxRender(scene,camera)}
-  if(S.state==='menu'){pv3.acc+=dt;if(pv3.acc>=1/30){const cv=!$('menu').hidden?$('preview'):!$('career').hidden?$('carPreview'):!$('train').hidden?$('trPreview'):!$('mp').hidden?$('mpPreview'):!$('ed').hidden?$('edPreview'):null;if(cv)pv3Draw(cv,pv3.acc);pv3.acc=0}}
+    VFX.update(dt);if(!NO_RENDER||window.__hlRender){if(SPL.race&&SPL.ln)splRender();else gfxRender(scene,camera)}}
+  if(S.state==='menu'){pv3.acc+=dt;if(pv3.acc>=1/30){const cv=!$('menu').hidden?$('preview'):!$('career').hidden?$('carPreview'):!$('train').hidden?$('trPreview'):!$('mp').hidden?$('mpPreview'):!$('spl').hidden?$('splPreview'):!$('ed').hidden?$('edPreview'):null;if(cv)pv3Draw(cv,pv3.acc);pv3.acc=0}}
   requestAnimationFrame(frame)}
 
 
@@ -10560,7 +10861,7 @@ function labUI(){const free=BUD-spent(build),box=$('labStats');
   const wb=$('labWpn');wb.innerHTML='';
   const cw=S.car?carW():null;
   for(const[k,w]of Object.entries(WDEF)){const b=document.createElement('button');b.className='chip wchip';const slot=build.weapons.indexOf(k),lk=cw&&!cw.includes(k);b.classList.toggle('lock',!!lk);
-    b.innerHTML=`${slot>=0?slotTag(slot):''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?'passive':w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, passive`:`${w.name}, ${w.cost} ammo per shot`);
+    b.innerHTML=`${slot>=0?slotTag(slot):''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?(w.auto?'auto':'passive'):w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, ${w.auto?'automatic':'passive'}`:`${w.name}, ${w.cost} ammo per shot`);
     b.onclick=()=>{if(lk){$('labWdesc').textContent=`${w.name}: ${w.desc} Win career races to unlock it.`;audio.deny();return}if(build.weapons.includes(k)){build.weapons=[build.weapons[1],build.weapons[0]];saveBuild();audio.sfx('ui_ok')||audio.blip(660,0.08,0.06);const nb=build.weapons.indexOf(k);
         $('labWdesc').innerHTML=`${w.name} moves to ${slotTag(nb)}, ${WDEF[build.weapons[1-nb]].name} to ${slotTag(1-nb)}. ${w.desc}${w.passive?'':` Uses ${w.cost} ammo.`}`;labUI();return}
       /* the two scoops never go together: fitting one swaps out the other */
@@ -10791,6 +11092,246 @@ function qkHud(dt){if(!QK.live)return;
   const b=$('qkFire'),h=icon(w);if(b._h!==h){b._h=h;b.innerHTML=h;b.setAttribute('aria-label',WDEF[w].name)}b.classList.toggle('rdy',rdy);b.classList.toggle('emp',emp);
   const sl=$('qkSlot'),sh=`<kbd class="${lastDev==='pad'?padCls(bind.pad.w1):''}">${lastDev==='pad'?padFace(bind.pad.w1):esc(actLabel('w1'))}</kbd>${h}`;if(sl._h!==sh){sl._h=sh;sl.innerHTML=sh;sl.title=WDEF[w].name}sl.classList.toggle('rdy',rdy)}
 
+/* ---------- split screen (Prototype 60) ----------
+   Up to 8 pilots race on this one screen (docs/SPLITSCREEN.md). One renderer draws the shared scene once per view with
+   setViewport/setScissor and that pilot's chase camera; each view has a small DOM HUD. Pilot 1 flies `player`; pilots 2
+   to 8 take AI places (their frame and colour) and turn human; the AI fills the rest of the field. Split-screen races
+   stay off the online board, best laps, ghosts and the profile; their logs are mode 'split'. */
+
+/* ---- layouts ----
+   A candidate is rows (each row split evenly), columns, or a grid with spare cells (a spare cell shows the standings).
+   Scored for the screen: each view's shape against a racing 1.8:1 (too narrow costs more than too wide: the camera's
+   vertical angle is fixed, so a narrow view loses the road's edges), spare cells and unequal sizes cost a little. */
+const SPL_AR=1.8;
+function splCands(n,W,H){const out=[],seen=new Set(),cut=(a,b,k,i)=>Math.round(a+(b-a)*i/k);
+  const add=(k,name,cells,nv)=>{const rects=cells.slice(0,nv),spare=cells.slice(nv),sig=rects.map(r=>[r.x,r.y,r.w,r.h].join(',')).join('|');if(seen.has(sig))return;seen.add(sig);
+    let c=0,mx=0,mn=1e18;for(const r of rects){const a=r.w/Math.max(1,r.h);c+=a<SPL_AR?Math.log(SPL_AR/a)*1.3:Math.log(a/SPL_AR)*0.7;const A=r.w*r.h;mx=Math.max(mx,A);mn=Math.min(mn,A)}
+    out.push({k,name,rects,spare,score:c/nv+0.25*spare.length+0.25*(mx/Math.max(1,mn)-1)})};
+  const rows=cn=>{const c=[];cn.forEach((m,i)=>{const y0=cut(0,H,cn.length,i),y1=cut(0,H,cn.length,i+1);for(let j=0;j<m;j++){const x0=cut(0,W,m,j),x1=cut(0,W,m,j+1);c.push({x:x0,y:y0,w:x1-x0,h:y1-y0})}});return c};
+  const cols=cn=>{const c=[];cn.forEach((m,i)=>{const x0=cut(0,W,cn.length,i),x1=cut(0,W,cn.length,i+1);for(let j=0;j<m;j++){const y0=cut(0,H,m,j),y1=cut(0,H,m,j+1);c.push({x:x0,y:y0,w:x1-x0,h:y1-y0})}});return c};
+  const even=(k)=>{const b=Math.floor(n/k),e=n%k;return Array.from({length:k},(_,i)=>b+(i>=k-e?1:0))};
+  for(let k=1;k<=n;k++){const cn=even(k);if(cn.some(x=>!x))continue;const same=cn.every(x=>x===cn[0]);
+    add('r'+cn.join(''),k===1?(n===1?'Full screen':n+' side by side'):cn.every(x=>x===1)?n+' stacked':same?'Grid '+cn[0]+' × '+k:'Rows '+cn.join(' + '),rows(cn),n);
+    add('c'+cn.join(''),k===1?n+' stacked':cn.every(x=>x===1)?n+' side by side':same?'Grid '+k+' × '+cn[0]:'Columns '+cn.join(' + '),cols(cn),n)}
+  for(let c=2;c<=4;c++){const r=Math.ceil(n/c);if(r<2||c*r===n||c*r-n>2)continue;add('g'+c+'x'+r,'Grid '+c+' × '+r+' with standings',rows(Array(r).fill(c)),n)}
+  return out.sort((a,b)=>a.score-b.score)}
+/* several screens under one window (Span my screens): pilots shared out by screen area, the best layout on each, so no
+   view straddles a bezel */
+function splAcross(n,scr){const area=scr.map(s=>s.w*s.h),tot=area.reduce((a,b)=>a+b,0),q=area.map(a=>a/tot*n),k=q.map(Math.floor);
+  while(k.reduce((a,b)=>a+b,0)<n){let bi=0,bv=-1;q.forEach((v,i)=>{if(v-k[i]>bv){bv=v-k[i];bi=i}});k[bi]++;q[bi]=k[bi]}
+  const rects=[],spare=[];scr.forEach((s,i)=>{if(!k[i]){spare.push({...s});return}const c=splCands(k[i],s.w,s.h)[0];for(const r of c.rects)rects.push({x:r.x+s.x,y:r.y+s.y,w:r.w,h:r.h});for(const r of c.spare)spare.push({x:r.x+s.x,y:r.y+s.y,w:r.w,h:r.h})});
+  return{k:'screens',name:'Across '+scr.length+' screens',rects,spare,score:-1}}
+function splLayoutFor(n,W,H){const all=splCands(n,W,H);if(SPL.screens&&SPL.screens.length>1)all.unshift(splAcross(n,SPL.screens));const want=SPL.lay[n];return{all,pick:(want&&all.find(c=>c.k===want))||all[0]}}
+
+/* ---- the field ---- */
+/* the AI places local pilots 2 to 8 take, from the back of the roster (the strongest rivals stay AI) */
+const splSlots=()=>roster.filter((r,i)=>i>0&&ROSTER[i].b.frame!==build.frame).reverse();
+const splCss=k=>k===0?(paintOf(build).css||'#ffb000'):(splSlots()[k-1]||{}).css||'#8b93a2';
+function splUnbind(){for(const r of roster){if(!r.lp)continue;const i=roster.indexOf(r);r.lp.r=null;r.lp=null;if(i>0){const c=ROSTER[i];r.isAI=true;r.name=c.name;r.css=c.css}}}
+function splField(){splUnbind();const ps=SPL.pilots.slice(0,SPL_MAX),ai=racers.filter(r=>r!==player&&!r.isGhost);
+  ps.forEach((P,k)=>{const r=k===0?player:ai.pop();if(!r)return;P.r=r;r.lp=P;r.isAI=false;P.n=k+1;if(k)r.name='P'+(k+1);P.one=-1;P.fc=null;P.prev=[];
+    for(const v of['pf','pUp','pRight','pT','pPos'])P[v]=P[v]||new THREE.Vector3();P.fwd=P.fwd||new THREE.Vector3(0,0,-1);P.up=P.up||new THREE.Vector3(0,1,0);P.ci0=false;if(P.cm==null)P.cm=camMode});
+  if(!SPL.fill)for(const r of racers.slice())if(r.isAI&&!r.lp){r.off=true;r.ship.visible=false;r.shadow.visible=false;racers.splice(racers.indexOf(r),1)}}
+/* the grid: about half the AI ahead, then the local pilots in order, then the rest of the AI */
+function splOrder(){const loc=SPL.pilots.map(P=>P.r).filter(r=>r&&racers.includes(r)),ai=racers.filter(r=>!r.lp&&!r.isGhost),h=Math.ceil(ai.length/2);return[...ai.slice(0,h),...loc,...ai.slice(h)]}
+const splLocal=()=>SPL.pilots.filter(P=>P.r);
+function splLead(){const rk=ranking();return rk.find(r=>r.lp&&r.finishT==null)||rk.find(r=>r.lp)||player}
+
+/* ---- views: a camera and a HUD each ---- */
+function splViews(){const box=$('views');box.innerHTML='';SPL.views=[];const n=splLocal().length,far=n<=2?3000:n<=4?1400:900;
+  for(const P of splLocal()){P.cam=P.cam||new THREE.PerspectiveCamera(72,1,0.3,far);P.cam.far=far;P.cam.fov=72;
+    const el=document.createElement('div');el.className='vw';el.style.setProperty('--pc',P.r.css||'#ffb000');
+    el.innerHTML=`<div class="vwt"><b>P${P.n}</b><span class="vwsrc"></span></div><div class="vwpos"><b>–</b><small></small></div><div class="vwlap"></div><div class="vwspd"><b>0</b><small>km/h</small></div><div class="vwbars"><i class="hp"><u></u></i><i class="am"><u></u></i></div><div class="vwmods"><span></span><span></span></div><div class="vwfin" hidden></div>`;
+    el.querySelector('.vwsrc').textContent=splSrcName(P);box.appendChild(el);P.hud=el;P.hk={}}
+  box.hidden=false;document.body.classList.add('split');SPL.lw=SPL.lh=0;splPlace();
+  /* the views carry the HUD; the touch controls only when this device is a pilot */
+  $('hudL').hidden=$('hudR').hidden=true;const tp=coarse&&SPL.pilots.slice(0,SPL_MAX).some(P=>P.src==='dev');$('touch').hidden=!tp;
+  /* the pause button would sit on the top views' lap counters: pads pause with Start and keys with Esc, so it stays only for a touch pilot */
+  $('pauseBtn').hidden=!tp}
+/* lay the views out for the window as it is now (called every frame; does nothing unless the size changed) */
+function splPlace(){const W=cw||innerWidth,H=ch||innerHeight,loc=splLocal();if(W===SPL.lw&&H===SPL.lh&&loc.length===SPL.ln)return;SPL.lw=W;SPL.lh=H;SPL.ln=loc.length;
+  const L=splLayoutFor(loc.length,W,H).pick;SPL.cur=L;
+  loc.forEach((P,i)=>{const r=L.rects[i];P.rect=r;P.cam.aspect=r.w/Math.max(1,r.h);P.cam.updateProjectionMatrix();
+    Object.assign(P.hud.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px',fontSize:clamp(Math.min(r.w*0.55,r.h)*0.055,10,22).toFixed(1)+'px'})});
+  const box=$('views');box.querySelectorAll('.vws').forEach(e=>e.remove());SPL.spare=L.spare.map(r=>{const e=document.createElement('div');e.className='vws';
+    Object.assign(e.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px',fontSize:clamp(Math.min(r.w*0.55,r.h)*0.05,10,20).toFixed(1)+'px'});box.appendChild(e);return{r,e}})}
+function splSrcName(P){return P.src==='dev'?(coarse?'This device':'Keyboard'):P.src==='pad'?'Pad '+(P.pad+1)+(P.small?' · small':''):'Phone · '+String(P.name||'device').replace(/[<>&]/g,'')}
+/* each pilot's chase camera: the single camera's rules (distances, fov, portrait widening from the view's own shape) */
+const _sv=new THREE.Vector3();
+function splCam(P,dt){const r=P.r,cam=P.cam,C=CAMS[S.state==='done'&&CAMS[P.cm].fpv?1:P.cm],tgtF=_sv.copy(P.pf).lerp(P.pT,C.fpv?0.15:0.35).normalize();
+  if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*10)).normalize()}
+  const vk=r.v/VMAX,boo=r.boost>0||!!r.selfBoost,pk=cam.aspect<1?clamp((1-cam.aspect)/0.54,0,1):0,sh=r===player?S.shake:0;
+  if(C.fpv){cam.position.copy(P.pPos).addScaledVector(P.pUp,0.62).addScaledVector(P.pf,0.7);cam.up.copy(P.up);cam.lookAt(look.copy(cam.position).addScaledVector(P.fwd,40).addScaledVector(P.up,-0.6));cam.fov+=((76+16*vk+(boo?6:0)+12*pk)-cam.fov)*Math.min(1,dt*4)}
+  else{const d=(C.d+0.9*vk+(boo?0.5:0))*(1+0.3*pk);cam.position.copy(P.pPos).addScaledVector(P.fwd,-d).addScaledVector(P.up,C.h*(1+0.2*pk));
+    if(sh>0)cam.position.addScaledVector(P.pRight,(Math.random()-.5)*sh*0.8).addScaledVector(P.pUp,(Math.random()-.5)*sh*0.5);
+    cam.up.copy(P.up);cam.lookAt(look.copy(P.pPos).addScaledVector(P.fwd,C.l).addScaledVector(P.up,0.8));cam.fov+=((68+18*vk+(boo?7:0)+14*pk)-cam.fov)*Math.min(1,dt*4)}
+  cam.updateProjectionMatrix()}
+/* each frame of a split-screen race (from step): the cameras; the HUDs 10 times a second; the music follows the leader */
+function splStep(dt){splPlace();for(const P of splLocal())splCam(P,dt);
+  SPL.hudT=(SPL.hudT||0)-dt;if(SPL.hudT>0)return;SPL.hudT=0.1;const rk=ranking(),ld=splLead(),n=racers.length;
+  for(const P of splLocal()){const r=P.r,e=P.hud,h=P.hk,set=(k,sel,v,html)=>{if(h[k]===v)return;h[k]=v;const x=e.querySelector(sel);if(html)x.innerHTML=v;else x.textContent=v};
+    const pl=rk.indexOf(r)+1;set('pos','.vwpos b',String(pl));set('ord','.vwpos small',ord(pl).replace(/^\d+/,'')+' / '+n);
+    set('lap','.vwlap',r.finishT!=null?fmt(r.finishT):'Lap '+Math.min(LAPS,r.done+1)+'/'+LAPS);set('spd','.vwspd b',String(Math.round(r.v*3.6)));
+    const hp=clamp(r.hp/r.d.hp,0,1),am=clamp(r.ammo/r.d.ammo,0,1),hk=(hp*100).toFixed(0)+'|'+(am*100).toFixed(0);if(h.bars!==hk){h.bars=hk;e.querySelector('.hp u').style.width=hp*100+'%';e.querySelector('.am u').style.width=am*100+'%'}
+    const mods=r.weapons.map((w,k)=>(canFire(r,k)?'1':'0')+w).join('|');if(h.mods!==mods){h.mods=mods;e.querySelectorAll('.vwmods span').forEach((s,k)=>{const w=r.weapons[k];s.innerHTML=w?icon(w):'';s.classList.toggle('rdy',!!w&&canFire(r,k))})}
+    e.classList.toggle('low',hp<0.25&&r.wreck<=0);e.classList.toggle('wreck',r.wreck>0);
+    const fin=r.finishT!=null?(pl===1?'WIN':ord(pl))+(S.state==='done'?'':' · flying on'):'';set('fin','.vwfin',fin);e.querySelector('.vwfin').hidden=!fin;
+    /* the controller hears its place and lap twice a second */
+    if(P.src==='ctl'&&mp.sess&&(P.csT=(P.csT||0)-0.1)<=0){P.csT=0.5;splCs(P,{pl,of:n,lap:Math.min(LAPS,r.done+1),laps:LAPS,fin:r.finishT!=null})}}
+  if(SPL.spare.length){const t=rk.slice(0,8).map((r,i)=>`<div class="${r.lp?'me':''}"><b>${i+1}</b><i style="background:${r.css}"></i>${esc(r.name)}${r.finishT!=null?' <small>'+fmt(r.finishT)+'</small>':''}</div>`).join('');
+    for(const s of SPL.spare)if(s.h!==t){s.h=t;s.e.innerHTML=`<div class="vwst"><div class="sub">Standings · lap ${Math.min(LAPS,(ld.done||0)+1)}/${LAPS}</div>${t}</div>`}}
+  music.sense({steer:Math.abs(ld.steerS),brake:ld.brk,boost:ld.boost>0||ld.selfBoost?1:0,rank:n>1?rk.indexOf(ld)/(n-1):0,speed:clamp(ld.v/VMAX,0,1)})}
+/* draw every view: the same scene, each pilot's camera, straight to the screen (no post effects: they are full-screen
+   passes); the fog closes in with the far plane so what is culled fades out first */
+function splRender(){const W=cw||innerWidth,H=ch||innerHeight,f=scene.fog,f0=f.far,n0=f.near;renderer.setScissorTest(true);
+  try{for(const P of splLocal()){const v=P.rect,cam=P.cam;if(!v)continue;const y=H-v.y-v.h;renderer.setViewport(v.x,y,v.w,v.h);renderer.setScissor(v.x,y,v.w,v.h);
+      f.far=Math.min(f0,cam.far*0.95);f.near=Math.min(n0,f.far*0.6);
+      if(VFX.sky&&VFX.sky.visible)VFX.sky.position.copy(cam.position);if(T&&T.env&&T.env.sky)T.env.sky.position.copy(cam.position);
+      const hide=CAMS[P.cm].fpv&&S.state!=='done'&&P.r.ship.visible;if(hide)P.r.ship.visible=false;renderer.render(scene,cam);if(hide)P.r.ship.visible=true}
+    for(const s of SPL.spare){const v=s.r,y=H-v.y-v.h;renderer.setViewport(v.x,y,v.w,v.h);renderer.setScissor(v.x,y,v.w,v.h);renderer.setClearColor(0x090b10,1);renderer.clear()}}
+  finally{f.far=f0;f.near=n0;renderer.setScissorTest(false);renderer.setViewport(0,0,W,H)}
+  GFX.calls=renderer.info.render.calls}
+function splHudOff(){$('views').hidden=true;$('views').innerHTML='';document.body.classList.remove('split');SPL.views=[];SPL.spare=[];SPL.ln=0}
+/* the race is over for this screen when every local pilot has finished (each flies on with the AI's hands meanwhile) */
+function splFinish(){if(S.state!=='race')return;if(splLocal().some(P=>P.r.finishT==null&&!P.gone))return;
+  S.state='done';setTimeout(()=>logEnd('finish'),1600);
+  const rk=ranking(),w=rk.find(r=>r.lp),c=$('count');c.hidden=false;c.classList.add('go');c.textContent=w?'P'+w.lp.n+' WINS':'DONE';setTimeout(()=>audio.voice('win'),300);setTimeout(()=>{if(S.state==='done')c.hidden=true},1600);
+  music.setMood('results');for(const P of splLocal())if(P.src==='ctl')splCs(P,{fin:true,pl:rk.indexOf(P.r)+1,of:rk.length});
+  setTimeout(()=>{if(S.state!=='done'||!SPL.race)return;
+    $('resSeed').textContent=codeStr()+' · '+T.D.name+(T.cx?' · Complex':'')+(T.lk!=='M'?' · '+T.LN.name:'')+(S.cls<1?' · '+clsName(S.cls):'')+' · Split screen';renderResults();
+    if(w)$('resPos').innerHTML='P'+w.lp.n+' wins'+`<small>${fmt(w.finishT)}</small>`;
+    $('resLaps').textContent=splLocal().map(P=>'P'+P.n+' best lap '+fmt(Math.min(...P.r.laps))).join(' · ');
+    $('resRecord').textContent='Split screen races stay off the online board and best laps';$('resCar').hidden=true;$('resBoard').hidden=true;
+    setHud(false);$('results').hidden=false;resButtons();$('resLab').hidden=true;$('menuBtn').textContent='Split screen';$('againBtn').focus({preventScroll:true})},1500)}
+/* back from a split-screen race: the AI places become AI again */
+function splEnd(){SPL.race=false;splUnbind();LAPS=3;splHudOff();fitDirty=true;camInit=false;if(SPL.mpWas&&mp.sess)mp.on=true;SPL.mpWas=false;
+  for(const P of SPL.pilots)if(P.src==='ctl')splCs(P,{lobby:true})}
+function splGo(){if(!SPL.pilots.length){note('Nobody has joined yet · press a button on a pad',2200);return}
+  audio.init();SPL.mpWas=!!(mp.on&&mp.sess);mp.on=false;S.trial=false;S.car=null;S.train=null;
+  SPL.open=false;$('spl').hidden=true;SPL.race=true;LAPS=SPL.laps;startRace()}
+
+/* ---- the lobby ---- */
+function splOpen(){S.state='menu';S.car=null;S.train=null;S.trial=false;hidePages();mpEl.mp.hidden=true;$('spl').hidden=false;SPL.open=true;page='play';splSync();drawPreview('splPreview','splStats')}
+function splClose(){SPL.open=false;$('spl').hidden=true;SPL.pilots.length=0;if(mp.split){mp.split=null;if(mp.sess)mpLeaveRoom()}mpEl.mp.hidden=true;showPage('play')}
+function splAdd(P){P.cm=P.cm==null?camMode:P.cm;P.lit=performance.now();SPL.pilots.push(P);audio.blip(660+SPL.pilots.length*80,0.08,0.06,'triangle');splSync();if(P.src!=='ctl')splCsAll();return P}
+function splDrop(P){const i=SPL.pilots.indexOf(P);if(i<0)return;SPL.pilots.splice(i,1);audio.blip(330,0.08,0.05);splSync();splCsAll()}
+/* pads in the lobby: any button on a new pad joins it; on a joined pad B leaves, Start races, Y switches its mapping,
+   the d-pad left and right change the layout. Returns true when the press was the lobby's (not the menus'). */
+function splPadLobby(p,prev){if($('spl').hidden)return false;const pr=i=>padBtn(p,i)>0.5,edge=i=>pr(i)&&!prev[i],any=p.buttons.some((x,i)=>x.pressed&&!prev[i]);
+  const P=SPL.pilots.find(q=>q.src==='pad'&&q.pad===p.index);
+  if(!P){if(any&&performance.now()-PZ.touch>=300&&SPL.pilots.length<SPL_MAX)splAdd({src:'pad',pad:p.index,id:p.id,small:padSmall(p)});return true}
+  if(any)P.lit=performance.now();
+  if(edge(1))splDrop(P);else if(edge(9)||edge(7)&&P.small)splGo();else if(edge(3)){P.small=!P.small;splSync()}
+  else{const h=padHat(p),x=(pr(14)?-1:pr(15)?1:0)+h[0]+((p.axes[0]||0)<-0.6?-1:(p.axes[0]||0)>0.6?1:0),d=x<0?-1:x>0?1:0;if(d&&d!==P.ld)splLayStep(d);P.ld=d}
+  splLit();return true}
+function splLit(){const t=performance.now();document.querySelectorAll('#splList .splp').forEach((e,i)=>{const P=SPL.pilots[i];e.classList.toggle('lit',!!P&&t-(P.lit||0)<350)})}
+function splLayStep(d){const n=Math.max(1,Math.min(SPL_MAX,SPL.pilots.length)),L=splLayoutFor(n,innerWidth,innerHeight),i=L.all.indexOf(L.pick),k=L.all[(i+d+L.all.length)%L.all.length];SPL.lay[n]=k===L.all[0]?'auto':k.k;splLaySave();splSync()}
+const splLaySave=()=>store.set('hoverline.spllay',JSON.stringify(SPL.lay));
+function splSync(){if(!REAL||$('spl').hidden)return;const list=$('splList'),n=SPL.pilots.length;
+  list.innerHTML=SPL.pilots.map((P,k)=>`<div class="splp${k>=SPL_MAX?' wait':''}" style="--pc:${k<SPL_MAX?splCss(k):'#8b93a2'}"><b>P${k+1}</b><span>${esc(splSrcName(P))}${P.src==='pad'?'<small>'+esc(padLabel(P.id))+'</small>':''}${k>=SPL_MAX?'<small>waits: 8 ships a race</small>':''}</span>`+
+    (P.src==='pad'?`<button class="chip" data-sm="${k}" aria-pressed="${!!P.small}">Small pad</button>`:'')+`<button class="btn kb" data-x="${k}" aria-label="Remove P${k+1}">✕</button></div>`).join('')||
+    `<p class="small">Press any button on a pad to join it. ${coarse?'Tap':'Pick'} “This device plays” for ${coarse?'the touch controls':'the keyboard'}. Phones join with “Let devices join”.</p>`;
+  list.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>splDrop(SPL.pilots[+b.dataset.x]));
+  list.querySelectorAll('[data-sm]').forEach(b=>b.onclick=()=>{const P=SPL.pilots[+b.dataset.sm];P.small=!P.small;splSync()});
+  const dev=SPL.pilots.some(P=>P.src==='dev');$('splDev').setAttribute('aria-pressed',String(dev));$('splDev').textContent=coarse?'This device plays (touch)':'This device plays (keyboard)';
+  $('splAI').setAttribute('aria-pressed',String(SPL.fill));document.querySelectorAll('[data-spllaps]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.spllaps===SPL.laps)));
+  /* the layout: a sketch of it on this screen's shape, and the picker */
+  const m=Math.max(1,Math.min(SPL_MAX,n)),W=innerWidth,H=innerHeight,L=splLayoutFor(m,W,H),sk=$('splSketch'),sw=150,sh=Math.round(sw*H/W);
+  sk.style.width=sw+'px';sk.style.height=sh+'px';sk.innerHTML=L.pick.rects.map((r,i)=>`<i style="left:${r.x/W*100}%;top:${r.y/H*100}%;width:${r.w/W*100}%;height:${r.h/H*100}%;--pc:${splCss(i)}">${i+1}</i>`).join('')+L.pick.spare.map(r=>`<i class="sp" style="left:${r.x/W*100}%;top:${r.y/H*100}%;width:${r.w/W*100}%;height:${r.h/H*100}%"></i>`).join('');
+  const sel=$('splLay'),want=SPL.lay[m]||'auto';sel.innerHTML=`<option value="auto">Auto · ${esc(L.all[0].name)}</option>`+L.all.slice(SPL.screens&&SPL.screens.length>1?0:1,7).map(c=>`<option value="${c.k}">${esc(c.name)}</option>`).join('');sel.value=L.all.some(c=>c.k===want)?want:'auto';
+  $('splGo').disabled=!n;$('splGo').textContent=n?`Race · ${Math.min(n,SPL_MAX)} pilot${n>1?'s':''}`:'Race';
+  const s=mp.sess&&mp.split==='screen'?mp.sess.state:null,dn=s?s.roster.filter(e=>e.id!==s.id).length:0;
+  $('splRoom').textContent=s?(s.link&&s.link.carrier==='lan'?'Same-room link open':'Room '+(mp.pub?'Public':s.code))+' · '+dn+' device'+(dn===1?'':'s')+' joined':'';$('splRoom').hidden=!s;$('splJoin').textContent=s?'Add devices':'Let devices join';$('splShut').hidden=!s;
+  splScreensSync()}
+$('splDev').onclick=()=>{const P=SPL.pilots.find(q=>q.src==='dev');if(P)splDrop(P);else if(SPL.pilots.length<SPL_MAX)splAdd({src:'dev'})};
+$('splAI').onclick=()=>{SPL.fill=!SPL.fill;store.set('hoverline.splfill',SPL.fill?'1':'0');splSync()};
+document.querySelectorAll('[data-spllaps]').forEach(b=>b.onclick=()=>{SPL.laps=+b.dataset.spllaps;splSync()});
+$('splLay').onchange=e=>{const n=Math.max(1,Math.min(SPL_MAX,SPL.pilots.length));SPL.lay[n]=e.target.value;splLaySave();splSync()};
+$('splGo').onclick=splGo;$('splBack').onclick=splClose;$('splNew').onclick=()=>{newTrack();drawPreview('splPreview','splStats')};
+$('splBtn').onclick=()=>{mpEl.mp.hidden=true;splOpen()};
+/* phones and other devices: open a room the multiplayer way, marked as a split screen */
+$('splJoin').onclick=()=>{mp.split='screen';$('spl').hidden=true;SPL.open=false;mpEl.mp.hidden=false;mpView();mpSyncConn();if(!mp.sess)note('Create a room (or host one with no internet): devices that join become controllers',3200)};
+$('splShut').onclick=()=>{if(mp.sess)mpLeaveRoom();mp.split=null;mpEl.mp.hidden=true;splOpen()};
+$('mpSplBack').onclick=()=>{mpEl.mp.hidden=true;splOpen()};
+addEventListener('resize',()=>{if(SPL.open)splSync()});
+setInterval(()=>{if(SPL.open&&!$('spl').hidden)splLit()},120);
+
+/* ---- devices as controllers, the screen's side ---- */
+/* a device in the split room: one more pilot, as soon as it joins; gone when it leaves */
+function splRoomSync(st){if(mp.split!=='screen'||!st)return;const ids=new Set(st.roster.filter(e=>e.id!==st.id).map(e=>e.id));
+  for(const P of SPL.pilots.slice())if(P.src==='ctl'&&!ids.has(P.ctl)){if(SPL.race){P.gone=true}else splDrop(P)}
+  for(const e of st.roster)if(e.id!==st.id&&!SPL.pilots.some(P=>P.src==='ctl'&&P.ctl===e.id))splAdd({src:'ctl',ctl:e.id,name:(e.p&&e.p.n)||'Phone',ci:{}});
+  for(const P of SPL.pilots)if(P.src==='ctl'){const e=st.roster.find(x=>x.id===P.ctl);if(e){P.name=(e.p&&e.p.n)||P.name;P.gone=false}}
+  splSync();splCsAll()}
+/* in the lobby every controller hears its pilot number (again with each roster change, so a lost one is made good) */
+function splCsAll(){if(SPL.race||!mp.sess||mp.split!=='screen')return;for(const P of SPL.pilots)if(P.src==='ctl')splCs(P,{lobby:true})}
+function splCi(m,from){const P=SPL.pilots.find(q=>q.src==='ctl'&&q.ctl===from);if(!P)return;if(m.q!=null&&P.ci&&P.ci.q!=null&&m.q<P.ci.q&&P.ci.q-m.q<1000)return;/* an older message arriving late */
+  P.ci={s:+m.s||0,p:+m.p||0,b:m.b|0,f:Array.isArray(m.f)?m.f.map(x=>x|0):[0,0,0],v:m.v,q:m.q,at:performance.now()};P.lit=P.ci.at;
+  if(!SPL.race&&m.go&&SPL.open)splGo()}
+/* tell a controller who it is and how its race is going */
+function splCs(P,o){if(!mp.sess)return;const k=SPL.pilots.indexOf(P);mp.sess.send({t:'cs',to:P.ctl,n:k+1,c:P.r?P.r.css:splCss(k),st:SPL.race?S.state:'lobby',...o})}
+/* (P60) multi-monitor: Chrome's Window Management API, outside itch's frame: the game opens itself in one window over
+   every screen, straight into the split-screen lobby, and lays whole views out on each screen */
+const splFramed=(()=>{try{return window.top!==window}catch(e){return true}})();
+function splScreensSync(){const b=$('splScr');if(!b)return;b.hidden=false;b.textContent=splFramed?'Open in its own window':'getScreenDetails' in window?'Span my screens':'One screen only here';b.disabled=!splFramed&&!('getScreenDetails' in window)}
+$('splScr').onclick=async()=>{const u=new URL(location.href);u.searchParams.set('split','1');
+  if(splFramed){window.open(u.href,'_blank');return}
+  try{const d=await window.getScreenDetails(),sc=d.screens;if(sc.length<2){note('Only one screen found',2000);return}
+    const x0=Math.min(...sc.map(s=>s.availLeft)),y0=Math.min(...sc.map(s=>s.availTop)),x1=Math.max(...sc.map(s=>s.availLeft+s.availWidth)),y1=Math.max(...sc.map(s=>s.availTop+s.availHeight));
+    window.open(u.href,'_blank',`popup,left=${x0},top=${y0},width=${x1-x0},height=${y1-y0}`)}catch(e){note('The browser said no to the screens ('+String(e&&e.message||e).slice(0,40)+')',2600)}};
+/* in a window opened over several screens: where each screen sits inside it */
+async function splScreensFind(){if(!('getScreenDetails' in window)||splFramed)return;try{const d=await window.getScreenDetails(),sx=window.screenX,sy=window.screenY,W=innerWidth,H=innerHeight;
+  const r=d.screens.map(s=>({x:Math.max(0,s.availLeft-sx),y:Math.max(0,s.availTop-sy),x1:Math.min(W,s.availLeft+s.availWidth-sx),y1:Math.min(H,s.availTop+s.availHeight-sy)})).filter(s=>s.x1-s.x>200&&s.y1-s.y>150).map(s=>({x:s.x,y:s.y,w:s.x1-s.x,h:s.y1-s.y}));
+  SPL.screens=r.length>1?r:null;SPL.ln=0;splSync()}catch(e){}}
+if(QS.get('split')==='1')setTimeout(()=>{splOpen();splScreensFind()},300);
+/* ---------- controller mode (Prototype 60) ----------
+   A device that joins a split-screen room (or picks Be a controller first) stops being a game and becomes a gamepad:
+   a big steer zone (slide left and right, up and down for the nose; tilt optional) and big Boost, Brake and module
+   buttons. It sends its state to the screen 20 times a second on a same-room link (10 a second online, and at once on
+   any press), with press counters so a lost message never loses a shot. It draws no race, which saves its battery.
+   The screen side is in 095-split-screen.js (splCi, splCs). */
+const PADC={on:false,host:null,s:0,p:0,b:0,f:[0,0,0],v:0,q:0,sent:0,timer:0,tilt:store.get('hoverline.padctilt')==='1',zone:null,lostAt:0};
+function padcOpen(){if(PADC.on){padcTick();return}const st=mp.sess&&mp.sess.state;if(!st)return;
+  PADC.on=true;PADC.host=st.hostId;PADC.lostAt=0;Object.assign(PADC,{s:0,p:0,b:0,f:[0,0,0],v:0});
+  chirpStop();mpEl.mp.hidden=true;hidePages();$('padc').hidden=false;try{music.stop()}catch(e){}
+  if(coarse){goFull();if(PADC.tilt)askMotion()}wakeScreen(true);padcSync();$('pcMsg').textContent='Connected · waiting for the screen';
+  clearInterval(PADC.timer);PADC.timer=setInterval(padcTick,mp.sess.state.link&&mp.sess.state.link.carrier==='net'?100:50)}
+function padcClose(){if(!PADC.on)return;PADC.on=false;clearInterval(PADC.timer);$('padc').hidden=true;wakeScreen(false);try{music.ensure();menuMusic()}catch(e){}}
+function padcSend(){const s=mp.sess;if(!s||!PADC.on)return;const st=s.state;
+  let steer=PADC.s;if(PADC.tilt&&tilt.ok){let d=wrapA(tilt.ang-tilt.neutral)*180/Math.PI;d=Math.abs(d)<1.5?0:d-Math.sign(d)*1.5;steer+=(tilt.flip?1:-1)*d/24}
+  s.send({t:'ci',to:st.hostId,s:Math.round(clamp(steer,-1,1)*100),p:Math.round(clamp(PADC.p,-1,1)*100),b:PADC.b,f:PADC.f,v:PADC.v,q:++PADC.q});PADC.sent=performance.now()}
+function padcTick(){const s=mp.sess;if(!PADC.on)return;
+  /* the screen left: the session would make this device the host of an empty room, so leave instead */
+  if(!s||s.state.closed||s.state.isHost||s.state.hostId!==PADC.host){if(!PADC.lostAt){PADC.lostAt=performance.now();$('pcMsg').textContent='The screen left the room';$('pcN').textContent='–'}
+    else if(performance.now()-PADC.lostAt>2500){mpLeaveRoom();mpEl.mp.hidden=false;mpView()}return}
+  padcSend()}
+/* what the screen says: who this controller is, the race */
+function padcState(m){const n=$('pcN');n.textContent='P'+(m.n||'?');n.style.setProperty('--pc',m.c||'#ffb000');$('padc').style.setProperty('--pc',m.c||'#ffb000');
+  const t=m.lobby||m.st==='lobby'||m.st==='menu'?'You are P'+m.n+' · waiting for the race':m.fin?'Finished '+ord(m.pl||0):m.st==='countdown'?'Get ready…':m.pl?ord(m.pl)+' of '+(m.of||8)+' · lap '+(m.lap||1)+'/'+(m.laps||3):'Racing';
+  $('pcMsg').textContent=t;$('pcGo').hidden=!(m.lobby||m.st==='lobby'||m.st==='menu');
+  if(m.fin&&!PADC.finSaid){PADC.finSaid=true;try{navigator.vibrate&&navigator.vibrate([60,40,60])}catch(e){}}if(!m.fin)PADC.finSaid=false}
+function padcSync(){$('pcTilt').setAttribute('aria-pressed',String(PADC.tilt));$('pcTilt').hidden=!coarse}
+/* the steer zone: where the finger first lands is the centre; a quarter of the zone's width is full lock */
+{const z=$('pcSteer'),dot=$('pcDot');let id=null,x0=0,y0=0;
+  const show=(x,y)=>{dot.style.transform=`translate(calc(-50% + ${x}px),calc(-50% + ${y}px))`};
+  z.addEventListener('pointerdown',e=>{id=e.pointerId;x0=e.clientX;y0=e.clientY;try{z.setPointerCapture(id)}catch(_){}z.classList.add('on');const b=z.getBoundingClientRect();dot.style.left=(x0-b.left)+'px';dot.style.top=(y0-b.top)+'px';show(0,0);e.preventDefault()});
+  z.addEventListener('pointermove',e=>{if(e.pointerId!==id)return;const b=z.getBoundingClientRect(),dx=e.clientX-x0,dy=e.clientY-y0;
+    PADC.s=dead(clamp(dx/Math.max(50,b.width*0.25),-1,1),0.06);PADC.p=dead(clamp(dy/Math.max(50,b.height*0.3),-1,1),0.2);show(clamp(dx,-b.width,b.width),clamp(dy,-b.height,b.height))});
+  const end=e=>{if(e.pointerId!==id)return;id=null;PADC.s=PADC.p=0;z.classList.remove('on');show(0,0)};
+  for(const ev of['pointerup','pointercancel','lostpointercapture'])z.addEventListener(ev,end);z.addEventListener('contextmenu',e=>e.preventDefault())}
+/* the buttons: bits 1 brake, 2 boost, 4 module 1 held, 8 module 2 held; f counts presses of module 1 and 2 */
+for(const[id,bit,f]of[['pcBrk',1,-1],['pcBst',2,-1],['pcW1',4,0],['pcW2',8,1]]){const el=$(id);
+  const on=e=>{PADC.b|=bit;if(f>=0)PADC.f[f]++;el.classList.add('on');try{el.setPointerCapture(e.pointerId)}catch(_){}try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}if(performance.now()-PADC.sent>25)padcSend();e.preventDefault()};
+  const off=()=>{if(!(PADC.b&bit))return;PADC.b&=~bit;el.classList.remove('on');padcSend()};
+  el.addEventListener('pointerdown',on);for(const ev of['pointerup','pointercancel','lostpointercapture'])el.addEventListener(ev,off);el.addEventListener('contextmenu',e=>e.preventDefault())}
+$('pcView').onclick=()=>{PADC.v++;padcSend()};
+$('pcTilt').onclick=()=>{PADC.tilt=!PADC.tilt;store.set('hoverline.padctilt',PADC.tilt?'1':'0');if(PADC.tilt){askMotion();setTimeout(()=>{if(!tiltCentre())note('No tilt reading yet · hold the device up',2000)},400)}padcSync()};
+$('pcGo').onclick=()=>{const s=mp.sess;if(s)s.send({t:'ci',to:s.state.hostId,go:1,s:0,p:0,b:0,f:PADC.f,q:++PADC.q})};
+$('pcLeave').onclick=()=>{mpLeaveRoom();mpEl.mp.hidden=false;mpView()};
+/* Be a controller (Multiplayer screen): join the screen's room the usual way; any device that joins a split room is a
+   controller anyway, so this only says what comes next */
+$('padcBtn').onclick=()=>{mp.split=mp.split==='pad'?null:'pad';$('padcBtn').setAttribute('aria-pressed',String(mp.split==='pad'));
+  if(mp.split==='pad')note(mpConn==='lan'?'Now Join the screen\'s room: pair as usual and this device becomes its controller':'Now type the screen\'s room code and Join: this device becomes its controller',3200)};
 /* ---------- the screens ---------- */
 $('qkTap').addEventListener('click',e=>{if(e.target.closest('#qkTapMenu'))return;if(coarse&&REAL)askMotion();qkGo()});
 addEventListener('keydown',e=>{if(!$('qkTap').hidden&&(e.code==='Enter'||e.code==='Space'||e.code==='NumpadEnter')&&!e.repeat){e.preventDefault();qkGo()}});

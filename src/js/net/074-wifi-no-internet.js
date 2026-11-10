@@ -102,7 +102,7 @@ const LAN=(()=>{
   async function offer(opt){const pc=new RTCPeerConnection({iceServers:[]}),ch=pc.createDataChannel('hl',{ordered:true}),tag=opt&&opt.tag!=null?opt.tag&255:(()=>{for(let k=0;k<32;k++){const t=crypto.getRandomValues(new Uint8Array(1))[0];if(!L.pending.has(t))return t}return 0})();let gid=null;
     ch.onmessage=e=>{let d;try{d=JSON.parse(e.data)}catch(x){return}
       if(d.t==='_hi'&&!gid){gid=String(d.id).slice(0,16);L.guests.set(gid,ch);send(ch,{t:'_hello',host:L.id,peers:[...L.guests.keys()].filter(x=>x!==gid)});bcast({t:'_join',id:gid},gid);L.handlers&&L.handlers.onPeer&&L.handlers.onPeer(gid);L.onChange&&L.onChange('joined')}
-      else if(d.t==='_m'&&gid){L.handlers&&L.handlers.onMessage&&L.handlers.onMessage(d.m,gid);bcast({t:'_m',m:d.m,from:gid},gid)}};
+      else if(d.t==='_m'&&gid){L.handlers&&L.handlers.onMessage&&L.handlers.onMessage(d.m,gid);if(!(d.m&&d.m.to&&d.m.to===L.id))bcast({t:'_m',m:d.m,from:gid},gid)}};/* (P60) one addressed to the host isn't relayed: controllers' inputs stay off the others' links */
     const gone=()=>{if(!gid||L.guests.get(gid)!==ch)return;L.guests.delete(gid);bcast({t:'_leave',id:gid});L.handlers&&L.handlers.onLeave&&L.handlers.onLeave(gid);L.onChange&&L.onChange('left')};
     ch.onclose=gone;pc.onconnectionstatechange=()=>{if(pc.connectionState==='failed'||pc.connectionState==='closed')gone()};
     await pc.setLocalDescription(await pc.createOffer());await gather(pc);

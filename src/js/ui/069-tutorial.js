@@ -55,14 +55,28 @@ function tutStart(from){if(tut.on)return;tut.from=from;TUT.length=TUT_N;if(TUT_F
   tutScene();if(tilt.enabled&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}
   if(coarse){$('touch').hidden=false;touchLayout();for(let k=0;k<2;k++){const w=build.weapons[k],b=$('w'+(k+1));b._h=null;b.innerHTML=`${icon(w)}<small>${WDEF[w].name}</small>`;b.classList.toggle('rdy',!WDEF[w].passive)}}
   tut.hold=[true,true];tut.pp=true;tut.now=0;tut.fin=false;$('tut').hidden=false;tutShow(0)}
-function tutEnd(){if(!tut.on)return;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
+function tutEnd(){if(!tut.on)return;const early=!tut.fin;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');if(tut.sv){build.frame=tut.sv;tut.sv=null}tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
   for(const k of['steer','pitch','psl','brake','boost','f1','f2'])touch[k]=0;showStick(0,0);
   for(const s of tut.shots)labScene.remove(s.m);tut.shots=[];labScene.remove(tut.g);if(tut.ship){labScene.remove(tut.ship);disposeObj(tut.ship);tut.ship=null}for(const o of tut.hid)o.visible=true;tut.hid=[];
-  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else showPage('career')}
+  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else if(tut.from==='ff')showPage('title');else showPage('career');
+  if(early)note(FF_NOTE,5000)}
 function tutAsk(){hidePages();$('tutAsk').hidden=false}
 $('tutYes').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('career')};
-$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career')};
-$('tutBtn').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('opts')};
+$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career');note(FF_NOTE,5000)};
+/* Prototype 60: the new-player experience has a name, First flight: the spoken frame select (a new career), the guidance
+   question and the tutorial. It is offered once on a first launch and replays from Options > Tutorial. A replay picks a
+   frame only for the tutorial (the frame is put back afterwards) and never touches the career, its credits, the saved
+   build or any setting. Skipping anywhere sets hoverline.tut and says where to find it again. */
+const FF_NOTE='First flight skipped. Replay it any time from Options › Tutorial.';
+const ff={from:null};
+async function ffBegin(from){if(coarse){goFull();if(!(await tiltCheck()))return}ff.from=from;fsOpen()}
+function ffBack(){const f=ff.from;ff.from=null;if(f==='opts')$('opts').hidden=false;else ffOpen()}
+function ffOpen(){hidePages();$('ffAsk').hidden=false;S.state='menu'}
+$('tutBtn').onclick=()=>ffBegin('opts');
+$('ffYes').onclick=()=>{$('ffAsk').hidden=true;ffBegin('ff')};
+$('ffNo').onclick=()=>{store.set('hoverline.tut','1');$('ffAsk').hidden=true;showPage('title');note(FF_NOTE,5000)};
+/* only when nothing has been saved yet: no tutorial flag, no career and no saved best laps or build */
+setTimeout(()=>{if(S.state==='menu'&&page==='title'&&!store.get('hoverline.tut')&&!carExists()&&!store.get('hoverline.best')&&!store.get('hoverline.build')&&!store.get('hoverline.name'))ffOpen()},0);
 $('tutSkip').onclick=tutEnd;addEventListener('resize',()=>{if(tut.on&&!tut.fin)tutText()});
 addEventListener('keydown',e=>{if(S.state==='tut'&&(e.code==='Escape'||keyIs('pause',e.code))){e.preventDefault();tutEnd()}});
 function tutFrame(dt){const inp=readInput(),st=TUT[tut.i],P=tut.p,sh=tut.ship,now=performance.now(),rt=Math.min(0.25,Math.max(0,(now-(tut.now||now))/1000));tut.now=now;tut.t+=rt;

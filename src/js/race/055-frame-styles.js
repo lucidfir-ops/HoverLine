@@ -107,9 +107,9 @@ function aiInput(r,dt){
   const fireW=[false,false],holdW=[false,false];/* passive slots (scoops) never fire */
   if((r.isAI||BOT&&r===player)&&r.finishT==null)for(let k=0;k<2;k++){const w=r.weapons[k];if(!canFire(r,k)||r.isAI&&(S.car||QK.live)&&S.aiF<1&&(S.raceT/5+r.skill*37)%1>S.aiF)continue;
     if(w==='cannon'){holdW[k]=aiWants(r,w);continue}
-    /* (P58) Phase, Barrier and Decoy: Hard watches for its moment every frame; Easy misses some */
-    const dfn=hn&&(w==='phase'||w==='barrier'||w==='decoy');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
-    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
+    /* (P58) Phase, Barrier and Decoy (P60: now the Reflector; Flares fire themselves): Hard watches for its moment every frame; Easy misses some */
+    const dfn=hn&&(w==='phase'||w==='barrier'||w==='reflector');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
+    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+Math.random()*0.3:0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
   const kn=Math.max(T.Kn[idxAt(r.u+r.v*0.2)],T.Kn[idxAt(r.u+r.v*0.4)]),kc=T.Kn[idxAt(r.u+r.v*0.35)];
   const slA=T.Tg[idxAt(r.u+12)].y,pitch=rUp?1:r.air&&r.air!==true?F.ja:r.air===true||kc<-0.0011?-1:brake>0.05?0.7:Math.abs(T.Cs[idxAt(r.u+look*0.6)])>0.009?0.5*(r.sty?r.sty.up:1):slA>0.03?clamp(slA/0.08,0,1)*(r.sty?clamp(r.sty.up,0.4,1.2):1):slA<-0.03&&r.d.aero>0?-clamp(-slA*F.dv/0.08,0,1)*(r.sty?clamp(r.sty.dive,0.4,1.2):1):0;
   /* Held boost costs shield, so the AI saves it for straights while its shield is healthy; on a green strip the strip pays

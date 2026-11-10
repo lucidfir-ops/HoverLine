@@ -71,23 +71,27 @@ function startSpin(r,dur,big){r.spinT=0;r.spinD=dur;r.glBig=!!big;r.glSeed=Math.
 function spinStep(r,dt){if(!(r.spinD>0))return;r.spinT+=dt;if(r.spinT>=r.spinD){r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0}}
 /* steering from the nose: up to +80% nose up (grip), -15% nose down */
 function trimTurn(r){const pu=Math.max(0,r.pitch),pd=Math.max(0,-r.pitch);return 1+0.8*pu-0.15*pd}
-function wreck(r){if(r.stat)r.stat.wrecks++;if(r===player&&LOG.cur){LOG.cur.acc.wrecks++;logEv('wreck',{cause:LOG.lastSrc})}r.hp=0;r.phase=0;r.wreck=3.8;r.dive=0;r.stun=0;r.boost=0;r.selfBoost=false;r.barrier=0;r.ammo=Math.floor(r.ammo/2);r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0;const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);
+function wreck(r){if(r.stat)r.stat.wrecks++;if(r===player&&LOG.cur){LOG.cur.acc.wrecks++;logEv('wreck',{cause:LOG.lastSrc})}r.hp=0;r.phase=0;r.refl=0;r.wreck=3.8;r.dive=0;r.stun=0;r.boost=0;r.selfBoost=false;r.barrier=0;r.ammo=Math.floor(r.ammo/2);r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0;const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);
   {const v=r===player?0.9:clamp(0.6-Math.abs(wrapU(r.u-player.u))/300,0,0.5);audio.sfx('wreck',v/0.9)||audio.boom(v)}
   if(r===player){rumble(1,1,420);cue('amM','lost');cue('hpM','lost');flash('rgba(255,74,61,.6)',0);S.shake=1;music.event('hit')}}
 const tp=new THREE.Vector3();
 function updateShots(dt){
+  flaresStep();
   for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.life-=dt;if(s.brS===undefined){s.brS=s.owner&&s.owner.brS||null;s.br=s.owner&&s.owner.brS?s.owner.br:null}
     if(s.type==='missile'){s.u+=s.v*dt;
       if(s.target){const d=wrapU(s.target.u-s.u)*(s.rear?-1:1);if(d>-4&&d<300)s.lat+=clamp(s.target.lat-s.lat,-1,1)*(s.mini?10:16)*dt;}
       s.lat=clampLat(s.u,s.lat,0.6,s)}
-    else if(s.type==='hunter'){if(s.dud||(s.target&&s.target.isDecoy&&Math.abs(wrapU(s.target.u-s.u))<3)){s.life=0;s.dud=true}if(!s.target||!live(s.target)){s.target=leaderFor(s.owner);s.wait=!!s.target&&s.target.utot<s.owner.utot}if(s.target){const d=wrapU(s.target.u-s.u);if(s.wait&&d>3)s.wait=false;
+    else if(s.type==='hunter'){if(s.dud||(s.target&&s.target.isDecoy&&Math.abs(wrapU(s.target.u-s.u))<3)){fizzle(s)}/* (P60) a Hunter the Reflector sent back (rear) flies backward at the ship that fired it, and goes out if that ship is gone */
+      if(s.rear&&(!s.target||!live(s.target)||s.target.isDecoy&&s.target.wreck)){s.life=0}
+      else if(!s.target||!live(s.target)){s.target=leaderFor(s.owner);s.wait=!!s.target&&s.target.utot<s.owner.utot}if(s.target){const d=wrapU(s.target.u-s.u)*(s.rear?-1:1);if(s.wait&&d>3)s.wait=false;
       // fired by the leader at the pilot behind: it drops back and waits in their line; otherwise it chases
       if(s.wait){s.v+=(Math.max(30,s.target.v-60)-s.v)*Math.min(1,dt*2);if(d>-200)s.lat+=clamp(s.target.lat-s.lat,-1,1)*22*dt}
+      else if(s.rear){s.v=-70;if(d>-6&&d<160)s.lat+=clamp(s.target.lat-s.lat,-1,1)*26*dt}
       else{s.v=d>0&&d<30?Math.min(s.v,s.target.v+45):Math.max(s.v,s.target.v+70);if(d>-6&&d<160)s.lat+=clamp(s.target.lat-s.lat,-1,1)*26*dt}}s.u+=s.v*dt;s.lat=clampLat(s.u,s.lat,0.6,s)}
     else if(s.type==='bolt'||s.type==='rocket'||s.type==='quake')s.u+=s.v*dt;
     else if(s.type==='decoy'){s.v=Math.max(0,s.v-30*dt);s.u+=s.v*dt;s.utot+=s.v*dt;if(s.owner)decoyPull(s);s.mesh.children[1].material.opacity=0.35+0.3*Math.abs(Math.sin(S.t*23));
-      for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3){o.life=0;o.dud=true}
-      if(s.life<=0){s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
+      for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3)fizzle(o);
+      if(s.life<=0){for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter'))fizzle(o);s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
     else if(s.type==='bounce'){s.u+=s.v*dt;s.lat+=s.vl*dt;const bf=surf(s.u,s.lat,s);if(s.lat<bf.lo+1||s.lat>bf.hi-1){s.lat=s.lat>bf.hi-1?bf.hi-1:bf.lo+1;s.vl=-s.vl;if(Math.abs(wrapU(s.u-player.u))<150)audio.blip(500,0.06,0.05,'square',250)}}
     else if(s.type==='mine')s.arm-=dt;
     const sh=surf(s.u,s.lat,s).h,sp=sampleAt(s.u);tp.copy(sp.p).addScaledVector(sp.r,s.lat).addScaledVector(sp.u,sh+(s.type==='mine'?0.9:s.type==='quake'?1.3:s.type==='smoke'?0:1.1));s.mesh.position.copy(tp);
@@ -101,15 +105,18 @@ function updateShots(dt){
         s.hits.add(r);LOG.src='quake';LOG.by=s.owner;damage(r,13,r.ship.position.clone(),0.45);LOG.src=LOG.by=null;if(!r.proxy)r.v*=0.85;if(r===player){S.shake=Math.max(S.shake,0.6);audio.hit(0.5)}}}
       for(let j=shots.length-1;j>=0;j--){const o=shots[j];if(o.type==='mine'&&Math.abs(wrapU(o.u-s.u))<4){explode(o.mesh.position.clone(),false);scene.remove(o.mesh);shots.splice(j,1);if(j<i)i--}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();s.mesh.userData.edge.dispose();shots.splice(i,1)}continue}
-    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=2.4}}
+    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=1.6}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();shots.splice(i,1)}continue}
     let hit=null;const wide=s.type==='bolt'?1.5:s.type==='rocket'?1.6:s.type==='bounce'?2:1.9,len=s.type==='bolt'?2.4:2.6;
     if(s.type==='missile'&&s.dud){explode(tp.clone(),false);scene.remove(s.mesh);shots.splice(i,1);continue}
     if(s.type!=='mine'||s.arm<=0)for(const r of racers){if(!live(r)||r.phase>0)continue;if(s.type==='hunter'&&r!==s.target)continue;
       if(s.brS&&r.brS===s.brS&&r.br!==s.br)continue;
       if(r===s.owner&&(s.type==='bounce'?s.life>5:(s.type!=='mine'&&!(s.rear&&s.life<2.4))||s.life>29))continue;
-      const du=wrapU(r.u-s.u);if(Math.abs(du)<len&&Math.abs(r.lat-s.lat)<wide*(r.d.size||1)){hit=r;break}}
+      if(r.refl>0&&r.proxy&&REFLECTABLE.includes(s.type)&&!s.dud)continue; // (P60) another device's Reflector turns it round there
+      const du=wrapU(r.u-s.u);if(Math.abs(du)<len&&Math.abs(r.lat-s.lat)<wide*(r.d.size||1)){if(s.target&&s.target.isDecoy&&s.target.owner===r){fizzle(s);break}hit=r;break}}  // (P60) a shot on the flares it dropped for is already beaten: it can't hit them
+    if(hit&&hit.refl>0&&!hit.proxy&&REFLECTABLE.includes(s.type)&&!s.dud){reflectShot(s,hit,i);continue}
     if(hit){const d=Math.abs(wrapU(hit.u-player.u));if(mp.on&&s.nid&&!hit.proxy)mp.sess&&mp.sess.send({t:'boom',n:s.nid});
+      if(s.fl&&s.fl===hit&&hit.fl)hit.fl.hit++;
       LOG.src=s.type;LOG.by=s.owner||null;if(s.owner&&s.owner.stat&&s.owner!==hit)s.owner.stat.given++;if(LOG.cur){const A=LOG.cur.acc;if(s.owner===player&&hit!==player){A.hitsOn[s.type]=(A.hitsOn[s.type]||0)+1;logEv('give',{w:s.type,to:hit.name})}if(hit===player)A.hitsBy[s.type]=(A.hitsBy[s.type]||0)+1}
       if(s.type==='missile'){damage(hit,s.mini?10:24,tp.clone(),s.mini?0.45:1.0);audio.boom(hit===player?(s.mini?0.4:0.7):clamp((s.mini?0.3:0.5)-d/300,0,0.4))}
       else if(s.type==='hunter'){damage(hit,42,tp.clone(),1.2);explode(tp.clone(),true);audio.boom(hit===player?0.9:clamp(0.6-d/300,0,0.5))}
