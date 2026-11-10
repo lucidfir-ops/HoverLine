@@ -8,8 +8,8 @@ AGENTS.md. Status: todo, running, review, merged, parked. Working branch: `claud
 | # | Task | Agent (model, effort) | Wave | Status |
 | --- | --- | --- | --- | --- |
 | 0 | CLAUDE.md, AGENTS.md, STYLE.md, agent definitions, this plan | lead | 0 | merged |
-| 1 | Track editor: rebuild 1 s after the last + or − press (timer restarts on each press) | quick-fixer (Haiku, low) | 1 | running |
-| 2 | Smoke module: shorter cloud | quick-fixer (Haiku, low) | 1 | running |
+| 1 | Track editor: rebuild 1 s after the last + or − press (timer restarts on each press) | quick-fixer (Haiku, low) | 1 | merged |
+| 2 | Smoke module: shorter cloud | quick-fixer (Haiku, low) | 1 | merged |
 | 3 | Style pass: 💔 emoji → white SVG icon everywhere; audit the UI against STYLE.md and fix what disagrees; extend STYLE.md where the game shows rules it doesn't state | feature-builder (Sonnet, medium) | 1 | running |
 | 4 | AI: boost through shield recharge reliably at every level while still filling the shield; smoke makes AI drive erratically while in it | feature-builder (Sonnet, medium) | 1 | running |
 | 5 | Modules: new Reflector (half Phase's cost and time, sends fire back down the track); Decoy becomes automatic flares (fire 1.5× the incoming attack's cost to block it, if ammo allows; 2× if 1.5× blocks too much), much dearer | feature-builder (Sonnet, medium) | 2 (after 2, same files) | todo |
