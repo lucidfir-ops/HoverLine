@@ -5,6 +5,7 @@
 const fs = require('fs');
 const { launch, open } = require('./lib.js');
 const [out, codesArg, TOD = 'day'] = process.argv.slice(2);
+if (!out || !codesArg) { console.log('a render tool, not a test: give an output folder and track codes (see the first lines)'); process.exit(0) }
 const CLOCK = () => { let T = 1000; performance.now = () => T; window.requestAnimationFrame = () => 0; window.cancelAnimationFrame = () => {} };
 (async () => {
   fs.mkdirSync(out, { recursive: true });

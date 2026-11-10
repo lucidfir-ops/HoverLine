@@ -145,3 +145,17 @@ python3 orbvar.py results/tr.jsonl -- results/orb.jsonl     # a frame's variant 
 ## Flares (Prototype 60)
 
 `node flares.js stress|field N OFFSET` measures how much of the homing fire Flares (the old Decoy, key `decoy`) block: carriers count the Missile, Swarm and Hunter attacks that locked on them (`r.fl` in the game: lock, fire, dry, block, hit). `stress` puts four carriers against four homing-heavy racers (`SECOND=cannon|turbo|scoopA` is the carriers' other module); `field` is eight random module pairs. Build the game with `SRC=../../build/hoverline.html python3 gen.py` first. The multiplier is `FLARE_K` in `src/js/ships/007-ships-builds.js`.
+
+## Track features (Prototype 60)
+
+The new road pieces (drops, speed jumps, long jumps, rising spires, down spirals) are only on version-1 codes (seven hex
+digits starting with 1) and from the editor's counts.
+
+```
+python3 codes60.py sjump 12                      # 12 codes with a speed jump from the editor's counts (also drop, cjump, vspire, dhelix)
+node --require ./seedrand.js feat60.js $(python3 codes60.py sjump 12)   # races them: finishes, wrecks, falls, lip speeds, who reached the upper road
+OLD=1 node feat60.js 60                          # 60 random old codes (NEW: drop OLD for 60 random version-1 codes)
+node probe60.js CODE                             # the features, jumps and splits a code builds
+node trace60.js CODE U0 U1 [racer]               # every racer's speed, height and road between two distances, first lap
+node vmax60.js                                   # every frame's top speed by Speed stat, with held boost and a pad
+```

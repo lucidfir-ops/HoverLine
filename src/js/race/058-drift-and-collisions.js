@@ -275,7 +275,7 @@ function physics(r,inp,dt){
     if(clipped){r.air=false;r.h=HOVER;r.vh=0;r.respawnU=uu+6;r.wreck=1.4;r.boost=0;r.hp=Math.max(1,r.hp-r.d.hp*0.1);
       if(r===player){if(LOG.cur){LOG.cur.acc.clips++;logEv('clip')}flash('rgba(255,74,61,.5)',0);audio.boom(0.6)}lapCheck(r);return}
     const inB=r.lat>=loB+0.4&&r.lat<=hiB-0.4;r.offT=!inB;
-    if(!j&&r.hb<=HOVER&&inB){const imp=-r.vh;r.air=false;r.h=HOVER;r.vh=0;if(!r.d.soft)r.v*=0.985;if(imp>16)landHit(r,(imp-16)*1.5);if(r===player){S.shake=Math.min(1,S.shake+imp/40);audio.land(Math.min(1,imp/30))}}
+    if(!j&&r.hb<=HOVER&&inB){const imp=-r.vh;r.air=false;r.h=HOVER;r.vh=0;if(!r.d.soft)r.v*=0.985;/* Prototype 60: the new jumps' roads are built to catch a fall of 10-45 m: a landing there costs shield only past 36 m/s down, and less */if(J.kind?imp>36:imp>16)landHit(r,J.kind?(imp-36)*0.6:(imp-16)*1.5);if(r===player){S.shake=Math.min(1,S.shake+imp/40);audio.land(Math.min(1,imp/30))}}
     else if((j||!inB)&&r.hb<(inB?-14:(D.glide||1)<1?-12:-5)||Math.abs(r.lat)>W/2+((D.glide||1)<1?40:20)){const off=!inB;if(off&&r.ship)explode(r.ship.position.clone(),true);r.air=false;r.h=HOVER;r.vh=0;r.respawnU=j?j.u1+8:uu+6;r.wreck=1.4;r.boost=0;r.lat=0;r.offT=false;
       if(r===player){if(LOG.cur){LOG.cur.acc.falls++;logEv('fall',{v:Math.round(r.v),off})}flash('rgba(255,74,61,.5)',0);audio.boom(0.5)}lapCheck(r);return}}
   const lo=loB+1.35,hi=hiB-1.35;
