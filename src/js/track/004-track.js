@@ -911,11 +911,11 @@ void main(){vec2 q=vW.xz+vec2(uT*(uW>0.5?3.0:1.2),uT*0.7);float n=vn(q/16.0)*0.6
       /* Prototype 60: the lake's sheet reached 4 to 32% past the bed, into a rim only a third of its radius wide, and the
          ground is a grid of 16 to 26 m cells: where the valley fell away outside the rim, a cell under the sheet's edge
          sloped down from the rim and the edge stood out of the slope, a flat sheet floating over the valley when seen from
-         the side. Now the sheet's edge lies at least one and a half cells inside a rim that is flat at 3 m over the lake
+         the side. Now the sheet's edge lies at least one and a half cells inside a rim that stands 3 to 9 m over the lake
          all the way round it, so every cell the edge crosses is rim and the edge is under the rock; outside, the rim falls
          away as a bank, and a skirt of rock hangs from the edge (skirt(), below) in case anything still leaves it open. */
       for(const q of lakes){const RR=q.r*1.18+3*cs;q.rho=a=>q.r+1.5*cs+q.r*(0.09+0.06*Math.sin(a*3+q.r)+0.03*Math.sin(a*7));
-        for(let k=0;k<NV;k++){const d=Math.hypot(vx(k)-q.x,vz(k)-q.z);if(d<q.r)Mh[k]=Math.min(Mh[k],q.lv-1.5+(vn(vx(k)/30,vz(k)/30)>0.82?4:0));else if(d<RR)Mh[k]=Math.max(Mh[k],q.lv+3);else if(d<RR+90)Mh[k]=Math.max(Mh[k],q.lv+3-(d-RR)*0.8);Mh[k]=Math.min(Mh[k],Lo[k]);if(Wz[k]>0)Mh[k]=Math.max(Mh[k],Ch[k]+30)}
+        for(let k=0;k<NV;k++){const d=Math.hypot(vx(k)-q.x,vz(k)-q.z);if(d<q.r)Mh[k]=Math.min(Mh[k],q.lv-1.5+(vn(vx(k)/30,vz(k)/30)>0.82?4:0));else if(d<RR)Mh[k]=Math.max(Mh[k],q.lv+3+6*vn(vx(k)/45+2,vz(k)/45));else if(d<RR+90)Mh[k]=Math.max(Mh[k],q.lv+3-(d-RR)*0.8);Mh[k]=Math.min(Mh[k],Lo[k]);if(Wz[k]>0)Mh[k]=Math.max(Mh[k],Ch[k]+30)}
         const g=new THREE.CircleGeometry(1,56);g.rotateX(-Math.PI/2);const A=g.attributes.position;for(let k=1;k<A.count;k++){const a=Math.atan2(A.getZ(k),A.getX(k)),sc=q.rho(a);A.setX(k,A.getX(k)*sc);A.setZ(k,A.getZ(k)*sc)}
         const m=new THREE.Mesh(g,liquid(!q.lava));m.position.set(q.x,q.lv,q.z);group.add(m);skirts.push({x:q.x,z:q.z,y:q.lv,rho:q.rho,n:56,dep:60,out:30,inside:false})}}
     /* calderas: craters on outer peaks well away from the road and the caverns, with lava lakes and lava geysers */
@@ -1028,6 +1028,13 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
       for(let j=0;j<nz-1;j++)for(let i=0;i<nx-1;i++){const a=j*nx+i,b=a+1,c=a+nx,d=c+1,q=j*(nx-1)+i;if(!(use(a)||use(b)||use(c)||use(d)))continue;usedC[q]=1;if(!cl(a,c,b)||!cl(b,c,d))bad[q]=1}
       const fine=new Uint8Array(NC);for(let j=0;j<nz-1;j++)for(let i=0;i<nx-1;i++){if(!bad[j*(nx-1)+i])continue;for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++){const i2=i+di,j2=j+dj;if(i2>=0&&j2>=0&&i2<nx-1&&j2<nz-1&&usedC[j2*(nx-1)+i2])fine[j2*(nx-1)+i2]=1}}
       const n=clamp(Math.ceil(cs/(RES.low?6:4)),2,8),VK=new Map();liftR=W/2+2.5+cs/n;
+      /* Prototype 60: a corner shared by a finer cell and a coarse one is moved with the finer cell (over the road or under
+         it, up to 26 m), which tilted the coarse cell beside it; tilted into the road's space it was left out whole, a
+         hole 16 to 26 m across beside the road, mostly round the cave mouths. Such a coarse cell is made finer too, until
+         no coarse cell has a moved corner. */
+      {const mvY=new Float32Array(NV).fill(NaN),mv=k=>{if(isNaN(mvY[k]))mvY[k]=lift(vx(k),A[k],vz(k),sgn);return Math.abs(mvY[k]-A[k])>0.01};
+        for(let pass=0,ch=1;ch&&pass<6;pass++){ch=0;const fc=new Uint8Array(NV);for(let j=0;j<nz-1;j++)for(let i=0;i<nx-1;i++)if(fine[j*(nx-1)+i]){const a=j*nx+i;fc[a]=fc[a+1]=fc[a+nx]=fc[a+nx+1]=1}
+          for(let j=0;j<nz-1;j++)for(let i=0;i<nx-1;i++){const q=j*(nx-1)+i;if(fine[q]||!usedC[q])continue;const a=j*nx+i;for(const c of[a,a+1,a+nx,a+nx+1])if(fc[c]&&mv(c)){fine[q]=1;ch=1;break}}}}
       /* a point of the finer grid, shared by the cells either side (corners are the field's own points, never moved) */
       const fv=(i,j,a,b)=>{const gi=i*n+a,gj=j*n+b,key=gj*((nx-1)*n+1)+gi;let v=VK.get(key);if(v!==undefined)return v;
         const u=a/n,w=b/n,k=j*nx+i,h=A[k]*(1-u)*(1-w)+A[k+1]*u*(1-w)+A[k+nx]*(1-u)*w+A[k+nx+1]*u*w,x=x0+(i+u)*cs,z=z0+(j+w)*cs;
