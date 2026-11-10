@@ -44,7 +44,7 @@
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
     <div class="sub">Prototype 59</div>
-    <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
+    <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" data-icon="fullscreen" hidden>Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open with tilt</a>
     <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip" id="radioBack" hidden>Back to radio</button><button class="chip mmode" aria-label="Music mode">Generative</button><button class="heart" id="likeTune" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button></div>
       <div class="t best tinfo" id="titleTune"></div></div>
@@ -175,7 +175,7 @@
   </div>
   <div class="map">
     <canvas id="preview"></canvas>
-    <div class="legend"><span><i style="background:#f2efe6"></i>Start</span><span><i style="background:#3ff0ff"></i>Boost</span><span><i style="background:#46ff8c"></i>Shield recharge</span><span><i style="background:#be5aff"></i>Ammo</span><span id="lenLbl"></span></div>
+    <div class="legend"><span><i style="background:var(--ink)"></i>Start</span><span><i style="background:var(--cyan)"></i>Boost</span><span><i style="background:var(--green)"></i>Shield recharge</span><span><i style="background:var(--purple)"></i>Ammo</span><span id="lenLbl"></span></div>
     <div class="small" id="stats"></div>
   </div>
 </div>
@@ -227,17 +227,17 @@
       <div class="row lanrow"><canvas id="lanQR" width="330" height="330" hidden></canvas><video id="lanCam" playsinline muted hidden></video>
         <div class="col lancol"><p id="lanTxt" hidden></p>
           <div class="row"><button class="btn go" id="lanScan">Scan a code</button><button class="btn" id="lanCopy" hidden>Copy code</button><button class="btn" id="lanCancel">Cancel</button></div>
-          <div class="code" id="lanInRow"><label for="lanIn">Code</label><input id="lanIn" spellcheck="false" autocomplete="off" autocapitalize="characters" placeholder="type a code" data-osk="code"><button class="btn kb" data-osk-for="lanIn" aria-label="On-screen keyboard">⌨</button><button class="btn" id="lanUse">Use</button></div>
+          <div class="code" id="lanInRow"><label for="lanIn">Code</label><input id="lanIn" spellcheck="false" autocomplete="off" autocapitalize="characters" placeholder="type a code" data-osk="code"><button class="btn kb" data-osk-for="lanIn" aria-label="On-screen keyboard" data-icon="keyboard"></button><button class="btn" id="lanUse">Use</button></div>
           <p class="small warn" id="lanMsg" aria-live="polite"></p></div></div>
     </div>
     <div id="mpOut" class="col">
       <div class="sub">One device each · up to 8 pilots · empty places fill with AI</div>
-      <div class="code"><label for="mpName">Name</label><input id="mpName" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="mpName" aria-label="On-screen keyboard">⌨</button></div>
+      <div class="code"><label for="mpName">Name</label><input id="mpName" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="mpName" aria-label="On-screen keyboard" data-icon="keyboard"></button></div>
       <div class="row" id="mpConnRow"><span class="sub">Connection</span><button class="chip" data-conn="internet" aria-pressed="true">Internet</button><button class="chip" data-conn="lan" aria-pressed="false">Same room · no internet</button><button class="chip" data-conn="wifi" aria-pressed="false" hidden>Wi-Fi host</button></div>
       <div class="row" id="chirpRow" hidden><button class="btn mode go" id="chirpHostBtn">Host a room<small id="chirpHostSub">Your phone calls the others</small></button><button class="btn mode" id="chirpJoinBtn">Join<small id="chirpJoinSub">Hold your phone near the host's</small></button></div>
       <div class="row" id="chirpPairRow" hidden><span class="sub">Pair by</span><button class="chip" data-pair="sound" aria-pressed="true">Sound</button><button class="chip" data-pair="qr" aria-pressed="false">Code only</button><span class="sep"></span><button class="chip" id="chirpTest">Test sound</button></div>
       <div class="row"><button class="btn go" id="mpCreate">Create room</button><button class="btn" id="mpPub">Public room</button><button class="btn" id="lanJoin" hidden>Join a Wi-Fi room</button></div>
-      <div class="code" id="mpCodeRow"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard">⌨</button><button class="btn" id="mpJoin">Join</button></div>
+      <div class="code" id="mpCodeRow"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard" data-icon="keyboard"></button><button class="btn" id="mpJoin">Join</button></div>
       <p class="small" id="mpConnHint"></p>
       <div class="row"><button class="btn" id="mpBack" data-back>Back</button></div>
     </div>
@@ -342,7 +342,7 @@
   <div class="card">
     <div class="logo">LEADER<b>BOARD</b></div>
     <div class="sub">Online times from everyone who plays, on every track</div>
-    <div class="code"><label for="lbNameIn">Your name</label><input id="lbNameIn" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="lbNameIn" aria-label="On-screen keyboard">⌨</button></div>
+    <div class="code"><label for="lbNameIn">Your name</label><input id="lbNameIn" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="lbNameIn" aria-label="On-screen keyboard" data-icon="keyboard"></button></div>
     <div class="row" role="group" aria-label="Boards"><button class="chip" data-lbs="latest">Latest times</button><button class="chip" data-lbs="popular">Most raced</button><button class="chip" data-lbs="here">This track</button></div>
     <div class="t best" id="lbHead"></div>
     <div id="lbList" class="col"></div>
@@ -372,7 +372,7 @@
     <div class="row" role="group" aria-label="Music"><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
     <div class="sub">Genres</div><div class="row" role="group" aria-label="Genres" id="genreRow"></div>
     <p class="small">Each tune is a template from one genre, or a fusion of two (one genre's rhythm, another's melody or colour). A tune plays only when its genres are on. In a room everyone hears the same tunes, so there all genres play.</p>
-    <div class="row"><button class="chip" id="likeTune2" aria-pressed="false">♥ Like this tune</button><button class="chip" id="dislikeTune2" aria-pressed="false" title="Plays less often, never ruled out">💔 Less like this</button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
+    <div class="row"><button class="heart" id="likeTune2" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune2" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
     <p class="small">Like (and Keep) make tunes like that one come up more often in the menu and in races on your own; skipping a tune in its first 20 seconds counts a little against it. Nothing repeats too soon: the listening memory still comes first.</p>
     <div class="code"><label for="tuneIn">Tune</label><input id="tuneIn" maxlength="17" spellcheck="false" autocomplete="off"><button class="btn" id="tuneLoad">Load</button><button class="btn" id="tuneNew">New</button><button class="btn" id="tuneKeep">Keep</button></div>
     <div class="t best" id="tuneInfo"></div>

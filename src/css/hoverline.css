@@ -192,7 +192,8 @@ button.btn:focus-visible,input:focus-visible,.bk:focus-visible,.chip:focus-visib
 .heart{background:none;border:0;padding:6px;margin:0;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;min-width:40px;min-height:40px;border-radius:10px}
 .heart svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}
 .heart[aria-pressed="true"] svg{fill:currentColor}
-.heart:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+/* Prototype 60: the heart focus ring is cyan like every other control (it was amber) */
+.heart:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .chip[aria-pressed="true"]{background:rgba(255,176,0,.18);border-color:var(--amber)}
 .sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
 .map{display:flex;flex-direction:column;gap:6px}
@@ -206,13 +207,13 @@ td.b{color:var(--amber)}
 .big{font-size:clamp(40px,10vmin,64px);font-weight:700;line-height:1}
 .big small{font-size:.4em;color:var(--dim);margin-left:8px;font-family:var(--mono)}
 /* ship lab */
-#labFdesc{margin:0;font-size:12px;line-height:1.4;color:var(--dim,#9aa0aa)}#labFdesc b{color:var(--ink);font-weight:600}
+#labFdesc{margin:0;font-size:12px;line-height:1.4;color:var(--dim)}#labFdesc b{color:var(--ink);font-weight:600}
 #lab{pointer-events:none;align-items:flex-start;background:linear-gradient(90deg,rgba(9,11,16,.92) 0%,rgba(9,11,16,.55) 42%,rgba(9,11,16,0) 62%)}
 #lab .card{pointer-events:auto;gap:10px;width:min(460px,100%);max-height:100%;overflow-y:auto;touch-action:pan-y;overscroll-behavior:contain}
 .efeats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px}
 .erow{display:flex;align-items:center;gap:6px}.erow .en{flex:1;min-width:0;font:600 14px var(--display);line-height:1.1}.erow .en small{display:block;font:400 11px var(--body,inherit);color:var(--dim)}
 .erow .sb{width:34px;height:32px}.erow .ec{width:20px;text-align:center;font:700 17px var(--display);color:var(--amber)}.erow .ec.z{color:var(--dim)}
-#edFit{margin:0;font-size:12px;line-height:1.4;color:var(--dim)}#edFit.warn{color:#ffb86b}
+#edFit{margin:0;font-size:12px;line-height:1.4;color:var(--dim)}#edFit.warn{color:var(--amber)}
 .srow{display:grid;grid-template-columns:6.6em 40px minmax(0,1fr) 40px;gap:4px 8px;align-items:center}
 .sname{font-weight:700;font-size:15px;line-height:1.05}.sname small{display:block;font-weight:500;font-size:10px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
 .sb{width:40px;height:34px;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:700 18px var(--display);cursor:pointer}
@@ -222,7 +223,7 @@ td.b{color:var(--amber)}
 .pips i.new{animation:pipNew 1.2s}@keyframes pipNew{0%,40%{background:var(--green);box-shadow:0 0 10px var(--green)}}
 .pips i.gone{animation:pipGone 1.2s}@keyframes pipGone{0%,40%{background:var(--red)}}
 .sval{grid-column:2/-1;font:500 12px var(--mono);color:var(--dim);min-height:1.2em}
-.srow.up .sval{color:var(--green)}.srow.down .sval{color:#ff7a6d}
+.srow.up .sval{color:var(--green)}.srow.down .sval{color:var(--red)}
 #labPts.warn{color:var(--amber)}
 .wchip{display:inline-flex;align-items:center;gap:6px}.wchip small{font-family:var(--mono);opacity:.75}
 .wchip em{font-style:normal;font:700 11px var(--mono);background:var(--amber);color:#111;border-radius:3px;padding:0 4px}
@@ -232,7 +233,7 @@ td.b{color:var(--amber)}
 .pgrid{display:grid;grid-template-columns:repeat(8,26px);gap:2px;margin:6px 0}.pc{width:26px;height:26px;border:1px solid rgba(255,255,255,.12);padding:0;cursor:pointer;border-radius:2px}
 .swatch[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--amber)}
 .col{display:flex;flex-direction:column;gap:12px}
-#mpList td{padding:3px 12px 3px 0;font-size:14px}#mpList b.rdy{color:#7dff9a;font-weight:700}#mpReady[aria-pressed="true"]{background:rgba(125,255,154,.18);border-color:#7dff9a}#mpReady.nudge{animation:nudge .5s 3}@keyframes nudge{50%{background:rgba(255,190,60,.45);transform:scale(1.06)}}
+#mpList td{padding:3px 12px 3px 0;font-size:14px}#mpList b.rdy{color:var(--green);font-weight:700}#mpReady[aria-pressed="true"]{background:rgba(70,255,140,.18);border-color:var(--green)}#mpReady.nudge{animation:nudge .5s 3}@keyframes nudge{50%{background:rgba(255,190,60,.45);transform:scale(1.06)}}
 #osk{justify-content:center;background:rgba(9,11,16,.9);z-index:60}#osk .card{width:min(620px,100%);align-items:stretch}#oskTxt{font:700 24px var(--mono);letter-spacing:.06em;min-height:1.4em;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.04)}#oskTxt::after{content:'_';color:var(--amber)}
 .oskrow{display:flex;gap:6px;justify-content:center}.oskrow button.btn{flex:1 1 0;min-width:0;padding:12px 0;font-size:17px;text-transform:none}.oskrow button.btn.wide{flex:2.4 1 0}button.btn.kb{padding:8px 10px;letter-spacing:0}
 #lbv .card{max-height:100%;overflow-y:auto}#lbRecent td{padding:3px 10px 3px 0;font-size:13px;white-space:nowrap}#lbRecent td.w{color:var(--dim);font-size:12px}#lbRecent tr{cursor:pointer}#lbRecent tr:hover td{color:var(--amber)}#lbv .logo{font-size:clamp(28px,7vmin,52px)}#lbList{gap:6px}button.btn.lbrow{display:flex;justify-content:space-between;gap:12px;width:100%;text-align:left;font:13px var(--mono);letter-spacing:0;text-transform:none;padding:9px 12px}.lbrow span{color:var(--dim)}#lbTop td{padding:3px 12px 3px 0;font-size:14px}#lbTop td.w{color:var(--dim);font-size:12px}#mpList td.w{color:var(--dim);font-size:12px}#mpList td.dim{color:var(--dim);font-size:12px}

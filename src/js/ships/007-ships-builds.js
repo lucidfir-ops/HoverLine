@@ -28,7 +28,8 @@ const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backward
 const SCOOPS=['scoopS','scoopA'],bothScoops=w=>SCOOPS.every(k=>w.includes(k));
 /* Icons (Prototype 32): one line drawing per weapon and for boost, shield and ammo, drawn in the colour of whatever holds them. */
 const SH='M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z';
-const ICON={missile:'<path d="M4 10h11l5 2-5 2H4zM7 10L5 6M7 14l-2 4M1 12h1"/>',cannon:'<path d="M3 8h6M3 12h10M3 16h6M13 8h2M17 12h4M13 16h2"/>',
+/* Prototype 60: keyboard and full screen were the glyphs ⌨ and ⛶, which some phones draw as colour emoji; now line icons like the rest */
+const ICON={keyboard:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14.5h10"/>',fullscreen:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',missile:'<path d="M4 10h11l5 2-5 2H4zM7 10L5 6M7 14l-2 4M1 12h1"/>',cannon:'<path d="M3 8h6M3 12h10M3 16h6M13 8h2M17 12h4M13 16h2"/>',
   mines:'<path d="M12 6l6 6-6 6-6-6zM12 2v3M12 19v3M2 12h3M19 12h3"/>',shock:'<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.5 6.5 0 0 0 0 9M16.5 7.5a6.5 6.5 0 0 1 0 9M4.5 4.5a10.5 10.5 0 0 0 0 15M19.5 4.5a10.5 10.5 0 0 1 0 15"/>',
   turbo:'<path d="M4 6l6 6-6 6M12 6l6 6-6 6"/>',barrier:'<path d="'+SH+'"/>',phase:'<circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/><path d="M2 12h20M19 9l3 3-3 3"/>',
   decoy:'<path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l4 4M15 15l4 4M19 5l-4 4M9 15l-4 4"/>',rockets:'<path d="M3 12L18 5M3 12h17M3 12l15 7"/>',
