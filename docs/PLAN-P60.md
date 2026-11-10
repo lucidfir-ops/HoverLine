@@ -18,7 +18,7 @@ AGENTS.md. Status: todo, running, review, merged, parked. Working branch: `claud
 | 8 | Track features: drops (incl. into splits, in a row), speed jumps to an upper/lower road with bonuses, long catch jumps, spiral/vertical both ways and other reversible pieces, upside-down road under road. Rare. Report top speeds reached | architect (Opus, high) | 2 (after 7, same files) | todo |
 | 9 | Local split screen for up to 8, many controllers, phones and other devices as controllers (controller layout mode), host in or out of the race, layouts for many screen shapes, multi-monitor if the browser allows | architect (Opus, high) | 1 | running |
 | 10 | Spirit realm: a dossier only (themes, references, looks, portals and other mechanics) for Eric to choose from | designer (Opus, high) | 1 | running |
-| 11 | Cover art with the new frame models | designer (Opus, high) | 2 (after 6) | todo |
+| 11 | Cover art with the new frame models | designer (Opus, high) | 2 (after 6) | running |
 | 12 | Test each task's branch before merge | tester (Sonnet, medium) | each | todo |
 | 13 | Merge, Prototype 60, changelog, DESIGN.md, board era, build, hand over the itch zip | lead | 3 | todo |
 
