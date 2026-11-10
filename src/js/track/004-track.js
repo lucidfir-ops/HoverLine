@@ -1328,7 +1328,7 @@ function addFeatures(b,r,W,opt={}){
        where a frame leaving the lip at 172 m/s arrives (at full speed: the top frames boosting; from about 160 it scrapes up onto
        it; the nose doesn't float you on this jump, so it is speed that counts), and the lower one under it, which catches the rest from 81 m/s up. Which holds the bonus (two boost pads and an
        ammo strip) is a coin toss.
-     cjump: a long jump. The road climbs 30-45 m, a 3 m ramp throws you over a 140-170 m gap to a road far below that is
+     cjump: a long jump. The road climbs 30-45 m, a 3 m ramp throws you over a 130-170 m gap (as built: the straightened road is a little shorter) to a road far below that is
        half as wide again as the track for its first 300 m, so a frame from 85 m/s up lands on it; at racing speed it flies
        250-480 m, 2-2.5 s in the air. */
   const jumpProf=(s,kd)=>{const seg=[],flat=(L,y)=>seg.push({L,y1:y,f:()=>y}),rise=(L,y0,y1)=>seg.push({L,y1,f:x=>y0+(y1-y0)*(1-Math.cos(Math.PI*x/L))/2}),

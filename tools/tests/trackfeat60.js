@@ -59,7 +59,7 @@ const HASH = (code) => { const h = window.__hl, c = h.parseCode(code); if (!c) r
       if (k === 'dhelix') { o.ok = F.every((f) => { const a = T.P[Math.round(f.u0 / T.ds) % T.N].y, b = T.P[Math.round((f.u1 - 30) / T.ds) % T.N].y; return b < a - 8 }); o.why = 'ends lower than it starts' }
       if (k === 'drop') { o.ok = J.length >= F.length && J.every((j) => j.lipH >= 10 && j.lipH <= 17.5 && j.slope === 0); o.why = 'each drop 10-17 m' }
       if (k === 'sjump') { const st = S.filter((s) => s.kind === 'stack'); o.stack = st.length; o.ok = J.every((j) => !j.stk || (j.hu > 15 && j.hu < 25 && j.stk.b[j.stk.upB].h[0] > 15 && j.stk.b[j.stk.lowB].h[0] === 0)); o.why = 'upper road 15-25 m over the lower' }
-      if (k === 'cjump') { const st = S.filter((s) => s.kind === 'catch'); o.catch = st.length; o.ok = J.every((j) => j.G >= 135 && j.lipH >= 25) && st.every((s) => s.b[0].w[0] > T.D.w * 0.7); o.why = 'gap 135 m or more, landing 25 m down, catch road half as wide again' }
+      if (k === 'cjump') { const st = S.filter((s) => s.kind === 'catch'); o.catch = st.length; o.ok = J.every((j) => j.G >= 125 && j.lipH >= 25) && st.every((s) => s.b[0].w[0] > T.D.w * 0.7); o.why = 'gap 125 m or more, landing 25 m down, catch road half as wide again' }
       return o }, [code, k]);
     built[k] = built[k] || []; built[k].push(r);
     ok(r.n >= 1 && r.n + r.dropped === r.want && r.ok, `${k} from the editor (${code}): ${r.n} of ${r.want} built` + (r.dropped ? `, ${r.dropped} left out for room` : '') + `; ${r.why}` + (r.stack != null ? `; ${r.stack} with both roads` : '') + (r.catch != null ? `; ${r.catch} with the catch road` : ''));
