@@ -931,6 +931,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="sub">Online times from everyone who plays, on every track</div>
     <div class="code"><label for="lbNameIn">Your name</label><input id="lbNameIn" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="lbNameIn" aria-label="On-screen keyboard" data-icon="keyboard"></button></div>
     <div class="row" role="group" aria-label="Boards"><button class="chip" data-lbs="latest">Latest times</button><button class="chip" data-lbs="popular">Most raced</button><button class="chip" data-lbs="here">This track</button></div>
+    <div class="row" role="group" aria-label="Rivals" id="lbLvl"><span class="sub">Rivals</span></div>
     <div class="t best" id="lbHead"></div>
     <div id="lbList" class="col"></div>
     <div class="row"><button class="btn" id="lbBack" hidden>◀ All times</button><button class="btn" id="lbDone" data-back>Done</button><span class="sep"></span><button class="btn" id="lbRace" hidden>Race this track</button></div>
@@ -7204,7 +7205,8 @@ const AI_LAPSE=0.13;
 const HANDS={on:true,mem:0.7,W:{tau:0.12,sigma:0.24},S:{tau:0.06,sigma:0.17},N:{tau:0.06,sigma:0.165},tap:0.12,gap:0.14};
 const hands=r=>HANDS.on&&r.isAI&&!r.hum&&!r.proxy&&r!==player&&!QK.live&&!(r.autoT>0)&&r.finishT==null;
 /* ---------- Prototype 58: rival levels ----------
-   Normal is the AI as it was (Prototype 50), and the only level on the online board. Easy and Hard are the same pilots
+   Normal is the AI as it was (Prototype 50); players see it as Default since Prototype 60, when every level got its own
+   online board (it was the only level on it before). Easy and Hard are the same pilots
    flying like Eric at his worst and at his best (tuned in tools/sim against the Eric pilot fitted to his Prototype 53-56
    logs: his sloppy self finishes mid-field against Easy, his clean self against Hard):
      sig, tau  the hands' wander (wall touches) and lag, against Normal's
@@ -7222,7 +7224,7 @@ const hands=r=>HANDS.on&&r.isAI&&!r.hum&&!r.proxy&&r!==player&&!QK.live&&!(r.aut
    little more, 7% slower) until Eric's tilt logs can tune it the way Expert was tuned. */
 const AIL={tilt:{n:'Tilt',sig:1.9,tau:1.45,nose:0.5,strip:0.6,react:0.6,pace:0.93,band:0.4,sb:1},
   easy:{n:'Beginner',sig:1.7,tau:1.35,nose:0.4,strip:0.5,react:0.5,pace:1,band:0.3,sb:1},
-  normal:{n:'Normal',sig:1,tau:1,nose:0,strip:0,react:0,pace:1,band:1,sb:0},
+  normal:{n:'Default',sig:1,tau:1,nose:0,strip:0,react:0,pace:1,band:1,sb:0},
   hard:{n:'Expert',sig:0.4,tau:0.75,nose:0,strip:0,react:0,sharp:1,pace:{W:1.15,S:1.09,N:1.10},band:0.3,sb:1}};
 let ailFree=AIL[store.get('hoverline.ail')]?store.get('hoverline.ail'):null;/* null: not chosen, so Tilt for tilt players, else Normal */
 const ailNow=()=>ailFree||(typeof coarse!=='undefined'&&coarse&&tiltWanted()?'tilt':'normal');
@@ -7231,7 +7233,7 @@ const ailM=r=>{const L=ailOf();if(!L.sb||!r.isAI)return 1;const g=bandRef()-r.ut
 function aiHands(r,o,dt){if(!hands(r)||r.wreck>0){r.hs=o.steer;r.hn=0;r.hT=0;return o}
   const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();
   r.hs=(r.hs??o.steer)+(o.steer-(r.hs??o.steer))*Math.min(1,dt/(P.tau*L.tau));
-  r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk*(aiSmoked(r)?SMOKE_AI.wander:1)/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
   /* (P58) a spell with the nose forgotten (Easy) */
   if(L.nose>0){r.nfT=(r.nfT||0)-dt;if(r.nfT<=0){r.nfT=2+Math.random()*3;r.nf=Math.random()<L.nose*mk}if(r.nf&&!r.air)o.pitch=0}
   o.steer=clamp(r.hs+r.hn,-1,1);
@@ -7280,6 +7282,30 @@ function aiDrift(r,o,raw,F){
   const uu=modU(r.u);for(let x=0;x<=Math.max(40,v*1.1);x+=6){const i=idxAt(r.u+x);if(T.spl[i]||T.gap[i]||T.mag&&T.mag[i]||x<v*0.6&&T.Kn[i]<-0.0011)return o}
   for(const S0 of T.splits)if(modU(S0.u0-uu)<220)return o;for(const j of T.jumps)if(modU(j.u0-uu)<v*1.2)return o;
   r.aiDm=1;o.brake=1;o.steer=d*clamp(Math.abs(raw),0.4,1);o.boost=false;return o}
+/* Prototype 60: AI_STRIP: a held boost costs 8% of the shield a second (physics, 058) and tops the speed up by 22%; a green
+   strip refills 24 a second (times the build's and the strip's rate). Boosting on a strip nets less shield a metre than
+   riding it (rate - cost over a 1.22 times faster pass). aiStripBoost says whether the AI boosts now on the strip it is
+   on: yes when, boosting from here to the strip's end, it gets at least fullB of the shield it needs (so about full); no while
+   that would leave it clearly short but riding it plain would fill it (it boosts later, for the last part); and where no way
+   fills it, yes if it would still leave with at least keep of its shield. curv: how tight a bend ahead it boosts through on
+   a strip (0.004 before; the strip pays for the boost). Tuned in tools/sim/stripbench.js: boost share of strip time stays at
+   75%, shield on leaving up 2 to 4 points, leaving full up 8 to 10 points. */
+const AI_STRIP={boostV:1.22,full:0.97,fullB:0.7,keep:0.35,curv:0.008};
+function aiStripBoost(r,uu){
+  let z=null;for(const q of T.zones)if(q.kind==='hp'&&uu>=q.u0&&uu<=q.u1){z=q;break}
+  if(!z)return true;
+  const D=r.d,rate=24*(r.scoop==='hp'?2:1)*(D.chg||1)*(z.rate||1),cost=D.hp*0.08,rem=Math.max(0,z.u1-uu),v=Math.max(20,r.v),need=D.hp-r.hp;
+  const gBoost=(rate-cost)*rem/(v*AI_STRIP.boostV),gPlain=rate*rem/v;
+  if(gBoost>=need*AI_STRIP.fullB)return true;
+  if(gPlain>=need*AI_STRIP.full)return false;
+  return r.hp+gBoost>=D.hp*AI_STRIP.keep}
+/* Prototype 60: an AI pilot in smoke (r.ink > 0, the view-loss effect the cloud gives for 2.4 s after the last puff) flies
+   erratically: it loses its line (the target jumps across the road every half second), its steering swings hard (and its
+   hands' wander is tripled, 054), it taps the brake and it leaves the boost alone. All of it is drawn from the race clock
+   and the pilot's own bias, not Math.random, so a race with the same hits repeats. */
+const SMOKE_AI={win:0.5,line:0.36,swing:1.1,tapWin:0.32,tapP:0.4,tapOn:0.16,wander:3};
+const aiSmoked=r=>r.ink>0&&r.isAI&&r!==player;/* a person is never flown by this: they just lose their view */
+const smokeH=(r,k,w)=>rng((Math.imul(Math.floor(S.t/w)+1,2654435761)^Math.imul((r.bias*1e4)|0,40503)^k)>>>0)();
 function aiInput(r,dt){
   const none={steer:0,brake:0,pitch:0,fire:[false,false],hold:[false,false]};if(r.wreck>0)return none;
   const look=Math.max(22,r.v*0.75),F=aiF(r);
@@ -7311,15 +7337,17 @@ function aiInput(r,dt){
   for(const s of shots){if(s.type!=='mine')continue;const d=wrapU(s.u-r.u);if(d>0&&d<45&&Math.abs(s.lat-target)<2.4)target+=s.lat>target?-4:4}
   for(const s of shots){if(s.type!=='quake'||s.owner===r||s.hits.has(r))continue;const d=wrapU(r.u-s.u);if(d>0&&d<(s.v-r.v)*2.2*(0.5+0.5*r.skill))target=s.gap}
   for(const o of racers){if(o===r||o.isGhost||F.sh&&o.d&&(o.d.mass||1)<(r.d.mass||1))continue;const d=wrapU(o.u-r.u);if(d>0&&d<14*Math.max(1,F.av)&&Math.abs(o.lat-target)<2.2*F.av&&o.v<r.v)target+=o.lat>r.lat?-3:3}
+  if(aiSmoked(r))target+=(smokeH(r,1,SMOKE_AI.win)*2-1)*W*SMOKE_AI.line;/* (P60) smoke: the line is lost */
   target=bnd?clamp(target,bnd[0]+1.6,bnd[1]-1.6):surf(uu,r.lat,r).sp?clamp(target,SF.lo+1.6,SF.hi-1.6):clamp(target,-W/2+1.6,W/2-1.6);
   if(r.isAI&&!(r.autoT>0)&&!hands(r)){if(r.lapT>0)r.lapT-=dt;else if(Math.random()<dt*AI_LAPSE*(r.mk||1)*(0.35+Math.min(1.6,Math.abs(c)*220))){r.lapT=0.35+Math.random()*0.65;r.lapK=Math.random()<0.55?0:1;r.lapS=0.4+Math.random()*0.45;r.lapD=-Math.sign(c)||1}
     if(r.lapT>0&&r.lapK===1)target=clamp(target-r.lapD*W*0.32*r.lapS,-W/2+0.6,W/2-0.6)}
   const desired=ybA!=null?ybA-Math.atan2(target-r.lat,20):-Math.atan2(target-r.lat,look);
   let C=T.Cs[idxAt(r.u)];if(r.brS&&r.brS.kind==='cut'&&r.br===r.brS.longB&&T.spl[idxAt(r.u)]){const y1=surf(uu+4,r.lat,r).yb,y0=surf(uu-4,r.lat,r).yb,g=surf(uu,r.lat,r).g;C=(T.K[idxAt(r.u)]+(y1-y0)/8)*g}
   const turn=(1.85-0.55*(r.v/VMAX))*r.d.turn*trimTurn(r);
-  let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(r.ink>0)steer+=Math.sin(S.t*9+r.bias*3)*0.7;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
+  let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(aiSmoked(r))steer+=(Math.sin(S.t*9+r.bias*3)+0.5*Math.sin(S.t*5.3+r.bias*7))*SMOKE_AI.swing;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
   // brake when the corner needs more turn than the ship has
-  const brake=Math.max(rBrk,Math.abs(steer)>F.bk?clamp((Math.abs(steer)-F.bk)*1.6,0,1):0);
+  const smkTap=aiSmoked(r)&&smokeH(r,2,SMOKE_AI.tapWin)<SMOKE_AI.tapP&&S.t%SMOKE_AI.tapWin<SMOKE_AI.tapOn?1:0;/* (P60) smoke: brake taps */
+  const brake=Math.max(rBrk,smkTap,Math.abs(steer)>F.bk?clamp((Math.abs(steer)-F.bk)*1.6,0,1):0);
   const fireW=[false,false],holdW=[false,false];/* passive slots (scoops) never fire */
   if((r.isAI||BOT&&r===player)&&r.finishT==null)for(let k=0;k<2;k++){const w=r.weapons[k];if(!canFire(r,k)||r.isAI&&(S.car||QK.live)&&S.aiF<1&&(S.raceT/5+r.skill*37)%1>S.aiF)continue;
     if(w==='cannon'){holdW[k]=aiWants(r,w);continue}
@@ -7336,7 +7364,12 @@ function aiInput(r,dt){
     const key=j.u0+'|'+r.done;if(r.sjK!==key){r.sjK=key;r.sjGo=Math.random()<(j.stk.bonus==='up'?0.85:0.45)}if(r.sjGo&&r.hp>r.d.hp*0.15)sjB=true;break}}
   /* going for it, it races at a person's top speed (no AI pace factor) on the run-up */
   r.sjRun=sjB;
-  const onGreen=r.charging==='hp',boost=sjB&&brake<0.3||r.isAI&&r.finishT==null&&brake<0.05&&!r.air&&(onGreen?r.hp>r.d.hp*0.15&&Math.abs(T.Cs[idxAt(r.u+look)])<0.004:
+  /* Prototype 60: on a strip it boosts at every level (the levels' mistakes decide whether it takes a strip, not whether it
+     boosts on one), but boosting costs more speed-time on the strip than it pays: it is on the strip 18% less long, and
+     the strip refills less per second boosting than not. So it boosts for the part of the strip where it still reaches
+     full (the shield it needs, aiStripBoost), and when the strip is too short to fill it anyway, as long as it leaves
+     healthy. */
+  const onGreen=r.charging==='hp',boost=sjB&&brake<0.3&&!aiSmoked(r)||r.isAI&&r.finishT==null&&!aiSmoked(r)&&brake<0.05&&!r.air&&(onGreen?r.hp>r.d.hp*0.15&&Math.abs(T.Cs[idxAt(r.u+look)])<AI_STRIP.curv&&aiStripBoost(r,uu):
     r.hp>r.d.hp*(r.sty?clamp(0.9-0.45*r.sty.boost,0.25,0.95):F.bh)&&Math.abs(T.Cs[idxAt(r.u+look)])<0.0015&&Math.abs(T.Cs[idxAt(r.u+look*1.8)])<0.0015);
   return aiHands(r,aiDrift(r,{steer:clamp(steer,-1,1),brake,pitch,boost,fire:fireW,hold:holdW},steer,F),dt)}
 
@@ -7917,25 +7950,28 @@ function finish(){if(QK.live){qkFinish();return}if(SPL.race){splFinish();return}
     setHud(false);$('results').hidden=false;resButtons();if(!S.car&&!S.train)lbSubmit(best);else $('resBoard').hidden=true;$(mp.on&&!(mp.sess&&mp.sess.state.isHost)?'mpBackBtn':S.car&&!$('newBtn2').hidden?'newBtn2':'againBtn').focus({preventScroll:true})},1500);
 }
 const esc=t=>String(t).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
-/* Online board: one POST per finished race (your best per track and lap count is what shows), then the top 5. */
+/* Online board: one POST per finished race (your best per track and lap count is what shows), then the top 5.
+   Prototype 60: one board per rivals' level (lvl: the AIL key, so tilt, easy, normal, hard). A time trial has no rivals and
+   stays on Default's board, where trials always were. A Worker from before Prototype 60 ignores lvl and answers without it:
+   then every level's times share one board, and the card says so. */
+const lbLvl=()=>S.trial?'normal':AIL[S.ail]?S.ail:'normal',lbLvlName=k=>(AIL[k]||AIL.normal).n;
 function lbName(){return(store.get('hoverline.name')||'').trim().slice(0,12)||(()=>{const n='Pilot '+(10+Math.floor(Math.random()*90));store.set('hoverline.name',n);return n})()}
-function lbShow(o,name){const el=$('resBoard');if(!o||!o.rows){el.hidden=true;return}el.hidden=false;
+function lbShow(o,name,lvl){const el=$('resBoard');if(!o||!o.rows){el.hidden=true;return}el.hidden=false;
   const mine=o.rows.some(x=>x.name===name);
-  el.innerHTML=`<b>Online · track ${esc(roadStr())} · ${LAPS} lap${LAPS>1?'s':''}</b>`+(o.rank?` · you're <b>#${o.rank}</b> of ${o.total}`:'')+'<br>'+
+  el.innerHTML=`<b>Online · track ${esc(roadStr())} · ${LAPS} lap${LAPS>1?'s':''} · ${esc(lbLvlName(lvl))} rivals</b>`+(o.lvl==null?' · all levels on one board for now':'')+(o.rank?` · you're <b>#${o.rank}</b> of ${o.total}`:'')+'<br>'+
     o.rows.slice(0,5).map((x,i)=>`<span class="${x.name===name?'me':''}">${i+1}. ${esc(x.name)} · ${fmt(x.time)}</span>`).join('<br>')+
     (o.rank>5&&!mine?`<br><span class="me">${o.rank}. ${esc(name)} · ${fmt(o.best)}</span>`:'')+`<br><span style="opacity:.7">Racing as ${esc(name)} · change your name on the Leaderboard screen</span>`}
-function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb')))return;
+function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb'))||SPL.race)return;
   if(LAPS!==3){const e=$('resBoard');e.hidden=false;e.textContent='Online board · 3-lap races only · this one was '+LAPS+' lap'+(LAPS>1?'s':'');return} /* Prototype 60 */
   if(S.cls<1){const e=$('resBoard');e.hidden=false;e.textContent='Online board · Redline races only · this one was '+clsName(S.cls);return}
   if(pacifist()){const e=$('resBoard');e.hidden=false;e.textContent='Online board · races with modules only · this one was Pacifist';return}
-  if(!S.trial&&S.ail&&S.ail!=='normal'){const e=$('resBoard');e.hidden=false;e.textContent='Online board · Normal rivals only · this one was '+ailOf().n;return}
-  const el=$('resBoard'),name=lbName();
+  const el=$('resBoard'),name=lbName(),lvl=lbLvl();
   el.hidden=false;el.textContent='Online board · sending your time…';
-  const body={track:roadStr(),laps:LAPS,era:BOARD_ERA,name,ship:build.frame,time:+player.finishT.toFixed(3),lap:+best.toFixed(3),len:Math.round(T.L)};
+  const body={track:roadStr(),laps:LAPS,era:BOARD_ERA,lvl,name,ship:build.frame,time:+player.finishT.toFixed(3),lap:+best.toFixed(3),len:Math.round(T.L)};
   fetch(LB+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).then(o=>{
     if(o&&o.error&&o.error!=='slow down')throw new Error(o.error);
-    if(o&&o.error)return fetch(LB+'/top?track='+encodeURIComponent(roadStr())+'&laps='+LAPS+'&era='+BOARD_ERA).then(r=>r.json()).then(t=>lbShow(t,name));
-    lbShow(o,name);if(o.rank===1&&o.total>1)note('Top of the online board!',2200)}).catch(e=>{el.textContent=inViewer&&/fetch/i.test(String(e.message||e))?'Online board · this Claude page can\'t reach the internet, so times are only sent from the itch.io version':'Online board unavailable ('+String(e.message||e).slice(0,40)+')'})}
+    if(o&&o.error)return fetch(LB+'/top?track='+encodeURIComponent(roadStr())+'&laps='+LAPS+'&era='+BOARD_ERA+'&lvl='+lvl).then(r=>r.json()).then(t=>lbShow(t,name,lvl));
+    lbShow(o,name,lvl);if(o.rank===1&&o.total>1)note('Top of the online board!',2200)}).catch(e=>{el.textContent=inViewer&&/fetch/i.test(String(e.message||e))?'Online board · this Claude page can\'t reach the internet, so times are only sent from the itch.io version':'Online board unavailable ('+String(e.message||e).slice(0,40)+')'})}
 /* Results: Race again, New track and New song. In a room the host's Race again / New track bring everyone who has
    finished back and start the next race; a guest can change the song and go back to the lobby. */
 function resButtons(){const host=!mp.on||!!(mp.sess&&mp.sess.state.isHost),nx=S.car&&car.best[S.car.i]<=3&&car.best[S.car.i]>0&&S.car.i<carOpen();
@@ -8477,8 +8513,8 @@ $('optBtn').onclick=()=>openOpts('title');$('pauseOpt').onclick=()=>openOpts('pa
 function clsFill(sel,k){if(!sel||!REAL)return;if(!sel.options.length)for(const c of CLS){const o=document.createElement('option');o.value=c.k;o.textContent=c.n+' · '+Math.round(c.f*100)+'%';sel.appendChild(o)}if(sel.value!==k)sel.value=k}
 function pacSync(){const b=$('pacBtn');if(b)b.setAttribute('aria-pressed',String(pacOn))}
 $('pacBtn').onclick=()=>{pacOn=!pacOn;store.set('hoverline.pacifist',pacOn?'1':'0');pacSync();note(pacOn?'Pacifist: no modules for anyone · not on the online board':'Modules on',2000)};pacSync();
-/* (P58) the rivals' level: Easy, Normal (the online board's) or Hard */
-function ailSync(){const s=$('ailSel');if(!s||!REAL)return;if(!s.options.length)for(const k of['tilt','easy','normal','hard']){const o=document.createElement('option');o.value=k;o.textContent=AIL[k].n;s.appendChild(o)}s.value=ailNow();const n=$('ailNote');if(n)n.textContent=ailNow()==='normal'?'':'Online board: Normal only'}
+/* (P58) the rivals' level: Tilt, Beginner, Default or Expert (Prototype 60: each has its own online board, so no note) */
+function ailSync(){const s=$('ailSel');if(!s||!REAL)return;if(!s.options.length)for(const k of['tilt','easy','normal','hard']){const o=document.createElement('option');o.value=k;o.textContent=AIL[k].n;s.appendChild(o)}s.value=ailNow();const n=$('ailNote');if(n)n.textContent=''}
 if(REAL){$('ailSel').onchange=e=>{ailFree=AIL[e.target.value]?e.target.value:'normal';store.set('hoverline.ail',ailFree);ailSync()};ailSync()}
 function clsSync(){ailSync();clsFill($('clsSel'),clsFree);const n=$('clsNote');if(n)n.textContent=clsFree==='redline'?'':'Online board: Redline only';clsFill($('mpCls'),mp.cls)}
 if(REAL){$('clsSel').onchange=e=>{clsFree=clsOf(e.target.value).k;store.set('hoverline.cls',clsFree);clsSync();updateMenuBest()};
@@ -9861,7 +9897,9 @@ function mpSyncConn(){document.querySelectorAll('[data-conn]').forEach(b=>b.setA
   $('lanJoin').hidden=!lan;$('mpCodeRow').hidden=lan;$('mpPub').hidden=mpConn!=='internet';$('mpConnHint').textContent=CONN_HINT[mpConn]+(lan&&!LAN.ok?' This browser has no WebRTC, so it can\'t use it.':'');chirpSync()}
 document.querySelectorAll('[data-conn]').forEach(b=>b.onclick=()=>{mpConn=b.dataset.conn;if(mpConn!=='wifi')store.set('hoverline.conn',mpConn);mpSyncConn()});
 function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidden=!inRoom;if(inRoom)mpRender()}
-function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls,...(mp.split==='screen'?{split:1}:{})}}
+/* Prototype 60: ail, the host's rivals level, so every pilot in the room races (and goes on the board at) the level the host's AI
+   flies; a host from before sends none, which is Default */
+function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls,ail:ailNow(),...(mp.split==='screen'?{split:1}:{})}}
 /* Public rooms (Prototype 38): Public room joins the first public room of this version that has space, or opens it if nobody
    is there (whoever is first is the host, and the next pilot takes over if they leave). Random codes never contain a 1. */
 const PUBV=59,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
@@ -10481,7 +10519,7 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
     return`<tr class="${e.id===me?'me':''}"><td><i class="dot" style="background:${col}"></i>${i+1}</td><td>${(p.n||'Pilot').replace(/[<>&]/g,'')}${e.id===st.hostId?' ★':''}${e.id===me?' (you)':''}</td><td>${e.st==='lobby'&&e.rd?'<b class="rdy">ready ✓</b>':mpSt[e.st]||e.st}</td><td class="w">${w}</td></tr>`}).join('')+
     (st.roster.length<mpMax()?`<tr><td></td><td class="dim" colspan="3">${mpMax()-st.roster.length} open · ${mp.split==='screen'?'devices that join are controllers':mp.fill?'AI tops the field up to 8':'no AI'}</td></tr>`:'');
   const info=st.isHost?mpTrackInfo():st.info;
-  mpEl.mpTrack.textContent=info&&info.seed!=null?`Track ${((info.wk||'S')+(info.cx?'X':'')+(info.lk&&info.lk!=='M'?info.lk:'')+(info.seed>>>0).toString(16).toUpperCase().padStart(6,'0')+(info.sp?'-'+info.sp:''))} · ${(BIOMES[(info.bm||'U')[0]]||BIOMES.U).n} · ${info.laps||3} lap${(info.laps||3)>1?'s':''} · ${clsOf(info.cls).n}`:'';clsFill($('mpCls'),mp.cls);
+  mpEl.mpTrack.textContent=info&&info.seed!=null?`Track ${((info.wk||'S')+(info.cx?'X':'')+(info.lk&&info.lk!=='M'?info.lk:'')+(info.seed>>>0).toString(16).toUpperCase().padStart(6,'0')+(info.sp?'-'+info.sp:''))} · ${(BIOMES[(info.bm||'U')[0]]||BIOMES.U).n} · ${info.laps||3} lap${(info.laps||3)>1?'s':''} · ${clsOf(info.cls).n}${info.fill!==false&&!info.split?' · '+(AIL[info.ail]||AIL.normal).n+' rivals':''}`:'';clsFill($('mpCls'),mp.cls);
   mpEl.mpHostRow.hidden=!st.isHost;
   document.querySelectorAll('[data-mpw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mpw===wid)));
   document.querySelectorAll('[data-mpl]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mpl==='C'?!!spec:!spec&&(b.dataset.mpl==='X')===cplx)));document.querySelectorAll('[data-mplen]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mplen===lenK)));
@@ -10522,7 +10560,7 @@ function mpStart(pl,field){chirpStop();mp.bg=false;
   for(const r of free){r.off=true;r.ship.visible=false;r.shadow.visible=false}
   clearShots();
   racers.forEach((r,k)=>{const row=Math.floor(k/2),col=k%2;freshRacer(r,T.L-14-row*11,-14-row*11,col?W*0.21:-W*0.21);if(r.proxy)r.u=r.utot;r.ship.visible=true});
-  S.raceT=-3;S.shake=0;S.aiK=1;mp.cls=clsOf(pl.cls).k;S.cls=clsOf(pl.cls).f;lowWarn=false;
+  S.raceT=-3;S.shake=0;S.aiK=1;mp.cls=clsOf(pl.cls).k;S.cls=clsOf(pl.cls).f;S.ail=AIL[pl.ail]?pl.ail:'normal';lowWarn=false;
   ['menu','results','pause','mp','lab','set','ctl','gfxm','lbv','opts','mus','ed'].forEach(i=>$(i).hidden=true);setFrom=null;ctlFrom=null;optsFrom=null;rebind.on=false;if(guide.on){guide.from=null;closeGuide()}
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;setHud(true);camInit=false;
   $('bestL').textContent='Best '+fmt(getBest());$('posT').textContent=racers.length;
@@ -10547,27 +10585,34 @@ function mpBackToLobby(){
 $('mpBackBtn').onclick=mpBackToLobby;
 /* ---- in-game leaderboard: browse the online boards without leaving the game. Latest times (GET /recent) across every
    track is the default; Most raced (GET /boards) lists tracks by how many races they've had; This track, or any track
-   picked from either list, shows its top 10 (GET /top) with a way to go and race it. ---- */
-const lbv={mode:['latest','popular','here'].includes(store.get('hoverline.lbMode'))?store.get('hoverline.lbMode'):'latest',sel:null,req:0};
+   picked from either list, shows its top 10 (GET /top) with a way to go and race it.
+   Prototype 60: one board per rivals' level. The Rivals chips pick which (every list and top 10 is that level's only); the
+   screen opens on Default each time ("Default should be displayed by default"). A Worker from before Prototype 60 ignores
+   ?lvl= and answers without lvl: then the head says every level is on one board for now. ---- */
+const lbv={mode:['latest','popular','here'].includes(store.get('hoverline.lbMode'))?store.get('hoverline.lbMode'):'latest',sel:null,req:0,lvl:'normal'};
+{const g=$('lbLvl');for(const k of Object.keys(AIL)){const b=document.createElement('button');b.className='chip';b.dataset.lbl=k;b.textContent=AIL[k].n;
+  b.onclick=()=>{lbv.lvl=k;lbLoad()};g.appendChild(b)}}
 const ago=ms=>{const s=(Date.now()-ms)/1000;return s<90?'just now':s<5400?Math.round(s/60)+' min ago':s<129600?Math.round(s/3600)+' h ago':Math.round(s/86400)+' d ago'};
-function lbOpen(){hidePages();$('lbv').hidden=false;$('lbNameIn').value=lbName();lbv.sel=null;lbLoad()}
+function lbOpen(){hidePages();$('lbv').hidden=false;$('lbNameIn').value=lbName();lbv.sel=null;lbv.lvl='normal';lbLoad()}
 function lbClose(){$('lbv').hidden=true;showPage('title')}
 function lbLoad(){const L=$('lbList'),H=$('lbHead'),n=++lbv.req,one=lbv.sel||(lbv.mode==='here'?{track:roadStr(),laps:LAPS}:null);
   document.querySelectorAll('[data-lbs]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lbs===lbv.mode&&!lbv.sel)));
+  document.querySelectorAll('[data-lbl]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lbl===lbv.lvl)));
+  const lvN=(AIL[lbv.lvl]||AIL.normal).n,one1=o=>o.lvl==null?' · all levels on one board for now':'';
   $('lbRace').hidden=!lbv.sel||mp.on;$('lbBack').hidden=!lbv.sel;$('lbRace').textContent=lbv.sel&&lbv.sel.laps!==3?'Load this track':'Race this track';
   L.innerHTML='';if(!LB){H.textContent='The online board is switched off in this build.';return}
   H.textContent='Loading…';
   /* a Worker from before Prototype 30 has no /recent: show the tracks raced most recently instead */
-  const get=u=>fetch(u+'&era='+BOARD_ERA).then(r=>r.json());
+  const get=u=>fetch(u+'&era='+BOARD_ERA+'&lvl='+lbv.lvl).then(r=>r.json());
   (one?get(LB+'/top?track='+encodeURIComponent(one.track)+'&laps='+one.laps):lbv.mode==='latest'?get(LB+'/recent?n=30').then(o=>o&&o.runs?o:get(LB+'/boards?sort=recent').then(b=>({...b,old:1}))):get(LB+'/boards?sort=popular')).then(o=>{
     if(n!==lbv.req)return;if(!o||o.error)throw new Error(o&&o.error||'no answer');const me=lbName();
-    if(one){H.innerHTML=`Track <b>${esc(one.track)}</b> · ${one.laps} lap${one.laps>1?'s':''} · ${o.total} pilot${o.total===1?'':'s'}`;
+    if(one){H.innerHTML=`Track <b>${esc(one.track)}</b> · ${one.laps} lap${one.laps>1?'s':''} · ${esc(lvN)} rivals · ${o.total} pilot${o.total===1?'':'s'}${one1(o)}`;
       L.innerHTML=o.rows.length?'<table id="lbTop">'+o.rows.map((x,i)=>`<tr class="${x.name===me?'me':''}"><td>${i+1}</td><td>${esc(x.name)}</td><td>${fmt(x.time)}</td><td class="w">${FRAMES[x.ship]?FRAMES[x.ship].name:esc(x.ship)} · best lap ${fmt(x.lap)}</td></tr>`).join('')+'</table>':
-        '<p class="small">No times on this track yet. Finish a race here to set the first one.</p>'}
-    else if(lbv.mode==='latest'&&!o.old){const rows=o.runs||[];H.textContent=rows.length?'Latest finishes on every track · pick one for that track\'s top 10':'No times on the board yet.';
+        '<p class="small">No times on this track with '+esc(lvN)+' rivals yet. Finish a race here to set the first one.</p>'}
+    else if(lbv.mode==='latest'&&!o.old){const rows=o.runs||[];H.textContent=(rows.length?'Latest finishes with '+lvN+' rivals · pick one for that track\'s top 10':'No times with '+lvN+' rivals yet.')+one1(o);
       L.innerHTML=rows.length?'<table id="lbRecent">'+rows.map((x,i)=>`<tr data-i="${i}" class="${x.name===me?'me':''}"><td>${esc(x.name)}</td><td>${fmt(x.time)}</td><td><button class="btn lbrow" data-i="${i}" style="padding:4px 8px"><b>${esc(x.track)}</b></button></td><td class="w">${x.laps!==3?x.laps+' lap'+(x.laps>1?'s':'')+' · ':''}${FRAMES[x.ship]?FRAMES[x.ship].name:esc(x.ship)} · ${ago(x.at)}</td></tr>`).join('')+'</table>':'';
       L.querySelectorAll('[data-i]').forEach(e=>e.onclick=ev=>{ev.stopPropagation();const x=rows[+e.dataset.i];lbv.sel={track:x.track,laps:x.laps};lbLoad();$('lbBack').focus({preventScroll:true})})}
-    else{const rows=o.boards||[];H.textContent=rows.length?(o.old?'Tracks raced most recently':'Tracks with the most races')+' · pick one for its top 10':'No times on the board yet.';
+    else{const rows=o.boards||[];H.textContent=rows.length?(o.old?'Tracks raced most recently':'Tracks with the most races')+' · '+lvN+' rivals · pick one for its top 10'+one1(o):'No times with '+lvN+' rivals yet.'+one1(o);
       L.innerHTML=rows.map((b,i)=>`<button class="btn lbrow" data-i="${i}"><b>${esc(b.track)}</b><span>${b.laps} lap${b.laps>1?'s':''} · ${b.runs!=null?b.runs+' race'+(b.runs===1?'':'s')+' · ':''}${b.pilots} pilot${b.pilots===1?'':'s'} · ${fmt(b.best)} ${esc(b.holder||'')}</span></button>`).join('');
       L.querySelectorAll('.lbrow').forEach(e=>e.onclick=()=>{lbv.sel=rows[+e.dataset.i];lbLoad();$('lbBack').focus({preventScroll:true})})}
   }).catch(()=>{if(n!==lbv.req)return;H.textContent=inViewer?'This Claude page can\'t reach the internet · the board works in the itch build.':'Couldn\'t reach the online board · check the connection and try again.'})}

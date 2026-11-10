@@ -108,25 +108,28 @@ function finish(){if(QK.live){qkFinish();return}if(SPL.race){splFinish();return}
     setHud(false);$('results').hidden=false;resButtons();if(!S.car&&!S.train)lbSubmit(best);else $('resBoard').hidden=true;$(mp.on&&!(mp.sess&&mp.sess.state.isHost)?'mpBackBtn':S.car&&!$('newBtn2').hidden?'newBtn2':'againBtn').focus({preventScroll:true})},1500);
 }
 const esc=t=>String(t).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
-/* Online board: one POST per finished race (your best per track and lap count is what shows), then the top 5. */
+/* Online board: one POST per finished race (your best per track and lap count is what shows), then the top 5.
+   Prototype 60: one board per rivals' level (lvl: the AIL key, so tilt, easy, normal, hard). A time trial has no rivals and
+   stays on Default's board, where trials always were. A Worker from before Prototype 60 ignores lvl and answers without it:
+   then every level's times share one board, and the card says so. */
+const lbLvl=()=>S.trial?'normal':AIL[S.ail]?S.ail:'normal',lbLvlName=k=>(AIL[k]||AIL.normal).n;
 function lbName(){return(store.get('hoverline.name')||'').trim().slice(0,12)||(()=>{const n='Pilot '+(10+Math.floor(Math.random()*90));store.set('hoverline.name',n);return n})()}
-function lbShow(o,name){const el=$('resBoard');if(!o||!o.rows){el.hidden=true;return}el.hidden=false;
+function lbShow(o,name,lvl){const el=$('resBoard');if(!o||!o.rows){el.hidden=true;return}el.hidden=false;
   const mine=o.rows.some(x=>x.name===name);
-  el.innerHTML=`<b>Online · track ${esc(roadStr())} · ${LAPS} lap${LAPS>1?'s':''}</b>`+(o.rank?` · you're <b>#${o.rank}</b> of ${o.total}`:'')+'<br>'+
+  el.innerHTML=`<b>Online · track ${esc(roadStr())} · ${LAPS} lap${LAPS>1?'s':''} · ${esc(lbLvlName(lvl))} rivals</b>`+(o.lvl==null?' · all levels on one board for now':'')+(o.rank?` · you're <b>#${o.rank}</b> of ${o.total}`:'')+'<br>'+
     o.rows.slice(0,5).map((x,i)=>`<span class="${x.name===name?'me':''}">${i+1}. ${esc(x.name)} · ${fmt(x.time)}</span>`).join('<br>')+
     (o.rank>5&&!mine?`<br><span class="me">${o.rank}. ${esc(name)} · ${fmt(o.best)}</span>`:'')+`<br><span style="opacity:.7">Racing as ${esc(name)} · change your name on the Leaderboard screen</span>`}
-function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb')))return;
+function lbSubmit(best){if(!LB||player.finishT==null||(BOT&&!QS.get('lb'))||SPL.race)return;
   if(LAPS!==3){const e=$('resBoard');e.hidden=false;e.textContent='Online board · 3-lap races only · this one was '+LAPS+' lap'+(LAPS>1?'s':'');return} /* Prototype 60 */
   if(S.cls<1){const e=$('resBoard');e.hidden=false;e.textContent='Online board · Redline races only · this one was '+clsName(S.cls);return}
   if(pacifist()){const e=$('resBoard');e.hidden=false;e.textContent='Online board · races with modules only · this one was Pacifist';return}
-  if(!S.trial&&S.ail&&S.ail!=='normal'){const e=$('resBoard');e.hidden=false;e.textContent='Online board · Normal rivals only · this one was '+ailOf().n;return}
-  const el=$('resBoard'),name=lbName();
+  const el=$('resBoard'),name=lbName(),lvl=lbLvl();
   el.hidden=false;el.textContent='Online board · sending your time…';
-  const body={track:roadStr(),laps:LAPS,era:BOARD_ERA,name,ship:build.frame,time:+player.finishT.toFixed(3),lap:+best.toFixed(3),len:Math.round(T.L)};
+  const body={track:roadStr(),laps:LAPS,era:BOARD_ERA,lvl,name,ship:build.frame,time:+player.finishT.toFixed(3),lap:+best.toFixed(3),len:Math.round(T.L)};
   fetch(LB+'/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.json()).then(o=>{
     if(o&&o.error&&o.error!=='slow down')throw new Error(o.error);
-    if(o&&o.error)return fetch(LB+'/top?track='+encodeURIComponent(roadStr())+'&laps='+LAPS+'&era='+BOARD_ERA).then(r=>r.json()).then(t=>lbShow(t,name));
-    lbShow(o,name);if(o.rank===1&&o.total>1)note('Top of the online board!',2200)}).catch(e=>{el.textContent=inViewer&&/fetch/i.test(String(e.message||e))?'Online board · this Claude page can\'t reach the internet, so times are only sent from the itch.io version':'Online board unavailable ('+String(e.message||e).slice(0,40)+')'})}
+    if(o&&o.error)return fetch(LB+'/top?track='+encodeURIComponent(roadStr())+'&laps='+LAPS+'&era='+BOARD_ERA+'&lvl='+lvl).then(r=>r.json()).then(t=>lbShow(t,name,lvl));
+    lbShow(o,name,lvl);if(o.rank===1&&o.total>1)note('Top of the online board!',2200)}).catch(e=>{el.textContent=inViewer&&/fetch/i.test(String(e.message||e))?'Online board · this Claude page can\'t reach the internet, so times are only sent from the itch.io version':'Online board unavailable ('+String(e.message||e).slice(0,40)+')'})}
 /* Results: Race again, New track and New song. In a room the host's Race again / New track bring everyone who has
    finished back and start the next race; a guest can change the song and go back to the lobby. */
 function resButtons(){const host=!mp.on||!!(mp.sess&&mp.sess.state.isHost),nx=S.car&&car.best[S.car.i]<=3&&car.best[S.car.i]>0&&S.car.i<carOpen();

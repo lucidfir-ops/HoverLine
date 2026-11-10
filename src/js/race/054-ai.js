@@ -47,7 +47,8 @@ const AI_LAPSE=0.13;
 const HANDS={on:true,mem:0.7,W:{tau:0.12,sigma:0.24},S:{tau:0.06,sigma:0.17},N:{tau:0.06,sigma:0.165},tap:0.12,gap:0.14};
 const hands=r=>HANDS.on&&r.isAI&&!r.hum&&!r.proxy&&r!==player&&!QK.live&&!(r.autoT>0)&&r.finishT==null;
 /* ---------- Prototype 58: rival levels ----------
-   Normal is the AI as it was (Prototype 50), and the only level on the online board. Easy and Hard are the same pilots
+   Normal is the AI as it was (Prototype 50); players see it as Default since Prototype 60, when every level got its own
+   online board (it was the only level on it before). Easy and Hard are the same pilots
    flying like Eric at his worst and at his best (tuned in tools/sim against the Eric pilot fitted to his Prototype 53-56
    logs: his sloppy self finishes mid-field against Easy, his clean self against Hard):
      sig, tau  the hands' wander (wall touches) and lag, against Normal's
@@ -65,7 +66,7 @@ const hands=r=>HANDS.on&&r.isAI&&!r.hum&&!r.proxy&&r!==player&&!QK.live&&!(r.aut
    little more, 7% slower) until Eric's tilt logs can tune it the way Expert was tuned. */
 const AIL={tilt:{n:'Tilt',sig:1.9,tau:1.45,nose:0.5,strip:0.6,react:0.6,pace:0.93,band:0.4,sb:1},
   easy:{n:'Beginner',sig:1.7,tau:1.35,nose:0.4,strip:0.5,react:0.5,pace:1,band:0.3,sb:1},
-  normal:{n:'Normal',sig:1,tau:1,nose:0,strip:0,react:0,pace:1,band:1,sb:0},
+  normal:{n:'Default',sig:1,tau:1,nose:0,strip:0,react:0,pace:1,band:1,sb:0},
   hard:{n:'Expert',sig:0.4,tau:0.75,nose:0,strip:0,react:0,sharp:1,pace:{W:1.15,S:1.09,N:1.10},band:0.3,sb:1}};
 let ailFree=AIL[store.get('hoverline.ail')]?store.get('hoverline.ail'):null;/* null: not chosen, so Tilt for tilt players, else Normal */
 const ailNow=()=>ailFree||(typeof coarse!=='undefined'&&coarse&&tiltWanted()?'tilt':'normal');
@@ -74,7 +75,7 @@ const ailM=r=>{const L=ailOf();if(!L.sb||!r.isAI)return 1;const g=bandRef()-r.ut
 function aiHands(r,o,dt){if(!hands(r)||r.wreck>0){r.hs=o.steer;r.hn=0;r.hT=0;return o}
   const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();
   r.hs=(r.hs??o.steer)+(o.steer-(r.hs??o.steer))*Math.min(1,dt/(P.tau*L.tau));
-  r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk*(aiSmoked(r)?SMOKE_AI.wander:1)/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
   /* (P58) a spell with the nose forgotten (Easy) */
   if(L.nose>0){r.nfT=(r.nfT||0)-dt;if(r.nfT<=0){r.nfT=2+Math.random()*3;r.nf=Math.random()<L.nose*mk}if(r.nf&&!r.air)o.pitch=0}
   o.steer=clamp(r.hs+r.hn,-1,1);
