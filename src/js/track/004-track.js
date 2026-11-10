@@ -932,7 +932,9 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
        line and height in the main road's frame, as the road strips are built). It used the route's points every 12 m,
        which left the rock between them in the road: rock poked through split routes (NX130F38-P at 2.3 km, NXL7D6FF6-
        33224444222-P3443 at 3.7, 4.3, 6.6 and 6.8 km) */
-    for(const S0 of splits)for(const B of S0.b){const n=B.c.length-1;for(let k=0;k<=n;k++){const i=(S0.i0+k)%N,p=P[i],r=R[i],u=U[i],c=B.c[k],hh=B.h[k];sAdd(p.x+r.x*c+u.x*hh,p.y+r.y*c+u.y*hh,p.z+r.z*c+u.z*hh,i)}}
+    for(const S0 of splits)for(const B of S0.b){const n=B.c.length-1;for(let k=0;k<=n;k++){const i=(S0.i0+k)%N,p=P[i],r=R[i],u=U[i],c=B.c[k],hh=B.h[k];sAdd(p.x+r.x*c+u.x*hh,p.y+r.y*c+u.y*hh,p.z+r.z*c+u.z*hh,i);
+      /* Prototype 60: a route wider than the road (the long jump's catch road) adds its edges, so the rock keeps clear of all of it */
+      const xw=B.w[k]-W/2;if(xw>0.5)for(const e of[-xw,xw])sAdd(p.x+r.x*(c+e)+u.x*hh,p.y+r.y*(c+e)+u.y*hh,p.z+r.z*(c+e)+u.z*hh,i)}}
     const scan=(x,z,R,fn)=>{const c0=Math.floor((x-R)/SC),c1=Math.floor((x+R)/SC),d0=Math.floor((z-R)/SC),d1=Math.floor((z+R)/SC);
       for(let a=c0;a<=c1;a++)for(let c=d0;c<=d1;c++){const Lc=SG.get(sk(a,c));if(Lc)for(const o of Lc){const d2=(o.x-x)**2+(o.z-z)**2;if(d2<R*R)fn(o,d2)}}};
     /* is (x,y,z) inside the space the road needs: over the road and less than 26 m above it */
