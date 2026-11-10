@@ -6,8 +6,8 @@ switched off until you paste your worker's address into `LB_URL`.
 
 ## What it does
 
-- After each finished race the game sends: track code, lap count, pilot name, ship frame, race time, best lap and track length.
-- The results card then shows the top 5 for that track and lap count, plus your rank (for example "you're #3 of 12").
+- After each finished race the game sends: track code, lap count, rivals level, pilot name, ship frame, race time, best lap and track length.
+- The results card then shows the top 5 for that track, lap count and level, plus your rank (for example "you're #3 of 12").
 - Each pilot's best time per track is what counts. The name comes from the Multiplayer screen's name box.
 - Nothing personal is stored. Rate limiting uses a salted hash of the sender's IP; the IP itself is never kept.
 - The server does plausibility checks, not proof:
@@ -37,6 +37,26 @@ switched off until you paste your worker's address into `LB_URL`.
 6. In `hoverline.html`, find the `const LB_URL=` line and put that address between the quotes. Rebuild and upload to itch as usual.
 
 To try it without editing the file, open the game with `?lb=https://hoverline-board.<you>.workers.dev` on the end of its address.
+
+## Prototype 60 update: a board for each rivals level
+
+Every finished race now goes on the board, whatever the rivals level (Tilt, Beginner, Default, Expert; Default is the
+old Normal), and each level has its own board. The database gets one new column, `lvl`; every time already on the
+board becomes a Default time, which is what it was. Nothing is deleted. About 5 minutes, once, from the phone:
+
+1. **Update the database.** In the Cloudflare dashboard open **D1 SQL database → hoverline → Console**. Paste
+   everything in `migrate-lvl.sql`, then select **Execute**. (If it says `duplicate column name: lvl`, it was already
+   done; carry on.)
+2. **Update the code.** Open **Workers & Pages → hoverline-board** and select **Edit code**. Replace everything with
+   this kit's `worker.js`, select **Save**, then **Deploy**.
+3. Check it: open `https://hoverline-board.lucidfir.workers.dev/top?track=TEST&laps=3&lvl=hard`. It should end with
+   `"lvl":"hard"`. Do step 1 before step 2: the new code needs the new column.
+
+Before you do this the game still works: the old Worker ignores the level, so until then every level's times land on
+one board together, as before, and the game's board screens say "all levels on one board for now". Older game builds
+keep working after the update: they send no level, and the Worker puts their times on Default and shows them Default.
+
+Command line instead: `npx wrangler d1 execute hoverline --remote --file=migrate-lvl.sql`, then `npx wrangler deploy`.
 
 ## Latest times (Prototype 30)
 
@@ -106,8 +126,10 @@ The 21 Cuke Cutter logs sent between 2026-10-31 and 2026-11-02 were moved there,
 
 ## API
 
-- `GET /top?track=CODE&laps=3&era=28` returns `{rows:[{name,ship,time,lap,at}], total}`.
-- `GET /boards?sort=recent|popular&era=28` returns `{boards:[{track,laps,pilots,best,holder,last}]}` (up to 30), for the in-game Leaderboard screen (Prototype 29).
-- `POST /run` takes `{track,laps,name,ship,time,lap,len,era}` (no `era` counts as 28) and returns `{rank, best, rows, total}`. Errors come back as `{error}` with status 400, 422 or 429.
+- `GET /top?track=CODE&laps=3&era=28&lvl=normal` returns `{rows:[{name,ship,time,lap,at}], total, lvl}`.
+- `GET /boards?sort=recent|popular&era=28&lvl=normal` returns `{boards:[{track,laps,pilots,runs,best,holder,last}], lvl}` (up to 30), for the in-game Leaderboard screen (Prototype 29).
+- `GET /recent?n=30&era=28&lvl=normal` returns `{runs:[{track,laps,name,ship,time,lap,at,lvl}], lvl}`: the newest finishes on every track.
+- `POST /run` takes `{track,laps,name,ship,time,lap,len,era,lvl}` (no `era` counts as 28) and returns `{rank, best, rows, total, lvl}`. Errors come back as `{error}` with status 400, 422 or 429.
+- `lvl` (Prototype 60) is the rivals level: `tilt`, `easy`, `normal` or `hard` (shown as Tilt, Beginner, Default, Expert). No `lvl` means `normal`; anything else is refused with 400 `bad level`.
 - `POST /log` takes `{v, log}` (one race log) and returns `{ok, id}`. Errors: 400, 413 (too big) or 429.
 - `GET /logs?key=ADMIN_KEY&since=MS&limit=N` returns `{logs:[{id,created,ver,track,log}], more, next}`; `GET /logs/count?key=ADMIN_KEY` returns `{n, bytes}`. Add `&game=cuke-cutter` to either for Cuke Cutter's logs.

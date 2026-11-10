@@ -113,6 +113,8 @@ const run = (name, time, x = {}) => ({ track: TR, laps: 3, name, ship: 'blade', 
   await p.evaluate(() => { const h = window.__hl; h.player.finishT = h.T.L * 3 / 90; h.lbSubmit(h.T.L / 90 - 1) });
   await until(p, () => /Expert rivals/.test(document.getElementById('resBoard').textContent), 5000, 'card');
   const card = await p.evaluate(() => document.getElementById('resBoard').textContent);
+  const shot = async (n) => { if (process.env.SHOTS) await p.screenshot({ path: path.join(process.env.SHOTS, n + '.png') }) }; // SHOTS=dir: pictures to look at
+  await shot('results-expert');
   post = seen.find((x) => x.m === 'POST' && x.path === '/run');
   ok(post && post.body.lvl === 'hard' && /Expert rivals/.test(card) && /Tester/.test(card) && !/one board/.test(card), 'the results card shows the Expert board: ' + card.slice(0, 120));
   const code = await p.evaluate(() => document.getElementById('resBoard').querySelector('b').textContent.match(/track (\S+)/)[1]);
@@ -137,12 +139,14 @@ const run = (name, time, x = {}) => ({ track: TR, laps: 3, name, ship: 'blade', 
   ok(pad === 'hard', 'a pad moves along the level chips (' + pad + ')');
   await until(p, () => document.querySelector('[data-lbl="hard"]').getAttribute('aria-pressed') === 'true' && !/Loading/.test(document.getElementById('lbHead').textContent), 5000, 'expert');
   const s2 = await p.evaluate(() => ({ head: document.getElementById('lbHead').textContent, list: document.getElementById('lbList').textContent }));
+  await shot('board-expert');
   ok(seen.some((x) => x.lvl === 'hard') && /Expert/.test(s2.head) && /Tester/.test(s2.list) && /Vanta/.test(s2.list), 'Expert shows the Expert times: ' + s2.head);
   // pick that track from the list: its top 10 on Expert
   seen.length = 0;
   await p.evaluate(() => { const b = [...document.querySelectorAll('#lbList .lbrow')].find((e) => /W5F0917/.test(e.textContent)); b.click() });
   await until(p, () => !!document.getElementById('lbTop'), 5000, 'top');
   const s3 = await p.evaluate(() => ({ head: document.getElementById('lbHead').textContent, rows: [...document.querySelectorAll('#lbTop tr')].map((t) => t.children[1].textContent).join() }));
+  await shot('board-expert-top');
   ok(seen.some((x) => x.path === '/top' && x.lvl === 'hard') && s3.rows === 'Vanta,Eric' && /Expert rivals/.test(s3.head), 'a track picked on Expert shows its Expert top 10 (' + s3.rows + ')');
   // Default again from the chip: the same track's Default top 10
   await p.evaluate(() => document.querySelector('[data-lbl="normal"]').click());
