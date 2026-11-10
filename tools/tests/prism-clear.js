@@ -7,7 +7,7 @@
 // road's up: the vertical probes over the main road alone missed rock through split routes (NX130F38-P at 2.3 km,
 // NXL7D6FF6-33224444222-P3443 at 3.7 to 6.8 km) and in mouths placed on splits (SLC32957-P, NXL1FDB51-...-P3443).
 // The lake and pool skirts count as rock.
-// node tools/tests/prism-clear.js [seeds, default 30 of them and five of Eric's codes] [codes...]
+// node tools/tests/prism-clear.js [seeds, default 30 of them and five of Eric's codes] [codes...]   (WK=N CX=1 for Narrow complex seeds)
 const { launch, open, ok, done } = require('./lib.js');
 const args = process.argv.slice(2);
 const seeds = args.length ? args : Array.from({ length: 30 }, (_, k) => String(1000 + k * 7919 % 99991)).concat(['NX130F38-P', 'SLC32957-P', 'NXL1FDB51-23224444222-P3443', 'NXL7D6FF6-33224444222-P3443', 'NXD8C77A-P']);
@@ -15,8 +15,8 @@ const seeds = args.length ? args : Array.from({ length: 30 }, (_, k) => String(1
   const b = await launch(); const p = await open(b, 'clear', {});
   let worst = 0;
   for (const s of seeds) {
-    const r = await p.evaluate((s) => { const h = window.__hl; const c = /^\d+$/.test(s) ? null : h.parseCode(s);
-      if (c) h.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp || null, c.bm && c.bm.k === 'P' ? c.bm : { k: 'P', d: null }); else h.loadTrack(+s, null, null, null, null, { k: 'P', d: null });
+    const r = await p.evaluate(([s, wk, cx]) => { const h = window.__hl; const c = /^\d+$/.test(s) ? null : h.parseCode(s);
+      if (c) h.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp || null, c.bm && c.bm.k === 'P' ? c.bm : { k: 'P', d: null }); else h.loadTrack(+s, wk, cx, null, null, { k: 'P', d: null });
       const T = h.T, PR = T.prism, sc = h.scene, V3 = h.camera.position.constructor, W = T.D.w;
       // the road's probes: x, z, bottom, top (main road, every 4 m, 7 across, banked)
       const pr = []; const st = Math.max(1, Math.round(4 / T.ds));
@@ -63,7 +63,7 @@ const seeds = args.length ? args : Array.from({ length: 30 }, (_, k) => String(1
           const A = o.geometry.attributes.position, I = o.geometry.index, n = I ? I.count : A.count;
           for (let k = 0; k < n; k += 3) { va.fromBufferAttribute(A, I ? I.getX(k) : k).applyMatrix4(o.matrixWorld); vb.fromBufferAttribute(A, I ? I.getX(k + 1) : k + 1).applyMatrix4(o.matrixWorld); vc.fromBufferAttribute(A, I ? I.getX(k + 2) : k + 2).applyMatrix4(o.matrixWorld); tri(va, vb, vc, what) } }) }
       const sum = {}; for (const w in hits) { const L = [...new Set(hits[w])].sort((a, b) => a - b); sum[w] = { n: L.length, at: L.slice(0, 6).map((i) => w === 'inside out' ? i : Math.round(i * T.ds) + ' m') } }
-      return { s, mode: PR.mode, tris: nT, sum } }, s);
+      return { s, mode: PR.mode, tris: nT, sum } }, [s, process.env.WK || null, process.env.CX ? true : null]);
     const n = Object.values(r.sum).reduce((a, x) => a + x.n, 0); worst = Math.max(worst, n);
     ok(n === 0, `${s} (${r.mode}) road clear of rock and liquid ${n ? JSON.stringify(r.sum) : ''}`);
   }
