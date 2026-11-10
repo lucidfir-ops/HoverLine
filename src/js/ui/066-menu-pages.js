@@ -22,6 +22,9 @@ if(REAL){$('ailSel').onchange=e=>{ailFree=AIL[e.target.value]?e.target.value:'no
 function clsSync(){ailSync();clsFill($('clsSel'),clsFree);const n=$('clsNote');if(n)n.textContent=clsFree==='redline'?'':'Online board: Redline only';clsFill($('mpCls'),mp.cls)}
 if(REAL){$('clsSel').onchange=e=>{clsFree=clsOf(e.target.value).k;store.set('hoverline.cls',clsFree);clsSync();updateMenuBest()};
   $('mpCls').onchange=e=>{mp.cls=clsOf(e.target.value).k;store.set('hoverline.mpcls',mp.cls);mpPushInfo()};clsSync()}
-const setMode=tr=>{S.trial=tr;S.car=null;$('setLogo').innerHTML=tr?'TIME <b>TRIAL</b>':'RA<b>CE</b>';$('setSub').textContent=tr?'Alone with the ghost of your best run · pick the kind of track':'Against 7 AI pilots · pick the kind of track';showPage('menu')};
+/* Prototype 60: laps pick (Race only; the Time trial keeps 3, and the online board takes 3-lap races only) */
+function lapSync(){const s=$('lapSel');if(!s||!REAL)return;if(!s.options.length)for(const n of LAP_PICKS){const o=document.createElement('option');o.value=n;o.textContent=n+(n>1?' laps':' lap');s.appendChild(o)}s.value=lapsFree;$('lapRow').hidden=!!S.trial;const n=$('lapNote');if(n)n.textContent=lapsFree===3?'':'Online board: 3 laps only'}
+if(REAL){$('lapSel').onchange=e=>{const n=+e.target.value;lapsFree=LAP_PICKS.includes(n)?n:3;store.set('hoverline.laps',String(lapsFree));lapSync()};lapSync()}
+const setMode=tr=>{S.trial=tr;lapSync();S.car=null;$('setLogo').innerHTML=tr?'TIME <b>TRIAL</b>':'RA<b>CE</b>';$('setSub').textContent=tr?'Alone with the ghost of your best run · pick the kind of track':'Against 7 AI pilots · pick the kind of track';showPage('menu')};
 $('raceMode').onclick=()=>{setMode(false);ailSync()};$('trialBtn').onclick=()=>setMode(true);$('setBack').onclick=()=>showPage('play');
 $('nextTune').onclick=newSong;
