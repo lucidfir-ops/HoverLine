@@ -19,13 +19,13 @@ AGENTS.md. Status: todo, running, review, merged, parked. Working branch: `claud
 | 9 | Local split screen for up to 8, many controllers, phones and other devices as controllers (controller layout mode), host in or out of the race, layouts for many screen shapes, multi-monitor if the browser allows | architect (Opus, high) | 1 | merged |
 | 10 | Spirit realm: a dossier only (themes, references, looks, portals and other mechanics) for Eric to choose from | designer (Opus, high) | 1 | merged |
 | 11 | Cover art with the new frame models | designer (Opus, high) | 2 (after 6) | merged |
-| 12 | Test each task's branch before merge | tester (Sonnet, medium) | each | todo |
+| 12 | Test each task's branch before merge | lead (ran the full test suite after each merge instead of a separate tester agent) | each | done |
 | 14 | Laps selectable like the other track options (only 3-lap races on the board) | feature-builder (Sonnet, medium) | 1b | merged |
 | 15 | Name the new-player experience, replay it from Tutorial, skippable with a notice saying where to find it | feature-builder (Sonnet, medium) | 1b | merged |
 | 16 | Boards for every rival level; Normal renamed Default and shown by default (worker + D1 schema + in-game board) | architect (Opus, high) | 2 (after 4 and 14: same files) | merged |
-| 17 | Expert races like Eric at his best on every width (per-width tuning from non-Prism logs; more logs coming from Eric) | architect (Opus, high) | 2 (after 4: same files) | running |
+| 17 | Expert races like Eric at his best on every width (per-width tuning from non-Prism logs; more logs coming from Eric) | architect (Opus, high) | 2 (after 4: same files) | merged |
 | 18 | Urban: many more buildings on a city street grid, aligned to the road where it runs straight | feature-builder (Sonnet, medium) | 1b | merged |
-| 13 | Merge, Prototype 60, changelog, DESIGN.md, board era, build, hand over the itch zip | lead | 3 | todo |
+| 13 | Merge, Prototype 60, changelog, DESIGN.md, board era, build, hand over the itch zip | lead | 3 | merged |
 
 Wave 1b came from Eric's notes of 2026-11-10 (with logs feedback/11-10). 16 is architect because it changes the online
 board's server and database as well as the game. 17 needs the simulator and a fit, so architect.

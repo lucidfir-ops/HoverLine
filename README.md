@@ -1,6 +1,6 @@
 # Hoverline
 
-A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight frames, three laps, procedural tracks from shareable codes in five settings (urban, ocean, forest, Stratos and an underwater reef, each by night or by day), a career that starts with a spoken frame select and a short tutorial, a training mode with drill tracks, live-synthesised music that follows the race (or the race tune rendered ahead, or recorded CC0 songs), and multiplayer for up to 8 pilots online, in a public room or on one Wi-Fi with no internet.
+A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet, desktop and Steam Deck. Eight frames, races of one to ten laps, procedural tracks from shareable codes in five settings (urban, ocean, forest, Stratos and an underwater reef, each by night or by day), a career that starts with First flight (a spoken frame select and a short tutorial, replayable from Options › Tutorial), a training mode with drill tracks, live-synthesised music that follows the race (or the race tune rendered ahead, or recorded CC0 songs), multiplayer for up to 8 pilots online, in a public room or on one Wi-Fi with no internet, and split screen for up to 8 on one screen with pads or phones as controllers.
 
 **Play:** open `index.html` in a browser, or upload `dist/hoverline-itch.zip` to itch.io as an HTML game. `dist/hoverline-offline.html` is one file that plays with no internet at all.
 

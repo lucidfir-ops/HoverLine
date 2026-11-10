@@ -481,6 +481,18 @@ Low-end phones come first: every heavy effect is optional, and the default look 
 - **Builds:** the Hoverline page in Claude, an itch.io zip, an offline file with Three.js inside, an offline zip with the sample library (Prototype 45), and a Wi-Fi host pack with its own small server (it now carries the offline page, so it needs no internet at all). The itch.io zip and the Wi-Fi pack carry `songs/` and `samples/` beside the page.
 - **Target audience:** to be posted on r/lowendgaming, so sound quality per byte and per CPU cycle matters more than raw spectacle.
 
+## Prototype 60 decisions
+
+- **Old track codes are locked.** New road pieces (drops, speed jumps, long jumps, rising spires, down spirals) appear only on version-1 codes (seven hex digits starting with 1) or from the editor, so ghosts, bests and the board keep their tracks. BOARD_ERA stays 58: player handling and old codes are unchanged.
+- **The speed jump's upper road is set at 172 m/s at the lip,** from Eric's logs (median 149 at lips, 163 boosting): no frame makes it without boosting.
+- **Boards are per rivals level** (`lvl`; missing = Default, the old Normal). Expert's board starts fresh in effect: before Prototype 60 only Normal races were sent.
+- **Expert is set per width** against the refitted Eric pilot at his best (Wide 1.22, Standard 1.17, Narrow 1.10 × Default's pace); levels' numbers may be one value per width (`{W,S,N}`).
+- **Flares at 1.5× the incoming attack's cost** (46% of homing attacks stopped with random modules; 2× made it weak everywhere).
+- **Prism cave mouths never sit on a feature or split** (60 m clear); inside stretches that cross outside ones become outside.
+- **Split screen is a single-device race plus local pilots** (`SPL`); it never touches the online board or bests.
+- **Driving models are never fitted from Prism races.**
+- Work is split by difficulty across agents (AGENTS.md); the lead does versions, changelog and this file.
+
 ## How to change things safely
 
 A change to the music or the announcer ships only after it has been rendered and compared side by side with the Prototype 25 baseline. Gameplay changes ship after simulated races, and are then checked against the player's race logs.
