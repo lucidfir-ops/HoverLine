@@ -22,7 +22,7 @@ AGENTS.md. Status: todo, running, review, merged, parked. Working branch: `claud
 | 12 | Test each task's branch before merge | tester (Sonnet, medium) | each | todo |
 | 14 | Laps selectable like the other track options (only 3-lap races on the board) | feature-builder (Sonnet, medium) | 1b | merged |
 | 15 | Name the new-player experience, replay it from Tutorial, skippable with a notice saying where to find it | feature-builder (Sonnet, medium) | 1b | merged |
-| 16 | Boards for every rival level; Normal renamed Default and shown by default (worker + D1 schema + in-game board) | architect (Opus, high) | 2 (after 4 and 14: same files) | running |
+| 16 | Boards for every rival level; Normal renamed Default and shown by default (worker + D1 schema + in-game board) | architect (Opus, high) | 2 (after 4 and 14: same files) | merged |
 | 17 | Expert races like Eric at his best on every width (per-width tuning from non-Prism logs; more logs coming from Eric) | architect (Opus, high) | 2 (after 4: same files) | running |
 | 18 | Urban: many more buildings on a city street grid, aligned to the road where it runs straight | feature-builder (Sonnet, medium) | 1b | merged |
 | 13 | Merge, Prototype 60, changelog, DESIGN.md, board era, build, hand over the itch zip | lead | 3 | todo |
