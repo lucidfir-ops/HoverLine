@@ -47,7 +47,7 @@ $('carNewYes').onclick=fsOpen;$('carNewNo').onclick=()=>{$('carNew').hidden=true
 $('carHomeBack').onclick=()=>{$('carHome').hidden=true;showPage('play')};
 /* the frame select page */
 const fs={on:false,k:'blade',ship:null,yaw:0.6,hid:[],t:0,drag:null,thumbs:null};
-function fsOpen(){audio.init();hidePages();$('carHome').hidden=true;$('carNew').hidden=true;fs.on=true;S.state='fsel';
+function fsOpen(){audio.init();fsMode();hidePages();$('carHome').hidden=true;$('carNew').hidden=true;fs.on=true;S.state='fsel';
   fs.hid=[labShip,labGhost].filter(o=>o&&o.visible);for(const o of fs.hid)o.visible=false;$('labTag').hidden=true;
   fsRow();$('fsel').hidden=false;fs.k=null;fsShow('blade');fsThumbs();fsvLoad()}
 function fsLeave(){fsvStop();fs.on=false;$('fsel').hidden=true;if(fs.ship){labScene.remove(fs.ship);disposeObj(fs.ship);fs.ship=null}for(const o of fs.hid)o.visible=true;fs.hid=[];
@@ -65,12 +65,17 @@ function fsShow(k){if(fs.k===k)return;fsvStop();fs.k=k;const F=FRAMES[k],d=deriv
   audio.sfx('ui_move');
   /* the line is read out the first time you look at a frame */
   const h=fsHeard();if(!h.includes(k)&&annOn&&fsvSay(k)){h.push(k);store.set('hoverline.fheard',JSON.stringify(h))}}
-function fsChoose(){if(!fs.on)return;const k=fs.k;audio.sfx('ui_ok')||audio.chime(true);fsLeave();carNewStart(k);fsGuide(k)}
+/* Prototype 60: opened for First flight (ff.from set) the page picks a frame for the tutorial only */
+function fsMode(){const r=!!ff.from;$('fsSub').textContent=r?'First flight · choose a frame':'New career · choose your frame';
+  $('fsBare').textContent=r?'Only for the tutorial. Your career and settings stay as they are.':'Career frames start bare, every stat at 1. Races pay credits for more.'}
+function fsChoose(){if(!fs.on)return;const k=fs.k;audio.sfx('ui_ok')||audio.chime(true);fsLeave();
+  if(ff.from){const f=ff.from;ff.from=null;tut.sv=build.frame;build.frame=k;tutStart(f);return}
+  carNewStart(k);fsGuide(k)}
 $('fsGo').onclick=fsChoose;$('fsRep').onclick=()=>fsvSay(fs.k);
 /* the arrow keys always move along the row, wherever the focus is (on the row itself the menu focus does it) */
 addEventListener('keydown',e=>{if(S.state!=='fsel'||!(e.code==='ArrowLeft'||e.code==='ArrowRight')||$('fsel').hidden)return;const a=document.activeElement;if(a&&a.classList&&a.classList.contains('fsb'))return;
   e.preventDefault();e.stopPropagation();setDev('key');const i=FRAME_KEYS.indexOf(fs.k),k=FRAME_KEYS[(i+(e.code==='ArrowRight'?1:-1)+FRAME_KEYS.length)%FRAME_KEYS.length];fsShow(k);
-  const b=$('fsRow').querySelector(`[data-fk="${k}"]`);if(b)navFocus(b)},true);$('fsBack').onclick=()=>{fsLeave();carHomeOpen()};
+  const b=$('fsRow').querySelector(`[data-fk="${k}"]`);if(b)navFocus(b)},true);$('fsBack').onclick=()=>{fsLeave();if(ff.from)ffBack();else carHomeOpen()};
 /* the guidance question, in the same voice */
 function fsGuide(k){const n=frameOf(k).name,x=TUT_FX[k];hidePages();
   $('tutAskP').textContent=`Six quick steps on the controls with your ${n}`+(x?`, then one on what the ${n} does best. About 40 seconds.`:', about half a minute.');

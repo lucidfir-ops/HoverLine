@@ -133,7 +133,7 @@ button.btn.orOpt{display:flex;flex-direction:column;align-items:center;justify-c
 #flash{position:fixed;inset:0;pointer-events:none;opacity:0}
 #count{position:fixed;inset:0 0 45% 0;display:grid;place-items:center;pointer-events:none;font-size:min(24vmin,140px);font-weight:700;color:var(--amber);text-shadow:0 0 30px rgba(255,176,0,.5)}
 #count.go{color:var(--cyan);text-shadow:0 0 30px rgba(63,240,255,.5)}
-#splitHud{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);display:flex;gap:10px;align-items:center;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:rgba(10,12,18,.88);border:1px solid var(--amber);border-radius:6px;padding:5px 10px;pointer-events:none;white-space:nowrap}
+#splitHud{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 92px);transform:translateX(-50%);display:flex;gap:10px;align-items:center;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:rgba(10,12,18,.88);border:1px solid var(--amber);border-radius:6px;padding:5px 10px;pointer-events:none;max-width:90vw;white-space:normal;text-align:center}
 #splitHud .lg{color:var(--green)}#splitHud .sh{color:var(--amber)}#splitHud .ds{color:var(--ink);font-family:var(--mono);min-width:4.5em;text-align:center}
 #note{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 56px);transform:translateX(-50%);font-size:14px;color:var(--ink);background:var(--panel);padding:6px 12px;border-radius:6px;pointer-events:none;white-space:nowrap}
 /* touch */
@@ -435,7 +435,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 .overlay.pop{justify-content:center;align-items:center;background:rgba(6,8,12,.74)}
 .overlay.pop .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-sizing:border-box;width:min(460px,100%)}
 p.ask{margin:0;font:600 clamp(17px,3vmin,21px)/1.35 var(--display)}
-#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
+#ffAsk p{margin:0;line-height:1.45}#ffAsk .ffDim{color:var(--dim);font-size:14px}#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
 #carAskN{font-size:clamp(30px,7vmin,48px)}#bview .big{font-size:clamp(26px,6vmin,40px)}#bview p.ask{font:500 14px/1.45 var(--display);color:var(--dim);margin:8px 0}#bview p.ask b{color:var(--ink,#fff)}#carAsk p.ask{font:500 14px/1.45 var(--display);color:var(--dim)}
 .carRule{font-size:13px;color:var(--ink);line-height:1.35}
 #carSub b{color:var(--ink)}
@@ -611,11 +611,11 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
 <div id="fsel" class="overlay" hidden>
   <div id="fsRow" role="group" aria-label="Frames"></div>
   <div class="card">
-    <div class="sub">New career · choose your frame</div>
+    <div class="sub" id="fsSub">New career · choose your frame</div>
     <div class="fsName"><span id="fsName"></span><small id="fsTag"></small></div>
     <p id="fsBlurb"></p>
     <p id="fsMods"></p>
-    <p class="fsBare">Career frames start bare, every stat at 1. Races pay credits for more.</p>
+    <p class="fsBare" id="fsBare">Career frames start bare, every stat at 1. Races pay credits for more.</p>
     <div class="row"><button class="btn go" id="fsGo">Choose</button><button class="chip" id="fsRep">▶ Repeat</button><button class="btn" id="fsBack" data-back>Back</button></div>
   </div>
 </div>
@@ -647,12 +647,20 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="row"><button class="btn go" id="carAskYes">Yes · race</button><button class="btn" id="carAskNo" data-back>No</button></div>
   </div>
 </div>
+<div id="ffAsk" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">FIRST <b>FLIGHT</b></div>
+    <p class="ask">New here? First flight is a short guided start: pick a frame, then six quick steps on the controls. About a minute.</p>
+    <p class="ask ffDim">Skip it and you can replay it any time from Options › Tutorial.</p>
+    <div class="row"><button class="btn go" id="ffYes">Start First flight</button><button class="btn" id="ffNo" data-back>Skip</button></div>
+  </div>
+</div>
 <div id="tutAsk" class="overlay" hidden>
   <div class="card">
-    <div class="logo">GUID<b>ANCE</b></div>
+    <div class="logo">FIRST <b>FLIGHT</b></div>
     <p class="ask">Do you require guidance?</p>
     <p id="tutAskP">Six quick steps on the controls before your first race, about half a minute.</p>
-    <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>No · straight to the races</button></div>
+    <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>Skip · straight to the races</button></div>
   </div>
 </div>
 <div id="tut" hidden>
@@ -666,7 +674,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
       <button class="btn mode" id="setBtn">Settings<small>Performance, sound, music, race data</small></button>
       <button class="btn mode" id="ctlBtn">Controls<small>Touch, tilt, keys, pad, camera</small></button>
       <button class="btn mode" id="guideBtn">Nose guide<small>When to lift or drop the nose</small></button>
-      <button class="btn mode" id="tutBtn">Tutorial<small>The controls in six quick steps</small></button>
+      <button class="btn mode" id="tutBtn">Tutorial<small>First flight: pick a frame, then the controls in six quick steps</small></button>
     </div>
     <div class="row"><button class="btn go" id="optDone" data-back>Done</button></div>
   </div>
@@ -8144,14 +8152,28 @@ function tutStart(from){if(tut.on)return;tut.from=from;TUT.length=TUT_N;if(TUT_F
   tutScene();if(tilt.enabled&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}
   if(coarse){$('touch').hidden=false;touchLayout();for(let k=0;k<2;k++){const w=build.weapons[k],b=$('w'+(k+1));b._h=null;b.innerHTML=`${icon(w)}<small>${WDEF[w].name}</small>`;b.classList.toggle('rdy',!WDEF[w].passive)}}
   tut.hold=[true,true];tut.pp=true;tut.now=0;tut.fin=false;$('tut').hidden=false;tutShow(0)}
-function tutEnd(){if(!tut.on)return;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
+function tutEnd(){if(!tut.on)return;const early=!tut.fin;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');if(tut.sv){build.frame=tut.sv;tut.sv=null}tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
   for(const k of['steer','pitch','psl','brake','boost','f1','f2'])touch[k]=0;showStick(0,0);
   for(const s of tut.shots)labScene.remove(s.m);tut.shots=[];labScene.remove(tut.g);if(tut.ship){labScene.remove(tut.ship);disposeObj(tut.ship);tut.ship=null}for(const o of tut.hid)o.visible=true;tut.hid=[];
-  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else showPage('career')}
+  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else if(tut.from==='ff')showPage('title');else showPage('career');
+  if(early)note(FF_NOTE,5000)}
 function tutAsk(){hidePages();$('tutAsk').hidden=false}
 $('tutYes').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('career')};
-$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career')};
-$('tutBtn').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('opts')};
+$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career');note(FF_NOTE,5000)};
+/* Prototype 60: the new-player experience has a name, First flight: the spoken frame select (a new career), the guidance
+   question and the tutorial. It is offered once on a first launch and replays from Options > Tutorial. A replay picks a
+   frame only for the tutorial (the frame is put back afterwards) and never touches the career, its credits, the saved
+   build or any setting. Skipping anywhere sets hoverline.tut and says where to find it again. */
+const FF_NOTE='First flight skipped. Replay it any time from Options › Tutorial.';
+const ff={from:null};
+async function ffBegin(from){if(coarse){goFull();if(!(await tiltCheck()))return}ff.from=from;fsOpen()}
+function ffBack(){const f=ff.from;ff.from=null;if(f==='opts')$('opts').hidden=false;else ffOpen()}
+function ffOpen(){hidePages();$('ffAsk').hidden=false;S.state='menu'}
+$('tutBtn').onclick=()=>ffBegin('opts');
+$('ffYes').onclick=()=>{$('ffAsk').hidden=true;ffBegin('ff')};
+$('ffNo').onclick=()=>{store.set('hoverline.tut','1');$('ffAsk').hidden=true;showPage('title');note(FF_NOTE,5000)};
+/* only when nothing has been saved yet: no tutorial flag, no career and no saved best laps or build */
+setTimeout(()=>{if(S.state==='menu'&&page==='title'&&!store.get('hoverline.tut')&&!carExists()&&!store.get('hoverline.best')&&!store.get('hoverline.build')&&!store.get('hoverline.name'))ffOpen()},0);
 $('tutSkip').onclick=tutEnd;addEventListener('resize',()=>{if(tut.on&&!tut.fin)tutText()});
 addEventListener('keydown',e=>{if(S.state==='tut'&&(e.code==='Escape'||keyIs('pause',e.code))){e.preventDefault();tutEnd()}});
 function tutFrame(dt){const inp=readInput(),st=TUT[tut.i],P=tut.p,sh=tut.ship,now=performance.now(),rt=Math.min(0.25,Math.max(0,(now-(tut.now||now))/1000));tut.now=now;tut.t+=rt;
@@ -8247,7 +8269,7 @@ $('carNewYes').onclick=fsOpen;$('carNewNo').onclick=()=>{$('carNew').hidden=true
 $('carHomeBack').onclick=()=>{$('carHome').hidden=true;showPage('play')};
 /* the frame select page */
 const fs={on:false,k:'blade',ship:null,yaw:0.6,hid:[],t:0,drag:null,thumbs:null};
-function fsOpen(){audio.init();hidePages();$('carHome').hidden=true;$('carNew').hidden=true;fs.on=true;S.state='fsel';
+function fsOpen(){audio.init();fsMode();hidePages();$('carHome').hidden=true;$('carNew').hidden=true;fs.on=true;S.state='fsel';
   fs.hid=[labShip,labGhost].filter(o=>o&&o.visible);for(const o of fs.hid)o.visible=false;$('labTag').hidden=true;
   fsRow();$('fsel').hidden=false;fs.k=null;fsShow('blade');fsThumbs();fsvLoad()}
 function fsLeave(){fsvStop();fs.on=false;$('fsel').hidden=true;if(fs.ship){labScene.remove(fs.ship);disposeObj(fs.ship);fs.ship=null}for(const o of fs.hid)o.visible=true;fs.hid=[];
@@ -8265,12 +8287,17 @@ function fsShow(k){if(fs.k===k)return;fsvStop();fs.k=k;const F=FRAMES[k],d=deriv
   audio.sfx('ui_move');
   /* the line is read out the first time you look at a frame */
   const h=fsHeard();if(!h.includes(k)&&annOn&&fsvSay(k)){h.push(k);store.set('hoverline.fheard',JSON.stringify(h))}}
-function fsChoose(){if(!fs.on)return;const k=fs.k;audio.sfx('ui_ok')||audio.chime(true);fsLeave();carNewStart(k);fsGuide(k)}
+/* Prototype 60: opened for First flight (ff.from set) the page picks a frame for the tutorial only */
+function fsMode(){const r=!!ff.from;$('fsSub').textContent=r?'First flight · choose a frame':'New career · choose your frame';
+  $('fsBare').textContent=r?'Only for the tutorial. Your career and settings stay as they are.':'Career frames start bare, every stat at 1. Races pay credits for more.'}
+function fsChoose(){if(!fs.on)return;const k=fs.k;audio.sfx('ui_ok')||audio.chime(true);fsLeave();
+  if(ff.from){const f=ff.from;ff.from=null;tut.sv=build.frame;build.frame=k;tutStart(f);return}
+  carNewStart(k);fsGuide(k)}
 $('fsGo').onclick=fsChoose;$('fsRep').onclick=()=>fsvSay(fs.k);
 /* the arrow keys always move along the row, wherever the focus is (on the row itself the menu focus does it) */
 addEventListener('keydown',e=>{if(S.state!=='fsel'||!(e.code==='ArrowLeft'||e.code==='ArrowRight')||$('fsel').hidden)return;const a=document.activeElement;if(a&&a.classList&&a.classList.contains('fsb'))return;
   e.preventDefault();e.stopPropagation();setDev('key');const i=FRAME_KEYS.indexOf(fs.k),k=FRAME_KEYS[(i+(e.code==='ArrowRight'?1:-1)+FRAME_KEYS.length)%FRAME_KEYS.length];fsShow(k);
-  const b=$('fsRow').querySelector(`[data-fk="${k}"]`);if(b)navFocus(b)},true);$('fsBack').onclick=()=>{fsLeave();carHomeOpen()};
+  const b=$('fsRow').querySelector(`[data-fk="${k}"]`);if(b)navFocus(b)},true);$('fsBack').onclick=()=>{fsLeave();if(ff.from)ffBack();else carHomeOpen()};
 /* the guidance question, in the same voice */
 function fsGuide(k){const n=frameOf(k).name,x=TUT_FX[k];hidePages();
   $('tutAskP').textContent=`Six quick steps on the controls with your ${n}`+(x?`, then one on what the ${n} does best. About 40 seconds.`:', about half a minute.');
