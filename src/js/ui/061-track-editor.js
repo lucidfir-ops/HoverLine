@@ -8,10 +8,10 @@ const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
   if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats)if(n[f.kind]!=null)n[f.kind]=Math.min(FMAX[f.kind],n[f.kind]+1);ed.sp={b:T.fig8?3:1,n}}
   goFull();$(from).hidden=true;$('ed').hidden=false;edUI();drawPreview('edPreview','edStats')}
-function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild();$('ed').hidden=true;
+function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild(ed.reseed);$('ed').hidden=true;
   if(ed.from==='mp'){$('mp').hidden=false;mpPushInfo();mpView&&mpView()}else{showPage('menu');if(race)startRace()}}
-function edBuild(newSeed){ed.dirty=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
-function edChange(newSeed){ed.dirty=true;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(newSeed),newSeed?0:500)}/* (P59) half a second after the last change, so tapping + or - a few times builds once */
+function edBuild(newSeed){ed.dirty=false;ed.reseed=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
+function edChange(newSeed){ed.dirty=true;ed.reseed=ed.reseed||!!newSeed;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(ed.reseed),1000)}/* (P59) a delay after the last change, so tapping + or - a few times builds once. Prototype 60: one second (was half a second), restarted by every press, and Reshuffle goes through the same timer; ed.reseed keeps a pending reshuffle when a + or - press follows it */
 function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
     row.innerHTML=`<div class="en">${FLBL[k][0]}<small>${FLBL[k][1]}</small></div><button class="sb" data-d="-1" aria-label="Fewer ${FLBL[k][0]}">−</button><div class="ec"></div><button class="sb" data-d="1" aria-label="More ${FLBL[k][0]}">+</button>`;

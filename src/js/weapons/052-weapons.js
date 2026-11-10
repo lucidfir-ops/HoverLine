@@ -124,7 +124,7 @@ function fire(r,slot){
   else if(w==='phase'){r.phase=1.5;if(near&&!fx)audio.blip(1300,0.35,0.1,'sine',260)}
   else if(w==='decoy'){const m=shotMesh('decoy');scene.add(m);const d={type:'decoy',u:r.u-5,lat:r.lat,v:Math.max(20,r.v*0.55),owner:r,life:3,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5};shots.push(d);decoyPull(d);if(near&&!fx)audio.blip(1800,0.25,0.08,'triangle',600)}
   else if(w==='emp'){empBlast(r);if(near&&!fx)audio.blip(1200,0.3,0.14,'square',90)}
-  else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
+  else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:4.8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
   else if(w==='autopilot'){r.autoT=4.5;if(near&&!fx)audio.blip(520,0.3,0.1,'triangle',1040)}
   else if(w==='overdrive'){r.od=3;r.stun=0;if(near&&!fx)audio.blip(400,0.5,0.15,'sawtooth',1800)}
   if(mp.on)mpFired(r,w,n0);
