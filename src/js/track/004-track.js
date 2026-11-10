@@ -793,6 +793,19 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
       let s0=-1;for(let i=0;i<N;i++)if(!bz[i]){s0=i;break}
       if(s0<0){let c=0;for(let i=0;i<N;i++)c+=ins[i];ins.fill(c*2>=N?1:0)}
       else for(let k=0;k<N;){const i=(s0+k)%N;if(!bz[i]){k++;continue}let n=0,c=0;while(k+n<N&&bz[(s0+k+n)%N]){c+=ins[(s0+k+n)%N];n++}const v=c*2>=n?1:0;for(let j=0;j<n;j++)ins[(s0+k+j)%N]=v;k+=n}
+      /* Prototype 60: and no stretch inside where it crosses over or under a stretch outside (within W+40 m across, and
+         more than 300 m away round the lap): a cavern can't be both round the one and open over the other, so the
+         cavern was faded out there and the road "inside" ran through open air, holes to the sky all round it
+         (WXQD87244-33224444222-P at 2.7 km, SXLB8350A-P at 6.6 km). It's outside there, from 60 m before to 60 m
+         after (and over the whole of any feature it touches), so it crosses on columns in the open. */
+      {const H=new Map(),HC=40,hk=(a,b)=>a*65537+b;for(let i=0;i<N;i+=2){const k=hk(Math.floor(P[i].x/HC),Math.floor(P[i].z/HC));let L=H.get(k);if(!L)H.set(k,L=[]);L.push(i)}
+       const cr=new Uint8Array(N),far=Math.round(300/ds),RC=W+40;
+       for(let i=0;i<N;i++){if(!ins[i])continue;const p=P[i],a0=Math.floor((p.x-RC)/HC),a1=Math.floor((p.x+RC)/HC),b0=Math.floor((p.z-RC)/HC),b1=Math.floor((p.z+RC)/HC);let hit=false;
+         for(let a=a0;a<=a1&&!hit;a++)for(let b=b0;b<=b1&&!hit;b++){const L=H.get(hk(a,b));if(L)for(const j of L){if(ins[j])continue;const dj=Math.abs(j-i),dd=Math.min(dj,N-dj);if(dd>far&&(P[j].x-p.x)**2+(P[j].z-p.z)**2<RC*RC){hit=true;break}}}
+         if(hit)cr[i]=1}
+       const cz=new Uint8Array(N);for(let i=0;i<N;i++)if(cr[i])for(let k=-mg;k<=mg;k++)cz[((i+k)%N+N)%N]=1;
+       if(s0>=0)for(let k=0;k<N;){const i=(s0+k)%N;if(!bz[i]){k++;continue}let n=0,c=0;while(k+n<N&&bz[(s0+k+n)%N]){c+=cz[(s0+k+n)%N];n++}if(c)for(let j=0;j<n;j++)cz[(s0+k+j)%N]=1;k+=n}
+       for(let i=0;i<N;i++)if(cz[i])ins[i]=0}
       tidy(0,140);tidy(1,260)}
     /* the road as points on a grid, each marked inside or out (a split route follows the main line beside it) */
     const SP=[],SG=new Map(),SC=48,sk=(a,b)=>a*65537+b;
@@ -825,7 +838,13 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
       /* the caverns: round the road inside, within a radius that wanders from 150 to 260 m */
       /* (P55) by the distance to the road inside, faded out as an outside stretch of road comes near (it used to stop dead
          halfway between the two, in a sheer flat wall from roof to floor) */
-      let w=0;if(di<1e18){const Rz=150+110*vn(x/300+9,z/300);w=(1-sm(Rz*0.55,Rz,Math.sqrt(di)))*(od<1e18?sm(W/2+14,W/2+80,Math.sqrt(od)):1);if(w<0.02)w=0}
+      let w=0;if(di<1e18){const Rz=150+110*vn(x/300+9,z/300);w=(1-sm(Rz*0.55,Rz,Math.sqrt(di)))*(od<1e18?sm(W/2+14,W/2+80,Math.sqrt(od)):1);
+        /* Prototype 60: but never less than a narrow cavern round the road inside itself, unless the outside road is right
+           there (at a cave mouth): where an outside stretch ran within 80 m, the fade took the cavern away altogether and
+           the road "inside" ran in an open cutting under the sky, with nothing between it and the outside (holes to the
+           sky in Eric's photos of NX130F38-P, SXLB8350A-P, WXQD87244-...-P) */
+        if(od<1e18)w=Math.max(w,0.6*(1-sm(W/2+22,W/2+48,Math.sqrt(di)))*sm(W/2+10,W/2+34,Math.sqrt(od)));
+        if(w<0.02)w=0}
       if(w>0){const F=loI-14-95*vn(x/190,z/190+4)-12*vn(x/35,z/35),Ct=hiI+45+175*vn(x/240+5,z/240)+16*vn(x/40+1,z/40);Fh[k]=F;Ch[k]=F+(Ct-F)*sm(0,1,w);h=Math.max(h,Ch[k]+30+20*vn(x/80,z/80+2))}
       Mh[k]=h;Wz[k]=w}
     /* smooth the outside twice (where the road twists, as round a spire, the shaping left needles), then cut the road's
