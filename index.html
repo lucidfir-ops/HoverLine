@@ -6528,7 +6528,7 @@ function fire(r,slot){
   else if(w==='phase'){r.phase=1.5;if(near&&!fx)audio.blip(1300,0.35,0.1,'sine',260)}
   else if(w==='decoy'){const m=shotMesh('decoy');scene.add(m);const d={type:'decoy',u:r.u-5,lat:r.lat,v:Math.max(20,r.v*0.55),owner:r,life:3,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5};shots.push(d);decoyPull(d);if(near&&!fx)audio.blip(1800,0.25,0.08,'triangle',600)}
   else if(w==='emp'){empBlast(r);if(near&&!fx)audio.blip(1200,0.3,0.14,'square',90)}
-  else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
+  else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:4.8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
   else if(w==='autopilot'){r.autoT=4.5;if(near&&!fx)audio.blip(520,0.3,0.1,'triangle',1040)}
   else if(w==='overdrive'){r.od=3;r.stun=0;if(near&&!fx)audio.blip(400,0.5,0.15,'sawtooth',1800)}
   if(mp.on)mpFired(r,w,n0);
@@ -6647,7 +6647,7 @@ function updateShots(dt){
         s.hits.add(r);LOG.src='quake';LOG.by=s.owner;damage(r,13,r.ship.position.clone(),0.45);LOG.src=LOG.by=null;if(!r.proxy)r.v*=0.85;if(r===player){S.shake=Math.max(S.shake,0.6);audio.hit(0.5)}}}
       for(let j=shots.length-1;j>=0;j--){const o=shots[j];if(o.type==='mine'&&Math.abs(wrapU(o.u-s.u))<4){explode(o.mesh.position.clone(),false);scene.remove(o.mesh);shots.splice(j,1);if(j<i)i--}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();s.mesh.userData.edge.dispose();shots.splice(i,1)}continue}
-    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=2.4}}
+    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=1.6}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();shots.splice(i,1)}continue}
     let hit=null;const wide=s.type==='bolt'?1.5:s.type==='rocket'?1.6:s.type==='bounce'?2:1.9,len=s.type==='bolt'?2.4:2.6;
     if(s.type==='missile'&&s.dud){explode(tp.clone(),false);scene.remove(s.mesh);shots.splice(i,1);continue}
@@ -7511,10 +7511,10 @@ const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
   if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats)if(n[f.kind]!=null)n[f.kind]=Math.min(FMAX[f.kind],n[f.kind]+1);ed.sp={b:T.fig8?3:1,n}}
   goFull();$(from).hidden=true;$('ed').hidden=false;edUI();drawPreview('edPreview','edStats')}
-function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild();$('ed').hidden=true;
+function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild(ed.reseed);$('ed').hidden=true;
   if(ed.from==='mp'){$('mp').hidden=false;mpPushInfo();mpView&&mpView()}else{showPage('menu');if(race)startRace()}}
-function edBuild(newSeed){ed.dirty=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
-function edChange(newSeed){ed.dirty=true;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(newSeed),newSeed?0:500)}/* (P59) half a second after the last change, so tapping + or - a few times builds once */
+function edBuild(newSeed){ed.dirty=false;ed.reseed=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
+function edChange(newSeed){ed.dirty=true;ed.reseed=ed.reseed||!!newSeed;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(ed.reseed),1000)}/* (P59) a delay after the last change, so tapping + or - a few times builds once. Prototype 60: one second (was half a second), restarted by every press, and Reshuffle goes through the same timer; ed.reseed keeps a pending reshuffle when a + or - press follows it */
 function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
     row.innerHTML=`<div class="en">${FLBL[k][0]}<small>${FLBL[k][1]}</small></div><button class="sb" data-d="-1" aria-label="Fewer ${FLBL[k][0]}">−</button><div class="ec"></div><button class="sb" data-d="1" aria-label="More ${FLBL[k][0]}">+</button>`;
