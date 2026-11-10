@@ -43,9 +43,11 @@ one input source:
   (lit when ready) and the pilot's tag and colour. Updated 10 times a second, like the main HUD (which is hidden).
 - **Music and announcer follow the leading local pilot** (the best placed one still racing): engine sound, the music's
   sense of the race (speed, rank, boost), the final lap. One pilot's crash shouldn't silence the others' race. Hit
-  sounds and screen shake stay with pilot 1 (`player`), as before; a pad's rumble goes to the pilot's own pad.
+  sounds, screen shake and rumble stay with pilot 1 (`player`), as before (rumble still goes to every pad: per-pad
+  rumble is a next step).
 - Laps and finish: a local pilot that finishes flies on with the AI's hands (as `player` does); the results come when
-  every local pilot has finished (or after 30 s more for the slowest), and the results table marks every local pilot.
+  every local pilot has finished (a controller that leaves stops counting and the AI takes its ship), and the results
+  table marks every local pilot.
 - Split-screen races never go to the online board, the best-lap table, ghosts, career or the driving profile; their
   logs are mode `split`. With split off nothing in a race changes (the code paths test `SPL.race`), so single-player
   races stay deterministic and the simulator untouched.
@@ -113,7 +115,7 @@ per number of pilots.
   `split` in its info.
 - A device picks **Be a controller** on the Multiplayer screen and joins the same way; any device that joins a split
   room becomes a controller anyway. It shows the controller layout: a big steer zone on the left (slide left and right,
-  up and down for the nose; tilt optional), big Boost, Module and Brake zones on the right, the pilot number and colour,
+  up and down for the nose; tilt optional), big Module 1, Module 2, Brake and Boost zones on the right, a View button, the pilot number and colour,
   and Leave. It sends its state 20 times a second over the same-room link (10 a second online, plus at once on a
   button press), with press counters so a lost message never loses a shot. The controller doesn't draw the race (saves
   its battery).
@@ -150,3 +152,18 @@ per number of pilots.
   another Wi-Fi network at the same time. Game Mode has no hotspot switch; a hotspot made in Desktop mode keeps running
   after switching back to Game Mode on most SteamOS versions (worth trying; if not, run the game from Desktop mode).
 - The lobby shows a short hint with this.
+
+## Built in Prototype 60, and next steps
+
+Built: everything above except where it says otherwise. Code: `input/051-local-pilots.js` (sources, the small-pad
+mapping, per-pilot input), `ui/095-split-screen.js` (layouts, views, cameras, HUDs, the lobby, the race, the screen's side
+of controllers, Span my screens), `ui/095-pad-controller.js` (controller mode). Tests: `tools/tests/split.js` and
+`tools/tests/padc.js`.
+
+Next steps:
+- Per-pilot frame and paint (pilots 2 to 8 now fly the AI place's frame and colour); pick them on the pilot's card.
+- Rumble and the hit flash per pilot (now pilot 1's), and hit vibration on a controller phone.
+- The minimap in a spare cell (now the standings) and a track map per view on big screens.
+- The Prism cave fog follows pilot 1's camera only.
+- A real run on the Deck with 4 and 8 views to tune the far planes, and on the 8BitDo Micro/Zero to check their button
+  numbers in X-input and D-input modes.
