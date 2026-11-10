@@ -104,8 +104,9 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   if(sp)fopt=FKG.some(k=>sp.n[k]>0)?{r,lf:LN.f,want:sp.n,avoid}:null;
   /* Prototype 60: codes from Prototype 60 on (v1) may have the new pieces */
   const v1=seed>=TV1;if(fopt&&v1)fopt.v1=true;
-  /* and a complex one may have a drop (12%), a speed jump (9%) or a long jump (7%), each on its own draw */
-  if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.12)ex.push('drop');if(rn()<0.09)ex.push('sjump');if(rn()<0.07)ex.push('cjump');if(ex.length)fopt.extra=ex}
+  /* and a complex one may have a drop, a speed jump or a long jump, each on its own draw (14%, 15%, 12%); the long ones
+     often don't fit (short tracks, other pieces in the way), so about 10%, 7% and 4% of new complex tracks have one */
+  if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.14)ex.push('drop');if(rn()<0.15)ex.push('sjump');if(rn()<0.12)ex.push('cjump');if(ex.length)fopt.extra=ex}
   let dropped={};
   if(fopt){let best=null;const ban={};
     /* Try up to six layouts and keep the first with no faults (see trackFaults). If none is clean, leave out one of each
@@ -1351,8 +1352,8 @@ function addFeatures(b,r,W,opt={}){
     if(kd==='sweep'&&opt.dense&&s.n>1){s.n=1;s.sg=[1];s.amp=[s.amp[0]];s.len=s.lam}
     s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
     if(k0==='vspire')s.rev=1;if(k0==='dhelix')s.Hh=-s.Hh;
-    /* on a new code, a spire rises up the middle and spirals down half the time, and a spiral falls instead of rising a third of the time */
-    if(opt.v1&&!opt.want&&k0==='spire'&&r()<0.5)s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.35)s.Hh=-s.Hh;
+    /* on a new code, a spire rises up the middle and spirals down half the time, and a spiral falls instead of rising (a fifth of the draws; the falling ones fit more often, so about half the spirals on new tracks fall) */
+    if(opt.v1&&!opt.want&&k0==='spire'&&r()<0.5)s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
     if(k0!==kd)s.src=k0;
     return s};
   const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300})[kd]||200;
