@@ -7,7 +7,7 @@ const THREE = fs.readFileSync(require('path').join(__dirname, '..', '..', 'vendo
 const PAGE = process.env.PAGE || require('path').join(__dirname, '..', '..', 'index.html');
 const ORIGIN = 'http://127.0.0.1:8099';
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const HOOK = 'requestAnimationFrame(frame);window.__hl={S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,canFire,pacifist,tiltCentre,phaseLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,NAV};' +
+const HOOK = 'requestAnimationFrame(frame);window.__hl={S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,canFire,pacifist,tiltCentre,phaseLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,NAV,SPL,splOpen,splGo,splLayoutFor,PADC,roster,ranking,toMenu,get LAPS(){return LAPS}};' +
   'window.__nb={Chirp,ChirpIO,chirp,LAN,lan,lanUse,audio,PDG,priestDraw,qrDraw,jsqrLib};\n})();';
 const cache = {};
 function html(file) {

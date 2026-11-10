@@ -45,7 +45,7 @@ function freshRacer(r,u,utot,lat){r.stat={wrecks:0,dmg:0,given:0,boostT:0};Objec
 function resetGrid(){clearShots();
   /* the player starts 5th of 8 (in a time trial too); the pilots racing take the other places in roster order, those
      sitting out go behind, unseen */
-  const ai=[...roster.filter((r,i)=>i>0&&!r.off),...roster.filter((r,i)=>i>0&&r.off)],order=[...ai.slice(0,4),player,...ai.slice(4)];
+  const ai=[...roster.filter((r,i)=>i>0&&!r.off),...roster.filter((r,i)=>i>0&&r.off)],order=SPL.race?[...splOrder(),...ai.filter(r=>r.off)]:[...ai.slice(0,4),player,...ai.slice(4)];
   for(const r of racers)if(r.isGhost)ghostReset(r);
   order.forEach((r,k)=>{const row=Math.floor(k/2),col=k%2;freshRacer(r,T.L-14-row*11,-14-row*11,col?W*0.21:-W*0.21);r.ship.visible=!r.off});lowWarn=false;rec.d=[];rec.k=0;
   S.raceT=0;S.shake=0}
@@ -60,10 +60,10 @@ function note(text,ms=2200){const n=$('note');n.textContent=text;n.hidden=false;
 
 async function startRace(){wakeScreen(true);
   if(LOG.cur)logEnd('restart');audio.init();try{document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}catch(e){}
-  if(coarse){goFull();if(!QK.live&&!(await tiltCheck()))return}
+  if(coarse){goFull();if(!QK.live&&!SPL.race&&!(await tiltCheck()))return}
   hidePages();['results','pause','mus','set','ctl','gfxm'].forEach(i=>$(i).hidden=true);
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;
-  const gh=setField(!QK.live);if(QK.live)qkField();resetGrid();setHud(true);camInit=false;
+  const gh=setField(!QK.live);if(QK.live)qkField();if(SPL.race)splField();resetGrid();setHud(true);camInit=false;if(SPL.race)splViews();
   {const t=S.car?CAR_T[S.car.i>>2]:QK.live?CAR_T[0]:null,cw=t&&(QK.live?CAR_W0:carW());S.cls=t?t.k:S.train?1:clsOf(clsFree).f;S.aiK=t?t.ai:1;S.ail=QK.live?'normal':ailNow();S.aiF=t?(QK.live&&QK.lvl<2?0:t.f):1;if(!S.trial&&!S.train&&!mp.on&&!QK.live)store.set('hoverline.lastmode',t?'career':'race');{const D0=DIFF[T.wk]||T.D,e=t&&t.e;T.D=e?{...D0,dmg:D0.dmg*e.dmg,band:[D0.band[0]*(e.dn||1),D0.band[1]*e.up],assist:D0.assist*(e.as||1)}:D0}
     if(cw)for(const r of racers)if(r.isAI&&r.weapons){const o=[];for(const x of r.weapons)o.push(cw.includes(x)?x:CAR_W0.find(y=>!o.includes(y)&&!r.weapons.includes(y)));r.weapons=o;r.scoop=null}}
   if(S.train)setTimeout(()=>note('Training · '+trDrill(TRN.d).n+' · '+(TRN.cube?'Training cube':'your frame')+' · '+LAPS+' laps'+(gh&&gh.best?' · your best run is the ghost':''),2600),900);
@@ -83,7 +83,7 @@ async function startRace(){wakeScreen(true);
   clearTimeout(startRace.h);startRace.h=setTimeout(()=>{$('padHint').hidden=true},6000);
   if(QK.live)qkGoRace();
 }
-function finish(){if(QK.live){qkFinish();return}
+function finish(){if(QK.live){qkFinish();return}if(SPL.race){splFinish();return}
   S.state='done';setTimeout(()=>logEnd('finish'),1600);
   const best=Math.min(...player.laps),prev=getBest();const isRec=prev==null||best<prev;if(isRec)store.set(bestKey(),String(best));
   if(!mp.on&&!S.car){recSample();ghostSave({T:player.finishT,paint:build.paint,lv:build.liv||null,stats:{...build.stats},fr:build.frame,d:rec.d})}
@@ -132,7 +132,7 @@ function mpAgain(fresh){if(!mp.sess||!mp.sess.state.isHost)return;mp.sess.send({
 function renderResults(){const rk=ranking(),place=rk.indexOf(player)+1;
   $('resPos').innerHTML=ord(place)+`<small>${fmt(player.finishT)}</small>`;
   $('resTable').innerHTML=rk.map((r,i)=>{const t=r.left?'left':r.finishT!=null?fmt(r.finishT):mp.on&&r.remote?'racing…':'~'+fmt(S.raceT+(LAPS*T.L-r.utot)/Math.max(r.v,60));
-    return`<tr class="${r===player?'me':''}"><td>${i+1}</td><td>${esc(r.name)}${r.remote?' ◆':''}</td><td>${t}</td></tr>`}).join('')}
+    return`<tr class="${r===player||r.lp?'me':''}"><td>${i+1}</td><td>${esc(r.name)}${r.lp&&r===player?' · P1':''}${r.remote?' ◆':''}</td><td>${t}</td></tr>`}).join('')}
 /* Prototype 43: what paused the race, for the pause menu and the log. A touch time lets a controller's Start press that
    comes with a screen touch be ignored (a phone reporting its touch screen as a controller). */
 const PZ={touch:-1e9,vis:0,blur:0,gc:{},ghosts:new Set()};addEventListener('pointerdown',e=>{if(e.pointerType==='touch')PZ.touch=performance.now()},true);addEventListener('touchstart',()=>{PZ.touch=performance.now()},{capture:true,passive:true});
@@ -150,7 +150,7 @@ function pauseTuneUI(){const so=music.soOn&&music.soCur,c=music.code(),row=$('pa
   try{t=so?'♪ '+so.t+' · '+so.a:c&&music.style!=='off'?'♪ '+String(music.info()).split(' · ').slice(0,2).join(' · ')+' · '+c:''}catch(e){t=''}
   $('pauseTune').textContent=t;$('likeTune3').hidden=$('dislikeTune3').hidden=!c||!!so;$('tiltRe').hidden=!(coarse&&tilt.enabled&&tilt.ok);row.hidden=!t&&$('tiltRe').hidden}
 $('tiltRe').onclick=()=>{note(tiltCentre()?'Tilt centred: hold it like this to fly straight':'No tilt reading',1800)};
-function toMenu(){wakeScreen(false);if(QK.live){qkMenu('menu');return}if(LOG.cur)logEnd(player.finishT!=null?'finish':'quit');setField(false);S.state='menu';menuMusic();setHud(false);['pause','results','count','opts','set','ctl','mus','gfxm'].forEach(i=>$(i).hidden=true);if(S.car)carNext();resetGrid();showPage(S.car?'career':S.train?'train':page==='opts'?'title':page);camInit=false}
+function toMenu(){wakeScreen(false);if(QK.live){qkMenu('menu');return}if(LOG.cur)logEnd(player.finishT!=null?'finish':'quit');const sp=SPL.race;if(sp)splEnd();setField(false);S.state='menu';menuMusic();setHud(false);['pause','results','count','opts','set','ctl','mus','gfxm'].forEach(i=>$(i).hidden=true);if(S.car)carNext();resetGrid();showPage(S.car?'career':S.train?'train':page==='opts'?'title':page);camInit=false;if(sp)splOpen()}
 
 $('raceBtn').onclick=startRace;$('againBtn').onclick=()=>{if(mp.on)mpAgain(false);else startRace()};$('restartBtn').onclick=startRace;
 const rndSeed=()=>Math.floor(Math.random()*0xFFFFFF)+1;

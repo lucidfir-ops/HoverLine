@@ -66,7 +66,7 @@ cap and Resolution in Graphics are the knobs; this needs a check on the Deck by 
 ## Layouts
 
 Each view is a rectangle. A layout is a list of rows (each row split evenly), or of columns (each column split evenly),
-or a grid with spare cells (a spare cell shows the track map and the standings). Every candidate for N is scored for the
+or a grid with spare cells (a spare cell shows the standings). Every candidate for N is scored for the
 screen and the best one is picked automatically:
 
 - each view's shape against a racing target of about 1.8:1, with views that are too narrow costing more than views that
@@ -74,10 +74,10 @@ screen and the best one is picked automatically:
 - spare cells cost a little (a map is worth something, a view more);
 - unequal view sizes cost a little (fairness).
 
-What that picks (16:9 / 16:10, Deck): 2 = top and bottom; 3 = 2×2 with the map; 4 = 2×2; 5 = 2 over 3; 6 = 3 rows of
-2; 7 = 2, 2, 3; 8 = 3, 3, 2. Ultrawide 21:9: 2 = side by side; 4 = 2×2. Super-ultrawide 32:9: 2 to 4 side by side.
+What that picks (16:9 / 16:10, Deck): 2 = top and bottom; 3 = 2×2 with the standings; 4 = 2×2; 5 = two columns, of 2 and
+of 3 views; 6 = 3 rows of 2; 7 = rows of 2, 2, 3; 8 = rows of 2, 3, 3. Ultrawide 21:9: 2 = side by side; 4 = 2×2. Super-ultrawide 32:9: 2 to 4 side by side.
 Portrait phone: strips (one view per row) up to 8. Square: rows. A **picker** in the split-screen lobby lists the other
-good layouts for the number of pilots (Auto, then by name: "2 + 3 rows", "4 side by side", "2 × 2 with map"...), saved
+good layouts for the number of pilots (Auto, then by name: "Rows 2 + 3 + 3", "4 side by side", "Grid 2 × 2 with standings"...), saved
 per number of pilots.
 
 ## Controllers

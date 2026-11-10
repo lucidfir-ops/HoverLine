@@ -6,6 +6,7 @@
 <style><!--#include css/hoverline.css--></style>
 
 <canvas id="c" aria-label="Race view"></canvas>
+<div id="views" hidden></div>
 <div id="scrV" aria-hidden="true" hidden></div><div id="scrS" aria-hidden="true" hidden></div><div id="fps" aria-hidden="true" hidden></div>
 <div id="ink" aria-hidden="true"></div><div id="threat" aria-hidden="true"></div><div id="threatQ" aria-hidden="true" hidden></div><div id="threatTxt" hidden></div>
 <div id="flash"></div>
@@ -239,6 +240,7 @@
       <div class="row"><button class="btn go" id="mpCreate">Create room</button><button class="btn" id="mpPub">Public room</button><button class="btn" id="lanJoin" hidden>Join a Wi-Fi room</button></div>
       <div class="code" id="mpCodeRow"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard">⌨</button><button class="btn" id="mpJoin">Join</button></div>
       <p class="small" id="mpConnHint"></p>
+      <div class="row" id="splRow"><button class="btn mode" id="splBtn">Split screen (this screen)<small>Up to 8 on this screen · pads, keyboard, phones</small></button><button class="btn mode" id="padcBtn" aria-pressed="false">Be a controller<small>Race on another device's split screen</small></button></div>
       <div class="row"><button class="btn" id="mpBack" data-back>Back</button></div>
     </div>
     <div id="mpIn" class="col" hidden>
@@ -246,7 +248,7 @@
       <div class="big" id="mpRoom">·····</div>
       <div class="t best" id="mpStatus"></div>
       <table id="mpList"></table>
-      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Frame lab</button><button class="btn" id="mpOpt">Options</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
+      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Frame lab</button><button class="btn" id="mpOpt">Options</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn go" id="mpSplBack" hidden>Split screen ›</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
       <p class="small" id="mpHint"></p>
       <div class="t" id="mpTrack"></div>
       <div class="row" role="group" aria-label="Sky on this device"><span class="sub">Sky</span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
@@ -260,6 +262,31 @@
     <p class="small warn" id="mpErr"></p>
   </div>
   <div class="map"><canvas id="mpPreview"></canvas><div class="small" id="mpStats"></div></div>
+</div>
+<div id="spl" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">SPLIT <b>SCREEN</b></div>
+    <div class="sub">Everyone on this screen · up to 8 pilots</div>
+    <div id="splList" class="col"></div>
+    <p class="small">Pads: any button joins · B leaves · Y small-pad buttons · Start races. Small pads: A boost, B module, X brake, Y module 2, d-pad steers.</p>
+    <div class="row"><button class="chip" id="splDev" aria-pressed="false">This device plays</button><button class="chip" id="splAI" aria-pressed="true">Fill with AI</button><span class="sep"></span><span class="sub">Laps</span><button class="chip" data-spllaps="1">1</button><button class="chip" data-spllaps="2">2</button><button class="chip" data-spllaps="3">3</button><button class="chip" data-spllaps="5">5</button></div>
+    <div class="row splLayRow"><div id="splSketch" aria-hidden="true"></div><div class="col"><label class="sub" for="splLay">Layout</label><select id="splLay"></select><button class="btn" id="splScr" hidden>Span my screens</button></div></div>
+    <div class="row"><button class="btn" id="splJoin">Let devices join</button><button class="btn" id="splShut" hidden>Close room</button><span class="t best" id="splRoom" hidden></span></div>
+    <p class="small" id="splHint">Phones and tablets join as controllers: on each one open Hoverline, Multiplayer, Be a controller, then join this screen's room. Same room · no internet needs every device on one Wi-Fi. Steam Deck: make a hotspot in Desktop mode (network icon, Wi-Fi, Hotspot) and join the phones to it.</p>
+    <div class="row"><button class="btn go" id="splGo" disabled>Race</button><button class="btn" id="splNew">New track</button><button class="btn" id="splBack" data-back>Back</button></div>
+  </div>
+  <div class="map"><canvas id="splPreview"></canvas><div class="small" id="splStats"></div></div>
+</div>
+<div id="padc" hidden>
+  <div class="pcTop"><b id="pcN">–</b><span id="pcMsg">Connecting…</span><button class="chip" id="pcTilt" aria-pressed="false">Tilt</button><button class="chip" id="pcView">View</button><button class="btn" id="pcLeave">Leave</button></div>
+  <div class="pcPad">
+    <div id="pcSteer" class="pcZone"><i id="pcDot"></i><span>Steer<small>slide left and right · up and down for the nose</small></span></div>
+    <div class="pcBtns">
+      <button class="pcB" id="pcW1">Module 1</button><button class="pcB" id="pcW2">Module 2</button>
+      <button class="pcB" id="pcBrk">Brake</button><button class="pcB pcBst" id="pcBst">Boost</button>
+    </div>
+  </div>
+  <button class="btn go" id="pcGo" hidden>Start the race</button>
 </div>
 <div id="tags"></div>
 

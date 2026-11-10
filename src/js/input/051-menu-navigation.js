@@ -45,27 +45,31 @@ function navKey(e){const L=navLayer();if(!L)return false;const t=e.target,txt=t&
   if(d){if(txt&&(d==='l'||d==='r'))return true;navDir(d);e.preventDefault();return true}
   if(e.code==='Escape'&&navBack()){e.preventDefault();return true}
   return false}
-function readInput(){navWatch();
+/* np (Prototype 60, split screen): the pads still pause, change the song and work the menus, but steer nothing here:
+   each pad flies its own pilot (051-local-pilots.js) */
+function readInput(np){navWatch();
   let steer=0,brake=0,pitch=0;
   if(keys.ArrowLeft||keys.KeyA)steer-=1;if(keys.ArrowRight||keys.KeyD)steer+=1;
   if(keys.ArrowUp||keys.KeyW)pitch-=1;if(keys.ArrowDown||keys.KeyS)pitch+=1;
   if(keyHeld('brake'))brake=1;let boost=!!(keyHeld('boost')||touch.boost);
   const hold=[!!(keyHeld('w1')||touch.f1),!!(keyHeld('w2')||touch.f2)];
   const gps=navigator.getGamepads?navigator.getGamepads():[];
-  for(const p of gps){if(!p||PZ.ghosts.has(p.id))continue;const ax=p.axes[0]||0,ay=p.axes[1]||0,ry=p.axes[3]||0,inv=bind.padInvert?-1:1;steer+=dead(ax,0.12);pitch+=inv*((Math.abs(ay)>Math.abs(ax)*0.55?dead(ay,0.2):0)+dead(ry,0.2));
+  for(const p of gps){if(!p||PZ.ghosts.has(p.id))continue;const ax=p.axes[0]||0,ay=p.axes[1]||0,ry=p.axes[3]||0,inv=bind.padInvert?-1:1;
     const b=i=>p.buttons[i]||{value:0,pressed:false},B=a=>b(bind.pad[a]),an=a=>{const x=B(a);return Math.max(x.value||0,x.pressed?1:0)};
+    if(!np){steer+=dead(ax,0.12);pitch+=inv*((Math.abs(ay)>Math.abs(ax)*0.55?dead(ay,0.2):0)+dead(ry,0.2));
     if(b(14).pressed)steer-=1;if(b(15).pressed)steer+=1;if(b(12).pressed)pitch-=1;if(b(13).pressed)pitch+=1;
     brake=Math.max(brake,an('brake')>0.08?an('brake'):0);if(an('boost')>0.3)boost=true;
-    if(B('w1').pressed)hold[0]=true;if(B('w2').pressed)hold[1]=true;
+    if(B('w1').pressed)hold[0]=true;if(B('w2').pressed)hold[1]=true}
     const prev=padPrev[p.index]||[];const tg=performance.now()-PZ.touch<300,edge=i=>!tg&&b(i).pressed&&!prev[i],E=a=>edge(bind.pad[a]);
     if(tg&&p.buttons.some((x,i)=>x.pressed&&!prev[i])){PZ.gc[p.id]=(PZ.gc[p.id]||0)+1;if(PZ.gc[p.id]>=2){PZ.ghosts.add(p.id);if(LOG.cur)logEv('ghostpad',{id:String(p.id||'').slice(0,48)})}}
     if(!tg&&(p.buttons.some((x,i)=>x.pressed&&!prev[i])||Math.abs(ax)>0.5||Math.abs(ay)>0.5)){padSeen(p);setDev('pad')}
     if(rebind.on&&rebind.dev==='pad'){const i=p.buttons.findIndex((x,i)=>x.pressed&&!prev[i]);if(i>=0)rebindPad(i);padPrev[p.index]=p.buttons.map(x=>x.pressed);continue}
-    if(E('view')&&(S.state==='race'||S.state==='countdown'||S.state==='done'))setCam(camMode+1,true);
+    if(SPL.open&&splPadLobby(p,prev)){padPrev[p.index]=p.buttons.map(x=>x.pressed);continue}
+    if(!np&&E('view')&&(S.state==='race'||S.state==='countdown'||S.state==='done'))setCam(camMode+1,true);
     if(E('song')&&S.state!=='lab')newSong();
     if(guide.on){if(E('pause')||edge(1))closeGuide();else if(edge(15)||edge(5))guideShow(guide.i+1);else if(edge(14)||edge(4))guideShow(guide.i-1)}
     else if(E('pause')){if(performance.now()-PZ.touch<300){/* a Start press that came with a screen touch: not a controller */}else if(!$('ctl').hidden)closeCtl();else if(S.state==='lab')closeLab();else togglePause('pad '+bind.pad.pause+'|'+String(p.id||'').slice(0,40))}
-    if(S.state==='race'){if(E('w1'))fireQ[0]=true;if(E('w2'))fireQ[1]=true}
+    if(S.state==='race'){if(!np){if(E('w1'))fireQ[0]=true;if(E('w2'))fireQ[1]=true}}
     else if(!guide.on&&navLayer())padNav(p,b,edge)
     padPrev[p.index]=p.buttons.map(x=>x.pressed)}
   steer+=touch.steer;pitch+=touch.pitch+(touch.psl||0);brake=Math.max(brake,touch.brake);

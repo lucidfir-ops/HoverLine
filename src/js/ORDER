@@ -52,6 +52,7 @@ js/music/engine/048-library-kept.js
 js/music/engine/049-step-template.js
 js/input/050-input.js
 js/input/051-menu-navigation.js
+js/input/051-local-pilots.js
 js/weapons/052-weapons.js
 js/weapons/053-effects.js
 js/race/054-ai.js
@@ -96,4 +97,6 @@ js/ui/092-enter-race-leave.js
 js/ui/093-race-log-share.js
 js/ui/094-inputs.js
 js/ui/095-hud-prompts.js
+js/ui/095-split-screen.js
+js/ui/095-pad-controller.js
 js/ui/096-screens.js

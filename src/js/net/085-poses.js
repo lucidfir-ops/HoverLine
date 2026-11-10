@@ -20,4 +20,4 @@ function proxyStep(r,dt){const n=r.net;if(!n||r.left)return;
   r.wreck=wr?1:0;r.inv=f&4?1:0;r.barrier=f&8?1:0;r.boost=f&16?1:0;r.charging=f&32?'hp':f&64?'ammo':null;
   if(f&128){if(!(r.stun>0)&&!(r.spinD>0))startSpin(r,0.75,false);r.stun=0.1}else r.stun=0;spinStep(r,dt);r.od=f&512?1:0;r.emp=f&1024?1:0;r.phase=f&2048?0.2:0;{const dd=f&8192?1:f&4096?-1:0,P=drOf(r);if(dd&&!r.drift)r.dT=0;r.drift=dd;r.dN=dd?1:0;if(dd){r.dT=(r.dT||0)+dt;r.dB=P.cap*(1-Math.exp(-r.dT/P.tau));r.dAng=P.ang}else r.dB=0;r.driftK=clamp((r.driftK||0)+(dd?4:-3)*dt,0,1)}r.hp=n.hp;r.done=n.done}
 /* Reference distance for the AI's catch-up: the average of the human pilots, not just this device's player. */
-function bandRef(){if(!mp.on)return player.utot;let s=0,n=0;for(const r of racers)if(!r.isAI&&!r.left){s+=r.utot;n++}return n?s/n:player.utot}
+function bandRef(){if(SPL.race){let s=0,n=0;for(const r of racers)if(r.lp){s+=r.utot;n++}return n?s/n:player.utot}if(!mp.on)return player.utot;let s=0,n=0;for(const r of racers)if(!r.isAI&&!r.left){s+=r.utot;n++}return n?s/n:player.utot}

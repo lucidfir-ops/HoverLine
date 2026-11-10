@@ -303,7 +303,7 @@ svg.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-
 @media (orientation:landscape){
   #menu,#mp,#ed,#career,#train{flex-wrap:nowrap;align-items:flex-start}
   #menu>.card,#mp>.card,#ed>.card,#career>.card,#train>.card{flex:0 1 440px;min-width:0}
-  #menu>.map,#mp>.map,#ed>.map,#career>.map,#train>.map{flex:1 1 0;min-width:170px;max-width:640px;position:sticky;top:0;align-self:flex-start}
+  #menu>.map,#mp>.map,#spl>.map,#ed>.map,#career>.map,#train>.map{flex:1 1 0;min-width:170px;max-width:640px;position:sticky;top:0;align-self:flex-start}
   #menu>.map canvas,#mp>.map canvas,#ed>.map canvas,#career>.map canvas,#train>.map canvas{width:100%;height:auto;aspect-ratio:4/3;max-height:calc(100vh - 96px);max-height:calc(100dvh - 96px)}
 }
 @media (max-height:480px){#ed .logo,#ed>.card>.sub{display:none}.erow .en small{display:none}#ed .card{gap:7px}.small{display:none}.overlay{align-items:flex-start}#lab .logo{display:none}.srow{gap:2px 8px}.sb{height:30px}#lab .card{gap:6px}.srow .sval{display:none}.srow.up .sval,.srow.down .sval{display:block}#lab .chip{padding:6px 10px;font-size:12px}.swatch{width:26px;height:26px}#lab .sub{font-size:11px}}
@@ -311,10 +311,10 @@ svg.i{width:1.15em;height:1.15em;flex:none;fill:none;stroke:currentColor;stroke-
 /* big screens: menus and HUD grow with the screen; canvases keep their pixels and get bigger boxes instead */
 @media (min-width:1600px) and (min-height:1000px){
   .overlay>.card,.map>:not(canvas),.gtext,#hudL,#hudR>:not(#mini),#pauseBtn,#note,#splitHud{zoom:1.25}
-  #menu>.map,#mp>.map,#ed>.map,#career>.map,#train>.map{max-width:900px}.gwrap{max-width:1400px;max-height:800px}#mini{width:165px;height:165px}}
+  #menu>.map,#mp>.map,#spl>.map,#ed>.map,#career>.map,#train>.map{max-width:900px}.gwrap{max-width:1400px;max-height:800px}#mini{width:165px;height:165px}}
 @media (min-width:2200px) and (min-height:1300px){
   .overlay>.card,.map>:not(canvas),.gtext,#hudL,#hudR>:not(#mini),#pauseBtn,#note,#splitHud{zoom:1.6}
-  #menu>.map,#mp>.map,#ed>.map,#career>.map,#train>.map{max-width:1200px}.gwrap{max-width:1800px;max-height:1020px}#mini{width:210px;height:210px}}
+  #menu>.map,#mp>.map,#spl>.map,#ed>.map,#career>.map,#train>.map{max-width:1200px}.gwrap{max-width:1800px;max-height:1020px}#mini{width:210px;height:210px}}
 /* a little wider card where there is room, so rows don't leave one button on a line of its own */
 @media (min-width:700px) and (min-height:560px){.card{width:min(500px,100%)}#menu>.card,#mp>.card,#ed>.card,#career>.card,#train>.card{flex-basis:500px}#title .card:has(#fsBtn:not([hidden])){width:min(600px,100%)}}
 /* track page chips: one line per group */
@@ -509,3 +509,42 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
 .lib .lrm{background:none;border:0;color:inherit;font:inherit;font-size:12px;opacity:.55;cursor:pointer;padding:9px 2px;text-decoration:underline}.lib .lrm:hover{opacity:1}
 .lib td.st{opacity:.8;font-size:12px}.libw{max-height:48vh;overflow-y:auto;overflow-x:hidden}@media (max-width:560px){.lib .k{display:none}.lib{font-size:12px}}
 #rotBtn{padding-inline:14px;min-width:0;display:inline-flex;align-items:center;justify-content:center}#rotBtn svg{display:block}
+
+/* ---- Prototype 60: split screen ---- */
+#views{position:fixed;inset:0;pointer-events:none}
+.vw{position:absolute;box-sizing:border-box;border:1px solid rgba(9,11,16,.9);font-family:var(--display);color:var(--ink);text-shadow:0 1px 3px rgba(0,0,0,.8);overflow:hidden}
+.vw::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--pc)}
+.vwt{position:absolute;left:.6em;top:.5em;display:flex;gap:.45em;align-items:baseline;font-size:.9em;letter-spacing:.04em;text-transform:uppercase}
+.vwt b{color:var(--bg);background:var(--pc);padding:0 .4em;border-radius:3px;text-shadow:none}.vwsrc{color:var(--dim)}
+.vwpos{position:absolute;left:.6em;top:1.8em;line-height:1}.vwpos b{font-size:2.3em;font-weight:700}.vwpos small{font-size:.85em;color:var(--dim);margin-left:.15em}
+.vwlap{position:absolute;right:.6em;top:.5em;font-family:var(--mono);font-size:.95em}
+.vwspd{position:absolute;right:.6em;bottom:.5em;text-align:right;line-height:1}.vwspd b{font-size:1.7em;font-family:var(--mono)}.vwspd small{display:block;font-size:.65em;color:var(--dim)}
+.vwbars{position:absolute;left:.6em;bottom:.6em;width:min(9em,40%);display:flex;flex-direction:column;gap:.25em}
+.vwbars i{display:block;height:.42em;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}.vwbars u{display:block;height:100%;width:0;background:var(--green)}.vwbars .am u{background:var(--purple)}
+.vw.low .hp u{background:var(--red)}.vw.wreck{box-shadow:inset 0 0 0 3px var(--red)}
+.vwmods{position:absolute;left:.6em;bottom:1.8em;display:flex;gap:.3em}.vwmods span{width:1.6em;height:1.6em;opacity:.35;color:var(--ink)}.vwmods span.rdy{opacity:1;color:var(--amber)}.vwmods svg{width:100%;height:100%}
+.vwfin{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:2.2em;font-weight:700;color:var(--pc);white-space:nowrap}
+.vws{position:absolute;box-sizing:border-box;border:1px solid rgba(9,11,16,.9);display:grid;place-items:center;background:var(--bg);font-family:var(--display);color:var(--ink)}
+.vwst{display:flex;flex-direction:column;gap:.2em;min-width:60%}.vwst>div{display:flex;gap:.5em;align-items:center}.vwst>div.me{color:var(--amber)}.vwst i{width:.7em;height:.7em;border-radius:50%;display:inline-block}.vwst small{margin-left:auto;font-family:var(--mono);color:var(--dim)}
+#spl .card{width:min(520px,100%)}
+#splList{gap:6px}
+.splp{display:flex;align-items:center;gap:10px;padding:6px 8px;border:1px solid rgba(255,255,255,.12);border-left:4px solid var(--pc);border-radius:6px;background:rgba(255,255,255,.03);transition:background .15s}
+.splp>b{font:700 18px var(--display);color:var(--pc);min-width:2em}.splp>span{flex:1;display:flex;flex-direction:column}.splp small{color:var(--dim);font-size:12px}
+.splp.lit{background:rgba(255,176,0,.18)}.splp.wait{opacity:.6}
+.splLayRow{align-items:flex-start;gap:14px}
+#splSketch{position:relative;flex:none;border:1px solid rgba(255,176,0,.3);border-radius:4px;background:rgba(0,0,0,.35)}
+#splSketch i{position:absolute;box-sizing:border-box;border:1px solid var(--bg);background:color-mix(in srgb,var(--pc) 45%,transparent);display:grid;place-items:center;font:700 12px var(--display);font-style:normal;color:var(--ink)}
+#splSketch i.sp{background:rgba(255,255,255,.06)}
+#padc{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 8px) max(10px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(10px,env(safe-area-inset-left,0px));touch-action:none;user-select:none;-webkit-user-select:none;font-family:var(--display);color:var(--ink);border-top:4px solid var(--pc,var(--amber))}
+#padc[hidden]{display:none}
+.pcTop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.pcTop>span{flex:1;min-width:8em;font-size:15px}
+#pcN{font:700 22px var(--display);color:var(--bg);background:var(--pc,var(--amber));padding:2px 10px;border-radius:4px}
+.pcPad{flex:1;display:flex;gap:10px;min-height:0}
+.pcZone{flex:1.1;position:relative;border:2px dashed rgba(255,255,255,.18);border-radius:14px;display:grid;place-items:center;text-align:center;color:var(--dim);font-size:18px;touch-action:none}
+.pcZone small{display:block;font-size:12px;margin-top:4px}.pcZone.on{border-color:var(--pc,var(--amber));border-style:solid}
+#pcDot{position:absolute;left:50%;top:50%;width:64px;height:64px;border-radius:50%;background:var(--pc,var(--amber));opacity:0;transform:translate(-50%,-50%);pointer-events:none}.pcZone.on #pcDot{opacity:.75}
+.pcBtns{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px}
+.pcB{font:700 20px var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--ink);background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.18);border-radius:14px;touch-action:none;min-height:64px}
+#pcW1,#pcW2{border-color:rgba(190,90,255,.5)}.pcBst{border-color:rgba(63,240,255,.6)}#pcBrk{border-color:rgba(255,74,61,.5)}
+.pcB.on{background:var(--pc,var(--amber));color:var(--bg)}
+@media (orientation:portrait){.pcPad{flex-direction:column}.pcZone{flex:1}.pcBtns{flex:1.1}}

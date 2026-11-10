@@ -44,7 +44,7 @@ function mpNudge(name){const s=mp.sess;if(!s||s.state.me.rd||S.state==='race'||S
   try{navigator.vibrate&&navigator.vibrate([120,80,120])}catch(e){}rumble(0.7,0.7,300);
   note(name+' is ready · '+(S.state==='done'?'go back to the lobby and press Ready':S.state==='lab'?'finish in the frame lab and press Ready':'press Ready'),2600);
   const b=mpEl.mpReady;b.classList.remove('nudge');void b.offsetWidth;b.classList.add('nudge')}
-function mpAutoStart(st){if(!st.isHost||st.phase!=='lobby'||st.busy||!st.roster.length)return;
+function mpAutoStart(st){if(mp.split)return;if(!st.isHost||st.phase!=='lobby'||st.busy||!st.roster.length)return;
   const all=st.roster.every(e=>e.st==='lobby'&&e.rd);
   if(!all){if(mp.autoT){clearTimeout(mp.autoT);mp.autoT=null}return}
   if(mp.autoT)return;note(st.roster.length>1?'Everyone is ready · starting':'Ready · starting',1400);
@@ -56,7 +56,7 @@ document.querySelectorAll('[data-mplen]').forEach(b=>b.onclick=()=>{newTrack(wid
 document.querySelectorAll('[data-mplaps]').forEach(b=>b.onclick=()=>{mp.laps=+b.dataset.mplaps;mpPushInfo()});
 mpEl.mpAI.onclick=()=>{mp.fill=!mp.fill;mpPushInfo()};
 function mpPushInfo(){if(mp.sess&&mp.sess.state.isHost)mp.sess.setInfo(mpTrackInfo());drawPreview('mpPreview','mpStats');mpRender()}
-function mpApplyInfo(info){if(!info||info.seed==null)return;mp.laps=info.laps||3;mp.fill=info.fill!==false;mp.cls=clsOf(info.cls).k;clsSync();
+function mpApplyInfo(info){if(info&&info.split&&mp.sess&&!mp.sess.state.isHost){padcOpen();return}if(!info||info.seed==null)return;mp.laps=info.laps||3;mp.fill=info.fill!==false;mp.cls=clsOf(info.cls).k;clsSync();
   if(S.state==='menu'&&(info.seed!==seed||info.wk!==wid||!!info.cx!==cplx||(info.lk||'M')!==lenK||(info.sp||null)!==(spec?specStr(spec):null)||(info.bm||'U')!==bioTok())){loadTrack(info.seed,info.wk,!!info.cx,info.lk||'M',info.sp?parseSpec(info.sp):null,parseBio(info.bm||'U'));drawPreview('mpPreview','mpStats')}}
 /* Every pilot gets a different paint for the race: anyone whose chosen paint is taken by someone earlier in the room
    gets the first free one. Every device computes the same answer from the same list. */
@@ -65,6 +65,7 @@ function mpPaints(list){const used=new Set(),css=new Set(),out={};for(const e of
   used.add(pt);css.add(PAINTS[pt].css);out[e.id]=pt}return out}
 function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='lobby'&&s.state.busy){mpBackToLobby();note('The race started without this device · you are in the next one',2600);return}
   if(s)mpAutoStart(s.state);
+  if(s&&mp.split==='screen')splRoomSync(s.state);
   if(!s||mpEl.mp.hidden&&S.state!=='menu')return;const st=s.state,me=st.id;
   mpEl.mpRoom.textContent=mp.pub?'Public':st.code;
   const paths=st.link&&st.link.paths,carrier=st.link&&st.link.carrier;
@@ -80,7 +81,7 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
   const pts=mpPaints(st.roster);
   mpEl.mpList.innerHTML=st.roster.map((e,i)=>{const p=e.p||{},col=((p.lv&&parseLiv(p.lv))||PAINTS[pts[e.id]]||PAINTS[0]).css,w=(p.fr&&FRAMES[p.fr]?FRAMES[p.fr].name+' · ':'')+(p.w||[]).map(k=>WDEF[k]?WDEF[k].name:k).join(' + ');
     return`<tr class="${e.id===me?'me':''}"><td><i class="dot" style="background:${col}"></i>${i+1}</td><td>${(p.n||'Pilot').replace(/[<>&]/g,'')}${e.id===st.hostId?' ★':''}${e.id===me?' (you)':''}</td><td>${e.st==='lobby'&&e.rd?'<b class="rdy">ready ✓</b>':mpSt[e.st]||e.st}</td><td class="w">${w}</td></tr>`}).join('')+
-    (st.roster.length<MAXP?`<tr><td></td><td class="dim" colspan="3">${MAXP-st.roster.length} open · ${mp.fill?'AI tops the field up to 8':'no AI'}</td></tr>`:'');
+    (st.roster.length<mpMax()?`<tr><td></td><td class="dim" colspan="3">${mpMax()-st.roster.length} open · ${mp.split==='screen'?'devices that join are controllers':mp.fill?'AI tops the field up to 8':'no AI'}</td></tr>`:'');
   const info=st.isHost?mpTrackInfo():st.info;
   mpEl.mpTrack.textContent=info&&info.seed!=null?`Track ${((info.wk||'S')+(info.cx?'X':'')+(info.lk&&info.lk!=='M'?info.lk:'')+(info.seed>>>0).toString(16).toUpperCase().padStart(6,'0')+(info.sp?'-'+info.sp:''))} · ${(BIOMES[(info.bm||'U')[0]]||BIOMES.U).n} · ${info.laps||3} lap${(info.laps||3)>1?'s':''} · ${clsOf(info.cls).n}`:'';clsFill($('mpCls'),mp.cls);
   mpEl.mpHostRow.hidden=!st.isHost;
@@ -94,11 +95,13 @@ function mpRender(){const s=mp.sess;if(s&&S.state==='mpwait'&&s.state.phase==='l
   mpEl.mpReady.textContent=meRd?'Ready ✓':'Ready';
   mpEl.mpStart.hidden=!st.isHost||total<2||ready===0||ready===total;mpEl.mpStart.disabled=st.phase!=='lobby';
   mpEl.mpStart.textContent=`Start now (${ready} of ${total} ready)`;
-  mpEl.mpHint.textContent=st.phase==='full'?'':st.busy?'A race is on. You will be in the next one.':st.phase!=='lobby'?'':
+  /* (P60) a split-screen room: no Ready or Start here, the race starts from the split-screen lobby */
+  {const sp=mp.split==='screen'&&st.isHost;$('mpSplBack').hidden=!sp;if(sp){mpEl.mpReady.hidden=mpEl.mpStart.hidden=mpEl.mpLab.hidden=true;mpEl.mpHostRow.hidden=true}else mpEl.mpReady.hidden=mpEl.mpLab.hidden=false}
+  mpEl.mpHint.textContent=mp.split==='screen'&&st.isHost?'Devices that join this room become controllers on this screen. Go back to Split screen when everyone is in.':st.phase==='full'?'':st.busy?'A race is on. You will be in the next one.':st.phase!=='lobby'?'':
     total<2?(st.isHost?(carrier==='lan'?'Pilots join from Multiplayer → Same room · no internet → Join. Press Ready to race the AI on your own.':'Share the room code. Players join from Multiplayer → Join on their own device. Press Ready to race the AI on your own.'):''):
     ready===total?'Everyone is ready.':
     (meRd?'Ready · waiting for '+waiting.join(', ')+'.':'Press Ready when you are set. The race starts when every pilot is ready.')+(st.isHost&&ready?' Start now races just the pilots who are ready.':'')}
-function mpLeaveRoom(){lanStop();chirpStop();mp.cls=clsOf(store.get('hoverline.mpcls')).k;clsSync();if(mp.sess){mp.sess.close();mp.sess=null}mp.on=false;mp.pub=0;mp.go=null;mp.auto=false;mpRestore();mpTags(true);mpView()}
+function mpLeaveRoom(){lanStop();chirpStop();if(PADC.on)padcClose();mp.cls=clsOf(store.get('hoverline.mpcls')).k;clsSync();if(mp.sess){mp.sess.close();mp.sess=null}mp.on=false;mp.pub=0;mp.go=null;mp.auto=false;mpRestore();mpTags(true);mpView()}
 /* Racer objects: the local player plus five more. In a room they become the other pilots (proxies) and AI. */
 function mpRestore(){LAPS=3;for(const r of extras){r.off=true;r.ship.visible=false;r.shadow.visible=false;r.remote=null;r.proxy=false;r.key=null;r.left=false;r.net=null}for(let i=1;i<roster.length;i++){const r=roster[i],c=ROSTER[i];r.name=c.name;r.css=c.css;r.skill=c.skill;setShip(r,c.b,c.paint);Object.assign(r,{isAI:true,remote:null,proxy:false,key:null,left:false,net:null,off:false})}
   player.key=null;setField(false);resetGrid()}
