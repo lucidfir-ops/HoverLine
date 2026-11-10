@@ -19,6 +19,8 @@
                 each place (P.firePlace) and cal.fire. A module he never carried uses the AI's choice of moment, thinned
                 to P.fireOther. The HUD warns of incoming shots: Phase and Barrier also answer a share of those warnings
                 (P.react, calibrated so he takes as much weapon damage as Eric; a mild reaction shows in his logs).
+               Prototype 60: P.cal.mod[module][width] scales one module's rate on one width (his Prototype 59 Wide
+               races fire Turbo half again as often as the pooled fit gives the pilot, and Phase less).
    7. Drift.    Prototype 43 builds (every frame drifts, at once, the arc on the stick): in a corner bending past
                 P.drift43.on (default 0.0032) 0.35 s and 0.8 s ahead, on a share p (0.9) of corners, he holds the brake
                 from the bend until it opens out, and steers the arc with his usual steering through drive.js's
@@ -92,7 +94,7 @@ function makeEric(H,P,rnd=Math.random){
       if(w==='turbo'&&Math.max(Math.abs(cAt(40)),Math.abs(cAt(80)))>P.turboC)continue;
       /* the threat warning: a share of the shots the HUD warns about get an answer from Phase or Barrier (once each) */
       if((w==='phase'||w==='barrier')&&P.react){const th=H.aiWants(r,w);if(th&&!E.th[k]&&rnd()<P.react){fire[k]=true;E.th[k]=th;continue}E.th[k]=th}
-      const af=r.ammo/r.d.ammo,bi=F.ammoEdges.findIndex(e=>af<e),lam=(F.perS[wk]||F.perS.S)[bi<0?F.ammoEdges.length:bi]*((P.cal&&P.cal.fire)||1)*(P.firePlace[place-1]||1);
+      const af=r.ammo/r.d.ammo,bi=F.ammoEdges.findIndex(e=>af<e),lam=(F.perS[wk]||F.perS.S)[bi<0?F.ammoEdges.length:bi]*((P.cal&&P.cal.fire)||1)*(P.firePlace[place-1]||1)*(((P.cal&&P.cal.mod||{})[w]||{})[wk]??1);
       if(rnd()<1-Math.exp(-lam*dt))(w==='cannon'?hold:fire)[k]=true}
     /* 7. the drift (Prototype 43 builds): in a corner (the road 0.35 s ahead bending past D43.on and still past 0.7 of
        that 0.8 s ahead, the same way) he holds the brake on a share D43.p of corners, from the bend until it opens out
