@@ -8,10 +8,10 @@ const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
   if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats)if(n[f.kind]!=null)n[f.kind]=Math.min(FMAX[f.kind],n[f.kind]+1);ed.sp={b:T.fig8?3:1,n}}
   goFull();$(from).hidden=true;$('ed').hidden=false;edUI();drawPreview('edPreview','edStats')}
-function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild();$('ed').hidden=true;
+function closeEd(race){clearTimeout(ed.t);if(ed.dirty)edBuild(ed.reseed);$('ed').hidden=true;
   if(ed.from==='mp'){$('mp').hidden=false;mpPushInfo();mpView&&mpView()}else{showPage('menu');if(race)startRace()}}
-function edBuild(newSeed){ed.dirty=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
-function edChange(newSeed){ed.dirty=true;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(newSeed),newSeed?0:500)}/* (P59) half a second after the last change, so tapping + or - a few times builds once */
+function edBuild(newSeed){ed.dirty=false;ed.reseed=false;mySpec={b:ed.sp.b,n:{...ed.sp.n}};store.set('hoverline.spec',specStr(mySpec));if(!TPOOL.l.includes('C')){TPOOL.l+='C';poolSave()}loadTrack(newSeed?rndSeed():seed,ed.wk,null,ed.lk,{b:ed.sp.b,n:{...ed.sp.n}},{k:ed.bm.k,d:ed.bm.d.slice()});drawPreview('edPreview','edStats');edUI()}
+function edChange(newSeed){ed.dirty=true;ed.reseed=ed.reseed||!!newSeed;edUI();clearTimeout(ed.t);ed.t=setTimeout(()=>edBuild(ed.reseed),1000)}/* (P59) a delay after the last change, so tapping + or - a few times builds once. Prototype 60: one second (was half a second), restarted by every press, and Reshuffle goes through the same timer; ed.reseed keeps a pending reshuffle when a + or - press follows it */
 function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
     row.innerHTML=`<div class="en">${FLBL[k][0]}<small>${FLBL[k][1]}</small></div><button class="sb" data-d="-1" aria-label="Fewer ${FLBL[k][0]}">−</button><div class="ec"></div><button class="sb" data-d="1" aria-label="More ${FLBL[k][0]}">+</button>`;
@@ -55,8 +55,8 @@ const syncMusic=()=>{const st=music.style;document.querySelectorAll('[data-music
   const lc=$('likeChip');if(lc)lc.setAttribute('aria-pressed',String(MLIKE.on()));for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.liked()))}for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.disliked()))}};
 document.querySelectorAll('[data-music]').forEach(b=>b.onclick=()=>{audio.init();music.setStyle(music.style==='off'?'both':'off');music.setMood(S.state==='menu'?'menu':'race');syncMusic()});
 {const lc=$('likeChip');if(lc)lc.onclick=()=>{store.set('hoverline.mlikeon',MLIKE.on()?'0':'1');syncMusic();note(MLIKE.on()?'Your likes steer the radio · tunes like the ones you like come up more often':'Your likes no longer steer the radio',2400)}}
-for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.dislike();if(on==null){note('This works on the generated tunes',1600);return}syncMusic();note(on?'💔 Noted · it and tunes like it come up a bit less':'Removed',1800);if(on&&!music.pinned)newSong()}}
-for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.like();if(on==null){note('Like works on the generated tunes',1600);return}syncMusic();note(on?'♥ Liked · more like this on the radio':'Like removed',1600)}}
+for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.dislike();if(on==null){note('This works on the generated tunes',1600);return}syncMusic();note(on?'Noted · it and tunes like it come up a bit less':'Removed',1800);if(on&&!music.pinned)newSong()}}
+for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.onclick=()=>{audio.init();const on=music.like();if(on==null){note('Like works on the generated tunes',1600);return}syncMusic();note(on?'Liked · more like this on the radio':'Like removed',1600)}}
 syncMusic();
 /* ---- the library page (Prototype 45): the kept tunes as a table. Play library plays them one after another; the
    generator with library influence makes new tunes like them; a name plays that tune on repeat until Back to radio.

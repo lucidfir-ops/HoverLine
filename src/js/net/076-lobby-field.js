@@ -6,6 +6,8 @@
    at its own speed so it doesn't stutter. Weapons fire as events: every device spawns the same shots; a shot that
    hits a ship only does damage on the device that owns that ship, which then tells the others it exploded. */
 const MAXP=8;
+/* a split-screen room (Prototype 60) takes the screen and 8 controllers: 8 phones on one phone is allowed */
+const mpMax=()=>mp.split==='screen'?MAXP+1:MAXP;
 const mpEl={};for(const id of['mp','mpOut','mpIn','mpName','mpCode','mpCreate','mpJoin','mpBack','mpRoom','mpStatus','mpList','mpTrack','mpHostRow','mpStart','mpReady','mpLab','mpLeave','mpHint','mpConnRow','mpNew','mpAI','mpErr'])mpEl[id]=$(id);
 mpEl.mpName.value=(store.get('hoverline.name')||('Pilot '+(10+Math.floor(Math.random()*90)))).slice(0,12);
 const mpProfile=()=>({n:mpEl.mpName.value.trim().slice(0,12)||'Pilot',pt:build.paint,lv:build.liv||null,st:{...build.stats},w:[...build.weapons],fr:build.frame});
@@ -20,7 +22,7 @@ function mpSyncConn(){document.querySelectorAll('[data-conn]').forEach(b=>b.setA
   $('lanJoin').hidden=!lan;$('mpCodeRow').hidden=lan;$('mpPub').hidden=mpConn!=='internet';$('mpConnHint').textContent=CONN_HINT[mpConn]+(lan&&!LAN.ok?' This browser has no WebRTC, so it can\'t use it.':'');chirpSync()}
 document.querySelectorAll('[data-conn]').forEach(b=>b.onclick=()=>{mpConn=b.dataset.conn;if(mpConn!=='wifi')store.set('hoverline.conn',mpConn);mpSyncConn()});
 function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidden=!inRoom;if(inRoom)mpRender()}
-function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls}}
+function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls,...(mp.split==='screen'?{split:1}:{})}}
 /* Public rooms (Prototype 38): Public room joins the first public room of this version that has space, or opens it if nobody
    is there (whoever is first is the host, and the next pilot takes over if they leave). Random codes never contain a 1. */
 const PUBV=59,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
@@ -28,7 +30,7 @@ function mpConnect(code,host,pub){mp.pub=pub||0;
   audio.init();store.set('hoverline.name',mpEl.mpName.value.trim().slice(0,12));mpEl.mpErr.textContent='';
   const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':mpConn==='lan'?'lan':'net';
   mp.on=true;mp.code=code;mp.left=new Set();mp.go=null;
-  mp.sess=createSession({code,host,max:MAXP,profile:mpProfile(),info:host?mpTrackInfo():{},carrier,openLink:HLNet.openLink,claimMs:pub?3500:0,
+  mp.sess=createSession({code,host,max:mpMax(),profile:mpProfile(),info:host?mpTrackInfo():{},carrier,openLink:HLNet.openLink,claimMs:pub?3500:0,
     onChange:mpRender,onInfo:mpApplyInfo,onStart:mpStart,onGo:mpGo,onLeave:mpPeerLeft,onHost:mpBecameHost,
     onFull:()=>{if(mp.pub&&mp.pub<PUBN){const k=mp.pub+1;mp.sess.close();mp.sess=null;mpConnect(pubCode(k),false,k);return}mpEl.mpErr.textContent=mp.pub?'Every public room is full right now.':'That room is full ('+MAXP+' pilots).'},
     onError:t=>{mpEl.mpErr.textContent=t+(carrier==='lan'?' Leave the room and join again.':' Tap Reconnect to try again.');if(S.state==='race'||S.state==='countdown'||S.state==='mpwait')note('Connection trouble · pause and tap Reconnect',2600)},onMessage:mpMessage});

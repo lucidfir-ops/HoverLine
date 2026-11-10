@@ -7,7 +7,7 @@ const THREE = fs.readFileSync(require('path').join(__dirname, '..', '..', 'vendo
 const PAGE = process.env.PAGE || require('path').join(__dirname, '..', '..', 'index.html');
 const ORIGIN = 'http://127.0.0.1:8099';
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const HOOK = 'requestAnimationFrame(frame);window.__hl={S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,canFire,pacifist,tiltCentre,phaseLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,NAV};' +
+const HOOK = 'requestAnimationFrame(frame);window.__hl={S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,canFire,pacifist,tiltCentre,phaseLook,shots,fire,updateShots,WDEF,wrapU,live,aiWants,mpFlags,flareCostOf,REFLECT_T,FLARE_K,FLARE_UNIT,reflectLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,NAV,SPL,splOpen,splGo,splLayoutFor,PADC,roster,ranking,toMenu,get LAPS(){return LAPS}};' +
   'window.__nb={Chirp,ChirpIO,chirp,LAN,lan,lanUse,audio,PDG,priestDraw,qrDraw,jsqrLib};\n})();';
 const cache = {};
 function html(file) {
@@ -33,6 +33,8 @@ async function open(b, label, o = {}) {
   const ctx = await b.newContext({ viewport: vp, hasTouch: !!o.touch, isMobile: !!o.touch && vp.width < 1000, deviceScaleFactor: o.dpr || 1, userAgent: o.ua || undefined });
   if (o.perms) await ctx.grantPermissions(o.perms, { origin: ORIGIN });
   if (o.init) await ctx.addInitScript(o.init, o.initArg);
+  // P60: a fresh page offers First flight at launch; tests that are not about it start with it seen (o.fresh keeps it)
+  if (!o.fresh) await ctx.addInitScript(() => { try { if (!localStorage.getItem('hoverline.tut')) localStorage.setItem('hoverline.tut', '1') } catch (e) {} });
   if (o.storage) await ctx.addInitScript((st) => { try { for (const [k, v] of Object.entries(st)) localStorage.setItem(k, v) } catch (e) {} }, o.storage);
   const p = await ctx.newPage(); p.label = label; p.ctx = ctx; p.errs = [];
   p.on('pageerror', (e) => { p.errs.push(e.message); console.log(label, 'PAGEERROR', e.message) });

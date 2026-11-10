@@ -9,7 +9,7 @@
    the first complex tracks, Elite narrow and complex */
 const CAR_T=[{n:'Rookie',k:0.7,ai:0.9,f:0.25,e:{dmg:0.6,up:0.3},pay:1,tr:['WQC4DA5B','WQD467DC','WQ8FF347','W2E2AC0']},{n:'Club',k:0.8,ai:0.93,f:0.4,e:{dmg:0.7,up:0.5},pay:1.25,tr:['SQCFC064','WQ6A99B4','S6DF7DD','W935170']},
   {n:'Pro',k:0.9,ai:0.94,f:0.5,e:{dmg:0.7,up:0.6,dn:1.5},pay:1.5,tr:['S454021','SXQE3779B','SL6526AF','SX1FE68E']},{n:'Elite',k:1,ai:1,f:1,e:null,pay:2,tr:['NXQFA8CFB','NXBE1E08','SXL5C5581','NXL7C3C10']}];
-const CAR_W0=['missile','cannon','turbo'],CAR_W=['mines','rockets','barrier','decoy','smoke','shock','bouncer','scoopS','phase','swarm','scoopA','autopilot','emp','hunter','quake','overdrive'];
+const CAR_W0=['missile','cannon','turbo'],CAR_W=['mines','rockets','barrier','decoy','smoke','shock','bouncer','scoopS','phase','reflector','swarm','scoopA','autopilot','emp','hunter','quake','overdrive'];
 const CAR_PAY=[600,450,350,260,190,140,100,70],CAR_UP=[300,400,500,600,700,800,900,1000,1100,1200],CAR_N=16,CAR_P0=5;
 const car=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.career')||'null')}catch(e){}if(!o||typeof o!=='object')o={};
   const best=Array.isArray(o.best)?o.best.slice(0,CAR_N).map(x=>clamp(x|0,0,8)):[];while(best.length<CAR_N)best.push(0);
@@ -18,7 +18,8 @@ const car=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.career')||'null
 const carSave=()=>store.set('hoverline.career',JSON.stringify({v:39,cr:car.cr,up:car.up,best:car.best,fr:car.fr||null}));
 if(car.old)carSave();
 const carOpen=()=>{let i=0;while(i<CAR_N-1&&car.best[i]&&car.best[i]<=3)i++;return i};
-const carW=()=>CAR_W0.concat(CAR_W.slice(0,car.best.filter(x=>x&&x<=3).length));
+/* (P60) the Reflector made 17 unlocks for 16 tracks: the last clear of all unlocks the final module too */
+const carW=()=>{const n=car.best.filter(x=>x&&x<=3).length;return CAR_W0.concat(CAR_W.slice(0,n+(n>=CAR_N?1:0)))};
 const carCode=i=>CAR_T[i>>2].tr[i&3]+'-'+'UOFRN'[i%5];
 function carBuild(){let b=null;try{b=JSON.parse(store.get('hoverline.cbuild')||'null')}catch(e){}const d=defaultBuild(),bare={speed:1,thrust:1,handling:1,shield:1,ammo:1};d.stats={...bare};
   d.frame=build.frame;d.paint=build.paint;d.liv=build.liv||null;

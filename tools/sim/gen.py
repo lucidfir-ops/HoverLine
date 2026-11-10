@@ -40,4 +40,6 @@ for pat,mk in [(r"r\.driftK=clamp\(\(r\.driftK\|\|0\)\+\(r\.drift\?([0-9.]+):-([
                (r"\*\(r\.drift\?1\+([0-9.]+)\*\(r\.driftK\|\|0\):1\)",lambda m:"*(r.drift?1+(FRAMES.roller.dTurn??%s)*(r.driftK||0):1)"%m.group(1))]:
     if len(re.findall(pat,js))==1: js=re.sub(pat,mk,js)
     else: print('note: drift line not found, the drift VARIANT fields do nothing on this source:',pat[:40])
+# Prototype 60: Flares' multiplier, for flares.js
+js=js.replace("derive,HANDS:","derive,FLARE_K,HANDS:",1)
 open(os.environ.get('OUT',os.path.join(HERE,'game.js')),'w').write(js);print('ok',len(js))

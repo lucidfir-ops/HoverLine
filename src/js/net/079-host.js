@@ -17,7 +17,7 @@ async function chirpHostLoop(){const id=++chirp.loop,lobby=()=>{const st=mp.sess
     live=()=>{if(chirp.mode!=='host'||chirp.loop!==id)return false;if(lobby())return true;chirpStop();return false};
   while(live()){const st=mp.sess&&mp.sess.state;
     if(!st||st.phase==='connecting'){await chirpWait(300);continue}
-    if(st.roster.length>=MAXP){chirpStop();note('The room is full',1800);return}
+    if(st.roster.length>=mpMax()){chirpStop();note('The room is full',1800);return}
     if(!chirp.offer){chirp.tag=(chirp.tag<0?Math.floor(chirpRnd()*256):chirp.tag+1)&255;
       try{const o=await LAN.offer({raw:true,tag:chirp.tag});if(!live())return;chirp.offer={...o,slot:Math.min(7,st.roster.length),cands:Chirp.pickCands(o.sdp,2)};
         PDG.ev('invitation made',{tag:chirp.tag,addresses:chirp.offer.cands.map(c=>PDG.addr(c.a))});chirpHelp()}
