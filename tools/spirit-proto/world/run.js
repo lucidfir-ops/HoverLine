@@ -17,11 +17,11 @@ async function prep(p, c) {
     if (!c.T || c._code !== code) { c.loadTrack(q.seed, q.wk, q.cx, q.lk, q.sp || null, q.bm); c._code = code }
     return SW.voidify({ pal }) }, [c.code || 'W1000456-0000000010-P', c.pal || 'prism']);
   await p.evaluate(([w, h]) => SW.size(w, h), [W, H]);
-  await p.evaluate(() => { SW.camReset(); SW.preRender = null; SW.camF = null; SW.fx = 0.2; SW.vMul = 1; SW.cap = null; const el = document.getElementById('swcap'); if (el) el.remove() });
+  await p.evaluate(() => { SW.camReset(); SW.slow = 1; SW.slowFn = null; SW.preRender = null; SW.camF = null; SW.fx = 0.2; SW.vMul = 1; SW.cap = null; const el = document.getElementById('swcap'); if (el) el.remove() });
   await p.evaluate(c.setup, c.arg || null);
   await p.evaluate(() => SW.reflect());
   // warm up: a second of flight so the exhaust streams out, not drawn
-  await p.evaluate((n) => { for (let k = 0; k < n; k++) { SW.movePack(1 / 30); SW.update(1 / 30); window.__cv.VFX.update(1 / 30) } }, c.warm ?? 30);
+  await p.evaluate((n) => { for (let k = 0; k < n; k++) { SW.movePack(1 / 60); window.__cv.VFX.update(1 / 60) } SW.t = 0; for (const P of SW.P) P.hist.length = 0 }, c.warm ?? 12);
   return info;
 }
 async function frame(p, dt) {
@@ -35,9 +35,9 @@ async function frame(p, dt) {
   const b = await L.launch();
   try {
     if (cmd === 'still') {
-      const c = CLIPS[a]; const p = await L.openPage(b, c.w || 640, c.h || 360); await prep(p, c); const n = +b2 || 0, dt = 1 / (c.fps || 15);
-      let st; for (let k = 0; k <= n; k++) st = await frame(p, dt);
-      await p.screenshot({ path: c2 || '/tmp/still.png' }); console.log(a, 'frame', n, JSON.stringify(st), JSON.stringify(await p.evaluate(() => SW.stats)), p.errs.length ? 'errors ' + p.errs.length : '');
+      const c = CLIPS[a]; const p = await L.openPage(b, c.w || 640, c.h || 360); await prep(p, c); const want = String(b2 || 0).split(',').map(Number), dt = 1 / (c.fps || 15);
+      for (let k = 0; k <= Math.max(...want); k++) { const st = await frame(p, dt); if (want.includes(k)) { const f = (c2 || '/tmp/still') + '-' + k + '.png'; await p.screenshot({ path: f }); console.log(a, 'frame', k, f, JSON.stringify(st)) } }
+      console.log(JSON.stringify(await p.evaluate(() => SW.stats)), p.errs.length ? 'errors ' + p.errs.length : '');
     } else if (cmd === 'clip') {
       const out = b2 || OUT; fs.mkdirSync(out, { recursive: true });
       for (const name of a.split(',')) { const c = CLIPS[name]; if (!c) { console.log('no clip', name); continue }
@@ -52,6 +52,7 @@ async function frame(p, dt) {
         fs.writeFileSync(path.join(dir, 'perf.json'), JSON.stringify(perf, null, 1));
         const pf = path.join(out, 'perf.json'); const all = fs.existsSync(pf) ? JSON.parse(fs.readFileSync(pf, 'utf8')) : {}; all[c.file || name] = perf; fs.writeFileSync(pf, JSON.stringify(all, null, 1));
         console.log(name, n + ' frames', ((Date.now() - t0) / 1000).toFixed(0) + 's', 'gif ' + (sz.gif / 1e6).toFixed(2) + ' MB', 'mp4 ' + (sz.mp4 / 1e6).toFixed(2) + ' MB', 'calls ' + perf.avgCalls + '/' + maxC, 'tris ' + perf.avgTris + '/' + maxT, p.errs.length ? 'ERRORS ' + p.errs.length : '');
+        const { execFileSync } = require('child_process'); execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', path.join(dir, 'f%04d.png'), '-vf', `select='not(mod(n\\,${c.sheetEvery || 8}))',scale=320:-2,tile=4x4`, '-frames:v', '1', path.join(TMP, name + '-sheet.png')]);
         await p.context().close() }
     } else console.log('usage: see the top of run.js');
   } finally { await b.close() }

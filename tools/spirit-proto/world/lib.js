@@ -36,7 +36,7 @@ async function openPage(b, w, h, dpr = 1) {
   for (let k = 0; k < 80; k++) { if (await p.evaluate(() => !!window.__cv).catch(() => false)) break; await new Promise((r) => setTimeout(r, 250)) }
   await p.evaluate(() => { const c = window.__cv; for (const k of Object.keys(c.G2)) c.G2[k] = 1; c.G2.grain = 0; c.G2.scan = 0; c.G2.vig = 0; c.RES.k = 1; c.RES.low = false; c.g2Save() });
   await p.addStyleTag({ content: `body>*:not(canvas){visibility:hidden!important} body{padding:0!important}` });
-  await p.addScriptTag({ content: fs.readFileSync(path.join(__dirname, 'world.js'), 'utf8') });
+  for (const f of ['world.js', 'pieces.js']) await p.addScriptTag({ content: fs.readFileSync(path.join(__dirname, f), 'utf8') });
   p.w = w; p.h = h; return p;
 }
 // frames (PNG files) to a GIF (palette per clip) and an MP4

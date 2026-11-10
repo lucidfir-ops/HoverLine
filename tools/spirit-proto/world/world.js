@@ -96,7 +96,7 @@ function wireMat(o = {}) {
     side: o.side ?? (o.add ? THREE.DoubleSide : THREE.FrontSide), transparent: !!o.add, depthWrite: !o.add, blending: o.add ? THREE.AdditiveBlending : THREE.NormalBlending });
   m.extensions = { derivatives: true }; return m;
 }
-SW.wireMat = wireMat;
+SW.wireMat = wireMat; SW.lineMat = (a, h) => lineMat(a, h); SW.GL_COMMON = GL_COMMON;
 // lines and points coloured by height (the lattice, stars, trails)
 const LINE_V = `attribute float aA; varying vec3 vW; varying float vA; void main(){ vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; vA=aA; gl_Position=projectionMatrix*viewMatrix*w; }`;
 const LINE_F = GL_COMMON + `uniform float uA; uniform float uHue; uniform vec3 uTint; uniform float uTintK; varying vec3 vW; varying float vA; void main(){ vec3 c=mix(pal(vW.y+uHue),uTint,uTintK); gl_FragColor=vec4(c*uA*vA*fogK(vW)*(1.+uPulse*0.6)*uGain,1.); }`;
@@ -109,6 +109,7 @@ const PT_F = GL_COMMON + `varying vec3 vW; void main(){ vec2 q=gl_PointCoord-0.5
 function baryGeo(g) { g = g.index ? g.toNonIndexed() : g; const n = g.attributes.position.count, b = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) b[i * 3 + (i % 3)] = 1; g.setAttribute('bary', new THREE.BufferAttribute(b, 3)); g.computeVertexNormals(); return g }
 const BOX = new THREE.BoxGeometry(1, 1, 1);
+SW.h = { rng, clamp, lerp, ss, baryGeo, BOX, setI, get G() { return G }, get C() { return C }, instanced, scatter: (o, r, n, pl) => scatter(o, r, n, pl), U };
 function instanced(geo, mat, n) { const m = new THREE.InstancedMesh(geo, mat, n); m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.frustumCulled = false;
   if (mat.defines && mat.defines.INST_ATTR) { const a = new THREE.InstancedBufferAttribute(new Float32Array(n * 4), 4); for (let i = 0; i < n; i++) a.setXYZW(i, 0, -1, 1, 1); a.setUsage(THREE.DynamicDrawUsage); geo = m.geometry = geo.clone(); geo.setAttribute('aI', a); m.aI = a }
   return m }
@@ -146,7 +147,7 @@ SW.voidify = function (o = {}) {
   C.VFX.init(); C.VFX.sky.visible = false; C.G2.sky = 0; C.G2.haze = 0; C.G2.motes = 0;
   C.scene.background = new Col(0); C.scene.fog.color.setHex(0); C.scene.fog.near = 400; C.scene.fog.far = 2600; T.look = Object.assign({}, T.look, { bg: 0, haze: 0, fog: [400, 2600] }); C.VFX.hz = null;
   setPal(o.pal || 'prism'); U.uFog.value.set(o.fog0 || 260, o.fog1 || 1500);
-  SW.t = 0; SW.beat = null; return { L: T.L, N: T.N, W: C.W };
+  SW.t = 0; SW.beat = null; SW.avoid = []; return { L: T.L, N: T.N, W: C.W };
 };
 SW.update = function (dt) {
   SW.t += dt; U.uT.value = SW.t; const b = SW.beat ? SW.beat.at(SW.t) : null; SW.b = b;
@@ -211,7 +212,7 @@ SW.lattice = function (o = {}) {
   const nx = Math.round(ext[0] * 2 / sp), ny = Math.round(ext[1] * 2 / sp), nz = Math.round(ext[2] * 2 / sp);
   const P = (i, j, k) => { const x = -ext[0] + i * sp, y = -ext[1] + j * sp + (o.dy || 0), z = -ext[2] + k * sp; return [c0.x + x * cy + z * sy, c0.y + y, c0.z - x * sy + z * cy] };
   const ok = new Map(); const key = (i, j, k) => (i * 512 + j) * 512 + k;
-  for (let i = 0; i <= nx; i++) for (let j = 0; j <= ny; j++) for (let k = 0; k <= nz; k++) { const p = P(i, j, k); const d = dRoad(p[0], p[1], p[2]); if (d > clear) ok.set(key(i, j, k), [p, d]) }
+  for (let i = 0; i <= nx; i++) for (let j = 0; j <= ny; j++) for (let k = 0; k <= nz; k++) { const p = P(i, j, k); const d = dRoad(p[0], p[1], p[2]); if (d > clear && !(SW.avoid || []).some((a) => a.c.distanceTo(new V3(...p)) < a.r * (a.lat ?? 0.6))) ok.set(key(i, j, k), [p, d]) }
   const E = (a, b, w) => { const near = clamp((160 - Math.min(a[1], b[1])) / 160, 0, 1); pos.push(...a[0], ...b[0]); const al = w * (0.35 + 0.65 * near); aa.push(al, al) };
   for (const [kk, a] of ok) { const k = kk % 512, j = Math.floor(kk / 512) % 512, i = Math.floor(kk / 262144);
     const beam = (i % 4 === 0 && j % 4 === 0) || (i % 4 === 0 && k % 4 === 0) || (j % 4 === 0 && k % 4 === 0);
@@ -238,7 +239,8 @@ SW.stars = function (o = {}) { const r = rng(o.seed || 9), n = o.n || 1500, pp =
 // u along the road, a side offset and a height, never inside the clearance round the road.
 function scatter(o, r, n, place) { const out = []; let tries = 0;
   while (out.length < n && tries++ < n * 30) { const u = lerp(o.u0, o.u1, r()), side = (r() < 0.5 ? -1 : 1) * lerp(o.side0 || 40, o.side1 || 420, Math.pow(r(), o.sideP || 1.3)), up = lerp(o.up0 ?? -160, o.up1 ?? 240, r());
-    const p = at(u, side, up); const s = place ? place(r) : 1; const d = dRoad(p.x, p.y, p.z); if (d < (o.clear || 30) + s * 0.9) continue; out.push({ p, s, u }) } return out }
+    const p = at(u, side, up); const s = place ? place(r) : 1; const d = dRoad(p.x, p.y, p.z); if (d < (o.clear || 30) + s * 0.9) continue;
+    if ((SW.avoid || []).some((a) => a.c.distanceTo(p) < a.r + s)) continue; out.push({ p, s, u }) } return out }
 SW.solids = function (o = {}) {
   const r = rng(o.seed || 5), n = o.n || 260;
   const list = scatter(o, r, n, (r) => lerp(o.s0 || 5, o.s1 || 34, Math.pow(r(), 2.2)));
@@ -325,7 +327,7 @@ SW.base = function (o = {}) {
   if (o.lattice !== false) SW.lattice({ u0, u1, sp: 44, clear: 44, a: 0.3, ext: [700, 260, 700], thin: 0.22, diag: 0.18 });
   if (o.lattice2) SW.lattice({ u0, u1, sp: 52, clear: 60, a: 0.35, ext: [700, 300, 700], yaw: 0.6435, hue: 70, seed: 9, packets: 120, thin: 0.6, diag: 0.2 });
   SW.solids({ u0: u0 - 100, u1: u1 + 500, n: Math.round(320 * k), side0: 40, side1: 520, up0: -200, up1: 300, clear: 30 });
-  SW.carved({ u0, u1: u1 + 200, n: Math.round(16 * k), tumble: true });
+  SW.carved({ u0, u1: u1 + 200, n: o.carvedN ?? Math.round(16 * k), tumble: true });
   if (o.rings !== false) SW.rings({ u0: u0 + 60, u1: u1 + 300, every: o.ringEvery || 110 });
   if (o.pyr !== false) SW.pyramids({ u0, pairs: o.pairs || [{ u: u0 + 260, side: -1, d: 105, du: 160 }, { u: u0 + 700, side: 1, d: 115, du: 150 }] });
   if (o.stepped) SW.stepped({ u0, u1: u1 + 300, n: 10, far: 6, ...o.stepped });
@@ -351,15 +353,17 @@ SW.movePack = function (dt) {
     if (r.path && r.u >= r.path.u0) { const s = r.u - r.path.u0, a = r.path.at(s); r.ship.position.copy(a.p); _f.copy(a.t).normalize(); _u.copy(a.up).normalize(); _r.crossVectors(_u, _f.clone().negate()).normalize(); _u.crossVectors(_f.clone().negate(), _r);
       _m.makeBasis(_r, _u, _f.clone().negate()); r.ship.quaternion.setFromRotationMatrix(_m); r.shadow.visible = false; r.air = a.air; if (a.hide) r.ship.visible = false; else r.ship.visible = true }
     else { c.placeShip(r, S.t); if (r.hideAfter != null && r.u > r.hideAfter) r.ship.visible = false }
-    P.hist.unshift({ t: SW.t, p: r.ship.position.clone(), q: r.ship.quaternion.clone(), vis: r.ship.visible }); if (P.hist.length > 90) P.hist.pop() }
+    P.hist.unshift({ t: SW.t, p: r.ship.position.clone(), q: r.ship.quaternion.clone(), vis: r.ship.visible, inP: !!(r.path && r.u >= r.path.u0) }); if (P.hist.length > 90) P.hist.pop() }
 };
 // cameras: chase (behind racer i), rail (fixed to the road's frame at an offset from a racer), fixed (a point looking at a point)
-const camS = { p: new V3(), f: new V3(), up: new V3(), init: false };
+const camS = { p: new V3(), f: new V3(), up: new V3(), init: false, inP: false, airK: 0 };
 SW.cam = function (dt, o) {
   const cam = C.camera; let pos, look, up;
   if (o.mode === 'chase') { const P = SW.P[o.i ?? SW.camI], r = P.r, sp = r.ship.position; let s;
     if (r.path && r.u >= r.path.u0) { const a = r.path.at(r.u - r.path.u0); s = { t: a.t.clone().normalize(), u: a.up.clone().normalize() } } else { const a = C.sampleAt(r.u); s = { t: a.t.clone(), u: a.u.clone() } }
+    const inP = !!(r.path && r.u >= r.path.u0); if (inP && !camS.inP && r.path.rot && camS.init) { camS.f.applyQuaternion(r.path.rot); camS.up.applyQuaternion(r.path.rot) } camS.inP = inP;
     if (!camS.init || o.snap) { camS.f.copy(s.t); camS.up.copy(s.u); camS.init = true } else { camS.f.lerp(s.t, 1 - Math.exp(-dt * (o.k || 6))).normalize(); camS.up.lerp(s.u, 1 - Math.exp(-dt * 8)).normalize() }
+    if (o.air) { const k = camS.airK = lerp(camS.airK || 0, r.air ? 1 : 0, 1 - Math.exp(-dt * 3)); o = Object.assign({}, o, { h: lerp(o.h ?? 3.9, o.air.h, k), lu: lerp(o.lu ?? 0.8, o.air.lu, k), d: lerp(o.d ?? 11, o.air.d ?? o.d ?? 11, k) }) }
     const side = new V3().crossVectors(camS.f, camS.up).normalize();
     pos = sp.clone().addScaledVector(camS.f, -(o.d ?? 11)).addScaledVector(camS.up, o.h ?? 3.9).addScaledVector(side, o.side || 0);
     look = sp.clone().addScaledVector(camS.f, o.l ?? 14).addScaledVector(camS.up, o.lu ?? 0.8).addScaledVector(side, o.ls || 0); up = camS.up }
@@ -368,10 +372,10 @@ SW.cam = function (dt, o) {
   else { pos = typeof o.pos === 'function' ? o.pos(SW.t) : o.pos; look = typeof o.look === 'function' ? o.look(SW.t) : o.look; up = new V3(0, 1, 0) }
   cam.position.copy(pos); cam.up.copy(up); cam.lookAt(look); if (o.roll) cam.rotateZ(o.roll); cam.fov = o.fov || 74; cam.near = 0.3; cam.far = 3000; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
 };
-SW.camReset = () => { camS.init = false };
+SW.camReset = () => { camS.init = false; camS.inP = false; camS.airK = 0 };
 // one frame: the world's clock, the pack, the camera, the exhaust, then the game's own draw (bloom, speed blur, grade)
-SW.frame = function (dt, camO, fx) {
-  SW.movePack(dt); SW.cam(dt, camO); SW.update(dt); if (SW.preRender) SW.preRender(dt);
+SW.frame = function (dt0, camO, fx) {
+  if (SW.slowFn) SW.slow = lerp(SW.slow || 1, SW.slowFn(), 1 - Math.exp(-dt0 * 6)); const dt = dt0 * (SW.slow || 1); SW.movePack(dt); SW.cam(dt, camO); SW.update(dt); if (SW.preRender) SW.preRender(dt);
   C.VFX.update(dt); C.scene.background.setHex(0); C.scene.fog.color.setHex(0);
   C.GFX.fx = fx ?? 0.45; C.GFX.gl = 0; C.gfxRender(C.scene, C.camera); return { calls: C.GFX.calls, tris: C.GFX.tris };
 };
