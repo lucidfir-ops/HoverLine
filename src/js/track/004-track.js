@@ -618,17 +618,73 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
             'vGl=aGl;float sT=mod(aPh.x+aMv.w*uT+aPh.y*sin(aPh.z*aPh.x+aPh.w*uT),aMv.z);vec4 mvPosition=instanceMatrix*vec4(transformed*clamp(min(sT,aMv.z-sT)*0.25,0.,1.),1.);mvPosition.xyz+=vec3(aMv.x*sT,0.3*sin(uT*1.6+aPh.x),aMv.y*sT);mvPosition=modelViewMatrix*mvPosition;gl_Position=projectionMatrix*mvPosition;');
           sh.fragmentShader=sh.fragmentShader.replace('void main() {','varying vec3 vGl;\nvoid main() {').replace('#include <tonemapping_fragment>','if(vGl.r+vGl.g+vGl.b>0.)gl_FragColor.rgb=vGl;\n#include <tonemapping_fragment>')};
         const tm=new THREE.InstancedMesh(vg,vm,nV);tm.instanceMatrix.array.set(Mi);tm.instanceColor=new THREE.BufferAttribute(new Float32Array(Ci),3);tm.frustumCulled=false;group.add(tm)}
-      /* towers in the blocks between the streets (set back 10 m from every street, traffic or not), a few very tall ones first */
-      const cells=[];for(let x=gx0+Math.floor((X0-gx0)/GX)*GX;x<X1;x+=GX)for(let z=gz0+Math.floor((Z0-gz0)/GZ)*GZ;z<Z1;z+=GZ)cells.push([x,z]);
-      for(let k=cells.length-1;k>0;k--){const j=Math.floor(ur()*(k+1));[cells[k],cells[j]]=[cells[j],cells[k]]}
-      const box=(x,z,w,d,b,t,amber)=>cityB.push({x,y:(b+t)/2,z,sx:w,sy:t-b,sz:d,amber});
-      let nT=[1,2,4,6][dens],nF=[40,110,200,300][dens];
-      for(const[gx,gz]of cells){const bw=GX-20,bd=GZ-20;
-        if(nT>0){const w=bw*(0.55+ur()*0.25),d=Math.min(bd*0.7,w*(1+ur()*0.4)),x=gx+GX/2,z=gz+GZ/2,R0=Math.hypot(w,d)/2;if(nr(x,z,R0+W/2+150)||!free(x,z,R0*0.6))continue;
-          const h1=floorY+140+ur()*80,h2=h1+120+ur()*120,h3=h2+80+ur()*150;box(x,z,w,d,floorY,h1,false);box(x,z,w*0.72,d*0.72,h1,h2,false);box(x,z,w*0.48,d*0.48,h2,h3,true);box(x,z,3,3,h3,h3+30+ur()*30,true);claim(x,z,R0*0.8);nT--;continue}
-        if(nF<=0)break;const nl=1+Math.floor(ur()*3),ll=bd/nl;
-        for(let j=0;j<nl&&nF>0;j++){const w=bw*(0.5+ur()*0.5),d=ll*(0.6+ur()*0.4)-2,x=gx+10+w/2+ur()*(bw-w),z=gz+10+j*ll+d/2+ur()*(ll-d),R0=Math.hypot(w,d)/2;if(nr(x,z,R0+W/2+50)||!free(x,z,R0*0.5))continue;
-          const h=floorY+30+ur()*ur()*260;if(h-floorY>150&&ur()<0.5){const hb=floorY+(h-floorY)*(0.45+ur()*0.2);box(x,z,w,d,floorY,hb,false);box(x,z,w*0.66,d*0.66,hb,h,ur()<0.2)}else box(x,z,w,d,floorY,h,ur()<0.15);claim(x,z,R0*0.7);nF--}}}
+      /* Prototype 60: a bigger, more city-like Urban. Eric: "way more buildings, aligned in a more typical city design".
+         Before, only 200 lots (at the default density) were dropped into random blocks, so most of the grid stood empty.
+         Now, in this order (every footprint is an oriented rectangle, tested against everything placed before it):
+         1. rows of buildings facing the road: where the road runs straight (the heading changes under 6 degrees over the
+            building and a little either side) two rows a side, their long faces parallel to it, a street between them;
+         2. the few very tall stepped towers, in the blocks nearest the downtown centre;
+         3. every other block of the grid, nearest the road first, filled with a grid of lots on the street axes (every 4th
+            street along z and 5th along x is an avenue, twice as wide). Heights fall from the downtown centre outwards:
+            it is a random point near the middle of the map, tall and stepped there, low (24 to 55 m) out at the edges.
+         Nothing stands within W/2+48 m of any road point (the main road with loops and jump flights, both routes of every
+         split, pit lane and cut) measured from the nearest face (so a tunnel shell, 17 to 31 m out, never meets one), nor
+         in a flight lane of the traffic, nor in a dock tower, a spiral's tower or any other claimed feature. It is all
+         inside the one instanced mesh, so the draw calls don't grow (12 triangles a building). Own random numbers (ur)
+         as before; the road and every other biome are untouched. Budgets are lighter at low detail (density 1). */
+      const NG=new Map(),MC=W/2+48,
+        hit=(a,b,m)=>{/* do two oriented rectangles come within m of each other? (separating axes) */
+          for(const o of[a,b]){const r=o.ry||0,c=Math.cos(r),s=Math.sin(r);for(const[ux,uz]of[[c,-s],[s,c]]){let ra=0,rb=0;
+            for(const q of[a,b]){const r2=q.ry||0,c2=Math.cos(r2),s2=Math.sin(r2),e=Math.abs(c2*ux-s2*uz)*q.sx/2+Math.abs(s2*ux+c2*uz)*q.sz/2;if(q===a)ra=e;else rb=e}
+            if(Math.abs((b.x-a.x)*ux+(b.z-a.z)*uz)>ra+rb+m)return false}}return true},
+        cellsOf=(o,f)=>{const br=Math.hypot(o.sx,o.sz)/2+6;for(let a=Math.floor((o.x-br)/64);a<=Math.floor((o.x+br)/64);a++)for(let c=Math.floor((o.z-br)/64);c<=Math.floor((o.z+br)/64);c++)if(f(kk(a,c)))return true;return false},
+        hitAny=o=>cellsOf(o,k=>{for(const Lc of[OG.get(k),NG.get(k)])if(Lc)for(const q of Lc)if(hit(o,q,3))return true;return false})||TW.some(q=>hit(o,q,3)),
+        reg=o=>cellsOf(o,k=>{let Lc=NG.get(k);if(!Lc)NG.set(k,Lc=[]);Lc.push(o);return false}),
+        /* clear of the road: the nearest face of the rectangle is at least MC from every road point */
+        roadOK=o=>{const c=Math.cos(o.ry||0),s=Math.sin(o.ry||0),R=Math.hypot(o.sx,o.sz)/2+MC,bad=q=>{const dx=q.x-o.x,dz=q.z-o.z;if(dx*dx+dz*dz>R*R)return false;
+            const lx=dx*c-dz*s,lz=dx*s+dz*c,ex=Math.max(Math.abs(lx)-o.sx/2,0),ez=Math.max(Math.abs(lz)-o.sz/2,0);return ex*ex+ez*ez<MC*MC};
+          for(let a=Math.floor((o.x-R)/CELL);a<=Math.floor((o.x+R)/CELL);a++)for(let b=Math.floor((o.z-R)/CELL);b<=Math.floor((o.z+R)/CELL);b++){
+            const Lc=KG.get(kk(a,b));if(Lc)for(const k of Lc)if(bad(KP[k]))return false;const Lq=KQ.get(kk(a,b));if(Lq)for(const q of Lq)if(bad(q))return false}return true},
+        /* not in a flight lane of the traffic (a building lower than the lane's layer may stand under it) */
+        laneOK=(o,top)=>{const br=Math.hypot(o.sx,o.sz)/2,hw=CH+2;for(const A of acc){if(top<A.y-9)continue;
+            if(o.x+br<(A.ax?A.c-hw:A.s0)||o.x-br>(A.ax?A.c+hw:A.s1)||o.z+br<(A.ax?A.s0:A.c-hw)||o.z-br>(A.ax?A.s1:A.c+hw))continue;return false}return true},
+        ccx=cxT+(ur()-0.5)*0.4*(maxX-minX),ccz=czT+(ur()-0.5)*0.4*(maxZ-minZ),Rd=Math.max(450,0.3*Math.max(maxX-minX,maxZ-minZ)),
+        dtf=(x,z)=>1/(1+((x-ccx)**2+(z-ccz)**2)/(Rd*Rd)),
+        /* height above the floor: 24-55 m at the edges, up to 450 m at the downtown centre */
+        hgt=(x,z)=>24+ur()*30+Math.pow(dtf(x,z),1.5)*(70+ur()*ur()*380),
+        box=(x,z,w,d,b,t,amber,ry)=>cityB.push({x,y:(b+t)/2,z,sx:w,sy:t-b,sz:d,ry,amber}),
+        /* one building of a footprint: low ones a plain block, tall ones usually a podium with a narrower shaft, the
+           tallest an amber crown. Fails (false) if it meets the road, a lane or another building. */
+        put=(x,z,w,d,ry,H)=>{const o={x,z,sx:w,sz:d,ry};if(!roadOK(o)||solHit(x,z,Math.hypot(w,d)/2+4)||hitAny(o)||!laneOK(o,floorY+H))return false;
+          if(H>150&&ur()<0.6){const hb=floorY+H*(0.3+ur()*0.25),s=0.55+ur()*0.15;box(x,z,w,d,floorY,hb,false,ry);box(x,z,w*s,d*s,hb,floorY+H,H>260,ry)}else box(x,z,w,d,floorY,floorY+H,ur()<0.15,ry);
+          reg(o);claim(x,z,Math.hypot(w,d)*0.35);return true};
+      const hd=new Float32Array(N),dh=(a,b)=>{const d=Math.abs(hd[a]-hd[b]);return d>Math.PI?TAU-d:d};
+      for(let i=0;i<N;i++)hd[i]=Math.atan2(Tg[i].x,Tg[i].z);
+      /* 1. rows facing the road */
+      const nRow=[0,500,1100,1500][dens]*(RES.low?0.5:1);let rowN=0;
+      for(const sd of[-1,1])for(let row=0;row<2;row++){const dep=24+ur()*10;let i=Math.floor(ur()*20);
+        while(i<N&&rowN<nRow){const len=22+ur()*18,k=Math.max(1,Math.round((len/2+20)/ds)),a0=(i-k+N)%N,a1=(i+k)%N;
+          if(dh(a0,i)>0.05||dh(i,a1)>0.05||dh(a0,a1)>0.1||spl[i]){i+=Math.round(12/ds);continue}
+          const t=Tg[i],tl=Math.hypot(t.x,t.z)||1,off=W/2+48+dep/2+row*(dep+16),[x,z]=side(i,sd,off);
+          if(ur()<0.1||!put(x,z,dep,len,Math.atan2(t.x/tl,t.z/tl),hgt(x,z))){i+=Math.round((len/2+3)/ds);continue}rowN++;i+=Math.round((len+4+ur()*9)/ds)}}
+      /* the blocks of the grid, nearest the road first; the grid streets are the axes */
+      const cells=[];for(let x=gx0+Math.floor((X0-gx0)/GX)*GX;x<X1;x+=GX)for(let z=gz0+Math.floor((Z0-gz0)/GZ)*GZ;z<Z1;z+=GZ){const q=near(x+GX/2,z+GZ/2,700);cells.push({x,z,ix:Math.round((x-gx0)/GX),iz:Math.round((z-gz0)/GZ),d:(q?q.d:700+Math.hypot(x-cxT,z-czT)*0.1)*(0.85+ur()*0.3),f:dtf(x+GX/2,z+GZ/2)})}
+      const used=new Set();let nT=[1,2,4,6][dens];
+      /* 2. the stepped towers, in the blocks nearest downtown */
+      for(const c of cells.slice().sort((p,q)=>q.f-p.f)){if(nT<=0)break;
+        const bw=GX-20,bd=GZ-20,w=bw*(0.55+ur()*0.25),d=Math.min(bd*0.7,w*(1+ur()*0.4)),x=c.x+GX/2,z=c.z+GZ/2,o={x,z,sx:w,sz:d};
+        if(!roadOK({...o,sx:w+100,sz:d+100})||solHit(x,z,Math.hypot(w,d)*0.3)||hitAny(o)||!laneOK(o,1e9))continue;
+        const h1=floorY+140+ur()*80,h2=h1+120+ur()*120,h3=h2+80+ur()*150;box(x,z,w,d,floorY,h1,false);box(x,z,w*0.72,d*0.72,h1,h2,false);box(x,z,w*0.48,d*0.48,h2,h3,true);box(x,z,3,3,h3,h3+30+ur()*30,true);reg(o);claim(x,z,Math.hypot(w,d)*0.4);used.add(c);nT--}
+      /* 3. a grid of lots in every other block */
+      let nF=[100,350,700,1000][dens];const av=(i,n)=>((i%n)+n)%n===0;
+      for(const c of cells.sort((p,q)=>p.d-q.d)){if(nF<=0)break;if(used.has(c))continue;
+        const x0=c.x+(av(c.ix,4)?24:10),x1=c.x+GX-(av(c.ix+1,4)?24:10),z0=c.z+(av(c.iz,5)?24:10),z1=c.z+GZ-(av(c.iz+1,5)?24:10);
+        /* in the downtown a block is often one tower on a podium, nearly the whole block */
+        if(c.f>0.3&&ur()<0.5){const w=(x1-x0)*(0.8+ur()*0.15),d=(z1-z0)*(0.8+ur()*0.15);if(put((x0+x1)/2,(z0+z1)/2,w,d,0,hgt((x0+x1)/2,(z0+z1)/2)*1.15+60))nF--;continue}
+        const nx=Math.max(1,Math.round((x1-x0)/34)),nz=Math.max(1,Math.round((z1-z0)/34)),lw=(x1-x0)/nx,ld=(z1-z0)/nz;
+        for(let a=0;a<nx;a++)for(let b=0;b<nz;b++){if(ur()<0.1)continue;const w=(lw-5)*(0.8+ur()*0.2),d=(ld-5)*(0.8+ur()*0.2),x=x0+(a+0.5)*lw+(ur()-0.5)*(lw-5-w),z=z0+(b+0.5)*ld+(ur()-0.5)*(ld-5-d);
+          if(put(x,z,w,d,0,hgt(x,z)))nF--}}
+      }
     /* every tower's own tone, and lit windows: a texture of 16 floors (some lit end to end) laid on each face by its size,
        a floor every 3 m, never on the roofs; bright at night, faint by day */
     for(const o of cityB)o.c=(day?[0x1c2129,0x262b33,0x30353d,0x3a3f46]:[0x0b0e14,0x0d1118,0x0a0c12,0x10131a])[Math.floor(Math.abs(o.x*7.1+o.z*3.7))%4];
