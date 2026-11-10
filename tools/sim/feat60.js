@@ -15,17 +15,17 @@ const tot={races:0,racers:0,fin:0,wr:0,falls:0,clips:0,offs:0,nofin:0,feats:{},l
 for(let k=0;k<codes.length;k++){const code=codes[k];const c=H.parseCode(code);if(!c){console.log('bad code',code);continue}
   let tt=0;try{H.loadTrack(c.seed,c.wk,c.cx,c.lk,c.sp,c.bm);H.startRace()}catch(e){console.log('build error',code,e&&e.stack);tot.errs++;continue}
   const T=H.getT();T.D.band=[0,0];const R=H.racers,paint={body:0xcccccc,stripe:0xffb000};
-  R.forEach((r,i)=>{const fr=FR[(i+k)%FR.length];H.setShip(r,{stats:{speed:3,thrust:3,handling:3,shield:3,ammo:3},weapons:['missile','rockets'],frame:fr},paint);r.skill=0.94;r.sty=null;r.hp=r.d.hp;r.ammo=0;r.tag={fr};r._a=false});
+  R.forEach((r,i)=>{const fr=FR[(i+k)%FR.length];H.setShip(r,{stats:{speed:3,thrust:3,handling:3,shield:3,ammo:3},weapons:(process.env.WP||'missile,rockets').split(','),frame:fr},paint);r.skill=process.env.SKILL?+process.env.SKILL:(H.ROSTER[i%8].skill||1);r.sty=null;r.hp=r.d.hp;r.ammo=0;r.tag={fr};r._a=false});
   globalThis.__fall={};globalThis.__clip={};globalThis.__wr={};globalThis.__off={};
-  let fallU=[];globalThis.__fallAt=(r,u)=>fallU.push(Math.round(u));
-  const p=H.player;p.isAI=true;p.skill=0.94;let fin1=null;const RL={code:H.codeStr?H.codeStr():code,L:Math.round(T.L),feats:T.feats.map(f=>f.kind+(f.rev?'R':'')).join(','),lips:[],sj:[]};
+  let fallU=[];globalThis.__fallAt=(r,u,jmp,off)=>{const J=r.air&&r.air!==true?r.air:null;fallU.push([Math.round(u),r.tag.fr,jmp?'gap':'',off?'off':'',J?J.kind||'jump':'',J?Math.round(H.modU(u-J.u0)):'',Math.round(r.v),+r.lat.toFixed(1),+r.hb.toFixed(1),r.stun>0?'stun':'',r.brS?r.brS.kind+r.br:''].join(' '))};
+  const p=H.player;p.isAI=true;p.skill=process.env.SKILL?+process.env.SKILL:1;let fin1=null;const RL={code:H.codeStr?H.codeStr():code,L:Math.round(T.L),feats:T.feats.map(f=>f.kind+(f.rev?'R':'')).join(','),lips:[],sj:[]};
   for(const f of T.feats){const kk=f.kind+(f.rev?'R':'');tot.feats[kk]=(tot.feats[kk]||0)+1}
   while(tt<600){try{H.step(1/60)}catch(e){console.log('step error',code,e&&e.stack);tot.errs++;break}tt+=1/60;
     for(const r of R){const a=r.air&&r.air!==true?r.air:null;
-      if(a&&r._a!==a){r._a=a;const kind=a.kind||'jump';(tot.lips[kind]=tot.lips[kind]||{});(tot.lips[kind][r.tag.fr]=tot.lips[kind][r.tag.fr]||[]).push(r.v);RL.lips.push(Math.round(r.v))}
+      if(a&&r._a!==a){r._a=a;r._lipV=r.v;r._lipP=r.pitch;const kind=a.kind||'jump';(tot.lips[kind]=tot.lips[kind]||{});(tot.lips[kind][r.tag.fr]=tot.lips[kind][r.tag.fr]||[]).push(r.v);RL.lips.push(Math.round(r.v))}
       if(!a)r._a=null;
       /* speed jump: which road did it reach (the split's branch it is on just past the landing) */
-      if(r.brS&&r.brS.kind==='stack'&&r._sj!==r.brS.u0&&r.wreck<=0&&!r.air){r._sj=r.brS.u0;const up=r.br===r.brS.upB;RL.sj.push(up?'U':'D');up?tot.up++:tot.down++;const m=up?tot.upBy:tot.dnBy;m[r.tag.fr]=(m[r.tag.fr]||0)+1}}
+      if(r.brS&&r.brS.kind==='stack'&&r._sj!==r.brS.u0+'|'+r.done&&r.wreck<=0&&!r.air&&r.stkS===r.brS){r._sj=r.brS.u0+'|'+r.done;const up=r.br===r.brS.upB;RL.sj.push(up?'U':'D');(tot.sjV=tot.sjV||[]).push([Math.round(r._lipV||0),up?1:0,r.tag.fr]);up?tot.up++:tot.down++;const m=up?tot.upBy:tot.dnBy;m[r.tag.fr]=(m[r.tag.fr]||0)+1}}
     if(fin1==null&&R.some(r=>r.finishT!=null))fin1=tt;if(R.every(r=>r.finishT!=null)||fin1!=null&&tt>fin1*1.5+10)break}
   p.isAI=false;const fin=R.filter(r=>r.finishT!=null).length,S=o=>Object.values(o||{}).reduce((a,b)=>a+b,0);
   tot.races++;tot.racers+=R.length;tot.fin+=fin;if(!fin)tot.nofin++;tot.wr+=S(globalThis.__wr);tot.falls+=S(globalThis.__fall);tot.clips+=S(globalThis.__clip);tot.offs+=S(globalThis.__off);
@@ -33,5 +33,6 @@ for(let k=0;k<codes.length;k++){const code=codes[k];const c=H.parseCode(code);if
   if(!process.env.QUIET)console.log(JSON.stringify(RL))}
 const lip={};for(const kind in tot.lips){lip[kind]={};for(const fr in tot.lips[kind]){const a=tot.lips[kind][fr];lip[kind][fr]=[a.length,q(a,0.1),q(a,0.5),q(a,0.9),q(a,1)]}}
 console.log(JSON.stringify({races:tot.races,finRate:+(tot.fin/tot.racers).toFixed(4),noFinish:tot.nofin,wrecksPerRace:+(tot.wr/tot.races).toFixed(2),fallsPerRace:+(tot.falls/tot.races).toFixed(2),clipsPerRace:+(tot.clips/tot.races).toFixed(2),offsPerRace:+(tot.offs/tot.races).toFixed(2),errs:tot.errs,feats:tot.feats,up:tot.up,down:tot.down,upBy:tot.upBy,dnBy:tot.dnBy}));
+if(tot.sjV){const b={};for(const[v,u]of tot.sjV){const k=Math.floor(v/5)*5;b[k]=b[k]||[0,0];b[k][0]++;b[k][1]+=u}console.log('speed jump: lip speed bin -> [racers, reached the upper road]',JSON.stringify(b))}
 console.log('lip speeds [n,p10,p50,p90,max] by jump kind and frame:',JSON.stringify(lip));
 process.exit(0);

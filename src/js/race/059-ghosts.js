@@ -12,7 +12,9 @@ function ghostSave(run){let g=ghostLoad()||{n:0};g.n++;
   while(idx.length>12){const old=idx.pop();try{localStorage.removeItem('hoverline.ghost.'+old)}catch(e){}}
   for(let tries=0;tries<6;tries++){try{localStorage.setItem('hoverline.ghost.'+gt,JSON.stringify(g));break}catch(e){const old=idx.length>1?idx.pop():null;if(!old)break;try{localStorage.removeItem('hoverline.ghost.'+old)}catch(_){}}}
   store.set(ghostIdx,JSON.stringify(idx));return g}
-function recSample(){const r=player;rec.d.push(Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),(r.wreck>0?1:0)|(r.boost>0?2:0)|(r.dN&&r.drift?(r.drift>0?12:4):0))}
+function recSample(){const r=player;rec.d.push(Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),(r.wreck>0?1:0)|(r.boost>0?2:0)|(r.dN&&r.drift?(r.drift>0?12:4):0)|(onUpper(r)?16:0))}
+/* Prototype 60: on a speed jump's upper road (ghosts and remote ships carry it as a flag, since the two roads lie one over the other) */
+const onUpper=r=>!!(r.brS&&r.brS.kind==='stack'&&r.br===r.brS.upB&&T.spl[idxAt(r.u)]);
 const ghostShips=[null,null];
 function makeGhost(k,run,fac,name){let g=ghostShips[k];
   const paint=(run.lv&&parseLiv(run.lv))||PAINTS[run.paint]||PAINTS[0],stats=run.stats||build.stats,fr=run.fr||'blade';
@@ -22,7 +24,7 @@ function makeGhost(k,run,fac,name){let g=ghostShips[k];
   Object.assign(g,{name,css:k?'#8a8f98':'#f2efe6',run,fac,n:run.d.length/GF});return g}
 function ghostPose(g,tt){const d=g.run.d,n=g.n,f=clamp(tt*10,0,n-1),i=Math.min(n-2,Math.floor(f)),a=f-i,A=i*GF,B=A+GF,L=(o,sc)=>(d[A+o]+(d[B+o]-d[A+o])*a)/sc;
   g.utot=L(0,10);g.u=g.utot;g.lat=L(1,100);g.yaw=L(2,1000);g.h=L(3,100);g.pitch=L(4,100);g.steerS=L(5,100);
-  const fl=d[(a<0.5?A:B)+6];g.wreck=fl&1?1:0;g.boost=fl&2?1:0;g.drift=fl&4?(fl&8?1:-1):0;g.v=(d[B]-d[A])/10*10*g.fac;g.air=g.h>HOVER+0.15}
+  const fl=d[(a<0.5?A:B)+6];g.wreck=fl&1?1:0;g.boost=fl&2?1:0;g.stkUp=!!(fl&16);g.drift=fl&4?(fl&8?1:-1):0;g.v=(d[B]-d[A])/10*10*g.fac;g.air=g.h>HOVER+0.15}
 function ghostReset(g){ghostPose(g,0);Object.assign(g,{finishT:null,laps:[],done:0,brk:0,stun:0,spin:0,inv:0,barrier:0,charging:null,hp:1,ammo:0,vh:0,v:0})}
 function ghostStep(g,dt){g.driftK=clamp((g.driftK||0)+(g.drift?4:-3)*dt,0,1);if(g.drift&&g.d)g.dAng=drOf(g).ang;const tt=S.raceT*g.fac,end=(g.n-1)/10;
   if(tt<end)ghostPose(g,tt);else{if(g.finishT==null){ghostPose(g,end);g.finishT=g.run.T/g.fac;g.vEnd=Math.max(40,g.v)}g.utot+=g.vEnd*0.92*dt;g.u=g.utot;g.wreck=0}}

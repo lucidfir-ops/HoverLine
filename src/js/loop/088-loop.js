@@ -127,9 +127,13 @@ function pvOpen(){PVS.k=null;pvWords();if(!PVS.raf)PVS.raf=requestAnimationFrame
   host.addEventListener('focusin',on);host.addEventListener('pointerdown',on);host.addEventListener('input',on);host.addEventListener('pointerover',e=>{if(e.pointerType!=='touch')on(e)})}
 setCam(camMode,false);
 
-const _gq=new THREE.Quaternion(),_gE=new THREE.Euler(),_qCam=new THREE.Quaternion();
+const _ftH=new THREE.Vector3(),_gq=new THREE.Quaternion(),_gE=new THREE.Euler(),_qCam=new THREE.Quaternion();
 function placeShip(r,t){
   const s=sampleAt(r.u);
+  /* Prototype 60: over a new jump's gap (a drop's is steep) the frame is drawn level, along the ground's heading with the
+     world's up, easing in and out over 25 m, so its flight is the arc it flies rather than the hidden line's S */
+  {const jn=T.jg&&T.jg[idxAt(r.u)],J=jn?T.jumps[jn-1]:null;if(J&&!(J.sp&&!(r.brS===J.sp&&r.br===J.b))){const x=modU(r.u-J.u0),w=ss01(Math.min(x,J.G-x)/25);
+    if(w>0){_ftH.set(s.t.x,0,s.t.z).normalize();s.t.lerp(_ftH,w).normalize();s.u.lerp(AX_Y,w).normalize();s.r.crossVectors(s.t,s.u).normalize()}}}
   back.copy(s.t).negate();right.crossVectors(s.u,back).normalize();up.crossVectors(back,right);
   mtx.makeBasis(right,up,back);qT.setFromRotationMatrix(mtx);
   qY.setFromAxisAngle(AX_Y,r.yaw-(r.dVa!=null?r.dVa:r.driftK?(r.drift||Math.sign(r.steerS))*(r.dAng||0.42)*r.driftK:0));qS.setFromAxisAngle(AX_Y,r.spin);qR.setFromAxisAngle(AX_Z,-r.steerS*0.45+(r.rollA||0));

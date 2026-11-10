@@ -184,7 +184,7 @@ function physics(r,inp,dt){
   if(r.wreck>0){if(r.dN||r.dB||r.bHeld)drOff(r,'wreck');r.wreck-=dt;r.v*=Math.max(0,1-5*dt);r.brk=0;r.selfBoost=false;r.steerS=0;r.charging=null;if(r.air&&r.air.G&&r.respawnU==null&&modU(r.u-r.air.u0)<r.air.G)r.respawnU=r.air.u1+8;r.air=false;r.h=HOVER;const du=r.respawnU!=null?0:r.v*dt;r.u+=du;r.utot+=du;
     if(r.wreck<=0){if(r.respawnU!=null){r.v=45;let d=modU(r.respawnU-r.u);if(d>T.L/2)d=0;r.u+=d;r.utot+=d;r.respawnU=null;r.hp=r.hp<=0?Math.round(D.hp*0.4):Math.max(Math.round(D.hp*0.2),Math.round(r.hp-D.hp*0.15))}
       else{r.hp=Math.round(D.hp*0.35);r.v=0}
-      r.inv=2;{const f=surf(modU(r.u),r.lat,r);r.yaw=f.yb;r.lat=f.sp?f.c:clamp(r.lat,-W/4,W/4)}}
+      r.inv=2;r.stkS=null;{const f=surf(modU(r.u),r.lat,r);r.yaw=f.yb;r.lat=f.sp?f.c:clamp(r.lat,-W/4,W/4)}}
     lapCheck(r);return}
   /* people: the tap and the drift (drStep); everyone else (the AI, the autopilot, a bot, a quick race): the brake as before,
      and the AI Drifter's Prototype 38 drift */
@@ -213,7 +213,7 @@ function physics(r,inp,dt){
   let tb=0,tp=0;if(!r.air){if(!upS)tb=0.2*gS*good*str*(bst?0.6:1);tp=0.06*gS*bad+0.04*fS*Math.max(pu,pd)}
   r.climb=!r.air&&upS?1+2*clamp(1-good,0,1)/str:1;r.slopeG=upS?gS:0;
   r.trimB=tb;r.trimP=tp;r.trimUp=upS;r.dive=Math.min(1,tb/0.2);
-  let vm=D.vmax*(r.isAI?r.skill*T.D.ai*S.aiK*ailPace():1)*(1+tb-tp)*S.cls;
+  let vm=D.vmax*(r.isAI?(r.sjRun?1:r.skill*T.D.ai*S.aiK*ailPace()):1)*(1+tb-tp)*S.cls;
   if(r.isAI&&!auto){const gap=bandRef()-r.utot,b=T.D.band,bl=ailOf().band;vm*=1+clamp(gap/350,-b[0]*bl,b[1]*bl)}/* (P58) the level keeps a share of the band */
   {const f=surf(modU(r.u),r.lat,r);if(f.sp&&f.sp.kind==='pit'&&f.b===f.sp.longB&&!auto)vm*=0.84}
   {let dr=0;if(!r.air&&!auto)for(const o of racers){if(o===r||o.isGhost||o.wreck>0||o.air)continue;const g=wrapU(o.u-r.u);if(g>4&&g<45&&Math.abs(o.lat-r.lat)<2.6){dr=1;break}}
@@ -232,17 +232,20 @@ function physics(r,inp,dt){
   if(man&&!r.air){const hd=(r.build&&r.build.stats&&r.build.stats.handling)||1,a=LANE_A*clamp((hd-1)/4,0,1);
     if(a>0){const vl=-r.v*Math.sin(r.yaw-yb0),d=vl<0?r.lat-lo0:hi0-r.lat,tt=Math.abs(vl)>0.5?Math.max(0,d)/Math.abs(vl):9;
       if(tt<LANE_T)r.yaw-=(r.yaw-yb0)*a*(1-tt/LANE_T)*dt}}
-  const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g;r.yaw-=T.K[idxAt(r.u+du/2)]*du;r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
+  const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g*(r.air&&r.air.kind?jArc(r.air,uPrev):1);r.yaw-=T.K[idxAt(r.u+du/2)]*du;r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
   const uu=modU(r.u),sf=surf(uu,r.lat,r),kvB=sf.kv,slB=sf.sl,ybB=sf.yb,loB=sf.lo,hiB=sf.hi;
   // jumps: leave the lip on a ballistic arc, land past the gap; too slow and you fall in
   /* Height above the road. The hover hold (gE) is stronger nose-down and weaker nose-up. Over a crest the road falls away at
      v²·|curvature|; if that beats the hold, the ship lifts off (losing thrust and half its steering) until it settles again. */
-  const gE=(r.air&&r.air!==true?GRAV*S.cls*S.cls:GRAV*HOLD)*(1-0.45*pu+0.6*pd)*(r.air?(r.air!==true&&!r.offT&&D.jumpG?D.jumpG:(D.glide||1)):D.plant);
-  if(!r.air||r.air===true)for(const j of T.jumps)if(uPrev<j.u0&&uu>=j.u0&&uu<j.u1){const ex=r.air===true?r.h-HOVER:0,v0=r.air===true?r.vh:0;
+  const gE=(r.air&&r.air!==true?GRAV*S.cls*S.cls:GRAV*HOLD)*(r.air&&r.air.kind==='sjump'?1:1-0.45*pu+0.6*pd)*(r.air?(r.air!==true&&!r.offT&&D.jumpG?D.jumpG:(D.glide||1)):D.plant);
+  if(!r.air||r.air===true){for(const j of T.jumps)if(uPrev<j.u0&&uu>=j.u0&&uu<j.u1&&!(j.sp&&!(r.brS===j.sp&&r.br===j.b))){const ex=r.air===true?r.h-HOVER:0,v0=r.air===true?r.vh:0;if(j.stk)r.stkS=null;
     /* Prototype 37: a frame out of phase, or hit in the last 2.5 s, leaves the lip at least fast enough to clear the gap
        (level nose, with a margin): most falls were frames hit just before the lip that reached it at walking pace. */
-    {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)){const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need}}
-    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)}
+    {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
+    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)}}
+  /* Prototype 60: still in the air from one new jump at the lip of the next (drops in a row): that one carries the flight
+     on, from the same height over the road */
+  else if(r.air.kind&&modU(uu-r.air.u0)>r.air.G)for(const j of T.jumps)if(j.kind&&j!==r.air&&uPrev<j.u0&&uu>=j.u0&&uu<j.u1&&!(j.sp&&!(r.brS===j.sp&&r.br===j.b))){const ex=r.h-HOVER;r.air=j;r.airX=null;r.hb=HOVER+j.lipH+ex;if(j.stk)r.stkS=null;break}
   if(r.air===true){const mg=T.mag&&T.mag[idxAt(uu)]&&!r.offT?4:1;r.vh+=Math.min(20,-(T.Kn[idxAt(uu)]+kvB)*r.v*r.v-gE*mg)*dt;r.h=Math.min(18,r.h+r.vh*dt);
     /* The walls are solid: a ship that reaches one below its top is held in. Only clearing the top takes you off the
        road, and then a glider can still steer back; anything else drops and explodes. */
@@ -254,7 +257,15 @@ function physics(r,inp,dt){
   else if(!r.air){const load=(T.Kn[idxAt(uu)]+kvB)*r.v*r.v;
     if((T.cx||T.sp&&T.sp.train)&&-load-gE>2&&!T.gap[idxAt(uu)]&&!(T.mag&&T.mag[idxAt(uu)])){r.air=true;r.h=HOVER;r.vh=0;if(r===player)logEv('lift',{v:Math.round(r.v),pitch:r2(r.pitch)})}
     }
-  else{const J=r.air;r.vh-=gE*dt;const hb0=r.hb;r.hb+=r.vh*dt;const x=modU(uu-J.u0),j=x<J.G?J:null;r.h=r.hb-(j?gapC(x/J.G,J.G):0);if(x>J.G+400)r.hb=Math.min(r.hb,HOVER);
+  else{const J=r.air;r.vh-=gE*dt;let hb0=r.hb;r.hb+=r.vh*dt;const x=modU(uu-J.u0),j=x<J.G?J:null;
+    /* Prototype 60: past a speed jump's gap, a frame at the upper road's height is on the upper road, from then on measured from it (up to 1.5 m under it, it scrapes up onto it and loses 12% of its speed); anything lower flies on under it to the lower road, and the
+       upper road's underside holds it down while it is beneath */
+    if(J.stk&&!j){const SP=J.stk;if(r.stkS!==SP){const up=r.hb>=HOVER+J.hu-1.5;r.stkS=SP;r.stkB=up?SP.upB:SP.lowB;r.brS=SP;r.br=r.stkB;
+        if(up){r.hb-=J.hu;hb0-=J.hu;if(r.hb<HOVER){r.v*=0.88;r.hb=HOVER;r.vh=Math.max(r.vh,0);if(r===player){S.shake=Math.min(1,S.shake+0.4);audio.hit(0.4)}}}}
+      else if(r.stkB===SP.lowB&&T.spl[idxAt(uu)]){const f=Math.min(SP.n,Math.max(0,Math.round((uu-SP.u0)/T.ds))),B=SP.b[SP.upB];if(Math.abs(r.lat-B.c[f])<B.w[f]+1.5){const cap=B.h[f]-SP.b[SP.lowB].h[f]-2.6;if(r.hb>cap){r.hb=cap;r.vh=Math.min(r.vh,0)}}}}
+    /* and a hit in the air over one of their gaps doesn't stop a frame short of the road that catches it */
+    if(j&&(J.kind==='sjump'||J.kind==='cjump')&&r.v<(r.jNeed||0))r.v=r.jNeed;
+    r.h=r.hb-(j?(J.kind?jC(J,x/J.G):gapC(x/J.G,J.G)):0);if(x>J.G+400)r.hb=Math.min(r.hb,HOVER);
     /* Past the gap and below the road: only a clipped landing if the ship was already below the far edge when it got there
        (a steep drop that crosses the road level within one step is just a hard landing). */
     const xPrev=r.airX;r.airX=x;let clipped=false;

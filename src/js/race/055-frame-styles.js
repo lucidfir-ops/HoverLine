@@ -53,9 +53,10 @@ function aiInput(r,dt){
       {const p0=clamp(0.5+(needs?0.3:0)+(heavy?0.2:0)-(nimble?0.35:0),0.1,0.9),alt=B=>SP.b.indexOf(B);let b;
        if(SP.kind==='pit')b=Math.random()<(r.hp<r.d.hp*0.55||(r.ammo<r.d.ammo*0.25&&r.hp<r.d.hp*0.85)?0.85:0.06)?SP.longB:1-SP.longB;
        else if(SP.kind==='cut')b=Math.random()<0.2?SP.longB:1-SP.longB;
+       else if(SP.kind==='stack'||SP.kind==='catch')b=SP.lowB||0;/* Prototype 60: the jump picks the road (below) */
        else{const long=Math.random()<(r.sty&&r.sty.longP!=null?0.3*p0+0.7*r.sty.longP:p0);b=alt(SP.b.find(B=>B.long===long))}
        r.brPick={SP,b,long:SP.b[b].long}}}
-    const want=r.brPick.b,B0=SP.b[want];
+    const want=SP.kind==='stack'&&r.stkS===SP?r.stkB:r.brPick.b,B0=SP.b[want];
     if(uu<SP.u0||uu>SP.u1){target=B0.c[0]+clamp(r.bias,-1,1)*Math.min(W/16,Math.max(0,B0.w[0]-1.8));lane=SP.kind!=='split'&&modU(SP.u0-uu)<220;if(B0.cut){ybA=0;if(modU(SP.u0-uu)<Math.max(40,r.v*0.5))rUp=1;if(modU(SP.u0-uu)<Math.max(50,r.v*0.6)&&r.v>r.d.vmax*0.7)rBrk=0.6}}
     else{const kq=Math.max(0,Math.min(SP.n,Math.round((uu-SP.u0)/T.ds))),fn=surf(uu,r.lat,r),Bn=SP.b[fn.b];
       if(SP.adj&&SP.adj[kq]&&fn.b!==want){target=B0.c[Math.min(SP.n,kq+Math.round(12/T.ds))];bnd=[fn.lo,fn.hi];ybA=0}
@@ -90,7 +91,13 @@ function aiInput(r,dt){
   const slA=T.Tg[idxAt(r.u+12)].y,pitch=rUp?1:r.air&&r.air!==true?F.ja:r.air===true||kc<-0.0011?-1:brake>0.05?0.7:Math.abs(T.Cs[idxAt(r.u+look*0.6)])>0.009?0.5*(r.sty?r.sty.up:1):slA>0.03?clamp(slA/0.08,0,1)*(r.sty?clamp(r.sty.up,0.4,1.2):1):slA<-0.03&&r.d.aero>0?-clamp(-slA*F.dv/0.08,0,1)*(r.sty?clamp(r.sty.dive,0.4,1.2):1):0;
   /* Held boost costs shield, so the AI saves it for straights while its shield is healthy; on a green strip the strip pays
      for it, so it boosts there whatever its shield (above the cut-out) unless the corner ahead is tight. */
-  const onGreen=r.charging==='hp',boost=r.isAI&&r.finishT==null&&brake<0.05&&!r.air&&(onGreen?r.hp>r.d.hp*0.15&&Math.abs(T.Cs[idxAt(r.u+look)])<0.004:
+  /* Prototype 60: before a speed jump the AI decides once a lap whether to go for the upper road (more often when the
+     bonus is up there) and, if so, holds boost from 1 km out while its shield allows; it can still come up short */
+  let sjB=false;if(r.isAI&&r.finishT==null&&!r.air){for(const j of T.jumps){if(!j.stk)continue;const d=modU(j.u0-uu);if(d>1000)continue;
+    const key=j.u0+'|'+r.done;if(r.sjK!==key){r.sjK=key;r.sjGo=Math.random()<(j.stk.bonus==='up'?0.85:0.45)}if(r.sjGo&&r.hp>r.d.hp*0.15)sjB=true;break}}
+  /* going for it, it races at a person's top speed (no AI pace factor) on the run-up */
+  r.sjRun=sjB;
+  const onGreen=r.charging==='hp',boost=sjB&&brake<0.3||r.isAI&&r.finishT==null&&brake<0.05&&!r.air&&(onGreen?r.hp>r.d.hp*0.15&&Math.abs(T.Cs[idxAt(r.u+look)])<0.004:
     r.hp>r.d.hp*(r.sty?clamp(0.9-0.45*r.sty.boost,0.25,0.95):F.bh)&&Math.abs(T.Cs[idxAt(r.u+look)])<0.0015&&Math.abs(T.Cs[idxAt(r.u+look*1.8)])<0.0015);
   return aiHands(r,aiDrift(r,{steer:clamp(steer,-1,1),brake,pitch,boost,fire:fireW,hold:holdW},steer,F),dt)}
 
