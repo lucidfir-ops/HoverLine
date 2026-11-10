@@ -68,9 +68,27 @@ const AIL={tilt:{n:'Tilt',sig:1.9,tau:1.45,nose:0.5,strip:0.6,react:0.6,pace:0.9
   easy:{n:'Beginner',sig:1.7,tau:1.35,nose:0.4,strip:0.5,react:0.5,pace:1,band:0.3,sb:1},
   normal:{n:'Default',sig:1,tau:1,nose:0,strip:0,react:0,pace:1,band:1,sb:0},
   hard:{n:'Expert',sig:0.4,tau:0.75,nose:0,strip:0,react:0,sharp:1,pace:{W:1.15,S:1.09,N:1.10},band:0.3,sb:1}};
+/* ---------- Prototype 60: Expert per road width ----------
+   Eric beat Expert on Wide (3 wins in 8, mean place 3.0, in the Tether). Refitting the Eric pilot from his Prototype 59
+   races (no Prism; 17 Wide, 7 Standard, 19 Narrow) showed the Prototype 58 model was slower than him where he wins: it
+   fired Turbo a third less than he does on Wide and Standard and spent the ammo on Phase, so replays of his own races
+   came in 4-6% slower than he flew them on Wide, 2-6% on Standard (and 2-3% faster on Narrow). With his own Turbo and Phase
+   rates per width, his clean self (40% of his wander, nose up, every strip, every moment) flown in the Tether beat
+   Expert as it was 29% of the time on Wide and Standard (2.5th and 2.7th of 8) and finished 4.1th on Narrow.
+   So Expert's speed is now set per width so that width's clean Eric finishes mid-field on it (tools/sim, 240-480 races
+   a setting; the small gap left between the model and his times is split in half): Wide 1.22 (was 1.15), Standard 1.17
+   (was 1.09), Narrow 1.10 as before. Its mistakes are already his best on every width (no strip ridden past, every
+   moment for Phase, Barrier and the Reflector taken, 40% of the wander), so they stay. Any number of a level can now be
+   one per width ({W,S,N}); ailOf() hands every user the current width's value. Tilt, Beginner and Default don't move. */
+AIL.hard.pace={W:1.22,S:1.17,N:1.10};
 let ailFree=AIL[store.get('hoverline.ail')]?store.get('hoverline.ail'):null;/* null: not chosen, so Tilt for tilt players, else Normal */
 const ailNow=()=>ailFree||(typeof coarse!=='undefined'&&coarse&&tiltWanted()?'tilt':'normal');
-const ailOf=()=>AIL[S.ail]||AIL.normal,ailPace=()=>{const p=ailOf().pace;return typeof p==='number'?p:(p[T.wk]??1)};
+/* (P60) the level as raced on this width: a per-width number ({W,S,N}) becomes this width's (Standard's if missing);
+   kept until the level or the width changes, as every AI pilot asks for it every frame */
+let ailC=null;
+const ailOf=()=>{const L=AIL[S.ail]||AIL.normal,wk=T&&T.wk;if(ailC&&ailC.L===L&&ailC.wk===wk)return ailC.v;const v={};
+  for(const k in L){const x=L[k];v[k]=x&&typeof x==='object'?(x[wk]??x.S??1):x}ailC={L,wk,v};return v};
+const ailPace=()=>ailOf().pace;
 const ailM=r=>{const L=ailOf();if(!L.sb||!r.isAI)return 1;const g=bandRef()-r.utot;return g>0?1-0.45*clamp(g/400,0,1):1};
 function aiHands(r,o,dt){if(!hands(r)||r.wreck>0){r.hs=o.steer;r.hn=0;r.hT=0;return o}
   const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();
