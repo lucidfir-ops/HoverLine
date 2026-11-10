@@ -34,6 +34,9 @@ const sitOf=(air,knMin,c30,c50,gy12)=>{const c=Math.max(Math.abs(c30),Math.abs(c
 const SITS=['air','crest','tight','corner','uphill','downhill','straight'];
 const lerpTab=(xs,ys,x)=>{if(x<=xs[0])return ys[0];for(let i=1;i<xs.length;i++)if(x<=xs[i]){const a=(x-xs[i-1])/(xs[i]-xs[i-1]);return ys[i-1]+(ys[i]-ys[i-1])*a}return ys[ys.length-1]};
 const {driftStick}=require('./drive.js');
+/* ADAPT=1 (Prototype 50): the wander in how far the frame turns rather than how far the stick moves, as the game's AI hands
+   do (a lighter hand on a quick-turning frame; Eric's handling-5 races touched the walls a third as often) */
+const ADAPT=process.env.ADAPT==='1';
 function makeEric(H,P,rnd=Math.random){
   /* 7 (Prototype 43 builds): the drift every frame has. Defaults until it is fitted from Prototype 43 logs. */
   const D43=H.DR&&H.DR.tapMax!=null?Object.assign({on:0.0032,off:0.0016,p:0.9,minV:42,tap:0.12},P.drift43||{}):null;
@@ -70,7 +73,7 @@ function makeEric(H,P,rnd=Math.random){
     /* in a drift the stick can ask for more than full steering (up to 1+DR.turn), so the same law unclamped (to 1.6) and
        lagged the same way (E.su) is what goes through driftStick */
     const cmdU=clamp(cmd,-1.6,1.6);cmd=clamp(cmd,-1,1);E.su=(E.su??0)+(cmdU-(E.su??0))*Math.min(1,dt/st.tau);
-    E.s+=(cmd-E.s)*Math.min(1,dt/st.tau);E.n+=-E.n*dt/0.7+st.sigma*Math.sqrt(dt)*gauss();
+    E.s+=(cmd-E.s)*Math.min(1,dt/st.tau);E.n+=-E.n*dt/0.7+st.sigma*(ADAPT?1/Math.max(0.5,r.d.turn):1)*Math.sqrt(dt)*gauss();
     let steer=clamp(E.s+E.n,-1,1);
     /* 3. the nose */
     E.pt-=dt;if(sit!==E.sit||E.pt<=0){E.sit=sit;E.pt=P.pitchSpell*(0.5+rnd());const pp=(P.pitch[wk]||P.pitch.S)[sit]||{up:0,down:0},x=rnd();E.pe=x<pp.up?1:x<pp.up+pp.down?-1:0}

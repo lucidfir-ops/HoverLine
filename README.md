@@ -8,20 +8,21 @@ A WipEout-style anti-grav racer that runs in a browser: phone first, also tablet
 
 | Path | What it is |
 | --- | --- |
-| `src/hoverline.html` | The game source (one file: HTML, CSS and JavaScript). |
-| `index.html` | The playable page, built from the source. |
+| `src/` | The game source: `page.html`, `css/`, the script in parts under `js/` (joined in `js/ORDER`), `vendor/` and `assets/`. See `docs/ARCHITECTURE.md`. |
+| `index.html` | The playable page, built from the source (one file, as itch.io needs). |
 | `tools/build.py` | Rebuilds `index.html`, the offline file and the zips in `dist/`. |
 | `vendor/three.min.js` | Three.js r128 (MIT), put inside the offline file and the Wi-Fi pack. |
 | `vendor/jsqr/` | jsQR 1.4.0 (Apache-2.0), the QR reader inside the page since Prototype 47, with its licence. |
 | `songs/` | Songs mode's recorded tracks (CC0, credited below) and their list. `tools/build.py` puts them beside the page in the itch.io zip and the Wi-Fi host pack; the offline file doesn't carry them. |
 | `samples/` | The sample library (Prototype 45): `manifest.json`, one FLAC pack per kit or instrument, the spoken tabla bols in `vox-bols/`, and `CREDITS.md`. `tools/build.py` puts it beside the page in the itch.io zip and the Wi-Fi host pack, and in its file form in the offline zip. Built by `tools/samples/` (its README). |
 | `wifi-host/` | A small Python server so phones and tablets can race over local Wi-Fi without the internet. (Any copy of the game can also do this on its own: Multiplayer, Same room · no internet, pairing by sound since Prototype 44 or by QR codes since Prototype 31. The pack is the fallback for networks where phones can't connect directly.) |
-| `tools/music/`, `tools/synths/`, `tools/samples/` | The song templates and the tools that built and measured them (Prototype 43, `tools/music/p45/` for Prototype 45 and `tools/music/p46/` for Prototype 46 with its fatigue audit), the synth instruments (`INSTRUMENTS.md`), and the sample library's build. Their scripts still carry the paths of the sessions that wrote them. |
+| `tools/music/`, `tools/synths/`, `tools/samples/` | The song templates and the tools that built and measured them (Prototype 43, `tools/music/p45/` for Prototype 45 and `tools/music/p46/` for Prototype 46 with its fatigue audit), the synth instruments (`INSTRUMENTS.md`), and the sample library's build. Their scripts still carry the paths of the sessions that wrote them. `tools/pNN/` are the one-off patches and tests of past prototypes (history). |
 | `tools/sim/` | A headless race simulator for balance studies, with simulated pilots that fly like people or like Eric's race logs (its README has the commands), and `log2ghost.py`, which turns a logged race into a Time trial ghost. |
 | `leaderboard/` | The online leaderboard and shared race data: a Cloudflare Worker and D1 database. |
-| `reference/` | Builds kept for comparison: Prototype 25 (the music and announcer baseline), Prototype 24 (clown music to avoid), Prototype 21, Prototype 26 (the mixed scenery that was rolled back) and Prototype 27. |
-| `docs/DESIGN.md` | The design document: what is locked, what is tuned, and how to change things safely. |
-| `docs/CLAUDE-NOTES.md` | How each update is built, tested and handed over (written for Claude sessions). |
+| `CLAUDE.md` | Start here (people or AI assistants): where things are, how to build, test and hand over. |
+| `docs/ARCHITECTURE.md` | How the code is laid out now. |
+| `docs/DESIGN.md` | The history of design decisions, prototype by prototype: what is locked, what is tuned and why. |
+| `docs/history/` | Older documents kept for reference; they can be out of date. |
 | `CHANGELOG.md` | What changed in each prototype. |
 
 ## Building

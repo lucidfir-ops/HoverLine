@@ -1,0 +1,475 @@
+<title>Hoverline</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style><!--#include css/hoverline.css--></style>
+
+<canvas id="c" aria-label="Race view"></canvas>
+<div id="scrV" aria-hidden="true" hidden></div><div id="scrS" aria-hidden="true" hidden></div><div id="fps" aria-hidden="true" hidden></div>
+<div id="ink" aria-hidden="true"></div><div id="threat" aria-hidden="true"></div><div id="threatQ" aria-hidden="true" hidden></div><div id="threatTxt" hidden></div>
+<div id="flash"></div>
+<div id="hudL" class="hud" hidden>
+  <div class="pos"><span id="posN">8</span><small>/<span id="posT">8</span></small></div>
+  <div class="lap" id="lapBox">Lap <span id="lapN">1</span><small id="lapT">/3</small></div>
+  <div class="t" id="time">0:00.00</div>
+  <div class="t best" id="bestL">Best —</div>
+  <div class="t best" id="tuneHud"></div>
+</div>
+<div id="hudR" class="hud" hidden>
+  <div class="spd" id="spd">0</div>
+  <div class="unit"><span id="trimHint"></span><span id="trim"></span>km/h</div>
+  <div class="bar"><i id="spdBar"></i></div>
+  <div class="meter" id="hpM" title="Shield"><span class="mi" data-i="shield"></span><b><i id="hpBar"></i></b></div>
+  <div class="meter am" id="amM" title="Ammo"><span class="mi" data-i="ammo"></span><b><i id="amBar"></i></b></div>
+  <div class="slots" id="slots"><span id="s1"></span><span id="s2"></span></div>
+  <div class="slots" id="qkSlots"><span id="qkSlot"></span></div>
+  <canvas id="mini"></canvas>
+</div>
+<button id="pauseBtn" hidden aria-label="Pause">II</button>
+<div id="count" hidden></div>
+<div id="note" hidden></div><div id="splitHud" hidden></div><div id="qkTip" hidden aria-live="polite"></div>
+
+<div id="touch" hidden>
+  <div id="steerPad"><span class="hint" id="padHint">Steer and pitch</span><div id="stick" aria-hidden="true"><span class="t">▲ fast</span><span class="b">▼ drag</span><span class="l">◀</span><span class="r">▶</span><i id="stickThumb"></i></div></div>
+  <div id="steerSl" hidden aria-label="Steer: slide left and right"><span class="l">◀</span><span class="r">▶</span><i id="steerSlThumb"></i></div>
+  <div id="steerBtns" hidden><button class="bk" id="sl" aria-label="Steer left">◀</button><button class="bk" id="sr" aria-label="Steer right">▶</button></div>
+  <div id="rightPad">
+    <div class="wrow"><button class="wb" id="w1" aria-label="Use module 1">—</button><button class="wb" id="w2" aria-label="Use module 2">—</button><button class="bk" id="qkFire" aria-label="Module"></button></div>
+    <div class="brow"><button class="bk" id="bst" aria-label="Boost (costs shield)"><span class="mi" data-i="boost"></span></button><button class="bk" id="brk" aria-label="Brake: tap to brake, hold while steering to drift">Brake<small>hold: drift</small></button><div id="pslide" hidden aria-label="Pitch: slide up to dive, down for drag"><span class="t">▲</span><span class="b">▼</span><i id="pslThumb"></i></div></div>
+  </div>
+</div>
+
+<div id="title" class="overlay">
+  <div class="card">
+    <div class="logo">HOVER<b>LINE</b></div>
+    <div class="sub">Prototype 59</div>
+    <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" hidden>⛶ Full screen</button></div>
+    <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open with tilt</a>
+    <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip" id="radioBack" hidden>Back to radio</button><button class="chip mmode" aria-label="Music mode">Generative</button><button class="heart" id="likeTune" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button></div>
+      <div class="t best tinfo" id="titleTune"></div></div>
+  </div>
+</div>
+<div id="play" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">RA<b>CE</b></div>
+    <div class="modes">
+      <button class="btn mode go" id="carBtn">Career<small id="carBtnSub">Start here · easy races first, harder as you win</small></button>
+      <button class="btn mode" id="raceMode">Race<small>Any track · 7 AI pilots</small></button>
+      <button class="btn mode" id="mpBtn">Multiplayer<small>Up to 8 pilots · online or in one room</small></button>
+      <button class="btn mode" id="trialBtn">Time trial<small>Alone with the ghost of your best run</small></button>
+      <button class="btn mode" id="trainBtn">Training<small>Short tracks that repeat one thing · hills, corners, jumps</small></button>
+      <button class="btn mode" id="labBtn">Frame lab<small id="buildSum"></small></button>
+    </div>
+    <div class="row"><button class="btn" id="playBack" data-back>Back</button></div>
+  </div>
+</div>
+<div id="train" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">TRAI<b>NING</b></div>
+    <div class="sub">Short tracks that repeat one thing, lap after lap · times stay off the boards</div>
+    <div class="row" id="trDrills" role="group" aria-label="Drill"></div>
+    <p id="trDesc"></p>
+    <div class="row" role="group" aria-label="Width"><span class="sub">Width</span><button class="chip" data-trw="W">Wide</button><button class="chip" data-trw="S">Standard</button><button class="chip" data-trw="N">Narrow</button></div>
+    <div class="row" role="group" aria-label="Frame"><span class="sub">Frame</span><button class="chip" data-trs="cube">Training cube</button><button class="chip" data-trs="own">Your frame</button></div>
+    <p class="small" id="trShip"></p>
+    <div class="row" role="group" aria-label="Laps"><span class="sub">Laps</span><button class="chip" data-trl="3">3</button><button class="chip" data-trl="5">5</button><button class="chip" data-trl="10">10</button></div>
+    <div class="t best" id="trBest"></div>
+    <div class="row"><button class="btn go" id="trGo">Start</button><button class="btn" id="trLab">Frame lab</button><button class="btn" id="trBack" data-back>Back</button></div>
+  </div>
+  <div class="map"><canvas id="trPreview"></canvas><div class="small" id="trStats"></div></div>
+</div>
+<div id="carHome" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">CAR<b>EER</b></div>
+    <div class="modes">
+      <button class="btn mode go" id="carLoad">Load career<small id="carLoadSub"></small></button>
+      <button class="btn mode" id="carNewB">New career<small>Choose a frame and start in Rookie</small></button>
+    </div>
+    <div class="row"><button class="btn" id="carHomeBack" data-back>Back</button></div>
+  </div>
+</div>
+<div id="carNew" class="overlay pop" hidden>
+  <div class="card">
+    <div class="sub">New career</div>
+    <p class="ask">This replaces your career: credits, cleared races and frame. Start again?</p>
+    <div class="row"><button class="btn" id="carNewNo" data-back>No, keep it</button><button class="btn" id="carNewYes">Yes, start again</button></div>
+  </div>
+</div>
+<div id="fsel" class="overlay" hidden>
+  <div id="fsRow" role="group" aria-label="Frames"></div>
+  <div class="card">
+    <div class="sub">New career · choose your frame</div>
+    <div class="fsName"><span id="fsName"></span><small id="fsTag"></small></div>
+    <p id="fsBlurb"></p>
+    <p id="fsMods"></p>
+    <p class="fsBare">Career frames start bare, every stat at 1. Races pay credits for more.</p>
+    <div class="row"><button class="btn go" id="fsGo">Choose</button><button class="chip" id="fsRep">▶ Repeat</button><button class="btn" id="fsBack" data-back>Back</button></div>
+  </div>
+</div>
+<div id="career" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">CAR<b>EER</b></div>
+    <div class="sub" id="carSub"></div>
+    <div class="carRule" id="carRule">Pick a race · finish in the top three to clear it and open the next</div>
+    <div id="carList" class="col"></div>
+    <div class="t best" id="carInfo"></div>
+    <div class="row"><button class="btn go" id="carGo">Race</button><button class="btn" id="carLab">Frame lab</button><button class="btn" id="carCred"></button><button class="btn" id="carBack" data-back>Back</button></div>
+  </div>
+  <div class="map"><canvas id="carPreview"></canvas><div class="small" id="carStats"></div></div>
+</div>
+<div id="bview" class="overlay pop" hidden>
+  <div class="card">
+    <div class="big">Better view</div>
+    <p class="ask">Turn your phone sideways for the widest view of the road.</p>
+    <p class="ask">An iPhone can't put a web page full screen. To play without the browser bars, use Share, then <b>Add to Home Screen</b>, and open Hoverline from your Home Screen. It keeps its own saves there.</p>
+    <p class="ask">Steering by tilting? Turn on Rotation Lock in Control Center so the screen stays put.</p>
+    <div class="row"><button class="btn go" id="bviewOk" data-back>OK</button></div>
+  </div>
+</div>
+<div id="carAsk" class="overlay pop" hidden>
+  <div class="card">
+    <div class="sub" id="carAskT"></div>
+    <div class="big" id="carAskN"></div>
+    <p class="ask" id="carAskI"></p>
+    <div class="row"><button class="btn go" id="carAskYes">Yes · race</button><button class="btn" id="carAskNo" data-back>No</button></div>
+  </div>
+</div>
+<div id="tutAsk" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">GUID<b>ANCE</b></div>
+    <p class="ask">Do you require guidance?</p>
+    <p id="tutAskP">Six quick steps on the controls before your first race, about half a minute.</p>
+    <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>No · straight to the races</button></div>
+  </div>
+</div>
+<div id="tut" hidden>
+  <div class="tcard"><div class="tdots" id="tutDots"></div><div class="tname" id="tutName"></div><div class="tdo" id="tutDo"></div><p class="twhy" id="tutWhy"></p><div class="tfx" id="tutFx" hidden></div></div>
+  <button class="chip" id="tutSkip" tabindex="-1">Skip</button>
+</div>
+<div id="opts" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">OPTI<b>ONS</b></div>
+    <div class="modes">
+      <button class="btn mode" id="setBtn">Settings<small>Performance, sound, music, race data</small></button>
+      <button class="btn mode" id="ctlBtn">Controls<small>Touch, tilt, keys, pad, camera</small></button>
+      <button class="btn mode" id="guideBtn">Nose guide<small>When to lift or drop the nose</small></button>
+      <button class="btn mode" id="tutBtn">Tutorial<small>The controls in six quick steps</small></button>
+    </div>
+    <div class="row"><button class="btn go" id="optDone" data-back>Done</button></div>
+  </div>
+</div>
+<div id="menu" class="overlay" hidden>
+  <div class="card">
+    <div class="logo" id="setLogo">RA<b>CE</b></div>
+    <div class="sub" id="setSub"></div>
+    <div class="row" role="group" aria-label="Track types for new tracks"><button class="chip pool" data-width="W" aria-pressed="false">Wide</button><button class="chip pool" data-width="S" aria-pressed="false">Standard</button><button class="chip pool" data-width="N" aria-pressed="false">Narrow</button>
+      <span class="sep"></span><button class="chip pool" data-layout="S" aria-pressed="false">Simple</button><button class="chip pool" data-layout="X" aria-pressed="false">Complex</button><button class="chip pool" data-layout="C" aria-pressed="false">Custom</button><button class="chip" id="edBtn">Edit…</button>
+      <span class="sep"></span><button class="chip pool" data-len="Q" aria-pressed="false">Short</button><button class="chip pool" data-len="M" aria-pressed="false">Medium</button><button class="chip pool" data-len="L" aria-pressed="false">Long</button></div>
+    <div class="row" role="group" aria-label="Scenery for new tracks"><span class="sub">Scenery</span><button class="chip bio" data-bio="U">Urban</button><button class="chip bio" data-bio="O">Ocean</button><button class="chip bio" data-bio="F">Forest</button><button class="chip bio" data-bio="N">Stratos</button><button class="chip bio" data-bio="R">Reef</button><button class="chip bio" data-bio="P">Prism</button><span class="sep"></span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
+    <div class="row" id="clsRow"><span class="sub">Class</span><select class="pick" id="clsSel" aria-label="Speed class"></select><span class="small" id="clsNote"></span><button class="chip" id="pacBtn" aria-pressed="false" title="No modules for anyone">Pacifist</button></div>
+    <div class="row" id="ailRow"><span class="sub">Rivals</span><select class="pick" id="ailSel" aria-label="Rivals"></select><span class="small" id="ailNote"></span></div>
+    <div class="row"><button class="btn go" id="raceBtn">Start</button><button class="btn" id="newBtn">New track</button><button class="btn" id="setBack" data-back>Back</button></div>
+    <div class="code"><label for="seedIn">Track code</label><input id="seedIn" maxlength="34" spellcheck="false" autocomplete="off"><button class="btn" id="loadBtn">Load</button></div>
+    <div class="t best" id="menuBest"></div>
+  </div>
+  <div class="map">
+    <canvas id="preview"></canvas>
+    <div class="legend"><span><i style="background:#f2efe6"></i>Start</span><span><i style="background:#3ff0ff"></i>Boost</span><span><i style="background:#46ff8c"></i>Shield recharge</span><span><i style="background:#be5aff"></i>Ammo</span><span id="lenLbl"></span></div>
+    <div class="small" id="stats"></div>
+  </div>
+</div>
+
+<div id="ed" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">TRACK <b>EDITOR</b></div>
+    <div class="sub">Choose how many of each · the circuit is built around them</div>
+    <div class="row" role="group" aria-label="Width and length"><button class="chip" data-edw="W">Wide</button><button class="chip" data-edw="S">Standard</button><button class="chip" data-edw="N">Narrow</button><span class="sep"></span><button class="chip" data-edlen="Q">Short</button><button class="chip" data-edlen="M">Medium</button><button class="chip" data-edlen="L">Long</button></div>
+    <div class="row" role="group" aria-label="Layout"><span class="sub">Layout</span><button class="chip" data-edb="0">Smooth</button><button class="chip" data-edb="1">Normal</button><button class="chip" data-edb="2">Twisty</button><button class="chip" data-edb="3">Figure 8</button></div>
+    <div id="edFeats" class="efeats"></div>
+    <div class="row" role="group" aria-label="Scenery"><span class="sub">Scenery</span><button class="chip" data-edbio="U">Urban</button><button class="chip" data-edbio="O">Ocean</button><button class="chip" data-edbio="F">Forest</button><button class="chip" data-edbio="N">Stratos</button><button class="chip" data-edbio="R">Reef</button><button class="chip" data-edbio="P">Prism</button></div>
+    <div id="edScene" class="efeats"></div>
+    <p id="edFit"></p>
+    <div class="row"><button class="btn go" id="edRace">Race it</button><button class="btn" id="edDone" data-back>Done</button><button class="btn" id="edShuffle">Reshuffle</button><button class="btn" id="edClear">Clear</button></div>
+  </div>
+  <div class="map"><canvas id="edPreview"></canvas><div class="small" id="edStats"></div></div>
+</div>
+<div id="lab" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">FRAME <b>LAB</b></div>
+    <div class="sub">Frame</div>
+    <div class="row" id="labFrame" role="group" aria-label="Frame"></div>
+    <p id="labFdesc"></p>
+    <div class="sub" id="labPts"></div>
+    <button class="btn mode" id="labBuy" hidden></button>
+    <div id="labStats" class="stats"></div>
+    <div class="sub">Modules · pick 2 · weapons and scoops · they share one ammo pool</div>
+    <div class="row" id="labWpn" role="group" aria-label="Modules"></div>
+    <p class="small" id="labWdesc"></p>
+    <div id="labPaint" role="group" aria-label="Paint"></div>
+    <div class="row"><button class="btn go" id="labDone" data-back>Done</button><button class="btn" id="labRand">Random build</button><button class="btn" id="labReset">Reset build</button></div>
+  </div>
+</div>
+<div id="labTag" hidden></div>
+
+<div id="mp" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">MULTI<b>PLAYER</b></div>
+    <div id="chirpBox" class="col" hidden>
+      <div class="chirprow"><canvas id="chirpWave" class="priest" aria-hidden="true"></canvas>
+        <div class="chirpcol"><div class="sub" id="chirpTitle"></div><div class="pmrow" id="chirpMeter" hidden><span>Mic</span><div class="pmeter"><i></i><b></b></div></div><p class="small warn" id="chirpMsg" aria-live="polite"></p></div></div>
+      <div id="chirpSteps"></div>
+      <div class="row"><button class="btn" id="chirpDone">Done</button><button class="btn" id="chirpCancel" data-back>Cancel</button><button class="btn" id="chirpQR">Use a code</button></div>
+    </div>
+    <div id="lanBox" class="col" hidden>
+      <div class="sub" id="lanTitle"></div>
+      <div id="lanSteps"></div>
+      <div class="row lanrow"><canvas id="lanQR" width="330" height="330" hidden></canvas><video id="lanCam" playsinline muted hidden></video>
+        <div class="col lancol"><p id="lanTxt" hidden></p>
+          <div class="row"><button class="btn go" id="lanScan">Scan a code</button><button class="btn" id="lanCopy" hidden>Copy code</button><button class="btn" id="lanCancel">Cancel</button></div>
+          <div class="code" id="lanInRow"><label for="lanIn">Code</label><input id="lanIn" spellcheck="false" autocomplete="off" autocapitalize="characters" placeholder="type a code" data-osk="code"><button class="btn kb" data-osk-for="lanIn" aria-label="On-screen keyboard">⌨</button><button class="btn" id="lanUse">Use</button></div>
+          <p class="small warn" id="lanMsg" aria-live="polite"></p></div></div>
+    </div>
+    <div id="mpOut" class="col">
+      <div class="sub">One device each · up to 8 pilots · empty places fill with AI</div>
+      <div class="code"><label for="mpName">Name</label><input id="mpName" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="mpName" aria-label="On-screen keyboard">⌨</button></div>
+      <div class="row" id="mpConnRow"><span class="sub">Connection</span><button class="chip" data-conn="internet" aria-pressed="true">Internet</button><button class="chip" data-conn="lan" aria-pressed="false">Same room · no internet</button><button class="chip" data-conn="wifi" aria-pressed="false" hidden>Wi-Fi host</button></div>
+      <div class="row" id="chirpRow" hidden><button class="btn mode go" id="chirpHostBtn">Host a room<small id="chirpHostSub">Your phone calls the others</small></button><button class="btn mode" id="chirpJoinBtn">Join<small id="chirpJoinSub">Hold your phone near the host's</small></button></div>
+      <div class="row" id="chirpPairRow" hidden><span class="sub">Pair by</span><button class="chip" data-pair="sound" aria-pressed="true">Sound</button><button class="chip" data-pair="qr" aria-pressed="false">Code only</button><span class="sep"></span><button class="chip" id="chirpTest">Test sound</button></div>
+      <div class="row"><button class="btn go" id="mpCreate">Create room</button><button class="btn" id="mpPub">Public room</button><button class="btn" id="lanJoin" hidden>Join a Wi-Fi room</button></div>
+      <div class="code" id="mpCodeRow"><label for="mpCode">Room</label><input id="mpCode" maxlength="5" spellcheck="false" autocomplete="off" placeholder="K7QX2" data-osk="code"><button class="btn kb" data-osk-for="mpCode" aria-label="On-screen keyboard">⌨</button><button class="btn" id="mpJoin">Join</button></div>
+      <p class="small" id="mpConnHint"></p>
+      <div class="row"><button class="btn" id="mpBack" data-back>Back</button></div>
+    </div>
+    <div id="mpIn" class="col" hidden>
+      <div class="sub">Room code</div>
+      <div class="big" id="mpRoom">·····</div>
+      <div class="t best" id="mpStatus"></div>
+      <table id="mpList"></table>
+      <div class="row"><button class="btn go" id="mpReady" aria-pressed="false">Ready</button><button class="btn" id="mpStart">Start now</button><button class="btn" id="mpLab">Frame lab</button><button class="btn" id="mpOpt">Options</button><button class="btn" id="mpRe">Reconnect</button><button class="btn" id="lanAdd" hidden>Add pilots</button><button class="btn" id="mpLeave" data-back>Leave room</button></div>
+      <p class="small" id="mpHint"></p>
+      <div class="t" id="mpTrack"></div>
+      <div class="row" role="group" aria-label="Sky on this device"><span class="sub">Sky</span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
+      <div id="mpHostRow" class="col">
+        <div class="row"><button class="chip" data-mpw="W">Wide</button><button class="chip" data-mpw="S">Standard</button><button class="chip" data-mpw="N">Narrow</button><span class="sep"></span><button class="chip" data-mpl="S">Simple</button><button class="chip" data-mpl="X">Complex</button><button class="chip" data-mpl="C">Custom…</button><span class="sep"></span><button class="chip" data-mplen="Q">Short</button><button class="chip" data-mplen="M">Medium</button><button class="chip" data-mplen="L">Long</button></div>
+        <div class="row"><span class="sub">Scenery</span><button class="chip bio" data-mpbio="U">Urban</button><button class="chip bio" data-mpbio="O">Ocean</button><button class="chip bio" data-mpbio="F">Forest</button><button class="chip bio" data-mpbio="N">Stratos</button><button class="chip bio" data-mpbio="R">Reef</button><button class="chip bio" data-mpbio="P">Prism</button></div>
+        <div class="row"><button class="btn" id="mpNew">New track</button></div>
+        <div class="row"><span class="sub">Laps</span><button class="chip" data-mplaps="1">1</button><button class="chip" data-mplaps="2">2</button><button class="chip" data-mplaps="3">3</button><button class="chip" data-mplaps="5">5</button><span class="sep"></span><button class="chip" id="mpAI" aria-pressed="true">Fill with AI</button><span class="sep"></span><span class="sub">Class</span><select class="pick" id="mpCls" aria-label="Speed class for this room"></select></div>
+      </div>
+    </div>
+    <p class="small warn" id="mpErr"></p>
+  </div>
+  <div class="map"><canvas id="mpPreview"></canvas><div class="small" id="mpStats"></div></div>
+</div>
+<div id="tags"></div>
+
+<div id="ctl" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">CONT<b>ROLS</b></div>
+    <div class="sub" id="ctlOr" hidden></div>
+    <div class="sub">Quick setup · tap one, fine-tune below</div>
+    <div class="presets" id="ctlPresets">
+      <button class="btn preset" data-preset="tiltsteer">Tilt steer<small>tilt steers and pitches · modules left</small></button>
+      <button class="btn preset" data-preset="fulltilt">Full tilt<small>tilt steers and pitches · stick as backup</small></button>
+      <button class="btn preset" data-preset="sliders">Two sliders<small>steer slider left · pitch slider right</small></button>
+      <button class="btn preset" data-preset="buttons">Buttons<small>◀ ▶ left · pitch slider right</small></button>
+      <button class="btn preset" data-preset="stick">Stick<small>one stick steers and pitches</small></button>
+    </div>
+    <div class="ctlrow"><div class="pv" id="ctlPv" aria-hidden="true"></div><p class="small" id="ctlNote"></p></div>
+    <div class="sub">Fine-tune</div>
+    <div class="row">
+      <button class="chip" id="btnChip" aria-pressed="false">Steer: stick</button>
+      <button class="chip" id="psChip" aria-pressed="false">Pitch slider</button>
+      <button class="chip" id="modChip" aria-pressed="false">Modules: auto</button>
+      <button class="chip" id="tiltChip" aria-pressed="true">Tilt steering</button>
+      <button class="chip" id="pitchChip" aria-pressed="true">Tilt pitch</button>
+      <button class="chip" id="flipChip" aria-pressed="false">Flip tilt</button>
+      <button class="chip" id="touchChip" aria-pressed="false">Touch controls</button>
+    </div>
+    <div class="row" role="group" aria-label="Camera"><span class="sub">Camera</span><button class="chip" data-cam="0">Near</button><button class="chip" data-cam="1">Standard</button><button class="chip" data-cam="2">Far</button><button class="chip" data-cam="3">Cockpit</button></div>
+    <p class="small" id="ctrlHelp"></p>
+    <div class="sub">Buttons · tap one, then press the key or controller button you want for it</div>
+    <table id="bindTbl" class="bind"></table>
+    <div class="row"><button class="chip" id="rumbleChip" aria-pressed="true">Rumble</button><button class="chip" id="padInvChip" aria-pressed="false">Stick up dives</button><button class="chip" id="bindReset">Reset buttons</button><span class="small" id="bindMsg"></span></div>
+    <div class="row"><button class="btn go" id="ctlDone" data-back>Done</button></div>
+  </div>
+</div>
+<div id="tiltAsk" class="overlay pop" hidden>
+  <div class="card">
+    <div class="big">Tilt is blocked here</div>
+    <p class="ask">This browser doesn't pass the motion sensor to the game inside itch.io's page (Firefox never does; Chrome does).</p>
+    <p class="ask" id="tiltOwnTxt"><b>Open with tilt</b> plays it in its own tab, which keeps its own saves.</p>
+    <div class="row"><button class="btn go" id="tiltSl" data-back>Use the slider</button><a class="btn" id="tiltOwn" target="_blank" rel="noopener">Open with tilt</a></div>
+  </div>
+</div>
+
+<div id="set" class="overlay" hidden>
+  <div class="card" id="setMain">
+    <div class="logo">SETT<b>INGS</b></div>
+    <div class="sub">Performance</div>
+    <div class="row"><div class="seg" role="group" aria-label="Performance"><button data-perf="ultra" aria-pressed="false">Ultra low</button><button data-perf="lite" aria-pressed="false">Lite</button><button data-perf="all" aria-pressed="false">Default</button></div><button class="minfo" id="mInfo" aria-label="Music mode · opens Music">Music: Generative</button></div>
+    <div class="slpair"><div class="slrow"><label for="volMus">Music</label><input type="range" id="volMus" min="0" max="100" step="1"><span id="volMusV"></span></div>
+    <div class="slrow"><label for="volSfx">Sound effects</label><input type="range" id="volSfx" min="0" max="100" step="1"><span id="volSfxV"></span></div></div>
+    <div class="setnav"><button class="btn" id="sndOpen">Sound</button><button class="btn" id="musOpen">Music</button></div>
+    <div class="slpair"><div class="slrow"><label for="resS">Resolution</label><input type="range" id="resS" min="10" max="100" step="5"><span id="resSV"></span></div>
+    <div class="slrow"><label for="fcapS">Frame rate cap</label><input type="range" id="fcapS" min="0" max="18" step="1"><span id="fcapSV"></span></div></div>
+    <div class="setnav"><button class="btn" id="gfxOpen">Graphics</button><button class="btn" id="logOpen">Race data</button></div>
+    <div class="row" id="orRow" hidden><span class="sub">Races</span><div class="seg" role="group" aria-label="Orientation in races"><button data-orient="portrait" aria-pressed="false">Portrait</button><button data-orient="landscape" aria-pressed="false">Landscape</button></div></div>
+    <div class="row"><button class="btn go" id="setDone" data-back>Done</button></div>
+  </div>
+  <div class="card" id="setLog" hidden>
+    <div class="logo">RACE <b>DATA</b></div>
+    <p class="small" id="logInfo"></p>
+    <div class="row"><button class="chip" id="logChip" aria-pressed="true">Record races</button><button class="chip" id="logAll">Download all logs</button><button class="chip" id="logCopy">Copy all logs</button><button class="chip" id="logClear">Clear logs</button></div>
+    <div class="row"><button class="chip" id="shareChip" aria-pressed="true">Share race data</button></div>
+    <p class="small" id="shareInfo">Each recorded race is also sent to the game's developer to help balance frames, modules and tracks. No names: other pilots in a room go as Pilot 1, Pilot 2 and so on. Switch it off any time.</p>
+    <div class="row"><button class="chip" id="qkChip" aria-pressed="false">Start with a quick race</button></div>
+    <div class="row"><button class="btn go" id="logDone" data-back>Done</button></div>
+  </div>
+  <div class="card" id="setSnd" hidden>
+    <div class="logo">SOU<b>ND</b></div>
+    <div class="row"><button class="chip" id="annChip" aria-pressed="true">Announcer</button></div>
+    <div class="sub">Music</div>
+    <div class="row" role="group" aria-label="Music"><button class="chip" data-mm="gen" aria-pressed="false">Generative</button><button class="chip" data-mm="pre" aria-pressed="false">Pregen</button><button class="chip" data-mm="songs" aria-pressed="false">Songs</button><button class="chip" data-mm="off" aria-pressed="false">No music</button></div>
+    <p class="gline" id="mmLine"></p>
+    <div class="row"><button class="chip" id="sndChip" aria-pressed="true">Sound on</button></div>
+    <div class="row"><button class="btn go" id="sndDone" data-back>Done</button></div>
+    <p class="small credit">Music is synthesised live, with drums and instruments from the sample library beside the game: Virtuosity Drums, VCSL and VSCO-2 by Versilian Studios, FreePats and the Sonic Pi pack (all CC0), and the rock kit, the MuldjordKit by Lars Muldjord (CC BY 4.0; drum samples provided by DrumGizmo.org); samples/CREDITS.md has the full list. Inside the page: drum hits and effects from the Sonic Pi sample pack (freesound.org recordings, public domain under CC0) and instruments from the Versilian Community Sample Library (CC0). Songs mode plays recorded CC0 tracks, credited on the Music page. The announcer, the spoken tabla bols and the sung chops use the open Kokoro speech model (Apache-2.0). Sound effects are public-domain (CC0) recordings from Kenney (kenney.nl), rubberduck on OpenGameArt.org and the Sonic Pi pack.</p>
+  </div>
+</div>
+
+<div id="lbv" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">LEADER<b>BOARD</b></div>
+    <div class="sub">Online times from everyone who plays, on every track</div>
+    <div class="code"><label for="lbNameIn">Your name</label><input id="lbNameIn" maxlength="12" spellcheck="false" autocomplete="off" data-osk="name"><button class="btn kb" data-osk-for="lbNameIn" aria-label="On-screen keyboard">⌨</button></div>
+    <div class="row" role="group" aria-label="Boards"><button class="chip" data-lbs="latest">Latest times</button><button class="chip" data-lbs="popular">Most raced</button><button class="chip" data-lbs="here">This track</button></div>
+    <div class="t best" id="lbHead"></div>
+    <div id="lbList" class="col"></div>
+    <div class="row"><button class="btn" id="lbBack" hidden>◀ All times</button><button class="btn" id="lbDone" data-back>Done</button><span class="sep"></span><button class="btn" id="lbRace" hidden>Race this track</button></div>
+  </div>
+</div>
+<div id="gfxm" class="overlay" hidden>
+  <div class="card">
+    <div class="gmain">
+      <div class="logo">GRAPH<b>ICS</b></div>
+      <div class="row" role="group" aria-label="Performance"><div class="seg"><button data-perf="ultra" aria-pressed="false">Ultra low</button><button data-perf="lite" aria-pressed="false">Lite</button><button data-perf="all" aria-pressed="false">Default</button></div><span class="sep"></span><button class="chip" id="lowBtn" aria-pressed="false" title="Less scenery and traffic, no falls or geysers, no frame shadows">Low detail</button><button class="chip" id="fpsBtn" aria-pressed="false">FPS counter</button></div>
+      <div class="slrow"><label for="resR">Resolution</label><input type="range" id="resR" min="10" max="100" step="5"><span id="resV"></span></div>
+      <div class="slrow"><label for="fcapR">Frame rate cap</label><input type="range" id="fcapR" min="0" max="18" step="1"><span id="fcapV"></span></div>
+      <p class="gline">Lower resolution = higher fps</p>
+      <div class="gopt" id="goptList"></div>
+      <div class="row"><button class="btn go" id="gDone" data-back>Done</button></div>
+    </div>
+    <div class="gpv" aria-hidden="true"><div><canvas id="gPvC"></canvas><b id="gPvL"></b></div><p id="gPvT"></p></div>
+  </div>
+</div>
+<div id="mus" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">MU<b>SIC</b></div>
+    <div id="musMain">
+    <div class="sub">The genres, how the race music behaves, and your library of kept tunes · every tune has a code you can share</div>
+    <div class="row" role="group" aria-label="Music mode"><span class="sub">Mode</span><button class="chip" data-mm="gen" aria-pressed="false">Generative</button><button class="chip" data-mm="pre" aria-pressed="false">Pregen</button><button class="chip" data-mm="songs" aria-pressed="false">Songs</button></div>
+    <div class="row" role="group" aria-label="Music"><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
+    <div class="sub">Genres</div><div class="row" role="group" aria-label="Genres" id="genreRow"></div>
+    <p class="small">Each tune is a template from one genre, or a fusion of two (one genre's rhythm, another's melody or colour). A tune plays only when its genres are on. In a room everyone hears the same tunes, so there all genres play.</p>
+    <div class="row"><button class="chip" id="likeTune2" aria-pressed="false">♥ Like this tune</button><button class="chip" id="dislikeTune2" aria-pressed="false" title="Plays less often, never ruled out">💔 Less like this</button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
+    <p class="small">Like (and Keep) make tunes like that one come up more often in the menu and in races on your own; skipping a tune in its first 20 seconds counts a little against it. Nothing repeats too soon: the listening memory still comes first.</p>
+    <div class="code"><label for="tuneIn">Tune</label><input id="tuneIn" maxlength="17" spellcheck="false" autocomplete="off"><button class="btn" id="tuneLoad">Load</button><button class="btn" id="tuneNew">New</button><button class="btn" id="tuneKeep">Keep</button></div>
+    <div class="t best" id="tuneInfo"></div>
+    <div class="row" id="radioRow" hidden><span class="small" id="radioLbl"></span><button class="chip" id="radioBack2">Back to radio</button></div>
+    <div class="row"><button class="btn" id="libOpen">Library ›</button><span class="small" id="libSum"></span></div>
+    <div class="sub">Songs</div><p class="small" id="songNote"></p><p class="small" id="songList"></p>
+    <div class="row"><button class="btn go" id="musDone" data-back>Done</button></div>
+    </div>
+    <div id="musLib" hidden>
+    <div class="sub">Library · the tunes you kept</div>
+    <div class="row"><button class="btn go" id="libPlay" aria-pressed="false">▶ Play library</button><button class="btn" id="libGen" aria-pressed="false">▶ Play generator with library influence</button></div>
+    <div class="row" id="libRadio" hidden><span class="small" id="libLbl"></span><button class="chip" id="radioBack3">Back to radio</button></div>
+    <div class="libw"><table class="lib" id="libTable"></table></div>
+    <div class="row" id="libUndo" hidden><span class="small" id="libUndoT"></span><button class="btn" id="libUndoB">Undo</button></div>
+    <p class="small">Tap a name to play that tune on repeat; Back to radio ends it. Play library plays the kept tunes one after another, in the menu and in races on your own. The generator with library influence makes new tunes like them. Remove sits at the far end of each row, and Undo brings a removed tune back.</p>
+    <div class="row"><button class="btn go" id="libBack" data-back>‹ Music</button></div>
+    </div>
+  </div>
+</div>
+<div id="guide" class="overlay" hidden>
+  <div class="gwrap">
+    <div class="gview"><canvas id="guideCv" aria-label="Animated example"></canvas></div>
+    <div class="gtext">
+      <div class="logo">NOSE <b>GUIDE</b></div>
+      <div class="row gtabs" id="guideTabs" role="tablist" aria-label="Situations"></div>
+      <h3 id="guideTitle"></h3>
+      <div class="gmark" id="guideMark"></div>
+      <p class="gbody" id="guideBody"></p>
+      <p class="gkeys" id="guideKeys"></p>
+      <div class="row"><button class="btn" id="guidePrev" aria-label="Previous">‹ Back</button><button class="btn" id="guideNext">Next ›</button><button class="btn go" id="guideDone">Done</button></div>
+    </div>
+  </div>
+</div>
+<div id="pause" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">PAUSED</div>
+    <div class="sub" id="pauseWhy" hidden></div>
+    <div class="row ptune" id="pauseTuneRow" hidden><span class="small" id="pauseTune"></span><button class="heart" id="likeTune3" aria-pressed="false" aria-label="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune3" aria-pressed="false" aria-label="Less like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button><button class="chip" id="tiltRe" hidden>Recentre tilt</button></div>
+    <div class="row"><button class="btn go" id="resumeBtn" data-back>Resume</button><button class="btn" id="restartBtn">Restart</button><button class="btn" id="pauseOpt">Options</button><button class="btn" id="pauseRe" hidden>Reconnect</button><button class="btn" id="quitBtn">Menu</button></div>
+  </div>
+</div>
+
+<div id="results" class="overlay" hidden>
+  <div class="card">
+    <div class="sub">Finish · Track <span id="resSeed"></span></div>
+    <div class="big" id="resPos">1st<small id="resTotal"></small></div>
+    <table id="resTable"></table>
+    <div class="t best" id="resLaps"></div>
+    <div class="t best" id="resRecord"></div>
+    <div class="t best" id="resBoard" hidden></div>
+    <div class="t best" id="resCar" hidden></div>
+    <div class="row"><button class="btn go" id="againBtn">Race again</button><button class="btn" id="newBtn2">New track</button><button class="btn" id="resLab">Frame lab</button><button class="btn go" id="mpBackBtn" data-back hidden>Back to lobby</button><button class="btn" id="menuBtn" data-back>Menu</button></div>
+    <div class="row"><button class="chip" id="songBtn" data-icon="next">New song</button><button class="chip" id="keepBtn3">♪ Keep this tune</button><button class="chip" id="logBtn">Save race log</button></div>
+    <p class="small" id="resHint"></p>
+  </div>
+</div>
+
+<div id="orSet" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">HOVER<b>LINE</b></div>
+    <div class="sub">Set orientation</div>
+    <div class="orPick" role="group" aria-label="Orientation">
+      <button class="btn orOpt" data-or="portrait"><i class="orPh p"></i>Portrait<small>Upright</small></button>
+      <button class="btn orOpt" data-or="landscape"><i class="orPh l"></i>Landscape<small>Sideways</small></button>
+    </div>
+    <p class="small">Races hold the screen this way. You can change it in Options, Settings.</p>
+  </div>
+</div>
+<div id="qkTap" class="overlay" hidden>
+  <div class="qkIn">
+    <div class="logo">HOVER<b>LINE</b></div>
+    <button class="btn go" id="qkGo">Tap to race</button>
+    <div class="qkDots" id="qkTapDots"></div>
+  </div>
+  <button class="chip" id="qkTapMenu" data-back hidden>Menu</button>
+</div>
+<div id="qkEnd" class="overlay pop" hidden>
+  <div class="card">
+    <div class="qkDots" id="qkEndDots"></div>
+    <div class="big" id="qkEndPos">1st</div>
+    <div id="qkEndMsg" hidden>You're ready</div>
+    <div class="row qkBtns"><button class="btn go" id="qkNext">Next race</button><button class="btn" id="qkAgain">Rematch</button><button class="btn" id="qkMenu" data-back>Main menu</button><button class="btn" id="qrView" hidden>Better view</button></div>
+    <div class="row"><button class="chip" id="qkOnEnd" aria-pressed="true">Start with a quick race</button></div>
+  </div>
+</div>
+<div id="osk" class="overlay" hidden>
+  <div class="card">
+    <div class="sub" id="oskLbl">Name</div>
+    <div id="oskTxt"></div>
+    <div id="oskKeys" class="col" style="gap:6px"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- ggwave 0.4.0 (MIT, Georgi Gerganov, github.com/ggerganov/ggwave): data over sound, for pairing phones in one room. Run only when pairing starts. -->
+<script type="text/plain" id="ggwaveJs"><!--#include vendor/ggwave.js--></script>
+<!-- jsQR 1.4.0 (Apache-2.0, Cosmo Wolfe, github.com/cozmo/jsQR): reads QR codes from the camera in browsers without a QR reader of their own. Run only when a scan starts. -->
+<script type="text/plain" id="jsqrJs"><!--#include vendor/jsqr.min.js--></script>
+<script><!--#js--></script>
+

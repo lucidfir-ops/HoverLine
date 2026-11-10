@@ -1,10 +1,15 @@
 # Builds sim/game.js from hoverline.html: exports internals, AI drives the player, counts weapon fire / wrecks / falls.
 import os
 HERE=os.path.dirname(os.path.abspath(__file__))
-s=open(os.environ.get('SRC',os.path.join(HERE,'..','..','src','hoverline.html'))).read();k=s.rfind('<script>');l=s.rfind('</script>');js=s[k+8:l]
+s=open(os.environ.get('SRC',os.path.join(HERE,'..','..','build','hoverline.html'))).read();k=s.rfind('<script>');l=s.rfind('</script>');js=s[k+8:l]
 def rep(a,b):
     global js
     assert js.count(a)==1,a[:80];js=js.replace(a,b)
+def rep2(alts):
+    """the first (old, new) pair whose old text is in the source (Prototype 50 changed some lines these patch)"""
+    for a,b in alts:
+        if js.count(a)==1: return rep(a,b)
+    raise AssertionError(alts[0][0][:80])
 rep("loadTrack(seed);\ntuneUI();buildSummary();\nrequestAnimationFrame(frame);","globalThis.__hl={racers,S,startRace,step,loadTrack,getT:()=>T,ranking,shots,player,physics,aiInput,fire,leaderFor,parseCode,roster,ROSTER,FRAMES,setShip,getW:()=>W,VMAX,surf,wrapU,code:()=>{try{return roadStr()}catch(e){return null}}};")
 rep("const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)","let i=aiInput(r,sdt);if(globalThis.__pin)i=globalThis.__pin(r,i,sdt);if(r===player&&globalThis.__forcePitch!=null)i.pitch=globalThis.__forcePitch;physics(r,i,sdt)")
 js=js.replace("if(into>0.02){","if(into>0.02){(globalThis.__wall=globalThis.__wall||{})[r.name]=(globalThis.__wall[r.name]||0)+1;globalThis.__wallAt&&globalThis.__wallAt(r,into);",1)
@@ -16,15 +21,17 @@ rep("r.respawnU=uu+6;r.wreck=1.4;r.boost=0;r.hp=","(globalThis.__clip=globalThis
 rep("S.goAt=performance.now()+S.count*1000;S.lastBeep=3;","S.goAt=null;S.lastBeep=3;") # the sim steps faster than real time
 # Prototype 39: more internals for drivers that set up a race the way the game does (eric.js: the build, the logs, career)
 rep("code:()=>{try{return roadStr()}catch(e){return null}}};","code:()=>{try{return roadStr()}catch(e){return null}},codeStr:()=>{try{return codeStr()}catch(e){return null}},setBuild:b=>{build=b},getBuild:()=>build,LOG,logEnd,DIFF,idxAt,modU,sampleAt,canFire,aiWants,WDEF,store,HOVER,setField,car:typeof car!=='undefined'?car:null,carCode:typeof carCode!=='undefined'?carCode:null,CAR_T:typeof CAR_T!=='undefined'?CAR_T:null,freshRacer,trimTurn,DR:typeof DR!=='undefined'?DR:null,drOf:typeof drOf!=='undefined'?drOf:null,drKF:typeof drKF!=='undefined'?drKF:null,derive};")
+# Prototype 50: the AI's hands (aiHands), for tuning runs
+js=js.replace("drKF:typeof drKF!=='undefined'?drKF:null,derive};","drKF:typeof drKF!=='undefined'?drKF:null,derive,HANDS:typeof HANDS!=='undefined'?HANDS:null,AIL:typeof AIL!=='undefined'?AIL:null,setAil:k=>{if(typeof ailFree!=='undefined')ailFree=k}};",1)  # P58: rival levels
 # r.hum: a racer the AI code drives (r.isAI stays true, so aiInput still offers it shots) but with a person's physics:
 # no AI skill or width factor on its top speed, no rubber band, the person's yaw assist for the width, the person's drift
 # rules (tap the brake to start one; holding it ends it), and none of the AI's own lapses.
 rep("let vm=D.vmax*(r.isAI?","let vm=D.vmax*(r.isAI&&!r.hum?")
 rep("if(r.isAI&&!auto){const gap=bandRef()","if(r.isAI&&!r.hum&&!auto){const gap=bandRef()")
-rep("r.yaw-=(r.yaw-yb0)*(r.isAI?0.2:T.D.assist)","r.yaw-=(r.yaw-yb0)*(r.isAI&&!r.hum?0.2:T.D.assist)")
+rep2([("r.yaw-=(r.yaw-yb0)*(r.isAI&&!hands(r)?0.2:T.D.assist)","r.yaw-=(r.yaw-yb0)*(r.isAI&&!r.hum&&!hands(r)?0.2:T.D.assist)"),("r.yaw-=(r.yaw-yb0)*(r.isAI?0.2:T.D.assist)","r.yaw-=(r.yaw-yb0)*(r.isAI&&!r.hum?0.2:T.D.assist)")])
 rep("else if(bOn&&!r.isAI){r.dHold","else if(bOn&&!(r.isAI&&!r.hum)){r.dHold")
 rep("else if(r.isAI&&bOn&&!r.air&&Math.abs(st0)>0.8","else if(r.isAI&&!r.hum&&bOn&&!r.air&&Math.abs(st0)>0.8")
-rep("if(r.isAI&&!(r.autoT>0)){if(r.lapT>0)","if(r.isAI&&!r.hum&&!(r.autoT>0)){if(r.lapT>0)")
+rep2([("if(r.isAI&&!(r.autoT>0)&&!hands(r)){if(r.lapT>0)","if(r.isAI&&!r.hum&&!(r.autoT>0)&&!hands(r)){if(r.lapT>0)"),("if(r.isAI&&!(r.autoT>0)){if(r.lapT>0)","if(r.isAI&&!r.hum&&!(r.autoT>0)){if(r.lapT>0)")])
 # The Drifter's drift as frame fields, so VARIANT can try another one: dTurn (extra turn at full drift), dIn and dOut (how
 # fast the drift builds and fades a second); unset, each keeps the source's own number (Prototype 38: 0.6, 4 and 3;
 # Prototype 39: 0.25, 2 and 2.5). VARIANT="roller.dTurn=0.25;roller.dIn=2;roller.dOut=2.5" is the P39 drift on a P38 build.

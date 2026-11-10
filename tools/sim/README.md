@@ -55,6 +55,24 @@ PILOT=eric node balance.js frames 160 3000 results/eric_bal.jsonl   # balance.js
 - About 2.5 s of CPU a race. Results are appended a race at a time; split long runs over workers by OFFSET as in the bug hunt.
 - It is still a model of one pilot on 39 logs (20 Narrow, 12 Standard, 7 Wide, one Orb race): see the P39 report for where it matches him and where it doesn't.
 
+## The AI's hands (Prototype 50)
+
+Since Prototype 50 the game's AI pilots steer through a person's hands (`aiHands` in `race/054-ai.js`: a lag and a wander per
+width, the person's brake, lane assist and heading help), and the pace they lose is handed back in `ROSTER`'s `skill`. In
+`eric.js` runs the field flies with hands (the Eric pilot itself is `r.hum` and doesn't).
+
+- `HANDS='{"on":false}'` flies the field without hands (the Prototype 49 AI, with the Prototype 50 skills);
+  `HANDS='{"W":{"tau":0.1,"sigma":0.2}}'` changes the lag or wander for a run.
+- `SKILL='{"Kestrel":1.01}'` multiplies a pilot's skill for a run (`{"*":1.03}` all of them).
+- Each racer line now carries `wob` (the RMS of its line about its own 2 s moving average, from 4 Hz samples like the race
+  logs, leaving out jumps over 3 m), `am` and `hp` (mean ammo and shield fractions), `ca` and `ch` (share of samples on an
+  ammo or shield strip) and `ag`/`as` (ammo gained and spent); each race line carries `fired` (modules fired, everyone).
+- `AIBUILD='{"speed":5,"thrust":3,"handling":3,"shield":2,"ammo":2}'` gives every AI pilot those stats (frames and modules
+  kept) in `frames` runs; `ADAPT=1` gives the Eric pilot the AI's lighter hand on quick-turning frames (his wander divided by
+  the frame's turn factor), which is closer to how his handling-5 races went than the pilot as fitted.
+- How Prototype 50 was tuned: `node fit_eric.js` and `node eric.js calibrate` on the Prototype 49 logs, then `frames` batches
+  of the Prototype 49 build against this one with the same offsets (CHANGELOG, Prototype 50, has the numbers).
+
 ## Bug hunt (Prototype 36)
 
 Every run also writes `OUTFILE.races.jsonl`, one line a race: the seed and track code, how long the track took to build and the race to run, where frames fell, clipped and were wrecked, and flags for anything that looks like a bug, checked four times a simulated second for every racer still racing:
@@ -99,6 +117,8 @@ GAME=./new.js SEED=777 node --require ./seedrand.js balance.js full 40 0 results
 python3 same.py results/old.jsonl results/new.jsonl                  # SAME, or the first lines that differ
 python3 same.py results/old.races.jsonl results/new.races.jsonl
 ```
+
+Since Prototype 51 add `--require ./uuidfix.js` after `seedrand.js` when the change touches drawing (ship models, scenery): three.js draws four random numbers for the id of every object it makes, so a model with more parts moves every later number and the races drift apart though racing is unchanged. `uuidfix.js` gives those ids a counter instead. (Also build the old side from `build/hoverline.html` of that commit, with `mkgame.py`.)
 
 ## Drift (Prototype 41)
 

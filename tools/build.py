@@ -1,4 +1,4 @@
-"""Build the playable files from src/hoverline.html.
+"""Build the playable files from src/ (the page, its styles and its scripts as separate files; see docs/ARCHITECTURE.md).
 
   python3 tools/build.py
 
@@ -9,11 +9,15 @@ Prototype 45: manifest.json and one .bin pack per kit or instrument) beside the 
 full download: the offline page as index.html with samples/ in its file:// form (manifest.js and one .js script per
 pack, since a page opened from a file can load scripts but not fetch). dist/hoverline-offline.html stays a single
 file: it plays on the recordings inside the page, as before.
-src/hoverline.html is the page body as published on Claude; the reference/ builds use the same format.
+build/hoverline.html is the joined page body (what src/hoverline.html held up to Prototype 48), written for tools and tests.
 """
 import os, zipfile, shutil
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-src = open(os.path.join(ROOT, 'src', 'hoverline.html'), encoding='utf-8').read()
+import sys; sys.path.insert(0, os.path.join(ROOT, 'tools'))
+from assemble import assemble
+src = assemble(os.path.join(ROOT, 'src'))      # the page body, joined from src/ (Prototype 49; see docs/ARCHITECTURE.md)
+os.makedirs(os.path.join(ROOT, 'build'), exist_ok=True)
+open(os.path.join(ROOT, 'build', 'hoverline.html'), 'w', encoding='utf-8', newline='').write(src)   # the joined body, for tools and tests
 head = '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">'
 i = src.find('</style>') + len('</style>')
 page = head + src[:i] + '</head><body>' + src[i:] + '</body></html>'

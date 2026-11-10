@@ -1,3 +1,4 @@
+if(process.env.LANEA!=null)globalThis.__LANEA=+process.env.LANEA;  // Prototype 49: lane assist strength for experiments
 // Races with the Eric pilot (eric_pilot.js), set up the way the game sets them up (normal AI field, rubber band, career
 // classes, rivals from the profile), not the balance.js way.
 //   node eric.js replay LOGS.json OUT.jsonl [REPS]     each finished race in the logs again: same track code, frame, build,
@@ -38,6 +39,13 @@ const human=(r,i,dt)=>{if(r.finishT!=null)return i;const tau=+(process.env.HT||0
   s.bt-=dt;if(s.bt<=0){s.bt=1+Math.random()*2;s.b=Math.random()<0.3}
   return{...i,steer:clamp(s.s+s.n,-1,1),brake:(i.brake||0)*0.2,pitch:s.pe!=null?s.pe:i.pitch,boost:i.boost&&s.b,fire:(i.fire||[]).map(f=>f&&Math.random()<0.5),hold:(i.hold||[]).map(h=>h&&s.b)}};
 let eric=makeEric(H,P);
+/* Prototype 50: HANDS='{"on":false}' or '{"W":{"tau":0.1,"sigma":0.2}}' changes the AI's hands (aiHands) for a run;
+   SKILL='{"Kestrel":1.01}' multiplies a pilot's skill ('{"*":1.01}' all of them) */
+if(process.env.HANDS&&H.HANDS){const o=JSON.parse(process.env.HANDS);for(const k in o)H.HANDS[k]=typeof o[k]==='object'?Object.assign({},H.HANDS[k],o[k]):o[k]}
+/* Prototype 58: AIL=easy|normal|hard races the AI at that rival level; AILX='{"hard":{"pace":1.02}}' changes a level's numbers */
+if(process.env.AILX&&H.AIL){const o=JSON.parse(process.env.AILX);for(const k in o)Object.assign(H.AIL[k],o[k])}
+if(process.env.AIL&&H.setAil)H.setAil(process.env.AIL);
+if(process.env.SKILL){const o=JSON.parse(process.env.SKILL);for(const c of H.ROSTER)if(c.skill)c.skill*=o[c.name]??o['*']??1}
 globalThis.__pin=(r,i,dt)=>r._eric?(PILOT==='human'?human(r,i,dt):eric(r,i,dt)):i;
 const styOf=pf=>pf?{boost:clamp(pf.boost/0.22,0,1.6),fire:clamp(pf.fire/5,0.3,2.5),dive:clamp(pf.dive/0.3,0.2,1.6),up:clamp(pf.up/0.06,0,1.5),longP:pf.longP}:null;
 const ROS=Object.fromEntries(H.ROSTER.map(c=>[c.name,c]));
@@ -59,14 +67,18 @@ async function race(o){
   if(o.field){for(const r of RC){if(r===p)continue;const e=o.field.find(x=>x.name===r.name);if(!e)continue;const c=ROS[r.name];
       H.setShip(r,{stats:c.b.stats,weapons:e.weapons,frame:e.frame||c.b.frame},c.paint);r.skill=e.skill||c.skill;r.rival=!!e.rival;r.sty=e.rival?styOf(pf):null;r.hp=r.d.hp;r.ammo=0;r.isAI=true;r.hum=false;r._eric=false}}
   else for(const r of RC)if(r!==p){r.hum=false;r._eric=false}
+  /* AIBUILD='{"handling":5,...}' (Prototype 50): every AI pilot's stats for the run (modules and frames kept); a full
+     15-point set, e.g. {"speed":3,"thrust":3,"handling":5,"shield":2,"ammo":2} */
+  if(process.env.AIBUILD&&!o.field){const st=JSON.parse(process.env.AIBUILD);for(const r of RC)if(r!==p){const c=ROS[r.name];H.setShip(r,{stats:{...st},weapons:[...r.weapons],frame:r.build.frame},c.paint);r.hp=r.d.hp;r.ammo=0}}
   makePilot(p,me.frame,me);
   if(o.room)RC.forEach((r,k)=>makePilot(r,o.frames[k%o.frames.length],me));
-  for(const r of RC){r.tag={fr:r.build.frame,eric:!!r._eric};r._fl=0}
+  for(const r of RC){r.tag={fr:r.build.frame,eric:!!r._eric};r._fl=0;r._wb=[];r._am=0;r._hp=0;r._an=0;r._ca=0;r._ch=0;r._ag=0;r._as=0;r._ap=null}
   if(H.LOG.cur){const L=H.LOG.cur;L.ship={frame:me.frame,stats:{...me.stats},weapons:[...me.weapons]};L.field=RC.map(r=>({name:r.name,me:r===p||undefined,ai:!r._eric,ghost:false,rival:!!r.rival,frame:r.build.frame,skill:r2(r.skill||1),weapons:[...r.weapons]}));L.sim={pilot:PILOT,game:path.basename(GAME),variant:process.env.VARIANT||null}}
-  globalThis.__wall={};globalThis.__wr={};globalThis.__fall={};globalThis.__clip={};globalThis.__off={};
+  globalThis.__wall={};globalThis.__fw={};globalThis.__wr={};globalThis.__fall={};globalThis.__clip={};globalThis.__off={};
   let tt=0,steps=0,fin1=null,logged=false;const cs=[];
   while(tt<720){H.step(1/60);tt+=1/60;steps++;
     if(steps%15===0){H.ranking().forEach((r,k)=>r._place=k+1);
+      if(S.state==='race')for(const r of RC)if(r.finishT==null){if(r.wreck<=0&&!r.air)(r._wb||(r._wb=[])).push(r.lat);r._am=(r._am||0)+r.ammo/r.d.ammo;r._ca=(r._ca||0)+(r.charging==='ammo'?1:0);{const dA=r.ammo-(r._ap??r.ammo);if(dA>0)r._ag=(r._ag||0)+dA;else r._as=(r._as||0)-dA;r._ap=r.ammo}r._ch=(r._ch||0)+(r.charging==='hp'?1:0);r._hp=(r._hp||0)+r.hp/r.d.hp;r._an=(r._an||0)+1}
       if(o.speeds&&S.state==='race')for(const r of RC)if(!r._eric&&r.finishT==null&&r.wreck<=0&&!r.air)cs.push([Math.round(r.utot),Math.round(r.v),+r.lat.toFixed(1)])}
     if(fin1==null&&RC.some(r=>r.finishT!=null))fin1=tt;
     if(!logged&&p.finishT!=null&&S.raceT>=p.finishT+1.6){H.logEnd('finish');logged=true}
@@ -76,15 +88,17 @@ async function race(o){
   const order=[...RC].sort((a,b)=>(a.finishT??1e9)-(b.finishT??1e9)||b.utot-a.utot);
   const est=r=>r.finishT!=null?r.finishT:S.raceT+(3*T.L-r.utot)/Math.max(r.v,60);
   const win=order[0].finishT??est(order[0]);
-  const racers=order.map((r,k)=>({name:r.name,fr:r.tag.fr,eric:r.tag.eric,me:r===p||undefined,place:k+1,ft:r.finishT!=null?r2(r.finishT):null,fte:r2(est(r)),wr:r.stat?r.stat.wrecks:null,walls:globalThis.__wall[r.name]||0,falls:globalThis.__fall[r.name]||0}));
+  /* wobble (Prototype 50): the RMS of the line about its own 2 s moving average, from 4 Hz samples like the race logs (windows with a jump over 3 m, a split's other branch or a respawn, left out) */
+  const wob=a=>{if(!a||a.length<20)return null;let q=0,n=0;for(let i=4;i<a.length-4;i++){let m=0,jmp=false;for(let j=-4;j<=4;j++){m+=a[i+j];if(j>-4&&Math.abs(a[i+j]-a[i+j-1])>3)jmp=true}if(jmp)continue;m/=9;q+=(a[i]-m)**2;n++}return n?r2(Math.sqrt(q/n)):null};
+  const racers=order.map((r,k)=>({name:r.name,wob:wob(r._wb),am:r._an?r2(r._am/r._an):null,ca:r._an?+(r._ca/r._an).toFixed(4):null,ag:Math.round(r._ag||0),as:Math.round(r._as||0),ch:r._an?+(r._ch/r._an).toFixed(4):null,hp:r._an?r2(r._hp/r._an):null,fr:r.tag.fr,eric:r.tag.eric,me:r===p||undefined,place:k+1,ft:r.finishT!=null?r2(r.finishT):null,fte:r2(est(r)),wr:r.stat?r.stat.wrecks:null,walls:globalThis.__wall[r.name]||0,falls:globalThis.__fall[r.name]||0}));
   const L=H.LOG.last,pl=order.indexOf(p)+1,pft=est(p);
   S.car=null;
-  return{line:{code:H.codeStr(),wk:T.wk,cx:!!T.cx,L:Math.round(T.L),frame:me.frame,pilot:PILOT,place:pl,ft:r2(pft),fin:p.finishT!=null,win:r2(win),gap:r2((pft/win-1)*100),laps:(p.laps||[]).map(r2),summary:L?L.summary:null,racers,simT:r2(tt)},log:L,cs}}
+  return{line:{code:H.codeStr(),wk:T.wk,cx:!!T.cx,L:Math.round(T.L),frame:me.frame,pilot:PILOT,place:pl,ft:r2(pft),fin:p.finishT!=null,win:r2(win),gap:r2((pft/win-1)*100),laps:(p.laps||[]).map(r2),summary:L?L.summary:null,racers,fired:globalThis.__fw,simT:r2(tt)},log:L,cs}}
 const out=(f,o)=>fs.appendFileSync(f,JSON.stringify(o)+'\n');
 const readLogs=f=>{const d=JSON.parse(fs.readFileSync(f,'utf8'));return{d,logs:(d.logs||[d]).filter(l=>new RegExp(process.env.MATCH||'Prototype 38').test(l.game||'')&&l.mode!=='quick'&&l.result&&l.result.how==='finish'&&(!process.env.ONLY||process.env.ONLY.split(',').includes(l.id)))}};
 async function replay(logs,profile,reps,outF,extra={}){const res=[];
   for(let k=0;k<reps;k++)for(const l of logs){const car=l.mode==='career'?carIndex(l.track.code):null;
-    const t0=Date.now();const R=await race({code:l.track.code,car,me:{frame:l.ship.frame,stats:l.ship.stats,weapons:l.ship.weapons},field:l.field,profile,speeds:!!extra.speeds});
+    const t0=Date.now();const R=await race({code:l.track.code,car,me:{frame:l.ship.frame,stats:process.env.HAND?{...l.ship.stats,handling:+process.env.HAND}:l.ship.stats,weapons:l.ship.weapons},field:l.field,profile,speeds:!!extra.speeds});
     R.line.of=l.id;R.line.rep=k;R.line.mode=l.mode;R.line.cpu=Date.now()-t0;res.push(R);
     if(outF){out(outF,{...R.line,...(extra.speeds?{cs:R.cs}:{})});if(process.env.LOGS!=='0'&&R.log)out(outF.replace(/\.jsonl$/,'')+'.logs.jsonl',{...R.log,of:l.id,rep:k})}}
   return res}

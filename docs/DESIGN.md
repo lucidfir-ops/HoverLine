@@ -1,3 +1,5 @@
+> **History.** This file records design decisions prototype by prototype, newest sections usually first within each topic. Some passages describe systems that have since been replaced. For how the code is laid out today see `docs/ARCHITECTURE.md`, and `CLAUDE.md` for how to work on it.
+
 # Hoverline Design Document
 
 Nov 1, 2026 · Eric
@@ -274,6 +276,31 @@ The call is spoken when the bols are in samples/vox-bols (one FLAC per bol: dha,
 - Pregen renders a tune before the race, as before: now the tune that race opens with.
 - Songs mode is unchanged.
 
+## Prototype 50: the AI flies with a person's hands
+
+- `aiHands` (`race/054-ai.js`) sits at the end of `aiInput` for every AI racer except quick races, the autopilot, finished
+  racers and remote ships: steering = the AI's command lagged by `tau` plus an Ornstein-Uhlenbeck wander (`sigma`, 0.7 s
+  memory) divided by the frame's turn factor (people use a lighter hand on a quick-turning frame: Eric's handling-5 races
+  touched the walls a third as often as his handling-1 ones). `tau`/`sigma` per width come from the Eric pilot fitted to
+  his Prototype 49 logs (`fit_eric.js`, `eric.js calibrate`), Narrow's wander then lowered to bring the AI's walls toward his.
+- People's rules: `isMan` includes `hands(r)`, so the AI gets the person's brake (`drStep`: stick over + held brake = drift,
+  so outside its own drifts the AI taps: 0.12 s on, 0.14 s off), lane assist by its handling, the person's heading help
+  (`T.D.assist` instead of 0.2) and no `AI_LAPSE`.
+- Autopilot: `aiWants('autopilot')` fires when most of the next 3 s of road bends past 0.0045, or on a wall at under 45%
+  shield. `hands(r)` is false while `r.autoT>0`, so the autopilot flies clean. Sable carries it.
+- Pace: `ROSTER[i].skill` raised (and `sk0`, the old value, for quick races) until the Eric pilot's places matched the
+  Prototype 49 AI over 192 seeded races. Matching lap times instead left him winning more: with hands the AI hits him less
+  (5 hits a race instead of 6.2), he is about 2% quicker, and the rubber band carries the field with him.
+- Every pilot owns a frame (Sable, the eighth, flies the Blade); `aiFrames` marks the pilot of your frame `sitOut` and
+  `setField` leaves it out. `resetGrid` places by roster order with the player always fifth.
+
+## Prototype 49: harmony fix, thumbs down, lane assist
+
+- `tVoiceLead` tried octaves starting at the instrument's low note instead of on a C, so every voiced chord was transposed by `lo % 12`. Fixed; measured with `tools/music/p50/chaos.py` over 288 tunes (probe.js output): notes off the harmony and a semitone, major seventh or tritone from a sounding note fell from a median 3.8% to 1.2%.
+- Thumbs down: `MLIKE` entry weight -2.5 (Like +3, Keep +2, early skip -1); weights feed `exp(0.22*aff)` clamped to 0.35..3, so nothing is excluded.
+- Lane assist (`LANE_A`, `LANE_T` in `race/058`): for people on the ground, when the heading would reach a wall within 0.7 s, yaw eases toward the road's at `LANE_A*(handling-1)/4*(1-t/0.7)` per second; `LANE_A`=4. Tuned with the Eric pilot (`tools/sim/eric.js`, `HAND=` and `LANEA=`): at handling 5, wall hits 27.5/min with none, 22.9 at 2, 22.0 at 3, 19.9 at 5 (handling 1: 9.7).
+- fx `stop` (Stop and Slam): steps 8 to 13 of every eighth bar of a drop or B are silent.
+
 ## Song templates (Prototype 46)
 
 Eric's 120 notes on the Prototype 45 previews had three themes: a "synth drone" (36 notes), random-sounding melodies (29) and the shaker (16), with "you feel the need to fill every frequency channel at all times" behind all three. This round takes things away.
@@ -429,6 +456,10 @@ The look is a neon night city drawn in glowing lines and simple blocks, with 3D 
 **Performance presets and Graphics (Prototype 39; called Style until Prototype 35):** Settings starts with Ultra low, Lite and Default, and each sets the graphics, resolution, frame rate cap and music together (Default: everything on, 100%, no cap, Generative; Lite: everything off but the cube exhaust, 50%, 45 fps, Pregen; Ultra low below). Clean, Arcade and Everything are gone; a look saved from them keeps its parts and shows as the player's own. Settings then has music and sound volume, Sound (announcer, music mode or No music, sound on or off) and Music, resolution and the cap, then Graphics and Race data. Graphics repeats the presets (with Low detail and the FPS counter beside them) and the two sliders, then the options, with a small painted preview beside them that switches the option under the pointer or pad on and off, and a line on what it does. Low detail leaves out the falls and geysers, thins the scenery and the Urban traffic, hides the frames' shadows, halves the hit cubes and, from the next page load, turns off anti-aliasing. Any part can be switched on or off by itself, and an FPS counter can be shown. Scanlines and the vignette are drawn over the page, so they cost nothing; the other screen effects need a full-screen pass, which skips multisampling on phones and tablets.
 
 **Scenery:** minimal and brutalist with a little flavour, one setting for the whole track. Urban is neon blocks on a street grid, with lit windows and flying traffic in stacked lanes along the streets (Prototype 38), some of it jammed, all of it at least 50 m from the road, with one or two water or lava falls pouring out of a rare block, usually a long tunnel or two and sometimes a geyser. Ocean is a flat sea with sandy islands, shallows, a few lighthouses and whitecaps. At night (the default since Prototype 30) the sea is dark, the shallows and wave tops glow with bioluminescence, jellyfish and a few manta rays glow under the surface, and the sky has stars and an aurora over a dark horizon. By day it is a blue sky with the sun and clouds built from white blocks. Forest is giant cyber trees, taller than any building, that the road weaves between. Stratos (Night sky until Prototype 31) is high above everything: stars above and below at night, the sky and clouds below by day, and a few floating slabs so speed still reads. Reef (Prototype 31) is under the sea: rocks and coral on the sand, kelp that sways, shoals of fish circling, jellyfish at every depth and bubble vents; by day it is sunlit with shafts of light from the surface overhead, at night the jellyfish, fish and coral glow neon in dark water. New tracks pick from the settings ticked in the menu. The editor sets the scenery and four dials: how much scenery, falls, geysers and tunnels. Tunnels run 280 to 600 m and are built from the road's own frame, so they follow every bend. Nothing is built within a wide margin of any part of the road. Every spiral has a centrepiece (tower, tree, lighthouse or monolith), and every spire has an open frame round its drop. Pylons hold the road up, but never stand on another piece of road, split routes included.
+
+**Prism (Prototype 51, remade in 52):** a mountain range of black rock drawn with glowing rainbow contour lines (every 10 m, brighter every 50 m; the colour runs through the rainbow with height), chosen by Eric from mock-ups of several looks (an oil-slick sheen, the old wireframe over the rock, crystal facets, pixel art). A map is all outside (one in five), all inside (one in five) or in and out. It is built from three height fields on one grid: the outside (M), and in the caverns their floor (F) and roof (C). A cell belongs to a cavern when the nearest road is inside, within a radius that wanders from 150 to 260 m; there M is kept above the roof. Outside, the ground near the road takes the shape of its stretch (a ledge, a crest or a cutting) and stops 3 m below the road (50 m at gaps), and columns stand on it. Any triangle that would come into the road's space (over the road and 26 m above it) is left out, checked from the road's side and straight down over it. Where the road goes in or out, a rock face with a small ragged hole, a short ragged tunnel and a second face on the cavern side close the way in. Inside it is dark: light from glow worms, pools and their falls, rivers under the road and the road itself is baked into the rock, the haze turns dark, and cavern rock seen from outside is hazed dark too. Lakes fill outside valleys under the highest stretches, with a rim raised round them (never into the road) so no edge shows.
+
+**Frame models (Prototype 51):** each frame is a designed low-poly shape rather than tapered boxes: canopies set flush into the pod, six-sided nozzles with the glow set inside a rim, ammo bars along the flanks (one per few ammo, length by the Ammo stat, dimming as ammo is spent), rudders on the vertical fins that turn with the steering and flaps on the horizontal ones that drop and light up when braking, a livery with each pilot's race number, and optional edge lines (Graphics: Ship edge lines). The Orb rolls with a pilot pod towed behind it on energy tethers; the Drifter keeps its glowing pads. Drawing never draws from the game's random numbers in a way the model changes (wreck bursts have their own), so the simulator's races match before and after.
 
 **Night and Day (Prototype 30):** a player's own switch in the menu, for every setting; night is the default and the house style. Both can be ticked (Prototype 31), and each new track then picks one. It changes only the sky and the light, never the road, so track codes, ghosts and board times don't depend on it. By day each setting gets a daylight dome with the sun and block clouds (in the open sky, clouds below the track as well), lighter fog and brighter light; the neon edges stay. Kept deliberately plain: no creatures in the sky.
 

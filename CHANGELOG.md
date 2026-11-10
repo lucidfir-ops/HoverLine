@@ -1,5 +1,116 @@
 # Changelog
 
+## Prototype 59
+- **Rivals: Tilt, Beginner, Normal, Expert.** Easy is renamed Beginner and Hard Expert. Tilt is a new level below Beginner, because tilt is much harder than a pad: more mistakes (wander +90%, forgets the nose half the time, skips 60% of strips) and 7% slower. It's the default for anyone playing with tilt who hasn't picked a level. Its numbers are a first guess: the logs so far are all from the pad, so phone logs with tilt will tune it properly.
+- **Tilt steer**, the quick setup, is now your layout: tilt steers and pitches, and only the modules are on screen, on the left. It's what "Open with tilt" sets up. Tilt is still re-centred automatically just before GO, on how you're holding the device then, whatever the layout, so nobody starts lopsided.
+- **No "exit full screen" notice in races:** the browser shows that notice each time the page goes full screen, and the game used to go full screen on the tap that starts a race. Now a phone goes full screen on the first touch in the menus, so the notice shows there. The screen is also kept awake through races. (A web page can't block notifications: Android's Do Not Disturb or Game Mode does that.)
+- **Track editor:** the track is rebuilt half a second after your last change (was 0.16 s), so tapping + or - a few times builds it once.
+- Shared logs and public rooms are version 59.
+
+## Prototype 58
+From your notes and your race logs of Prototypes 53 to 56. New board era (58): the Skiff races differently.
+- **Rivals: Easy, Normal or Hard**, a new setting on the Race screen (it also applies to Career and to the AI in rooms you host). Normal is the AI as it was, and the only level that goes on the online board.
+  - Every level flies with a person's hands (fitted to your logs, as since Prototype 50). The levels differ in how many of your kinds of mistakes they make:
+    - **Hard** flies like you at your best: its steering wanders 40% as much (about a fifth of the wall touches), it never skips a strip it wants, and it watches for its moment for Phase, Barrier and Decoy every instant. It's also faster: +15% on Wide, +9% on Standard, +10% on Narrow.
+    - **Easy** flies like you at your worst: its steering wanders 70% more, it forgets the nose for spells (40% of the time), rides past half the strips it would take, and misses half its moments for Phase, Barrier and Decoy.
+  - How they were set: the race simulator now has a model of you fitted to your 32 recent races (it touches the walls about as often as you do). It races a clean version of you (wandering 40% as much, taking every strip, nose up through the corners) and a sloppy one (wandering 60% more, taking half the strips, often flying level).
+    - Against today's Normal AI, the typical you finishes on average 1.8th and wins 62%; your logs agree (you won most Wide races).
+    - Hard was tuned until the clean you finishes mid-field on every road width: 3.9th on average over 160 races, winning 8%. The typical you finishes about 5th and wins 2%, with the winner a median 7.5 s ahead.
+    - Against Easy the typical you wins 84%.
+    - Easy needed no slowdown: even the sloppy you wins most races against it.
+  - **Skill banding instead of most of the rubber band** (Easy and Hard): a pilot behind you makes fewer mistakes, down to 55% of them 400 m back. Only 30% of the old speed band is left, so nobody gets a big free burst of speed from behind, and a pilot who gets away isn't slowed down much. Rivals can finish well ahead of you. Normal keeps the old band, so board times stay comparable.
+  - Race logs record the level.
+- **Skiff:** a pilot's pod with a flush canopy instead of the rider, drawn about 12% smaller, a smaller target (size 0.64, was 0.72), and it rides a slipstream 50% better: about 9% more top speed tucked in behind another frame (6% for the others). Every frame now has its own slipstream factor (the Frame lab lists the Skiff's).
+- **Pad menus:** a dropdown (like the speed class) changes only with A; left and right move on to the next control, so from the speed class right goes to Pacifist. Up from the top of a screen goes to its main button at the bottom: in the Frame lab, up from the frames goes to Done.
+- New tests: `tools/tests/pad-nav.js`, `tools/tests/rivals.js`. The simulator takes `AIL=easy|normal|hard` and `AILX` (a level's numbers as JSON) for `eric.js`.
+- Shared logs and public rooms are version 58.
+
+## Prototype 57
+- **No more sticks on the fins.** Every frame had a thin lit bar along the front edge of each upright fin (the blue sticks) and a brake-light bar along each wing flap (the dark red sticks, red when braking). They were set at an angle, so they poked out of the fins. Both are gone; the rudders and brake flaps still move. Frames no longer show a light when they brake.
+- Shared logs and public rooms are version 57. Races are unchanged.
+
+## Prototype 56
+The flat walls in Prism, from your photo. Races are unchanged (board era stays 50).
+- **No more flat walls.** Each cave mouth had a flat ring of rock round the hole, up to about 230 m across. Prototype 55 pressed it under the mountain, but under the mountain is the cavern, so it still stood inside the caverns as flat rainbow-lined walls between the stalagmites, and outside its edge showed as pixel-thin slivers you saw edge-on. It's gone: the mountain itself now arches over the road where it goes in, lined with its contour lines, and the rough tunnel runs on into the cavern.
+- **No sheer walls where a cavern meets the road outside:** where a stretch of road inside the mountain ran near a stretch outside it, the cavern stopped dead halfway between them, in a sheer wall from roof to floor. Now the cavern fades out as the outside road comes near, so its walls curve in.
+- Where rock is lifted over the road, as at the cave mouths and under low cavern roofs, the lift now tapers off beside the road, making an arch instead of a sheer step.
+- Fixed while testing: a corner of the rock shared with a finer patch could be moved after the rock next to it had been checked against the road, and so end up in the road. Every point is now placed before any rock is checked.
+- Shared logs and public rooms are version 56.
+
+## Prototype 55
+More Prism fixes, from your photos on the Deck. Races are unchanged (board era stays 50).
+- **Nothing from inside the mountain shows outside any more.** Cavern roofs, stalactites, tunnels and the faces round the cave mouths could stand out of the mountain by tens of metres, and in one case 300 m. They showed as dark spikes and slabs in the distance, and as flat panels you could see edge-on, pixel thin. Now, once the outside of the mountain is built, every part of the caverns is kept under it. Two causes:
+  - **Lakes:** making a lake also lowered the mountain beside the road everywhere on the map, including over the caverns right where the road goes in. So the mountain's outside dropped to the road while the cavern roof stayed hundreds of metres up.
+  - **Cave mouths:** each was a flat ring of rock round the hole, up to about 230 m across, and wherever the mountain didn't cover it, it hung in the air.
+- **No floating shards by the road:** a stalactite pressed down into the road's way is now dropped whole, and any lone scrap of rock left after cutting the road's way through is removed. The face on the cavern side of each tunnel is gone: the cavern now closes round the way in by itself, and that face left dark shards on the cavern walls.
+- `tools/tests/prism-clear.js` also checks now that nothing from inside the mountain stands out of it (30 maps pass).
+- Shared logs and public rooms are version 55.
+
+## Prototype 54
+Prism fixes, from your race reports. Races are unchanged (board era stays 50).
+- **No more lava or water over the road:** a lake was placed under one high stretch of road without checking the rest of the lap, so another stretch could pass under it (nlf90b59-p: a lava lake and a water lake you drove through from below). Now a lake goes only where no road passes lower than 14 m above it, which can mean fewer lakes on a map. A lava river in a cavern also couldn't drop as fast as the road where the road dived, and ended up 5 m above it (w46579c). Rivers now always stay well under every road above them.
+- **No holes in the rock:** where the road's space cut through the mountain, the whole rock triangle (16 to 30 m across) was left out. That left big holes in the slopes beside and under the road, and round the cave mouths. Now the rock there is made again in pieces a few metres across and moved out of the road's way: under the road outside, over it where the road goes into the mountain. The only gap left is the road's own way through. The caverns' edges now meet the outside of the mountain properly (they used to drop to an arbitrary height, which tore holes round the ways in).
+- **No rock in the road:** the check for rock in the road took no account of banking, so on a banked bend rock could poke up through the low side. It now measures from the road's own surface. A stalactite or stalagmite that leans into the road's way is left out.
+- New tests: `tools/tests/prism-clear.js` checks 30 maps for rock, lava or water anywhere in the road's space; `tools/tests/prism-look.js` takes views along the road with the sky magenta, so any hole in the rock shows.
+- A Prism track takes up to about half a second longer to build.
+- Shared logs and public rooms are version 54.
+
+## Prototype 53
+- **Level cabins:** the Blade's and the Dart's pods (and, less visibly, every frame's pod) sat slightly rolled to one side, so the canopy glass showed on one side only. They now sit level, with the glass flat across the top.
+- Shared logs and public rooms are version 53. Races are unchanged.
+
+## Prototype 52
+Prism remade, from your mock-ups: Tron-style rainbow contour lines on black rock, huge dark caverns, roads on columns, small jagged cave mouths, lakes and rivers. Races are unchanged (board era stays 50).
+- **The look:** the mountain is black rock drawn with glowing contour lines, one every 10 m of height and a brighter one every 50 m, running through the rainbow with height (the wireframe is gone). Inside the caverns the rock stays dark, with the lines only faint.
+- **Three kinds of map:** about one in five is all outside, one in five all inside the mountain, and the rest go in and out of it (about 40% of the lap inside). It's set by the track's seed.
+- **Outside**, the road is cut into the mountainside: a ledge with the mountain rising on one side and dropping away on the other, a crest, or a cutting. **Columns** hold it up wherever the ground falls away. **Lakes** of lava or of water fill the valleys under the highest stretches. **Calderas** on the peaks hold lava lakes with lava geysers, and lava falls and waterfalls pour down the cliffs. The geysers that stuck out of the slopes are gone.
+- **Cave mouths:** the road goes in through a small jagged hole in the cliff and a short rough tunnel, then the cavern opens out round you. Coming out is the same the other way.
+- **Caverns** are huge, a few hundred metres across and high, with the road on tall columns over the floor. They have stalactites and stalagmites tens of metres long and a few rock pillars.
+  - They are dark but for glow worms on the roof, pools of lava and of glowing water with falls pouring into them from the roof, the road's own lights, and **rivers** of lava or glowing water winding under the road. Their light shows on the rock round them.
+  - The haze turns dark inside, by day too.
+- Track info says which kind of map it is and counts the caverns, lakes, rivers and calderas. A Prism track takes about half a second longer to build.
+- Shared logs and public rooms are version 52.
+
+## Prototype 51
+The new frame designs we mocked up, a new setting, and the brake taught as the drift button. Races are unchanged (board era stays 50).
+- **All eight frames redesigned** to the mock-ups: shaped low-poly hulls instead of tapered boxes, canopies set flush into the pod with a level front edge, six-sided nozzles with the glow set inside a rim (the halfway rim), no orange tail brick, the pod fin flush on the pod. **Ammo bars** along the flanks show your ammo: longer with a higher Ammo stat, and they dim one by one as you fire. **Rudders** on the upright fins turn as you steer; **flaps** on the flat fins drop when you brake and their edges light up. Each pilot's livery carries a race number (yours is 01). The **Orb** is a clean rolling ball with its engines in a cradle at the back and a tiny pilot pod towed close behind on energy tethers; the **Drifter** keeps its glowing pads.
+- **Ship edge lines:** thin lines of light along the frames' edges, on by default (Settings, Graphics: Ship edge lines; off in Ultra low and Lite).
+- **Prism, a new setting:** a mountain range drawn as an iridescent wireframe, the colours of oil on water, shifting as you move. The road is cut into the mountainside, through valleys and over passes, with tunnels through the mountain. Where the road runs deep under the peaks it goes through **caverns** roofed with glow worms like a night sky, with stalactites and stalagmites. **Calderas** on the peaks hold lava lakes with lava geysers; **waterfalls and lava falls** pour down the slopes, and steam geysers stand beside the road. By day and by night. It's a Scenery chip in Race, the editor and rooms (letter P in track codes); if you had more than one setting ticked it's ticked for you once.
+- **Braking is for drifting, and the game now says so:**
+  - The tutorial's brake step is now **Drift · hold Brake and steer**: it asks you to steer and hold the brake (the frame swings its tail out as you do), and explains that a quick tap is a hard brake, only for the tightest hairpins.
+  - The **last quick race** (race 5, with the nose) now opens the Brake button too, with drifting, and prompts "Steer and hold Brake · drift" before its longest bend. In portrait Boost sits above Brake there.
+  - Training's Hairpins drill says to drift round them; Chicanes mentions a short drift. In Controls the brake is called "Brake · drift".
+- **Other recent changes now taught:** the tutorial's module step explains the ammo bars; in the Frame lab, Handling shows the wall assist it gives (off at 1 up to full at 5), Ammo is shown as the ammo bars, and each frame says which pilot sits out while you fly it; with tilt steering, the tutorial's steer step mentions Recentre tilt in the pause menu.
+- **Same races, proved:** with only AI racing, the simulator gives the same results race for race as Prototype 50 (30 races). Two drawing details used to draw from the game's random numbers in a way a new model would change (the Tether's arc flicker and the pieces of a wreck), so they now draw their own; the simulator's check has a fix for three.js's ids too (`tools/sim/uuidfix.js`).
+- Shared logs and public rooms are version 51. The leaderboard Worker needs no deploy.
+
+## Prototype 50
+From your Prototype 49 notes and race logs. New board era (the AI races differently).
+- **The AI pilots fly like people now.** Every AI pilot steers through the same model of a person's hands the simulator fits to your race logs (your 58 Prototype 49 races): the stick follows what they want a moment late, and their line wanders a little and comes back. They fly by your rules too: holding the brake with the stick over drifts, so to slow in a corner they tap it; lane assist helps them by their own handling; they get the same help keeping straight that you get. Their old scripted mistakes are gone (the wander is their mistake now). In the simulator, against a simulated you, they now touch the walls about as often as you do (on Wide 14 times a minute, you 14; Standard 15, you 16; Narrow 34, you 33; before, 4, 7 and 15) and their lines wander as much as yours.
+- **Their pace is handed back**, so the races are as hard as before: over 192 simulated races the simulated you finishes on average 2.7th (2.6th against the Prototype 49 AI), wins 40% (37%) and makes the top three 73% (76%). One thing didn't come out as you expected: with hands, the AI hits you less often (5 hits a race instead of 6), so you'd be about 2% quicker yourself, and if their lap times had stayed exactly the same you'd have won more. I matched your places instead, which leaves everyone's lap times about 2 to 3% quicker than in Prototype 49.
+- **Autopilot means something for them:** it takes their hands off for 4.5 s and flies clean. An AI pilot with it saves it for the twistiest road ahead, or for scraping a wall on a low shield.
+- **Sable**, an eighth pilot, flies the Blade (Turbo and Autopilot, no weapons). Every pilot has a frame of their own now, and the pilot whose frame you pick sits the race out (they used to be swapped onto a spare frame). Quick races keep the old AI.
+- **Random build** in the Frame lab: any frame, the 15 points spread at random, two modules that go together (never both scoops). Your paint stays.
+- **The music now moves on after a race.** On the results screen (and in the Frame lab opened from it) the final drop used to play for ever: it was the "same techno for a while". Now after a minute the next tune comes in, as in a race.
+- **Sugar Rush** has no xylophone "do be do be do" in its breakdowns any more.
+- **Handling 5:** your logs say you race at least as well with it: on Wide 54.8 s with handling 5 against 56.2 s with speed 3 and handling 1, touching the walls 7 times a minute instead of 19; on the Standard track 108.7 against 111.6 s and 1.3rd place against 4th. So I left the walls and recharge strips alone. (Speed only moves top speed 3% a point; thrust moves pick-up 20% and handling the turn rate 18%.)
+- The board era is 50. Shared logs and public rooms are version 50. The leaderboard Worker needs no deploy.
+
+## Prototype 49
+From your Prototype 48 notes, the other assistants' reviews and your music documents.
+- **The piano chords are in key now.** A bug since Prototype 45 put most voiced chords (keys comping, stabs, pads) in the wrong key: each was shifted up by where its instrument's range started in the octave, often by a fifth, so the keys argued with the bass and the melody. That was most of the "chaotic piano". Fixed in one place (`tVoiceLead`). Across 288 tunes, notes clashing with the harmony fell from 3.8% to 1.2% (median), and the chords now move smoothly from one to the next. The tunes you like keep their parts and their style; their chords now match their bass.
+- **Like and thumbs down** as two outline icons, a heart and a broken heart, to the right of Generative on the title (and in the pause menu); Settings · Music keeps worded buttons. The title's subtitle is just the prototype number now.
+- **Thumbs down** (the broken heart) beside every Like: on the title, in Settings · Music and in the pause menu. It is soft: that template and its close relatives come up less often, never ruled out, and it moves on to the next tune. A Like clears it and back.
+- **Stop and Slam**, a new template from your System of a Down notes: folk metal at 168 bpm in phrygian dominant, the I to flat-II power-chord slam, guitar riff and chugs, and a dead stop halfway through the last bar of every eight in a drop, before it slams back in. One template among 96, so it turns up now and then.
+- **Lane assist** for handling: handling raises the turn rate, which made a handling 5 frame hard to keep off the walls. Now handling also eases your heading back toward the road's when you are about to hit a wall: nothing at handling 1, rising in a straight line to the most at 5. It never steers you off a wall you are riding along. Tuned on a simulated you, fitted to your 45 logged races: at handling 5 it cut wall hits by about a quarter and wall damage by about a third (your handling 5 race wasn't in the log export, so the fit used your handling 1 races).
+- **Tilt:** every tilt race centres again at GO, and again after the screen turns (the lock turning it as a race starts could leave tilt stuck steering one way). Recentre tilt is in the pause menu.
+- **Pause menu:** the tune playing (name, style and code, so you can tell me which it was) with Like and 👎.
+- **Pacifist:** a switch on the track page beside the class. No modules for anyone. Races on your own only; Pacifist times don't go to the online board.
+- **Phase** no longer puts a bubble round you: the frame flickers see-through, with an outline every few frames.
+- The white shell ahead of the nose when nosing up is gone.
+- **The source is now in separate files** (`src/`: 98 script parts, the page, the styles, the sound assets), joined by the build into the same single page as before. `CLAUDE.md` and `docs/ARCHITECTURE.md` say where everything is, for people and for AI assistants. Old prototype builds and notes that confused other assistants are out of the tree (still in git history). `python3 tools/check.py` builds, checks and runs a quick browser test.
+- The board era is 49 (handling changed for people, so earlier times aren't comparable). AI races are unchanged. Shared logs and public rooms are version 49.
+
 ## Prototype 48
 From your Prototype 47 notes. Races are unchanged.
 - **The orientation you pick sticks.** Once you've chosen Portrait or Landscape, every screen holds it, menus too, not only races. Settings' Races: Portrait | Landscape now turns the screen at once, and after a reload your first touch goes full screen and turns it back.
