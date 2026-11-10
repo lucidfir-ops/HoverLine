@@ -5,7 +5,8 @@
 //
 //   python3 tools/build.py
 //   node tools/cover/cover.js candidates [outDir]      every shot in shots.js at 960x540, for choosing
-//   node tools/cover/cover.js finals [outDir]          the chosen shots at the itch.io sizes (art/cover/ by default)
+//   node tools/cover/cover.js finals [outDir] [part,..]   the chosen shots at the itch.io sizes (art/cover/ by default;
+//                                                     parts: only the files whose names hold one of them)
 //   node tools/cover/cover.js explore <shot> <outDir> [from] [to] [every]   one shot slid along its track, to find a spot
 //   node tools/cover/cover.js one <shot> <w> <h> <out.png> [--bare] ['{json}']   one shot at one size (json: changes to it)
 //
@@ -54,7 +55,6 @@ async function openPage(b, w, h) {
   await p.evaluate(() => document.fonts.ready);
   // every graphics option on (the Default preset, the highest), except the two screen textures that fight a still image
   await p.evaluate(() => { const c = window.__cv; for (const k of Object.keys(c.G2)) c.G2[k] = 1;
-    for (const k of ['bloom', 'blur', 'aberr', 'vig', 'grade', 'fxaa', 'jets', 'debris', 'reflect', 'sky', 'haze', 'motes', 'anim', 'pulse', 'lines']) c.G2[k] = 1;
     c.G2.grain = 0; c.G2.scan = 0; c.RES.k = 1; c.RES.low = false; c.g2Save() });
   await p.addStyleTag({ content: `body>*:not(canvas):not(#cover){visibility:hidden!important} body{padding:0!important}` });
   p.w = w; p.h = h; return p;
@@ -89,7 +89,7 @@ async function render(p, s) {
     const n = Math.round(WARM / dt);
     for (let k = 0; k <= n; k++) {
       for (const r of list) { if (k) { r.u += r.v * dt; r.utot += r.v * dt }
-        // a weave: each ship drifts a little across the road while it warms up, so the exhaust curves
+        // each ship flies its line at speed while the camera keeps pace, so the exhaust streams out behind
         c.placeShip(r, S.t) }
       setCam(U - v * WARM + v * dt * k); if (k) { S.t += dt; c.VFX.update(dt) }
     }
@@ -115,7 +115,7 @@ async function shot(b, name, w, h, out, opt = {}) {
   if (typeof s.pack === 'string') s.pack = SHOTS.PACK[s.pack];
   const p = await openPage(b, w, h);
   const info = await render(p, s);
-  await title(p, opt.bare ? null : SHOTS.layout(s, w, h));
+  await title(p, opt.bare ? null : SHOTS.layout(s, w, h, opt.title));
   const raw = out.replace(/\.(png|jpg)$/, '') + '.2x.png';
   await p.screenshot({ path: raw });
   execFileSync('python3', [path.join(__dirname, 'shrink.py'), raw, out, String(w), String(h)].concat(opt.jpg ? ['--jpg'] : []), { stdio: 'inherit' });
@@ -134,7 +134,8 @@ async function shot(b, name, w, h, out, opt = {}) {
       for (const k of only) await shot(b, k, 960, 540, path.join(out, k + '.png'));
     } else if (cmd === 'finals') {
       const out = a[0] || path.join(ROOT, 'art', 'cover'); fs.mkdirSync(out, { recursive: true });
-      for (const f of SHOTS.finals) await shot(b, f.shot, f.w, f.h, path.join(out, f.file), { jpg: /\.jpg$/.test(f.file) });
+      const only = a[1] ? a[1].split(',') : null;
+      for (const f of SHOTS.finals) if (!only || only.some((x) => f.file.includes(x))) await shot(b, f.shot, f.w, f.h, path.join(out, f.file), { jpg: /\.jpg$/.test(f.file), over: f.over, title: f.title });
     } else if (cmd === 'explore') {
       const [name, out, from = 0, to = 0, every = 150] = a; fs.mkdirSync(out, { recursive: true });
       const s0 = { ...SHOTS.shots[name] }, p = await openPage(b, 640, 360); if (typeof s0.pack === 'string') s0.pack = SHOTS.PACK[s0.pack];

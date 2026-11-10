@@ -13,7 +13,7 @@ if '--jpg' in sys.argv or out.endswith('.jpg'):
     im.save(out, 'JPEG', quality=88, optimize=True, progressive=True)
 else:
     im.save(out, 'PNG', optimize=True)
-    if os.path.getsize(out) > 2_000_000:  # too big for the page: a 256-colour-free fallback is a high-quality JPG beside it
+    if os.path.getsize(out) > 2_000_000:  # over the 2 MB we keep to: write a high-quality JPG beside it as well
         alt = out[:-4] + '.jpg'
         im.save(alt, 'JPEG', quality=90, optimize=True, progressive=True)
         print('  over 2 MB as PNG (%d KB); wrote %s (%d KB)' % (os.path.getsize(out) // 1024, alt, os.path.getsize(alt) // 1024))
