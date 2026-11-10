@@ -50,3 +50,10 @@ structured, and need careful testing. 10 and 11 are creative.
   Prototype 59, Tether mostly; 7 on Prism, kept out of fits). Without Prism: Expert on Wide 6 races, 2 wins (mean place
   2.8); Normal on Wide 7 of 7 wins, Standard 3 of 4, Narrow 0 of 7 (mean 3.7). The simulator expected about 8% wins
   against Expert for Eric at his best, so 2 of 6 is unlikely to be luck (about 8%): Expert is too easy on Wide (task 17).
+
+## For Prototype 61
+
+- Build the Spirit realm, from Eric's picks in docs/SPIRIT-REALM-DOSSIER.md and his notes on the concept art in
+  docs/concepts/spirit-realm/ (the 3 am round 1, from the "SPIRIT REALM CONCEPT ART" scheduled task).
+- The upside-down road (task 8 step 6, written up in the task 8 report: rolled split routes, about a day's work).
+- Split screen: pilots 2 to 8 pick their own frame and paint; rumble and hit shake per pilot.
