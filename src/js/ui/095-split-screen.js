@@ -52,7 +52,9 @@ function splViews(){const box=$('views');box.innerHTML='';SPL.views=[];const n=s
     el.querySelector('.vwsrc').textContent=splSrcName(P);box.appendChild(el);P.hud=el;P.hk={}}
   box.hidden=false;document.body.classList.add('split');SPL.lw=SPL.lh=0;splPlace();
   /* the views carry the HUD; the touch controls only when this device is a pilot */
-  $('hudL').hidden=$('hudR').hidden=true;$('touch').hidden=!(coarse&&SPL.pilots.slice(0,SPL_MAX).some(P=>P.src==='dev'))}
+  $('hudL').hidden=$('hudR').hidden=true;const tp=coarse&&SPL.pilots.slice(0,SPL_MAX).some(P=>P.src==='dev');$('touch').hidden=!tp;
+  /* the pause button would sit on the top views' lap counters: pads pause with Start and keys with Esc, so it stays only for a touch pilot */
+  $('pauseBtn').hidden=!tp}
 /* lay the views out for the window as it is now (called every frame; does nothing unless the size changed) */
 function splPlace(){const W=cw||innerWidth,H=ch||innerHeight,loc=splLocal();if(W===SPL.lw&&H===SPL.lh&&loc.length===SPL.ln)return;SPL.lw=W;SPL.lh=H;SPL.ln=loc.length;
   const L=splLayoutFor(loc.length,W,H).pick;SPL.cur=L;
@@ -118,8 +120,8 @@ function splGo(){if(!SPL.pilots.length){note('Nobody has joined yet · press a b
 /* ---- the lobby ---- */
 function splOpen(){S.state='menu';S.car=null;S.train=null;S.trial=false;hidePages();mpEl.mp.hidden=true;$('spl').hidden=false;SPL.open=true;page='play';splSync();drawPreview('splPreview','splStats')}
 function splClose(){SPL.open=false;$('spl').hidden=true;SPL.pilots.length=0;if(mp.split){mp.split=null;if(mp.sess)mpLeaveRoom()}mpEl.mp.hidden=true;showPage('play')}
-function splAdd(P){P.cm=P.cm==null?camMode:P.cm;P.lit=performance.now();SPL.pilots.push(P);audio.blip(660+SPL.pilots.length*80,0.08,0.06,'triangle');splSync();return P}
-function splDrop(P){const i=SPL.pilots.indexOf(P);if(i<0)return;SPL.pilots.splice(i,1);audio.blip(330,0.08,0.05);splSync()}
+function splAdd(P){P.cm=P.cm==null?camMode:P.cm;P.lit=performance.now();SPL.pilots.push(P);audio.blip(660+SPL.pilots.length*80,0.08,0.06,'triangle');splSync();if(P.src!=='ctl')splCsAll();return P}
+function splDrop(P){const i=SPL.pilots.indexOf(P);if(i<0)return;SPL.pilots.splice(i,1);audio.blip(330,0.08,0.05);splSync();splCsAll()}
 /* pads in the lobby: any button on a new pad joins it; on a joined pad B leaves, Start races, Y switches its mapping,
    the d-pad left and right change the layout. Returns true when the press was the lobby's (not the menus'). */
 function splPadLobby(p,prev){if($('spl').hidden)return false;const pr=i=>padBtn(p,i)>0.5,edge=i=>pr(i)&&!prev[i],any=p.buttons.some((x,i)=>x.pressed&&!prev[i]);
@@ -167,7 +169,9 @@ function splRoomSync(st){if(mp.split!=='screen'||!st)return;const ids=new Set(st
   for(const P of SPL.pilots.slice())if(P.src==='ctl'&&!ids.has(P.ctl)){if(SPL.race){P.gone=true}else splDrop(P)}
   for(const e of st.roster)if(e.id!==st.id&&!SPL.pilots.some(P=>P.src==='ctl'&&P.ctl===e.id))splAdd({src:'ctl',ctl:e.id,name:(e.p&&e.p.n)||'Phone',ci:{}});
   for(const P of SPL.pilots)if(P.src==='ctl'){const e=st.roster.find(x=>x.id===P.ctl);if(e){P.name=(e.p&&e.p.n)||P.name;P.gone=false}}
-  splSync()}
+  splSync();splCsAll()}
+/* in the lobby every controller hears its pilot number (again with each roster change, so a lost one is made good) */
+function splCsAll(){if(SPL.race||!mp.sess||mp.split!=='screen')return;for(const P of SPL.pilots)if(P.src==='ctl')splCs(P,{lobby:true})}
 function splCi(m,from){const P=SPL.pilots.find(q=>q.src==='ctl'&&q.ctl===from);if(!P)return;if(m.q!=null&&P.ci&&P.ci.q!=null&&m.q<P.ci.q&&P.ci.q-m.q<1000)return;/* an older message arriving late */
   P.ci={s:+m.s||0,p:+m.p||0,b:m.b|0,f:Array.isArray(m.f)?m.f.map(x=>x|0):[0,0,0],v:m.v,q:m.q,at:performance.now()};P.lit=P.ci.at;
   if(!SPL.race&&m.go&&SPL.open)splGo()}
