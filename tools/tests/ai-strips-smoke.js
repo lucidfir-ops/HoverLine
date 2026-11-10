@@ -12,12 +12,13 @@ const { launch, open, ok, done, wait } = require('./lib.js');
     r.v = 60; r.u = z.u0 + 2; r.lat = 0; const D = r.d.hp, L = z.u1 - r.u; out.len = Math.round(z.u1 - z.u0);
     // nearly full: boosting to the end still fills it
     r.hp = D * 0.97; out.nearFull = H.aiStripBoost(r, r.u);
-    // a deficit the strip fills only without the boost
-    const rate = 24 * (r.d.chg || 1) * (z.rate || 1), cost = D * 0.08, gB = (rate - cost) * L / (r.v * H.AI_STRIP.boostV), gP = rate * L / r.v;
-    out.gB = gB / D; out.gP = gP / D;
-    r.hp = D - (gB + gP) / 2; out.between = H.aiStripBoost(r, r.u);
+    // a deficit the strip fills only without the boost: stand where the strip has a boosted refill of 0.4 of the shield left
+    const rate = 24 * (r.d.chg || 1) * (z.rate || 1), cost = D * 0.08, L2 = 0.4 * D * r.v * H.AI_STRIP.boostV / (rate - cost);
+    r.u = z.u1 - L2; const gB = (rate - cost) * L2 / (r.v * H.AI_STRIP.boostV), gP = rate * L2 / r.v;
+    out.gB = gB / D; out.gP = gP / D; const need = (gB / H.AI_STRIP.fullB + gP / H.AI_STRIP.full) / 2;
+    r.hp = D - need; out.between = H.aiStripBoost(r, r.u); out.needOk = need <= D;
     // too big a deficit to fill either way: boosts only if it still leaves healthy
-    r.hp = Math.max(1, D - gP * 3); out.farLow = H.aiStripBoost(r, r.u) === (r.hp + gB >= D * H.AI_STRIP.keep);
+    r.hp = Math.max(1, D - gP * 3); r.u = z.u1 - L2; out.farLow = H.aiStripBoost(r, r.u) === (r.hp + gB >= D * H.AI_STRIP.keep);
     // smoke: a person is never flown by this, an AI is; the draw repeats and moves on
     const a = H.racers.find(x => x.isAI && x !== H.player); a.ink = 2;
     out.aiSmoked = H.aiSmoked(a); H.player.ink = 2; out.playerSmoked = H.aiSmoked(H.player); H.player.ink = 0;
@@ -33,7 +34,7 @@ const { launch, open, ok, done, wait } = require('./lib.js');
   console.log(JSON.stringify(R));
   ok(R.haveStrip && R.haveAI, 'the track has a shield strip and an AI pilot');
   ok(R.nearFull === true, 'nearly full on a strip: boosts');
-  ok(R.between === false, 'a deficit only an unboosted pass fills: no boost yet');
+  ok(R.needOk && R.between === false, 'a deficit only an unboosted pass fills: no boost yet');
   ok(R.farLow === true, 'a strip too short to fill from low: boosts only if it leaves healthy');
   ok(R.aiSmoked === true && R.playerSmoked === false, 'smoke flies AI pilots, never the player');
   ok(R.repeat && R.moves && R.inRange, 'the smoke draw is deterministic from the race clock');

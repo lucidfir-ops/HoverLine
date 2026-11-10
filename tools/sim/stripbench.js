@@ -17,6 +17,7 @@ const H=globalThis.__hl;
 const mode=process.argv[2]||'strips',N=+(process.argv[3]||6),off=+(process.argv[4]||0);
 const kinds=['W','S','N'],lens=['Q','M','L'];
 /* WHY=1: on a strip, why an AI pilot's input does not ask to boost (counts of steps) */
+let wInk=0,wClr=0;globalThis.__wallAt=(r)=>{if(r!==H.player){if(r.ink>0)wInk++;else wClr++}};
 const why={n:0,boost:0,brake:0,low:0,pad:0,drift:0,other:0};
 if(process.env.WHY)globalThis.__pin=(r,i)=>{if(r.charging==='hp'&&r!==H.player){why.n++;if(i.boost)why.boost++;else if(i.brake>=0.05)why.brake++;else if(r.hp<=r.d.hp*0.15)why.low++;else if(r.boost>0)why.pad++;else if(r.dN&&r.drift)why.drift++;else why.other++}return i};
 (async()=>{for(const lv of (process.env.LEVELS||'tilt,easy,normal,hard').split(',')){
@@ -42,6 +43,6 @@ if(process.env.WHY)globalThis.__pin=(r,i)=>{if(r.charging==='hp'&&r!==H.player){
   }
   const f=(x,n=3)=>+x.toFixed(n);
   console.log(lv,JSON.stringify(mode==='strips'?{races:A.race,strips:A.epi,boostShare:f(A.tB/A.tS),shieldIn:f(A.hpIn/A.epi),shieldOut:f(A.hpOut/A.epi),leftFull:f(A.full/A.epi),enteredFull:f(A.top/A.epi),secPerMetre:f(A.tm/A.tmN,5)}:
-    {races:A.race,inkSamples:A.inkT,latSpeedInk:f(A.inkWob/A.inkT),latSpeedClear:f(A.clrWob/A.clrT),vInk:f(A.inkV/A.inkT,1),vClear:f(A.clrV/A.clrT,1),secPerMetre:f(A.tm/A.tmN,5)}))}
-})();
+    {races:A.race,wallHitsPerMinInk:f(wInk/(A.inkT/60/60)),wallHitsPerMinClear:f(wClr/(A.clrT/60/60)),inkSamples:A.inkT,latSpeedInk:f(A.inkWob/A.inkT),latSpeedClear:f(A.clrWob/A.clrT),vInk:f(A.inkV/A.inkT,1),vClear:f(A.clrV/A.clrT,1),secPerMetre:f(A.tm/A.tmN,5)}))}
+if(process.env.WHY)console.log(JSON.stringify(why));process.exit(0)})();
 if(process.env.WHY)console.log(JSON.stringify(why))

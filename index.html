@@ -7049,16 +7049,18 @@ function aiDrift(r,o,raw,F){
 /* Prototype 60: AI_STRIP: a held boost costs 8% of the shield a second (physics, 058) and tops the speed up by 22%; a green
    strip refills 24 a second (times the build's and the strip's rate). Boosting on a strip nets less shield a metre than
    riding it (rate - cost over a 1.22 times faster pass). aiStripBoost says whether the AI boosts now on the strip it is
-   on: yes when, boosting from here to the strip's end, it still gets to (nearly) full; no while that would leave it short
-   but riding it plain would fill it (it boosts later, for the last part); and where no way fills it, yes if it would still
-   leave with at least AI_STRIP.keep of its shield. */
-const AI_STRIP={boostV:1.22,full:0.97,keep:0.6};
+   on: yes when, boosting from here to the strip's end, it gets at least fullB of the shield it needs (so about full); no while
+   that would leave it clearly short but riding it plain would fill it (it boosts later, for the last part); and where no way
+   fills it, yes if it would still leave with at least keep of its shield. curv: how tight a bend ahead it boosts through on
+   a strip (0.004 before; the strip pays for the boost). Tuned in tools/sim/stripbench.js: boost share of strip time stays at
+   75%, shield on leaving up 2 to 4 points, leaving full up 8 to 10 points. */
+const AI_STRIP={boostV:1.22,full:0.97,fullB:0.7,keep:0.35,curv:0.008};
 function aiStripBoost(r,uu){
   let z=null;for(const q of T.zones)if(q.kind==='hp'&&uu>=q.u0&&uu<=q.u1){z=q;break}
   if(!z)return true;
   const D=r.d,rate=24*(r.scoop==='hp'?2:1)*(D.chg||1)*(z.rate||1),cost=D.hp*0.08,rem=Math.max(0,z.u1-uu),v=Math.max(20,r.v),need=D.hp-r.hp;
   const gBoost=(rate-cost)*rem/(v*AI_STRIP.boostV),gPlain=rate*rem/v;
-  if(gBoost>=need*AI_STRIP.full)return true;
+  if(gBoost>=need*AI_STRIP.fullB)return true;
   if(gPlain>=need*AI_STRIP.full)return false;
   return r.hp+gBoost>=D.hp*AI_STRIP.keep}
 /* Prototype 60: an AI pilot in smoke (r.ink > 0, the view-loss effect the cloud gives for 2.4 s after the last puff) flies
@@ -7124,7 +7126,7 @@ function aiInput(r,dt){
      the strip refills less per second boosting than not. So it boosts for the part of the strip where it still reaches
      full (the shield it needs, aiStripBoost), and when the strip is too short to fill it anyway, as long as it leaves
      healthy. */
-  const onGreen=r.charging==='hp',boost=r.isAI&&r.finishT==null&&!aiSmoked(r)&&brake<0.05&&!r.air&&(onGreen?r.hp>r.d.hp*0.15&&Math.abs(T.Cs[idxAt(r.u+look)])<0.004&&aiStripBoost(r,uu):
+  const onGreen=r.charging==='hp',boost=r.isAI&&r.finishT==null&&!aiSmoked(r)&&brake<0.05&&!r.air&&(onGreen?r.hp>r.d.hp*0.15&&Math.abs(T.Cs[idxAt(r.u+look)])<AI_STRIP.curv&&aiStripBoost(r,uu):
     r.hp>r.d.hp*(r.sty?clamp(0.9-0.45*r.sty.boost,0.25,0.95):F.bh)&&Math.abs(T.Cs[idxAt(r.u+look)])<0.0015&&Math.abs(T.Cs[idxAt(r.u+look*1.8)])<0.0015);
   return aiHands(r,aiDrift(r,{steer:clamp(steer,-1,1),brake,pitch,boost,fire:fireW,hold:holdW},steer,F),dt)}
 
