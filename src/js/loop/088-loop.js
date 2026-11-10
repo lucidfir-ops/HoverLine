@@ -146,7 +146,7 @@ function placeShip(r,t){
     r.ship.position.addScaledVector(right,(Math.random()-0.5)*0.32*e).addScaledVector(up,(Math.random()-0.5)*0.24*e);
     _gq.setFromAxisAngle(AX_Y,(Math.random()-0.5)*0.24*e);r.ship.quaternion.multiply(_gq);_gq.setFromAxisAngle(AX_Z,(Math.random()-0.5)*0.22*e);r.ship.quaternion.multiply(_gq)}
   else if(sc.x!==1||sc.y!==1||sc.z!==1)sc.set(1,1,1);
-  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);reflectLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
+  const fpvMe=r===player&&!SPL.race&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);reflectLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
   r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
   const ud=r.ship.userData;shipCtl(ud,r.brk,r.steerS,S.state==='menu'||S.state==='lab'?1:r.ammo/(r.d.ammo||100));
   if(ud.extra&&ud.extra.spin){const dt=clamp(t-(r._lt??t),0,0.1);r._lt=t;for(const q of ud.extra.spin)q.o.rotation[q.ax]+=(q.k*r.v+(q.w||0))*dt}/* the flicker is a hash of the time, not Math.random, so drawing never moves the game's random numbers (Prototype 51) */
@@ -157,6 +157,8 @@ function placeShip(r,t){
   const bub=ud.shield,col=r.spinD>0&&r.wreck<=0&&Math.floor(t*30)%3===0?0xbe5aff:r.od>0?0xffd24a:r.emp>0&&Math.floor(t*14)%2?0x6fb8ff:r.barrier>0?0x3ff0ff:r.charging==='hp'?0x46ff8c:r.charging==='ammo'?0xbe5aff:0;bub.visible=!!col&&r.wreck<=0;
   if(col){bub.material.color.setHex(col);bub.material.opacity=(r.barrier>0?0.2:0.12)+Math.sin(t*20)*0.05+(r.barrier>0&&r.barrier<1?Math.sin(t*40)*0.1:0)}
   if(r===player){pf.set(0,0,-1).applyQuaternion(qT.clone().multiply(_qCam.setFromAxisAngle(AX_Y,r.yaw))).addScaledVector(up,sfp.sl).normalize();pUp.copy(up);pRight.copy(right);pT.copy(s.t);pPos.copy(pos)}
+  /* Prototype 60: every local pilot's pose, for its own chase camera in split screen */
+  if(r.lp){const c=r.lp;c.pf.set(0,0,-1).applyQuaternion(qT.clone().multiply(_qCam.setFromAxisAngle(AX_Y,r.yaw))).addScaledVector(up,sfp.sl).normalize();c.pUp.copy(up);c.pRight.copy(right);c.pT.copy(s.t);c.pPos.copy(pos)}
 }
 
 /* Nose trim, shown around your own craft: faint green speed lines stream past when nose-down streamlining is making
@@ -203,7 +205,7 @@ function trimStep(dt){const r=player,F=trimFx,on=(S.state==='race'||S.state==='c
 function step(dt){
   S.t+=dt;
   const racing=S.state==='race';
-  const inp=QK.live?qkIn(readInput()):readInput();
+  const inp=QK.live?qkIn(readInput()):SPL.race?splInputs():readInput();
   if(mp.on&&mp.sess&&mp.goHost!=null&&!mp.sess.state.isHost&&mp.sess.state.hostId===mp.sess.state.goHost)mp.go=mp.goHost-mp.sess.state.offset;
   if(S.state==='mpwait'){const c=$('count');c.hidden=false;c.textContent='…';c.classList.remove('go')}
   if(S.state==='countdown'){
@@ -218,9 +220,9 @@ function step(dt){
     let pdt=dt;if(mp.on&&mp.go!=null){const rt=(performance.now()-mp.go)/1000;pdt=clamp(rt-S.raceT,0,0.25);S.raceT=Math.max(S.raceT,rt)}else S.raceT+=dt;
     const nSub=Math.max(1,Math.ceil(pdt/0.034)),sdt=pdt/nSub,auto=BOT||mp.auto;
     for(let k=0;k<nSub;k++){
-      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)}
+      for(const r of racers){if(r.isGhost){ghostStep(r,sdt);continue}if(r.proxy){proxyStep(r,sdt);continue}if(r.lp&&SPL.race){physics(r,splIn(r,inp,sdt,auto),sdt);continue}/* (P60) a local pilot in split screen */const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)}
       logTick(sdt);
-      collide();updateShots(sdt);inp.fire=[false,false]}
+      collide();updateShots(sdt);inp.fire=[false,false];if(SPL.race)splFireClear()}
     if(!mp.on&&player.finishT==null)while(S.raceT>=rec.k*0.1){recSample();rec.k++}
     if(racing){const left=WLOCK-S.raceT,n=Math.ceil(left);
       if(left>0&&n<=3&&n!==S.wl){S.wl=n;note('Modules online in '+n,950);audio.blip(660,0.1,0.07,'triangle')}
@@ -231,7 +233,7 @@ function step(dt){
     if(!racers.some(r=>r.remote&&!r.left&&r.finishT==null)){mp.bg=false;mp.go=null;clearShots()}else mpTick()}
   if(mp.on&&mp.sess&&(S.state==='race'||S.state==='done'||S.state==='countdown'||S.state==='mpwait'||S.state==='paused'))mpTick();
   S.shake=Math.max(0,S.shake-dt*2.5);
-  audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:player.v,player.boost);
+  {const ear=SPL.race?splLead():player;audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:ear.v,ear.boost)}
   {const ck=player.charging||(S.t-(player.chgEnd??-9)<0.3?player.chgKind:null);audio.charge(S.state==='race'&&player.wreck<=0?ck:null,ck==='hp'?player.hp/player.d.hp:player.ammo/player.d.ammo)}
   for(const r of racers){placeShip(r,S.t);if(r.isGhost||RES.low)r.shadow.visible=false}
   trimStep(dt);inkStep(dt);drFxStep(dt);empFxStep(dt);
@@ -263,6 +265,7 @@ function step(dt){
       camera.fov+=((68+18*vk+(boo?7:0)+14*pk)-camera.fov)*Math.min(1,dt*4)}
   }
   camInit=true;camera.updateProjectionMatrix();
+  if(SPL.race&&S.state!=='menu')splStep(dt);
   if(mp.on&&S.state!=='menu')mpTags();
 
   if(S.state!=='menu'){

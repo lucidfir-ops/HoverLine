@@ -7,6 +7,8 @@ function mpFired(r,w,from){if(!mp.on||!mp.sess||r.proxy)return;
     sh.push([s.nid,s.type,+s.u.toFixed(1),+s.lat.toFixed(2),+(s.v||0).toFixed(1),+s.life.toFixed(2),s.rear?1:s.wait?2:0,s.target&&s.target.key||'',+(s.vl||0).toFixed(2),s.mini?1:0])}
   if(sh.length)mp.sess.send({t:'fire',o:r.key,w,sh,ts:Math.round(S.raceT*1000)})}
 function mpMessage(m,from){
+  /* Prototype 60: split screen: a controller's input reaches the screen; the screen tells each controller its place */
+  if(m.t==='ci'){if(mp.split==='screen')splCi(m,from);return}if(m.t==='cs'){if(PADC.on)padcState(m);return}
   if(m.t==='rdy'){mpNudge(String(m.n||'A pilot').replace(/[<>&]/g,'').slice(0,12));return}
   if(m.t==='again'){if(mp.sess&&from===mp.sess.state.hostId&&S.state==='done')mpBackToLobby();return}
   if(m.t==='pose'){mpApply(mp.byKey&&mp.byKey.get(from),m.s,m.ts);

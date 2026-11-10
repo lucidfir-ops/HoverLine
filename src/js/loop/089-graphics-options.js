@@ -66,7 +66,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
       if(race)this.wisps(dt);
       this.step(V,dt,0);this.step(this.chunks,dt,26);this.step(this.sparks,dt,20);this.stepWisp(this.wisp,dt)}
     if(this.sky){this.sky.visible=g2('sky')&&!(T&&T.env&&T.env.sky);if(this.sky.visible)this.sky.position.copy(camera.position)}
-    if(this.motes){const on=g2('motes')&&race;this.motes.visible=on;if(on){const a=this.motes.geometry.attributes.position,A=a.array,c=camera.position,t=S.t;
+    if(this.motes){const on=g2('motes')&&race&&!SPL.race;this.motes.visible=on;if(on){const a=this.motes.geometry.attributes.position,A=a.array,c=camera.position,t=S.t;
       for(let k=0;k<A.length;k+=3){for(let d=0;d<3;d++){const h=d===1?35:70,cc=d===0?c.x:d===1?c.y:c.z;let x=A[k+d];if(x<cc-h)x+=2*h;else if(x>cc+h)x-=2*h;A[k+d]=x}A[k+1]+=Math.sin(t*0.7+k)*0.004}a.needsUpdate=true;this.motes.material.color.setHex(this.moteCol)}}
     /* atmosphere: a coloured haze */
     {const hz=g2('haze'),f=scene.fog,lk=(T&&T.look)||BIOMES.U;if(hz!==this.hz){this.hz=hz;if(hz){f.color.setHex(lk.haze);f.near=40;f.far=lk.k==='N'?1400:700;scene.background.setHex(lk.haze)}else{f.color.setHex(lk.bg);f.near=lk.fog[0];f.far=lk.fog[1];scene.background.setHex(lk.bg)}}}
@@ -80,6 +80,8 @@ const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_v
 function fpsTick(d){const ov=(g2('scan')?'s':'')+(g2('vig')?'v':'');if(ov!==FPS.ov){FPS.ov=ov;$('scrS').hidden=!g2('scan');$('scrV').hidden=!g2('vig');$('scrS').style.setProperty('--sl',(4/Math.min(devicePixelRatio||1,2)).toFixed(2)+'px')}
   if(!FPS.on||!(d>0))return;FPS.n++;FPS.acc+=d;if(FPS.acc>=0.5){$('fps').textContent=Math.round(FPS.n/FPS.acc)+' FPS';FPS.n=0;FPS.acc=0}}
 function frame(now){
+  /* (P60) a device in controller mode draws nothing: it is a gamepad now */
+  if(PADC.on){lastT=now;requestAnimationFrame(frame);return}
   if(FCAP.v){const ms=1000/FCAP.v;if(now<FCAP.due-1.5){requestAnimationFrame(frame);return}FCAP.due=now-FCAP.due>ms*2?now+ms:FCAP.due+ms}
   const rawDt=(now-lastT)/1000,dt=Math.min(FCAP.v?Math.max(0.05,1.5/FCAP.v):0.05,rawDt);lastT=now;fit();fpsTick(rawDt);logFrame(rawDt);
   greenTex.offset.y-=dt*1.6;purpleTex.offset.y-=dt*1.6;
@@ -87,8 +89,8 @@ function frame(now){
   else{if(S.state!=='paused')step(dt);else readInput();
     {const p=player,b=p.boost>0||p.selfBoost;GFX.fx=S.state==='race'&&p.wreck<=0?clamp(clamp((p.v/VMAX-0.95)*2.2,0,1)*(0.55+0.45*(p.dive||0))+(b?0.3:0),0,1):0;
       GFX.gl=S.state==='race'&&p.spinD>0&&p.wreck<=0?0.6*Math.pow(1-Math.min(1,p.spinT/p.spinD),1.5):0}
-    VFX.update(dt);if(!NO_RENDER||window.__hlRender)gfxRender(scene,camera)}
-  if(S.state==='menu'){pv3.acc+=dt;if(pv3.acc>=1/30){const cv=!$('menu').hidden?$('preview'):!$('career').hidden?$('carPreview'):!$('train').hidden?$('trPreview'):!$('mp').hidden?$('mpPreview'):!$('ed').hidden?$('edPreview'):null;if(cv)pv3Draw(cv,pv3.acc);pv3.acc=0}}
+    VFX.update(dt);if(!NO_RENDER||window.__hlRender){if(SPL.race&&SPL.ln)splRender();else gfxRender(scene,camera)}}
+  if(S.state==='menu'){pv3.acc+=dt;if(pv3.acc>=1/30){const cv=!$('menu').hidden?$('preview'):!$('career').hidden?$('carPreview'):!$('train').hidden?$('trPreview'):!$('mp').hidden?$('mpPreview'):!$('spl').hidden?$('splPreview'):!$('ed').hidden?$('edPreview'):null;if(cv)pv3Draw(cv,pv3.acc);pv3.acc=0}}
   requestAnimationFrame(frame)}
 
 
