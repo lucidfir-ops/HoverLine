@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS runs (
   lap_ms  INTEGER NOT NULL,          -- best lap
   created INTEGER NOT NULL,          -- unix ms
   who     TEXT    NOT NULL,          -- salted hash of the sender's IP (never the IP itself)
-  era     INTEGER NOT NULL DEFAULT 0 -- board era (the game's BOARD_ERA); boards only compare times from one era
+  era     INTEGER NOT NULL DEFAULT 0, -- board era (the game's BOARD_ERA); boards only compare times from one era
+  lvl     TEXT    NOT NULL DEFAULT 'normal' -- rivals' level: tilt, easy, normal, hard (Tilt, Beginner, Default, Expert); one board each
 );
 CREATE INDEX IF NOT EXISTS runs_board ON runs (track, laps, time_ms);
 CREATE INDEX IF NOT EXISTS runs_era   ON runs (era, track, laps, time_ms);
@@ -26,3 +27,7 @@ CREATE TABLE IF NOT EXISTS logs (
 );
 CREATE INDEX IF NOT EXISTS logs_time ON logs (created);
 CREATE INDEX IF NOT EXISTS logs_who  ON logs (who, created);
+
+-- Prototype 60: one board per rivals' level. Last on purpose: on a database made before levels (no lvl column yet) running
+-- this whole file again still creates everything above and only stops here; run migrate-lvl.sql on such a database.
+CREATE INDEX IF NOT EXISTS runs_lvl  ON runs (era, lvl, track, laps, time_ms);

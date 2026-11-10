@@ -16,8 +16,8 @@ $('optBtn').onclick=()=>openOpts('title');$('pauseOpt').onclick=()=>openOpts('pa
 function clsFill(sel,k){if(!sel||!REAL)return;if(!sel.options.length)for(const c of CLS){const o=document.createElement('option');o.value=c.k;o.textContent=c.n+' · '+Math.round(c.f*100)+'%';sel.appendChild(o)}if(sel.value!==k)sel.value=k}
 function pacSync(){const b=$('pacBtn');if(b)b.setAttribute('aria-pressed',String(pacOn))}
 $('pacBtn').onclick=()=>{pacOn=!pacOn;store.set('hoverline.pacifist',pacOn?'1':'0');pacSync();note(pacOn?'Pacifist: no modules for anyone · not on the online board':'Modules on',2000)};pacSync();
-/* (P58) the rivals' level: Easy, Normal (the online board's) or Hard */
-function ailSync(){const s=$('ailSel');if(!s||!REAL)return;if(!s.options.length)for(const k of['tilt','easy','normal','hard']){const o=document.createElement('option');o.value=k;o.textContent=AIL[k].n;s.appendChild(o)}s.value=ailNow();const n=$('ailNote');if(n)n.textContent=ailNow()==='normal'?'':'Online board: Normal only'}
+/* (P58) the rivals' level: Tilt, Beginner, Default or Expert (Prototype 60: each has its own online board, so no note) */
+function ailSync(){const s=$('ailSel');if(!s||!REAL)return;if(!s.options.length)for(const k of['tilt','easy','normal','hard']){const o=document.createElement('option');o.value=k;o.textContent=AIL[k].n;s.appendChild(o)}s.value=ailNow();const n=$('ailNote');if(n)n.textContent=''}
 if(REAL){$('ailSel').onchange=e=>{ailFree=AIL[e.target.value]?e.target.value:'normal';store.set('hoverline.ail',ailFree);ailSync()};ailSync()}
 function clsSync(){ailSync();clsFill($('clsSel'),clsFree);const n=$('clsNote');if(n)n.textContent=clsFree==='redline'?'':'Online board: Redline only';clsFill($('mpCls'),mp.cls)}
 if(REAL){$('clsSel').onchange=e=>{clsFree=clsOf(e.target.value).k;store.set('hoverline.cls',clsFree);clsSync();updateMenuBest()};
