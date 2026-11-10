@@ -1,5 +1,6 @@
 //# race/054-ai.js: the AI pilots: racing line, steering, weapons, mistakes
 /* ---------- AI ---------- */
+const REFLECTABLE_K=['missile','swarm','hunter','rocket','bolt','bounce'];
 const modU=u=>((u%T.L)+T.L)%T.L;
 function aiWants(r,w){
   if(w==='missile'){const t=targetAhead(r,200);return(t&&Math.abs(t.lat-r.lat)<5)||(!targetAhead(r,260)&&!!targetBehind(r,120))}
@@ -9,7 +10,10 @@ function aiWants(r,w){
   if(w==='turbo')return Math.abs(T.Cs[idxAt(r.u+60)])<0.003;
   if(w==='barrier'){if(threatsTo(r).some(h=>h.t<0.6&&!h.safe))return true;return r.hp<r.d.hp*0.35&&Math.random()<0.1}
   if(w==='phase')return threatsTo(r).some(h=>h.t<0.35&&!h.safe&&h.k!=='mine');
-  if(w==='decoy')return threatsTo(r).some(h=>(h.k==='missile'||h.k==='swarm'||h.k==='hunter')&&h.t<1.2);
+  /* Prototype 60: the Reflector's shell is up 0.75 s, so the AI fires it when a shot it can turn round is within half a second
+     (Phase gets 0.35 s of a 1.5 s cover). A lone cannon bolt (8 damage) isn't worth it; two or more, or anything bigger, is.
+     Flares (the old Decoy) fire by themselves, so the AI has nothing to decide about them. */
+  if(w==='reflector'){if(r.refl>0)return false;const th=threatsTo(r).filter(h=>h.t<0.5&&!h.safe&&REFLECTABLE_K.includes(h.k));return th.some(h=>h.k!=='bolt')||th.length>=2}
   const ahead=range=>racers.filter(o=>o!==r&&live(o)&&(d=>d>2&&d<range)(wrapU(o.u-r.u)));
   if(w==='rockets'){const t=targetAhead(r,150);return!!t&&Math.abs(t.lat-r.lat)<3.5}
   if(w==='swarm')return ahead(280).length>=2||!!targetAhead(r,150);

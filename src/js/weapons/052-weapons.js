@@ -47,8 +47,48 @@ function shotMesh(type,mini){
   const m=new THREE.Group();m.add(new THREE.Mesh(mineGeo,mineMat),new THREE.Mesh(mineGeo,mineCore));m.children[1].scale.setScalar(0.5);return m}
 const live=o=>!o.isGhost&&!o.left&&o.wreck<=0&&(o.finishT==null||o===player);
 const QGAP=3.2;
-/* A decoy pulls every homing shot chasing its owner (and any that lock on while it burns). */
-function decoyPull(d){for(const o of shots)if((o.type==='missile'||o.type==='hunter')&&o.target===d.owner&&o.owner!==d.owner)o.target=d}
+/* A flare pulls the homing shots it was dropped for (d.only) off its owner. A flare with no list (one from an older build over
+   the network) pulls every homing shot chasing its owner, as the Decoy did. */
+function decoyPull(d){if(d.only){for(const o of d.only)if(o.target===d.owner)o.target=d;return}
+  for(const o of shots)if((o.type==='missile'||o.type==='hunter')&&o.target===d.owner&&o.owner!==d.owner)o.target=d}
+/* ---------- Prototype 60: Flares (the old Decoy) ----------
+   Passive. The moment a homing shot (Missile, Swarm missile, Hunter) locks on a ship carrying Flares, the ship spends
+   FLARE_K times the attack's module cost in ammo (Swarm: a quarter of the Swarm's, for each missile) and drops one flare
+   for every FLARE_UNIT of it; the shot is pulled onto the flares and fizzles when it reaches them (or they burn out). Not
+   enough ammo: nothing happens and the shot hits. Not while weapons are locked or off (start, EMP, Pacifist), and not
+   while Barrier, Phase, Overdrive or the Reflector already beat the shot. r.fl counts what happened, for tools/sim/flares.js. */
+const flS=r=>r.fl||(r.fl={lock:0,fire:0,dry:0,block:0,hit:0,spent:0});
+function fizzle(o){if(!o.fzl){o.fzl=1;const c=o.target&&o.target.owner;if(c&&c.fl&&o.fl===c)c.fl.block++}o.life=0;o.dud=true}
+function flaresStep(){for(const s of shots){if(s.type!=='missile'&&s.type!=='hunter')continue;const r=s.target;
+    if(s.dud||s.wait||!r||r.isDecoy||s.fl===r||r.proxy||!r.weapons||!r.weapons.includes('decoy')||!live(r))continue;
+    if(r.barrier>0||r.inv>0||r.od>0||r.phase>0||r.refl>0)continue;
+    s.fl=r;const f=flS(r);f.lock++;
+    if(pacifist()||S.raceT<WLOCK||r.emp>0)continue;
+    const cost=flareCostOf(s.type,s.mini);if(r.ammo<cost){f.dry++;continue}
+    r.ammo-=cost;f.fire++;f.spent+=cost;const n0=shots.length,n=clamp(Math.ceil(cost/FLARE_UNIT),1,FLARE_MAX);
+    for(let k=0;k<n;k++){const m=shotMesh('decoy'),d={type:'decoy',u:r.u-5-k*2.2,lat:clampLat(r.u,r.lat+(k%2?1:-1)*0.9*Math.ceil(k/2),1.5),v:Math.max(20,r.v*0.55),owner:r,life:FLARE_T,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5-k*2.2,only:k?new Set():new Set([s])};
+      scene.add(m);shots.push(d)}
+    s.target=shots[n0];
+    const near=r===player||Math.abs(wrapU(r.u-player.u))<120;if(near)audio.blip(1800,0.25,0.08,'triangle',600);
+    if(r===player){const k=r.weapons.indexOf('decoy');if(k>=0)slotFx(k,'fired')}
+    if(mp.on)mpFired(r,'decoy',n0)}}
+/* ---------- Prototype 60: Reflector ----------
+   While r.refl is up, a shot that would hit r (Cannon bolt, Rocket, Missile, Swarm missile, Hunter, Bouncer) is turned round
+   instead and sent back toward the ship that fired it (down the track, behind r, for a shot that came from behind), now owned
+   by r. Mines, Quake, Shockwave and EMP are not shots at a ship so they get through: a mine is a hazard sitting on the road,
+   a Quake and a Shockwave are waves with no direction to turn round, and an EMP is not a shot. */
+const REFLECTABLE=['bolt','rocket','missile','hunter','bounce'];
+function reflectShot(s,r,i){const ow=s.owner,fromOw=!!ow&&ow!==r&&live(ow),old=s.nid,
+    dir=fromOw?(wrapU(ow.u-s.u)>=0?1:-1):(s.v>0?-1:1),sp=Math.abs(s.v);
+  const homing=s.type==='missile'||s.type==='hunter',tg=fromOw?ow:homing?(dir<0?targetBehind(r,250):targetAhead(r,260)):null;
+  s.owner=r;s.rear=dir<0;s.wait=false;s.dud=false;s.fl=null;s.fzl=0;s.u=r.u+dir*3;
+  s.v=dir<0?-clamp(sp,70,260):Math.max(sp,r.v+110);s.life=Math.max(s.life,s.type==='bolt'?0.9:s.type==='rocket'?1.2:s.type==='bounce'?6:3);
+  if(homing){s.target=tg;if(!tg)s.life=0}
+  s.brS=r.brS||null;s.br=r.brS?r.br:null;
+  const m=new THREE.Mesh(boomGeo,new THREE.MeshBasicMaterial({color:0xdff8ff,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));m.position.copy(s.mesh.position);scene.add(m);booms.push({m,t:0,big:false});
+  if(r===player||Math.abs(wrapU(r.u-player.u))<150){audio.blip(2600,0.14,r===player?0.12:0.06,'triangle',900)}
+  if(r.stat)r.stat.refl=(r.stat.refl||0)+1;
+  if(mp.on&&mp.sess&&!r.proxy){if(old)mp.sess.send({t:'boom',n:old});shots.splice(i,1);shots.push(s);mpFired(r,'reflector',shots.length-1)}}
 /* Threats to a ship: each {k:kind, t:seconds to impact, u, lat, gap?, ahead?}. Homing shots chasing it, straight shots in its line,
    a Quake rolling up behind it (unless it is already in the gap), mines in its line ahead. */
 function threatsTo(r){const out=[];if(!live(r))return out;
@@ -122,7 +162,7 @@ function fire(r,slot){
   else if(w==='hunter'){const t=leaderFor(r),m=shotMesh('hunter');scene.add(m);const wait=!!t&&t.utot<r.utot;shots.push({type:'hunter',u:r.u+3,lat:r.lat,v:wait?Math.max(30,r.v-40):Math.max(r.v,70)+140,owner:r,life:14,target:t,mesh:m,wait});
     if(near&&!fx)audio.blip(240,0.6,0.16,'sawtooth',900);}
   else if(w==='phase'){r.phase=1.5;if(near&&!fx)audio.blip(1300,0.35,0.1,'sine',260)}
-  else if(w==='decoy'){const m=shotMesh('decoy');scene.add(m);const d={type:'decoy',u:r.u-5,lat:r.lat,v:Math.max(20,r.v*0.55),owner:r,life:3,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5};shots.push(d);decoyPull(d);if(near&&!fx)audio.blip(1800,0.25,0.08,'triangle',600)}
+  else if(w==='reflector'){r.refl=REFLECT_T;if(near&&!fx)audio.blip(900,0.3,0.1,'triangle',2400)}
   else if(w==='emp'){empBlast(r);if(near&&!fx)audio.blip(1200,0.3,0.14,'square',90)}
   else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:4.8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
   else if(w==='autopilot'){r.autoT=4.5;if(near&&!fx)audio.blip(520,0.3,0.1,'triangle',1040)}

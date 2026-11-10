@@ -146,7 +146,7 @@ function placeShip(r,t){
     r.ship.position.addScaledVector(right,(Math.random()-0.5)*0.32*e).addScaledVector(up,(Math.random()-0.5)*0.24*e);
     _gq.setFromAxisAngle(AX_Y,(Math.random()-0.5)*0.24*e);r.ship.quaternion.multiply(_gq);_gq.setFromAxisAngle(AX_Z,(Math.random()-0.5)*0.22*e);r.ship.quaternion.multiply(_gq)}
   else if(sc.x!==1||sc.y!==1||sc.z!==1)sc.set(1,1,1);
-  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
+  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);reflectLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
   r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
   const ud=r.ship.userData;shipCtl(ud,r.brk,r.steerS,S.state==='menu'||S.state==='lab'?1:r.ammo/(r.d.ammo||100));
   if(ud.extra&&ud.extra.spin){const dt=clamp(t-(r._lt??t),0,0.1);r._lt=t;for(const q of ud.extra.spin)q.o.rotation[q.ax]+=(q.k*r.v+(q.w||0))*dt}/* the flicker is a hash of the time, not Math.random, so drawing never moves the game's random numbers (Prototype 51) */
@@ -180,6 +180,14 @@ function phaseLook(r,t){const on=r.phase>0&&r.wreck<=0;if(!on&&!r._ph)return;r._
     if(!u.phM){const src=m.material,arr=Array.isArray(src)?src:[src];if(arr.some(x=>x.blending!==THREE.NormalBlending||x===ud.trailM||x===ud.glowM)){u.phSkip=true}else{/* three makes each new material's id from Math.random, which the races share: lend it a private sequence while cloning,
       so Phase looks change nothing about a race */const R0=Math.random;Math.random=()=>((phaseN=(phaseN*1103515245+12345)>>>0)/4294967296);try{u.phM=Array.isArray(src)?src.map(x=>x.clone()):src.clone()}finally{Math.random=R0};for(const x of[].concat(u.phM)){x.transparent=true;x.depthWrite=false}}}
     if(u.phSkip)return;if(!u.phO)u.phO=m.material;m.material=u.phM;for(const x of[].concat(u.phM)){x.opacity=op;x.wireframe=wf}})}
+/* Prototype 60: the Reflector's shell, a brief mirrored bubble (a faint silver ball with a wire cage that flickers) round the
+   frame while r.refl is up; it is a child of the ship so it follows it and goes with it when the ship is rebuilt. */
+function reflectLook(r,t){const on=r.refl>0&&r.wreck<=0;let g=r._rf;if(!on){if(g)g.visible=false;return}
+  if(!g||g.parent!==r.ship){const geo=new THREE.IcosahedronGeometry(1,1),am={transparent:true,blending:THREE.AdditiveBlending,depthWrite:false},
+      face=new THREE.MeshBasicMaterial({color:0xbfe6ff,opacity:.25,side:THREE.DoubleSide,...am}),cage=new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,opacity:.7,...am});
+    g=r._rf=new THREE.Group();g.add(new THREE.Mesh(geo,face),new THREE.Mesh(geo,cage));g.userData={face,cage};g.position.y=0.5;r.ship.add(g)}
+  const k=Math.min(1,r.refl/0.15),fl=0.75+0.25*Math.sin(t*40);g.visible=true;g.scale.setScalar((2.2+0.15*Math.sin(t*25))*(r.d.size||1));g.rotation.y=t*3;
+  g.userData.face.opacity=0.28*k*fl;g.userData.cage.opacity=0.75*k*fl}
 function trimStep(dt){const r=player,F=trimFx,on=(S.state==='race'||S.state==='countdown')&&r.wreck<=0&&r.ship.visible;
   const pd=Math.max(0,-r.pitch),pu=Math.max(0,r.pitch),ground=!r.air;
   const scr=false,tbB=r.trimB||0,wantG=on&&ground&&(tbB>0.01||r.trimUp&&(r.slopeG||0)>0.2&&r.climb<1.6)?clamp(Math.max(tbB/0.15,r.trimUp?r.slopeG*(3-r.climb)/2:0),0,1)*clamp(r.v/70,0,1):0,wantR=on&&ground&&pu>0.12?pu*clamp(r.v/60,0,1):0;
@@ -274,7 +282,7 @@ function step(dt){
       if(hpF<0.25&&!lowWarn&&player.wreck<=0&&S.state==='race'){lowWarn=true;if(!audio.sfx('low')){audio.blip(980,0.1,0.1,'square');setTimeout(()=>audio.blip(980,0.1,0.1,'square'),160)}}else if(hpF>0.35)lowWarn=false;
       const emp=player.emp>0;$('amM').classList.toggle('empty',S.state==='race'&&player.wreck<=0&&player.ammo<minCost(player));$('bst').classList.toggle('emp',emp);
       for(let k=0;k<2;k++){const w=player.weapons[k],d=WDEF[w],dir=w==='missile'?(targetAhead(player,260)?' ▲':targetBehind(player,200)?' ▼':''):'';
-        const rdy=player.ammo>=d.cost&&player.wreck<=0&&!emp,b=$('w'+(k+1)),sub=d.passive?'passive':S.raceT<WLOCK?Math.ceil(WLOCK-S.raceT)+' s':d.cost+dir;const bh=`${icon(w)}<small>${sub}</small>`;if(b._h!==bh){b._h=bh;b.innerHTML=bh;b.setAttribute('aria-label',d.name)}b.classList.toggle('rdy',rdy&&!d.passive&&S.raceT>=WLOCK);b.classList.toggle('emp',emp&&!d.passive);
+        const rdy=player.ammo>=d.cost&&player.wreck<=0&&!emp,b=$('w'+(k+1)),sub=d.passive?(d.auto?'auto':'passive'):S.raceT<WLOCK?Math.ceil(WLOCK-S.raceT)+' s':d.cost+dir;const bh=`${icon(w)}<small>${sub}</small>`;if(b._h!==bh){b._h=bh;b.innerHTML=bh;b.setAttribute('aria-label',d.name)}b.classList.toggle('rdy',rdy&&!d.passive&&S.raceT>=WLOCK);b.classList.toggle('emp',emp&&!d.passive);
         const act=k?'w2':'w1',kb=actLabel(act),locked=S.raceT<WLOCK&&S.state!=='menu',sl=$('s'+(k+1));
         const sh=`<kbd class="${lastDev==='pad'?padCls(bind.pad[act]):''}">${lastDev==='pad'?padFace(bind.pad[act]):esc(kb)}</kbd>${icon(w)}<small>${sub}</small>`;if(sl._h!==sh){sl._h=sh;sl.innerHTML=sh;sl.title=d.name}sl.classList.toggle('rdy',rdy&&!locked&&!d.passive);sl.classList.toggle('emp',emp&&!d.passive);sl.classList.toggle('hold',S.t-slotLast[k]<0.25&&w==='cannon')}}
   }

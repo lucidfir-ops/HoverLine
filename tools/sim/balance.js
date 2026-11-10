@@ -4,13 +4,13 @@
 //   the track code, how long it took to build and to race, and anything that looks like a bug (see FLAGS below).
 // MODE frames: equal stats and weapons, frames rotate through the grid.
 // MODE stats:  blade, fixed weapons, every racer a random legal build (15 points, 1-5 each).
-// MODE weapons: blade, stats 3s, every racer a random pair of the 17 active items.
+// MODE weapons: blade, stats 3s, every racer a random pair of the WP items (Prototype 60: 18, with the Reflector; Flares fire by themselves).
 // MODE full:   random frame, random build and random pair for everyone.
 // MODE hauler: one fighter Hauler (ammo 5) against equal blades, to see how a fighting build races.
 const fs=require('fs');let src=fs.readFileSync(__dirname+'/run.js','utf8');
 src=src.replace("__dirname+'/game.js'","process.env.GAME||(__dirname+'/game.js')").replace(/let report=\[\];[\s\S]*$/,`
 const mode=process.argv[2]||'full',N=+(process.argv[3]||50),off=+(process.argv[4]||0),outF=process.argv[5]||'/dev/stdout',raceF=outF==='/dev/stdout'?null:outF.replace(/\\.jsonl$/,'')+'.races.jsonl';
-const FR=Object.keys(H.FRAMES).filter(k=>k!=='cube'),WP=['missile','cannon','mines','shock','turbo','barrier','phase','decoy','rockets','swarm','quake','bouncer','hunter','emp','smoke','autopilot','overdrive'];
+const FR=Object.keys(H.FRAMES).filter(k=>k!=='cube'),WP=['missile','cannon','mines','shock','turbo','barrier','phase','reflector','decoy','rockets','swarm','quake','bouncer','hunter','emp','smoke','autopilot','overdrive'];
 const ST=['speed','thrust','handling','shield','ammo'];
 if(process.env.VARIANT){for(const kv of process.env.VARIANT.split(';')){const[k,v]=kv.split('=');const[f,p]=k.split('.');const F=H.FRAMES[f];if(p in F.m)F.m[p]=+v;else F[p]=+v}}
 let rs=987654+off*7919;
@@ -49,8 +49,8 @@ const kinds=['W','S','N'],lens=['Q','M','L'],r2=x=>Math.round(x*100)/100,fin=x=>
   R.forEach((r,i)=>{let fr='blade',st={speed:3,thrust:3,handling:3,shield:3,ammo:3},w=['missile','rockets'];
     if(mode==='frames')fr=FR[(i+qq)%FR.length];
     if(mode==='stats')st=build();
-    if(mode==='weapons'){w=[ws[wi%17],ws[(wi+1)%17]];wi+=2}
-    if(mode==='full'){fr=FR[Math.floor(rnd()*FR.length)];st=build();const a=Math.floor(rnd()*17);let b=Math.floor(rnd()*16);if(b>=a)b++;w=[WP[a],WP[b]]}
+    if(mode==='weapons'){w=[ws[wi%WP.length],ws[(wi+1)%WP.length]];wi+=2}
+    if(mode==='full'){fr=FR[Math.floor(rnd()*FR.length)];st=build();const a=Math.floor(rnd()*WP.length);let b=Math.floor(rnd()*(WP.length-1));if(b>=a)b++;w=[WP[a],WP[b]]}
     if(mode==='hauler'&&i===((qq*3)%8)){fr='hauler';st={speed:2,thrust:3,handling:3,shield:3,ammo:4};w=['missile','rockets']}
     H.setShip(r,{stats:st,weapons:w,frame:fr},paint);r.skill=0.94;r.sty=null;r.hp=r.d.hp;r.ammo=0;r.tag={fr,st,w};r._cu=r.utot;r._ct=0;r._air=0;r._fl=[]});
   globalThis.__wall={};globalThis.__fall={};globalThis.__clip={};globalThis.__wr={};

@@ -39,7 +39,7 @@ function labUI(){const free=BUD-spent(build),box=$('labStats');
   const wb=$('labWpn');wb.innerHTML='';
   const cw=S.car?carW():null;
   for(const[k,w]of Object.entries(WDEF)){const b=document.createElement('button');b.className='chip wchip';const slot=build.weapons.indexOf(k),lk=cw&&!cw.includes(k);b.classList.toggle('lock',!!lk);
-    b.innerHTML=`${slot>=0?slotTag(slot):''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?'passive':w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, passive`:`${w.name}, ${w.cost} ammo per shot`);
+    b.innerHTML=`${slot>=0?slotTag(slot):''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?(w.auto?'auto':'passive'):w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, ${w.auto?'automatic':'passive'}`:`${w.name}, ${w.cost} ammo per shot`);
     b.onclick=()=>{if(lk){$('labWdesc').textContent=`${w.name}: ${w.desc} Win career races to unlock it.`;audio.deny();return}if(build.weapons.includes(k)){build.weapons=[build.weapons[1],build.weapons[0]];saveBuild();audio.sfx('ui_ok')||audio.blip(660,0.08,0.06);const nb=build.weapons.indexOf(k);
         $('labWdesc').innerHTML=`${w.name} moves to ${slotTag(nb)}, ${WDEF[build.weapons[1-nb]].name} to ${slotTag(1-nb)}. ${w.desc}${w.passive?'':` Uses ${w.cost} ammo.`}`;labUI();return}
       /* the two scoops never go together: fitting one swaps out the other */
