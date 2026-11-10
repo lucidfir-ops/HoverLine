@@ -2838,6 +2838,11 @@ const STATS=[{k:'speed',name:'Speed',part:'Thrusters',more:'bigger',less:'smalle
   {k:'handling',name:'Handling',part:'Wings & fins',more:'wider',less:'narrower'},{k:'shield',name:'Shield',part:'Armour',more:'thicker',less:'thinner'},
   {k:'ammo',name:'Ammo',part:'Ammo bars',more:'longer',less:'shorter'}];
 const BUDGET=15,SMIN=1,SMAX=5;let BUD=BUDGET,buildKey='hoverline.build';
+/* Prototype 60: the numbers for the two new modules, in one place. REFLECT_T: how long the Reflector's shell is up (half of
+   Phase's 1.5 s; its cost, 10, is half Phase's 20). FLARE_K: Flares (the old Decoy, same key) spend this many times the
+   incoming homing attack's ammo cost, and drop one flare for every FLARE_UNIT of it (at most FLARE_MAX), which live FLARE_T
+   seconds. The 1.5 started as Eric's guess; tools/sim/flares.js measured it (see the changelog). */
+const REFLECT_T=0.75,FLARE_K=1.5,FLARE_UNIT=15,FLARE_MAX=4,FLARE_T=4;
 const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backwards when nobody is ahead.'},
   cannon:{name:'Cannon',cost:5,desc:'Rapid straight bolts. Hold the button to keep firing.'},
   mines:{name:'Mines',cost:30,desc:'Drops three mines behind you.'},
@@ -2845,7 +2850,8 @@ const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backward
   turbo:{name:'Turbo',cost:25,desc:'A 2.4-second speed burst. While it runs your held boost rests and costs no shield.'},
   barrier:{name:'Barrier',cost:35,desc:'Blocks all damage for 3 seconds.'},
   phase:{name:'Phase',cost:20,desc:'For 1.5 seconds weapons pass straight through you, and so do other frames and smoke.'},
-  decoy:{name:'Decoy',cost:15,desc:'Drops a flare. Homing missiles, the Swarm and the Hunter chasing you go for it instead.'},
+  reflector:{name:'Reflector',cost:10,desc:'For 0.75 seconds shots that would hit you turn round and fly back down the track as yours: Cannon, Rockets, Missile, Swarm, Hunter and Bouncer. Mines, Quake, Shockwave and EMP still get through.'},
+  decoy:{name:'Flares',cost:0,passive:true,auto:true,desc:''},
   rockets:{name:'Rockets',cost:20,desc:'Three straight rockets in a spread. No homing: aim with your frame.'},
   swarm:{name:'Swarm',cost:35,desc:'Four small homing missiles, one for each of the nearest frames ahead.'},
   quake:{name:'Quake',cost:35,desc:'A wave that rolls up the track ahead with one gap in it, hitting every frame it catches and clearing mines.'},
@@ -2857,12 +2863,15 @@ const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backward
   overdrive:{name:'Overdrive',cost:60,desc:'3 seconds untouchable and faster. Ram other frames to dent their shields and slow them.'},
   scoopS:{name:'Shield scoop',cost:0,passive:true,desc:'Not a weapon: green strips recharge your shield twice as fast. It takes a module slot, and you cannot fit it with the Ammo scoop.'},
   scoopA:{name:'Ammo scoop',cost:0,passive:true,desc:'Not a weapon: purple strips refill your ammo twice as fast. It takes a module slot, and you cannot fit it with the Shield scoop.'}};
+/* what Flares spend against each homing attack: K times its module cost; a Swarm missile is a quarter of the Swarm's */
+const flareCostOf=(type,mini)=>FLARE_K*(type==='hunter'?WDEF.hunter.cost:mini?WDEF.swarm.cost/4:WDEF.missile.cost);
+WDEF.decoy.desc=`Automatic: no button. When a homing attack locks on you, Flares spend ${FLARE_K} times its ammo cost to pull it off you: ${Math.round(flareCostOf('missile'))} for a Missile, ${Math.round(flareCostOf('missile',true))} for each Swarm missile, ${Math.round(flareCostOf('hunter'))} for a Hunter. A small attack gets one flare, a Hunter most of the payload. With less ammo than that, nothing fires and you get hit.`;
 const SCOOPS=['scoopS','scoopA'],bothScoops=w=>SCOOPS.every(k=>w.includes(k));
 /* Icons (Prototype 32): one line drawing per weapon and for boost, shield and ammo, drawn in the colour of whatever holds them. */
 const SH='M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z';
 const ICON={missile:'<path d="M4 10h11l5 2-5 2H4zM7 10L5 6M7 14l-2 4M1 12h1"/>',cannon:'<path d="M3 8h6M3 12h10M3 16h6M13 8h2M17 12h4M13 16h2"/>',
   mines:'<path d="M12 6l6 6-6 6-6-6zM12 2v3M12 19v3M2 12h3M19 12h3"/>',shock:'<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.5 6.5 0 0 0 0 9M16.5 7.5a6.5 6.5 0 0 1 0 9M4.5 4.5a10.5 10.5 0 0 0 0 15M19.5 4.5a10.5 10.5 0 0 1 0 15"/>',
-  turbo:'<path d="M4 6l6 6-6 6M12 6l6 6-6 6"/>',barrier:'<path d="'+SH+'"/>',phase:'<circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/><path d="M2 12h20M19 9l3 3-3 3"/>',
+  turbo:'<path d="M4 6l6 6-6 6M12 6l6 6-6 6"/>',barrier:'<path d="'+SH+'"/>',phase:'<circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/><path d="M2 12h20M19 9l3 3-3 3"/>',reflector:'<path d="M17 3v18M2 5l13 7M15 12L2 19M2 19v-4.5M2 19h4.5"/>',
   decoy:'<path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l4 4M15 15l4 4M19 5l-4 4M9 15l-4 4"/>',rockets:'<path d="M3 12L18 5M3 12h17M3 12l15 7"/>',
   swarm:'<circle cx="16" cy="5" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="16" cy="19" r="2"/><path d="M3 5h10M4 12h12M3 19h10"/>',quake:'<path d="M2 15l4-6 4 8 4-10 4 8 4-4"/>',
   bouncer:'<circle cx="17" cy="7" r="3.5"/><path d="M3 8l5 11 5-9"/>',hunter:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',
@@ -6451,8 +6460,48 @@ function shotMesh(type,mini){
   const m=new THREE.Group();m.add(new THREE.Mesh(mineGeo,mineMat),new THREE.Mesh(mineGeo,mineCore));m.children[1].scale.setScalar(0.5);return m}
 const live=o=>!o.isGhost&&!o.left&&o.wreck<=0&&(o.finishT==null||o===player);
 const QGAP=3.2;
-/* A decoy pulls every homing shot chasing its owner (and any that lock on while it burns). */
-function decoyPull(d){for(const o of shots)if((o.type==='missile'||o.type==='hunter')&&o.target===d.owner&&o.owner!==d.owner)o.target=d}
+/* A flare pulls the homing shots it was dropped for (d.only) off its owner. A flare with no list (one from an older build over
+   the network) pulls every homing shot chasing its owner, as the Decoy did. */
+function decoyPull(d){if(d.only){for(const o of d.only)if(o.target===d.owner)o.target=d;return}
+  for(const o of shots)if((o.type==='missile'||o.type==='hunter')&&o.target===d.owner&&o.owner!==d.owner)o.target=d}
+/* ---------- Prototype 60: Flares (the old Decoy) ----------
+   Passive. The moment a homing shot (Missile, Swarm missile, Hunter) locks on a ship carrying Flares, the ship spends
+   FLARE_K times the attack's module cost in ammo (Swarm: a quarter of the Swarm's, for each missile) and drops one flare
+   for every FLARE_UNIT of it; the shot is pulled onto the flares and fizzles when it reaches them (or they burn out). Not
+   enough ammo: nothing happens and the shot hits. Not while weapons are locked or off (start, EMP, Pacifist), and not
+   while Barrier, Phase, Overdrive or the Reflector already beat the shot. r.fl counts what happened, for tools/sim/flares.js. */
+const flS=r=>r.fl||(r.fl={lock:0,fire:0,dry:0,block:0,hit:0,spent:0});
+function fizzle(o){if(!o.fzl){o.fzl=1;const c=o.target&&o.target.owner;if(c&&c.fl&&o.fl===c)c.fl.block++}o.life=0;o.dud=true}
+function flaresStep(){for(const s of shots){if(s.type!=='missile'&&s.type!=='hunter')continue;const r=s.target;
+    if(s.dud||s.wait||!r||r.isDecoy||s.fl===r||r.proxy||!r.weapons||!r.weapons.includes('decoy')||!live(r))continue;
+    if(r.barrier>0||r.inv>0||r.od>0||r.phase>0||r.refl>0)continue;
+    s.fl=r;const f=flS(r);f.lock++;
+    if(pacifist()||S.raceT<WLOCK||r.emp>0)continue;
+    const cost=flareCostOf(s.type,s.mini);if(r.ammo<cost){f.dry++;continue}
+    r.ammo-=cost;f.fire++;f.spent+=cost;const n0=shots.length,n=clamp(Math.ceil(cost/FLARE_UNIT),1,FLARE_MAX);
+    for(let k=0;k<n;k++){const m=shotMesh('decoy'),d={type:'decoy',u:r.u-5-k*2.2,lat:clampLat(r.u,r.lat+(k%2?1:-1)*0.9*Math.ceil(k/2),1.5),v:Math.max(20,r.v*0.55),owner:r,life:FLARE_T,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5-k*2.2,only:k?new Set():new Set([s])};
+      scene.add(m);shots.push(d)}
+    s.target=shots[n0];
+    const near=r===player||Math.abs(wrapU(r.u-player.u))<120;if(near)audio.blip(1800,0.25,0.08,'triangle',600);
+    if(r===player){const k=r.weapons.indexOf('decoy');if(k>=0)slotFx(k,'fired')}
+    if(mp.on)mpFired(r,'decoy',n0)}}
+/* ---------- Prototype 60: Reflector ----------
+   While r.refl is up, a shot that would hit r (Cannon bolt, Rocket, Missile, Swarm missile, Hunter, Bouncer) is turned round
+   instead and sent back toward the ship that fired it (down the track, behind r, for a shot that came from behind), now owned
+   by r. Mines, Quake, Shockwave and EMP are not shots at a ship so they get through: a mine is a hazard sitting on the road,
+   a Quake and a Shockwave are waves with no direction to turn round, and an EMP is not a shot. */
+const REFLECTABLE=['bolt','rocket','missile','hunter','bounce'];
+function reflectShot(s,r,i){const ow=s.owner,fromOw=!!ow&&ow!==r&&live(ow),old=s.nid,
+    dir=fromOw?(wrapU(ow.u-s.u)>=0?1:-1):(s.v>0?-1:1),sp=Math.abs(s.v);
+  const homing=s.type==='missile'||s.type==='hunter',tg=fromOw?ow:homing?(dir<0?targetBehind(r,250):targetAhead(r,260)):null;
+  s.owner=r;s.rear=dir<0;s.wait=false;s.dud=false;s.fl=null;s.fzl=0;s.u=r.u+dir*3;
+  s.v=dir<0?-clamp(sp,70,260):Math.max(sp,r.v+110);s.life=Math.max(s.life,s.type==='bolt'?0.9:s.type==='rocket'?1.2:s.type==='bounce'?6:3);
+  if(homing){s.target=tg;if(!tg)s.life=0}
+  s.brS=r.brS||null;s.br=r.brS?r.br:null;
+  const m=new THREE.Mesh(boomGeo,new THREE.MeshBasicMaterial({color:0xdff8ff,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));m.position.copy(s.mesh.position);scene.add(m);booms.push({m,t:0,big:false});
+  if(r===player||Math.abs(wrapU(r.u-player.u))<150){audio.blip(2600,0.14,r===player?0.12:0.06,'triangle',900)}
+  if(r.stat)r.stat.refl=(r.stat.refl||0)+1;
+  if(mp.on&&mp.sess&&!r.proxy){if(old)mp.sess.send({t:'boom',n:old});shots.splice(i,1);shots.push(s);mpFired(r,'reflector',shots.length-1)}}
 /* Threats to a ship: each {k:kind, t:seconds to impact, u, lat, gap?, ahead?}. Homing shots chasing it, straight shots in its line,
    a Quake rolling up behind it (unless it is already in the gap), mines in its line ahead. */
 function threatsTo(r){const out=[];if(!live(r))return out;
@@ -6526,7 +6575,7 @@ function fire(r,slot){
   else if(w==='hunter'){const t=leaderFor(r),m=shotMesh('hunter');scene.add(m);const wait=!!t&&t.utot<r.utot;shots.push({type:'hunter',u:r.u+3,lat:r.lat,v:wait?Math.max(30,r.v-40):Math.max(r.v,70)+140,owner:r,life:14,target:t,mesh:m,wait});
     if(near&&!fx)audio.blip(240,0.6,0.16,'sawtooth',900);}
   else if(w==='phase'){r.phase=1.5;if(near&&!fx)audio.blip(1300,0.35,0.1,'sine',260)}
-  else if(w==='decoy'){const m=shotMesh('decoy');scene.add(m);const d={type:'decoy',u:r.u-5,lat:r.lat,v:Math.max(20,r.v*0.55),owner:r,life:3,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5};shots.push(d);decoyPull(d);if(near&&!fx)audio.blip(1800,0.25,0.08,'triangle',600)}
+  else if(w==='reflector'){r.refl=REFLECT_T;if(near&&!fx)audio.blip(900,0.3,0.1,'triangle',2400)}
   else if(w==='emp'){empBlast(r);if(near&&!fx)audio.blip(1200,0.3,0.14,'square',90)}
   else if(w==='smoke'){const m=shotMesh('smoke');scene.add(m);shots.push({type:'smoke',u:r.u-14,lat:r.lat,v:0,owner:r,life:4.8,mesh:m});if(near&&!fx)audio.noiseHit(0.25,500,0.6)}
   else if(w==='autopilot'){r.autoT=4.5;if(near&&!fx)audio.blip(520,0.3,0.1,'triangle',1040)}
@@ -6617,23 +6666,27 @@ function startSpin(r,dur,big){r.spinT=0;r.spinD=dur;r.glBig=!!big;r.glSeed=Math.
 function spinStep(r,dt){if(!(r.spinD>0))return;r.spinT+=dt;if(r.spinT>=r.spinD){r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0}}
 /* steering from the nose: up to +80% nose up (grip), -15% nose down */
 function trimTurn(r){const pu=Math.max(0,r.pitch),pd=Math.max(0,-r.pitch);return 1+0.8*pu-0.15*pd}
-function wreck(r){if(r.stat)r.stat.wrecks++;if(r===player&&LOG.cur){LOG.cur.acc.wrecks++;logEv('wreck',{cause:LOG.lastSrc})}r.hp=0;r.phase=0;r.wreck=3.8;r.dive=0;r.stun=0;r.boost=0;r.selfBoost=false;r.barrier=0;r.ammo=Math.floor(r.ammo/2);r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0;const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);
+function wreck(r){if(r.stat)r.stat.wrecks++;if(r===player&&LOG.cur){LOG.cur.acc.wrecks++;logEv('wreck',{cause:LOG.lastSrc})}r.hp=0;r.phase=0;r.refl=0;r.wreck=3.8;r.dive=0;r.stun=0;r.boost=0;r.selfBoost=false;r.barrier=0;r.ammo=Math.floor(r.ammo/2);r.spinD=0;r.spin=0;r.rollA=0;r.hopY=0;const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);
   {const v=r===player?0.9:clamp(0.6-Math.abs(wrapU(r.u-player.u))/300,0,0.5);audio.sfx('wreck',v/0.9)||audio.boom(v)}
   if(r===player){rumble(1,1,420);cue('amM','lost');cue('hpM','lost');flash('rgba(255,74,61,.6)',0);S.shake=1;music.event('hit')}}
 const tp=new THREE.Vector3();
 function updateShots(dt){
+  flaresStep();
   for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.life-=dt;if(s.brS===undefined){s.brS=s.owner&&s.owner.brS||null;s.br=s.owner&&s.owner.brS?s.owner.br:null}
     if(s.type==='missile'){s.u+=s.v*dt;
       if(s.target){const d=wrapU(s.target.u-s.u)*(s.rear?-1:1);if(d>-4&&d<300)s.lat+=clamp(s.target.lat-s.lat,-1,1)*(s.mini?10:16)*dt;}
       s.lat=clampLat(s.u,s.lat,0.6,s)}
-    else if(s.type==='hunter'){if(s.dud||(s.target&&s.target.isDecoy&&Math.abs(wrapU(s.target.u-s.u))<3)){s.life=0;s.dud=true}if(!s.target||!live(s.target)){s.target=leaderFor(s.owner);s.wait=!!s.target&&s.target.utot<s.owner.utot}if(s.target){const d=wrapU(s.target.u-s.u);if(s.wait&&d>3)s.wait=false;
+    else if(s.type==='hunter'){if(s.dud||(s.target&&s.target.isDecoy&&Math.abs(wrapU(s.target.u-s.u))<3)){fizzle(s)}/* (P60) a Hunter the Reflector sent back (rear) flies backward at the ship that fired it, and goes out if that ship is gone */
+      if(s.rear&&(!s.target||!live(s.target)||s.target.isDecoy&&s.target.wreck)){s.life=0}
+      else if(!s.target||!live(s.target)){s.target=leaderFor(s.owner);s.wait=!!s.target&&s.target.utot<s.owner.utot}if(s.target){const d=wrapU(s.target.u-s.u)*(s.rear?-1:1);if(s.wait&&d>3)s.wait=false;
       // fired by the leader at the pilot behind: it drops back and waits in their line; otherwise it chases
       if(s.wait){s.v+=(Math.max(30,s.target.v-60)-s.v)*Math.min(1,dt*2);if(d>-200)s.lat+=clamp(s.target.lat-s.lat,-1,1)*22*dt}
+      else if(s.rear){s.v=-70;if(d>-6&&d<160)s.lat+=clamp(s.target.lat-s.lat,-1,1)*26*dt}
       else{s.v=d>0&&d<30?Math.min(s.v,s.target.v+45):Math.max(s.v,s.target.v+70);if(d>-6&&d<160)s.lat+=clamp(s.target.lat-s.lat,-1,1)*26*dt}}s.u+=s.v*dt;s.lat=clampLat(s.u,s.lat,0.6,s)}
     else if(s.type==='bolt'||s.type==='rocket'||s.type==='quake')s.u+=s.v*dt;
     else if(s.type==='decoy'){s.v=Math.max(0,s.v-30*dt);s.u+=s.v*dt;s.utot+=s.v*dt;if(s.owner)decoyPull(s);s.mesh.children[1].material.opacity=0.35+0.3*Math.abs(Math.sin(S.t*23));
-      for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3){o.life=0;o.dud=true}
-      if(s.life<=0){s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
+      for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3)fizzle(o);
+      if(s.life<=0){for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter'))fizzle(o);s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
     else if(s.type==='bounce'){s.u+=s.v*dt;s.lat+=s.vl*dt;const bf=surf(s.u,s.lat,s);if(s.lat<bf.lo+1||s.lat>bf.hi-1){s.lat=s.lat>bf.hi-1?bf.hi-1:bf.lo+1;s.vl=-s.vl;if(Math.abs(wrapU(s.u-player.u))<150)audio.blip(500,0.06,0.05,'square',250)}}
     else if(s.type==='mine')s.arm-=dt;
     const sh=surf(s.u,s.lat,s).h,sp=sampleAt(s.u);tp.copy(sp.p).addScaledVector(sp.r,s.lat).addScaledVector(sp.u,sh+(s.type==='mine'?0.9:s.type==='quake'?1.3:s.type==='smoke'?0:1.1));s.mesh.position.copy(tp);
@@ -6654,8 +6707,11 @@ function updateShots(dt){
     if(s.type!=='mine'||s.arm<=0)for(const r of racers){if(!live(r)||r.phase>0)continue;if(s.type==='hunter'&&r!==s.target)continue;
       if(s.brS&&r.brS===s.brS&&r.br!==s.br)continue;
       if(r===s.owner&&(s.type==='bounce'?s.life>5:(s.type!=='mine'&&!(s.rear&&s.life<2.4))||s.life>29))continue;
-      const du=wrapU(r.u-s.u);if(Math.abs(du)<len&&Math.abs(r.lat-s.lat)<wide*(r.d.size||1)){hit=r;break}}
+      if(r.refl>0&&r.proxy&&REFLECTABLE.includes(s.type)&&!s.dud)continue; // (P60) another device's Reflector turns it round there
+      const du=wrapU(r.u-s.u);if(Math.abs(du)<len&&Math.abs(r.lat-s.lat)<wide*(r.d.size||1)){if(s.target&&s.target.isDecoy&&s.target.owner===r){fizzle(s);break}hit=r;break}}  // (P60) a shot on the flares it dropped for is already beaten: it can't hit them
+    if(hit&&hit.refl>0&&!hit.proxy&&REFLECTABLE.includes(s.type)&&!s.dud){reflectShot(s,hit,i);continue}
     if(hit){const d=Math.abs(wrapU(hit.u-player.u));if(mp.on&&s.nid&&!hit.proxy)mp.sess&&mp.sess.send({t:'boom',n:s.nid});
+      if(s.fl&&s.fl===hit&&hit.fl)hit.fl.hit++;
       LOG.src=s.type;LOG.by=s.owner||null;if(s.owner&&s.owner.stat&&s.owner!==hit)s.owner.stat.given++;if(LOG.cur){const A=LOG.cur.acc;if(s.owner===player&&hit!==player){A.hitsOn[s.type]=(A.hitsOn[s.type]||0)+1;logEv('give',{w:s.type,to:hit.name})}if(hit===player)A.hitsBy[s.type]=(A.hitsBy[s.type]||0)+1}
       if(s.type==='missile'){damage(hit,s.mini?10:24,tp.clone(),s.mini?0.45:1.0);audio.boom(hit===player?(s.mini?0.4:0.7):clamp((s.mini?0.3:0.5)-d/300,0,0.4))}
       else if(s.type==='hunter'){damage(hit,42,tp.clone(),1.2);explode(tp.clone(),true);audio.boom(hit===player?0.9:clamp(0.6-d/300,0,0.5))}
@@ -6674,6 +6730,7 @@ function clearShots(){for(const s of shots)scene.remove(s.mesh);shots.length=0;f
   for(const g of rings){scene.remove(g.m);g.m.material.dispose()}rings.length=0;clearFx()}
 
 /* ---------- AI ---------- */
+const REFLECTABLE_K=['missile','swarm','hunter','rocket','bolt','bounce'];
 const modU=u=>((u%T.L)+T.L)%T.L;
 function aiWants(r,w){
   if(w==='missile'){const t=targetAhead(r,200);return(t&&Math.abs(t.lat-r.lat)<5)||(!targetAhead(r,260)&&!!targetBehind(r,120))}
@@ -6683,7 +6740,10 @@ function aiWants(r,w){
   if(w==='turbo')return Math.abs(T.Cs[idxAt(r.u+60)])<0.003;
   if(w==='barrier'){if(threatsTo(r).some(h=>h.t<0.6&&!h.safe))return true;return r.hp<r.d.hp*0.35&&Math.random()<0.1}
   if(w==='phase')return threatsTo(r).some(h=>h.t<0.35&&!h.safe&&h.k!=='mine');
-  if(w==='decoy')return threatsTo(r).some(h=>(h.k==='missile'||h.k==='swarm'||h.k==='hunter')&&h.t<1.2);
+  /* Prototype 60: the Reflector's shell is up 0.75 s, so the AI fires it when a shot it can turn round is within half a second
+     (Phase gets 0.35 s of a 1.5 s cover). A lone cannon bolt (8 damage) isn't worth it; two or more, or anything bigger, is.
+     Flares (the old Decoy) fire by themselves, so the AI has nothing to decide about them. */
+  if(w==='reflector'){if(r.refl>0)return false;const th=threatsTo(r).filter(h=>h.t<0.5&&!h.safe&&REFLECTABLE_K.includes(h.k));return th.some(h=>h.k!=='bolt')||th.length>=2}
   const ahead=range=>racers.filter(o=>o!==r&&live(o)&&(d=>d>2&&d<range)(wrapU(o.u-r.u)));
   if(w==='rockets'){const t=targetAhead(r,150);return!!t&&Math.abs(t.lat-r.lat)<3.5}
   if(w==='swarm')return ahead(280).length>=2||!!targetAhead(r,150);
@@ -6835,9 +6895,9 @@ function aiInput(r,dt){
   const fireW=[false,false],holdW=[false,false];/* passive slots (scoops) never fire */
   if((r.isAI||BOT&&r===player)&&r.finishT==null)for(let k=0;k<2;k++){const w=r.weapons[k];if(!canFire(r,k)||r.isAI&&(S.car||QK.live)&&S.aiF<1&&(S.raceT/5+r.skill*37)%1>S.aiF)continue;
     if(w==='cannon'){holdW[k]=aiWants(r,w);continue}
-    /* (P58) Phase, Barrier and Decoy: Hard watches for its moment every frame; Easy misses some */
-    const dfn=hn&&(w==='phase'||w==='barrier'||w==='decoy');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
-    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
+    /* (P58) Phase, Barrier and Decoy (P60: now the Reflector; Flares fire themselves): Hard watches for its moment every frame; Easy misses some */
+    const dfn=hn&&(w==='phase'||w==='barrier'||w==='reflector');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
+    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+Math.random()*0.3:0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
   const kn=Math.max(T.Kn[idxAt(r.u+r.v*0.2)],T.Kn[idxAt(r.u+r.v*0.4)]),kc=T.Kn[idxAt(r.u+r.v*0.35)];
   const slA=T.Tg[idxAt(r.u+12)].y,pitch=rUp?1:r.air&&r.air!==true?F.ja:r.air===true||kc<-0.0011?-1:brake>0.05?0.7:Math.abs(T.Cs[idxAt(r.u+look*0.6)])>0.009?0.5*(r.sty?r.sty.up:1):slA>0.03?clamp(slA/0.08,0,1)*(r.sty?clamp(r.sty.up,0.4,1.2):1):slA<-0.03&&r.d.aero>0?-clamp(-slA*F.dv/0.08,0,1)*(r.sty?clamp(r.sty.dive,0.4,1.2):1):0;
   /* Held boost costs shield, so the AI saves it for straights while its shield is healthy; on a green strip the strip pays
@@ -7238,7 +7298,7 @@ function physics(r,inp,dt){
     else if(pr)slotFx(k,r.ammo<WDEF[w].cost?'empty':'cd');
     if(!ok&&pr&&r.ammo<WDEF[w].cost&&S.t>ammoWarnT){ammoWarnT=S.t+0.6;audio.deny();cue('amM','deny',400)}}
   if(r===player)LOG.src=LOG.by=null;if(r.stat&&(r.boost>0||r.selfBoost))r.stat.boostT+=dt;
-  r.scrape=Math.max(0,(r.scrape||0)-dt);r.emp=Math.max(0,(r.emp||0)-dt);r.od=Math.max(0,(r.od||0)-dt);r.autoT=Math.max(0,(r.autoT||0)-dt);r.ink=Math.max(0,(r.ink||0)-dt);r.phase=Math.max(0,(r.phase||0)-dt);r.boost=Math.max(0,r.boost-dt);r.barrier=Math.max(0,r.barrier-dt);r.inv=Math.max(0,r.inv-dt);
+  r.scrape=Math.max(0,(r.scrape||0)-dt);r.emp=Math.max(0,(r.emp||0)-dt);r.od=Math.max(0,(r.od||0)-dt);r.autoT=Math.max(0,(r.autoT||0)-dt);r.ink=Math.max(0,(r.ink||0)-dt);r.phase=Math.max(0,(r.phase||0)-dt);r.refl=Math.max(0,(r.refl||0)-dt);r.boost=Math.max(0,r.boost-dt);r.barrier=Math.max(0,r.barrier-dt);r.inv=Math.max(0,r.inv-dt);
   if(r.stun>0)r.stun-=dt;spinStep(r,dt);
   lapCheck(r)}
 function collide(){
@@ -7978,7 +8038,7 @@ $('nextTune').onclick=newSong;
    the first complex tracks, Elite narrow and complex */
 const CAR_T=[{n:'Rookie',k:0.7,ai:0.9,f:0.25,e:{dmg:0.6,up:0.3},pay:1,tr:['WQC4DA5B','WQD467DC','WQ8FF347','W2E2AC0']},{n:'Club',k:0.8,ai:0.93,f:0.4,e:{dmg:0.7,up:0.5},pay:1.25,tr:['SQCFC064','WQ6A99B4','S6DF7DD','W935170']},
   {n:'Pro',k:0.9,ai:0.94,f:0.5,e:{dmg:0.7,up:0.6,dn:1.5},pay:1.5,tr:['S454021','SXQE3779B','SL6526AF','SX1FE68E']},{n:'Elite',k:1,ai:1,f:1,e:null,pay:2,tr:['NXQFA8CFB','NXBE1E08','SXL5C5581','NXL7C3C10']}];
-const CAR_W0=['missile','cannon','turbo'],CAR_W=['mines','rockets','barrier','decoy','smoke','shock','bouncer','scoopS','phase','swarm','scoopA','autopilot','emp','hunter','quake','overdrive'];
+const CAR_W0=['missile','cannon','turbo'],CAR_W=['mines','rockets','barrier','decoy','smoke','shock','bouncer','scoopS','phase','reflector','swarm','scoopA','autopilot','emp','hunter','quake','overdrive'];
 const CAR_PAY=[600,450,350,260,190,140,100,70],CAR_UP=[300,400,500,600,700,800,900,1000,1100,1200],CAR_N=16,CAR_P0=5;
 const car=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.career')||'null')}catch(e){}if(!o||typeof o!=='object')o={};
   const best=Array.isArray(o.best)?o.best.slice(0,CAR_N).map(x=>clamp(x|0,0,8)):[];while(best.length<CAR_N)best.push(0);
@@ -7987,7 +8047,8 @@ const car=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.career')||'null
 const carSave=()=>store.set('hoverline.career',JSON.stringify({v:39,cr:car.cr,up:car.up,best:car.best,fr:car.fr||null}));
 if(car.old)carSave();
 const carOpen=()=>{let i=0;while(i<CAR_N-1&&car.best[i]&&car.best[i]<=3)i++;return i};
-const carW=()=>CAR_W0.concat(CAR_W.slice(0,car.best.filter(x=>x&&x<=3).length));
+/* (P60) the Reflector made 17 unlocks for 16 tracks: the last clear of all unlocks the final module too */
+const carW=()=>{const n=car.best.filter(x=>x&&x<=3).length;return CAR_W0.concat(CAR_W.slice(0,n+(n>=CAR_N?1:0)))};
 const carCode=i=>CAR_T[i>>2].tr[i&3]+'-'+'UOFRN'[i%5];
 function carBuild(){let b=null;try{b=JSON.parse(store.get('hoverline.cbuild')||'null')}catch(e){}const d=defaultBuild(),bare={speed:1,thrust:1,handling:1,shield:1,ammo:1};d.stats={...bare};
   d.frame=build.frame;d.paint=build.paint;d.liv=build.liv||null;
@@ -10046,7 +10107,7 @@ function oskOpen(e){if(!e)return;osk.el=e;osk.caps=e.dataset.osk==='code'||!e.va
 function oskClose(){const e=osk.el;$('osk').hidden=true;if(!e)return;osk.el=null;e.dispatchEvent(new Event('change',{bubbles:true}));const b=document.querySelector(`[data-osk-for="${e.id}"]`);if(b&&lastDev!=='touch')navFocus(b)}
 document.querySelectorAll('[data-osk-for]').forEach(b=>b.onclick=()=>oskOpen($(b.dataset.oskFor)));
 /* ---- poses ---- */
-const mpFlags=r=>(r.air?1:0)|(r.wreck>0?2:0)|(r.inv>0?4:0)|(r.barrier>0?8:0)|(r.boost>0||r.selfBoost?16:0)|(r.charging==='hp'?32:0)|(r.charging==='ammo'?64:0)|(r.stun>0?128:0)|(r.finishT!=null?256:0)|(r.od>0?512:0)|(r.emp>0?1024:0)|(r.phase>0?2048:0)|(r.dN&&r.drift?(r.drift>0?8192:4096):0);
+const mpFlags=r=>(r.air?1:0)|(r.wreck>0?2:0)|(r.inv>0?4:0)|(r.barrier>0?8:0)|(r.boost>0||r.selfBoost?16:0)|(r.charging==='hp'?32:0)|(r.charging==='ammo'?64:0)|(r.stun>0?128:0)|(r.finishT!=null?256:0)|(r.od>0?512:0)|(r.emp>0?1024:0)|(r.phase>0?2048:0)|(r.refl>0?16384:0)|(r.dN&&r.drift?(r.drift>0?8192:4096):0);
 const mpPack=r=>[Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round(r.v*10),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),Math.round(r.brk*100),mpFlags(r),Math.round(r.hp),r.done];
 function mpTick(){const s=mp.sess;if(!s)return;const t=performance.now();if(t-(mp.lastPose||0)<100)return;mp.lastPose=t;
   {const lk=s.state.link,pa=lk&&lk.paths;if(lk&&lk.carrier==='net'&&pa&&!pa.broker&&!pa.direct){if(!mp.lost)mp.lost=t;else if(t-mp.lost>4000&&t-(mp.lostSaid||0)>10000){mp.lostSaid=t;note('Connection lost · pause and tap Reconnect',2600)}}else mp.lost=0}
@@ -10064,7 +10125,7 @@ function proxyStep(r,dt){const n=r.net;if(!n||r.left)return;
   const f=n.f;r.air=!!(f&1);const wr=!!(f&2);
   if(wr&&r.wreck<=0){const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);audio.boom(clamp(0.6-Math.abs(wrapU(r.u-player.u))/300,0,0.5))}
   r.wreck=wr?1:0;r.inv=f&4?1:0;r.barrier=f&8?1:0;r.boost=f&16?1:0;r.charging=f&32?'hp':f&64?'ammo':null;
-  if(f&128){if(!(r.stun>0)&&!(r.spinD>0))startSpin(r,0.75,false);r.stun=0.1}else r.stun=0;spinStep(r,dt);r.od=f&512?1:0;r.emp=f&1024?1:0;r.phase=f&2048?0.2:0;{const dd=f&8192?1:f&4096?-1:0,P=drOf(r);if(dd&&!r.drift)r.dT=0;r.drift=dd;r.dN=dd?1:0;if(dd){r.dT=(r.dT||0)+dt;r.dB=P.cap*(1-Math.exp(-r.dT/P.tau));r.dAng=P.ang}else r.dB=0;r.driftK=clamp((r.driftK||0)+(dd?4:-3)*dt,0,1)}r.hp=n.hp;r.done=n.done}
+  if(f&128){if(!(r.stun>0)&&!(r.spinD>0))startSpin(r,0.75,false);r.stun=0.1}else r.stun=0;spinStep(r,dt);r.od=f&512?1:0;r.emp=f&1024?1:0;r.phase=f&2048?0.2:0;r.refl=f&16384?0.2:0;{const dd=f&8192?1:f&4096?-1:0,P=drOf(r);if(dd&&!r.drift)r.dT=0;r.drift=dd;r.dN=dd?1:0;if(dd){r.dT=(r.dT||0)+dt;r.dB=P.cap*(1-Math.exp(-r.dT/P.tau));r.dAng=P.ang}else r.dB=0;r.driftK=clamp((r.driftK||0)+(dd?4:-3)*dt,0,1)}r.hp=n.hp;r.done=n.done}
 /* Reference distance for the AI's catch-up: the average of the human pilots, not just this device's player. */
 function bandRef(){if(!mp.on)return player.utot;let s=0,n=0;for(const r of racers)if(!r.isAI&&!r.left){s+=r.utot;n++}return n?s/n:player.utot}
 /* ---- weapons over the network ---- */
@@ -10251,7 +10312,7 @@ function placeShip(r,t){
     r.ship.position.addScaledVector(right,(Math.random()-0.5)*0.32*e).addScaledVector(up,(Math.random()-0.5)*0.24*e);
     _gq.setFromAxisAngle(AX_Y,(Math.random()-0.5)*0.24*e);r.ship.quaternion.multiply(_gq);_gq.setFromAxisAngle(AX_Z,(Math.random()-0.5)*0.22*e);r.ship.quaternion.multiply(_gq)}
   else if(sc.x!==1||sc.y!==1||sc.z!==1)sc.set(1,1,1);
-  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
+  const fpvMe=r===player&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);reflectLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
   r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
   const ud=r.ship.userData;shipCtl(ud,r.brk,r.steerS,S.state==='menu'||S.state==='lab'?1:r.ammo/(r.d.ammo||100));
   if(ud.extra&&ud.extra.spin){const dt=clamp(t-(r._lt??t),0,0.1);r._lt=t;for(const q of ud.extra.spin)q.o.rotation[q.ax]+=(q.k*r.v+(q.w||0))*dt}/* the flicker is a hash of the time, not Math.random, so drawing never moves the game's random numbers (Prototype 51) */
@@ -10285,6 +10346,14 @@ function phaseLook(r,t){const on=r.phase>0&&r.wreck<=0;if(!on&&!r._ph)return;r._
     if(!u.phM){const src=m.material,arr=Array.isArray(src)?src:[src];if(arr.some(x=>x.blending!==THREE.NormalBlending||x===ud.trailM||x===ud.glowM)){u.phSkip=true}else{/* three makes each new material's id from Math.random, which the races share: lend it a private sequence while cloning,
       so Phase looks change nothing about a race */const R0=Math.random;Math.random=()=>((phaseN=(phaseN*1103515245+12345)>>>0)/4294967296);try{u.phM=Array.isArray(src)?src.map(x=>x.clone()):src.clone()}finally{Math.random=R0};for(const x of[].concat(u.phM)){x.transparent=true;x.depthWrite=false}}}
     if(u.phSkip)return;if(!u.phO)u.phO=m.material;m.material=u.phM;for(const x of[].concat(u.phM)){x.opacity=op;x.wireframe=wf}})}
+/* Prototype 60: the Reflector's shell, a brief mirrored bubble (a faint silver ball with a wire cage that flickers) round the
+   frame while r.refl is up; it is a child of the ship so it follows it and goes with it when the ship is rebuilt. */
+function reflectLook(r,t){const on=r.refl>0&&r.wreck<=0;let g=r._rf;if(!on){if(g)g.visible=false;return}
+  if(!g||g.parent!==r.ship){const geo=new THREE.IcosahedronGeometry(1,1),am={transparent:true,blending:THREE.AdditiveBlending,depthWrite:false},
+      face=new THREE.MeshBasicMaterial({color:0xbfe6ff,opacity:.25,side:THREE.DoubleSide,...am}),cage=new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,opacity:.7,...am});
+    g=r._rf=new THREE.Group();g.add(new THREE.Mesh(geo,face),new THREE.Mesh(geo,cage));g.userData={face,cage};g.position.y=0.5;r.ship.add(g)}
+  const k=Math.min(1,r.refl/0.15),fl=0.75+0.25*Math.sin(t*40);g.visible=true;g.scale.setScalar((2.2+0.15*Math.sin(t*25))*(r.d.size||1));g.rotation.y=t*3;
+  g.userData.face.opacity=0.28*k*fl;g.userData.cage.opacity=0.75*k*fl}
 function trimStep(dt){const r=player,F=trimFx,on=(S.state==='race'||S.state==='countdown')&&r.wreck<=0&&r.ship.visible;
   const pd=Math.max(0,-r.pitch),pu=Math.max(0,r.pitch),ground=!r.air;
   const scr=false,tbB=r.trimB||0,wantG=on&&ground&&(tbB>0.01||r.trimUp&&(r.slopeG||0)>0.2&&r.climb<1.6)?clamp(Math.max(tbB/0.15,r.trimUp?r.slopeG*(3-r.climb)/2:0),0,1)*clamp(r.v/70,0,1):0,wantR=on&&ground&&pu>0.12?pu*clamp(r.v/60,0,1):0;
@@ -10379,7 +10448,7 @@ function step(dt){
       if(hpF<0.25&&!lowWarn&&player.wreck<=0&&S.state==='race'){lowWarn=true;if(!audio.sfx('low')){audio.blip(980,0.1,0.1,'square');setTimeout(()=>audio.blip(980,0.1,0.1,'square'),160)}}else if(hpF>0.35)lowWarn=false;
       const emp=player.emp>0;$('amM').classList.toggle('empty',S.state==='race'&&player.wreck<=0&&player.ammo<minCost(player));$('bst').classList.toggle('emp',emp);
       for(let k=0;k<2;k++){const w=player.weapons[k],d=WDEF[w],dir=w==='missile'?(targetAhead(player,260)?' ▲':targetBehind(player,200)?' ▼':''):'';
-        const rdy=player.ammo>=d.cost&&player.wreck<=0&&!emp,b=$('w'+(k+1)),sub=d.passive?'passive':S.raceT<WLOCK?Math.ceil(WLOCK-S.raceT)+' s':d.cost+dir;const bh=`${icon(w)}<small>${sub}</small>`;if(b._h!==bh){b._h=bh;b.innerHTML=bh;b.setAttribute('aria-label',d.name)}b.classList.toggle('rdy',rdy&&!d.passive&&S.raceT>=WLOCK);b.classList.toggle('emp',emp&&!d.passive);
+        const rdy=player.ammo>=d.cost&&player.wreck<=0&&!emp,b=$('w'+(k+1)),sub=d.passive?(d.auto?'auto':'passive'):S.raceT<WLOCK?Math.ceil(WLOCK-S.raceT)+' s':d.cost+dir;const bh=`${icon(w)}<small>${sub}</small>`;if(b._h!==bh){b._h=bh;b.innerHTML=bh;b.setAttribute('aria-label',d.name)}b.classList.toggle('rdy',rdy&&!d.passive&&S.raceT>=WLOCK);b.classList.toggle('emp',emp&&!d.passive);
         const act=k?'w2':'w1',kb=actLabel(act),locked=S.raceT<WLOCK&&S.state!=='menu',sl=$('s'+(k+1));
         const sh=`<kbd class="${lastDev==='pad'?padCls(bind.pad[act]):''}">${lastDev==='pad'?padFace(bind.pad[act]):esc(kb)}</kbd>${icon(w)}<small>${sub}</small>`;if(sl._h!==sh){sl._h=sh;sl.innerHTML=sh;sl.title=d.name}sl.classList.toggle('rdy',rdy&&!locked&&!d.passive);sl.classList.toggle('emp',emp&&!d.passive);sl.classList.toggle('hold',S.t-slotLast[k]<0.25&&w==='cannon')}}
   }
@@ -10531,7 +10600,7 @@ function labUI(){const free=BUD-spent(build),box=$('labStats');
   const wb=$('labWpn');wb.innerHTML='';
   const cw=S.car?carW():null;
   for(const[k,w]of Object.entries(WDEF)){const b=document.createElement('button');b.className='chip wchip';const slot=build.weapons.indexOf(k),lk=cw&&!cw.includes(k);b.classList.toggle('lock',!!lk);
-    b.innerHTML=`${slot>=0?slotTag(slot):''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?'passive':w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, passive`:`${w.name}, ${w.cost} ammo per shot`);
+    b.innerHTML=`${slot>=0?slotTag(slot):''}${icon(k)}${w.name}<small>${lk?icon('lock'):w.passive?(w.auto?'auto':'passive'):w.cost}</small>`;b.setAttribute('aria-pressed',String(slot>=0));b.setAttribute('aria-label',lk?`${w.name}, locked`:w.passive?`${w.name}, ${w.auto?'automatic':'passive'}`:`${w.name}, ${w.cost} ammo per shot`);
     b.onclick=()=>{if(lk){$('labWdesc').textContent=`${w.name}: ${w.desc} Win career races to unlock it.`;audio.deny();return}if(build.weapons.includes(k)){build.weapons=[build.weapons[1],build.weapons[0]];saveBuild();audio.sfx('ui_ok')||audio.blip(660,0.08,0.06);const nb=build.weapons.indexOf(k);
         $('labWdesc').innerHTML=`${w.name} moves to ${slotTag(nb)}, ${WDEF[build.weapons[1-nb]].name} to ${slotTag(1-nb)}. ${w.desc}${w.passive?'':` Uses ${w.cost} ammo.`}`;labUI();return}
       /* the two scoops never go together: fitting one swaps out the other */

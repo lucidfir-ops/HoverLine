@@ -6,6 +6,11 @@ const STATS=[{k:'speed',name:'Speed',part:'Thrusters',more:'bigger',less:'smalle
   {k:'handling',name:'Handling',part:'Wings & fins',more:'wider',less:'narrower'},{k:'shield',name:'Shield',part:'Armour',more:'thicker',less:'thinner'},
   {k:'ammo',name:'Ammo',part:'Ammo bars',more:'longer',less:'shorter'}];
 const BUDGET=15,SMIN=1,SMAX=5;let BUD=BUDGET,buildKey='hoverline.build';
+/* Prototype 60: the numbers for the two new modules, in one place. REFLECT_T: how long the Reflector's shell is up (half of
+   Phase's 1.5 s; its cost, 10, is half Phase's 20). FLARE_K: Flares (the old Decoy, same key) spend this many times the
+   incoming homing attack's ammo cost, and drop one flare for every FLARE_UNIT of it (at most FLARE_MAX), which live FLARE_T
+   seconds. The 1.5 started as Eric's guess; tools/sim/flares.js measured it (see the changelog). */
+const REFLECT_T=0.75,FLARE_K=1.5,FLARE_UNIT=15,FLARE_MAX=4,FLARE_T=4;
 const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backwards when nobody is ahead.'},
   cannon:{name:'Cannon',cost:5,desc:'Rapid straight bolts. Hold the button to keep firing.'},
   mines:{name:'Mines',cost:30,desc:'Drops three mines behind you.'},
@@ -13,7 +18,8 @@ const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backward
   turbo:{name:'Turbo',cost:25,desc:'A 2.4-second speed burst. While it runs your held boost rests and costs no shield.'},
   barrier:{name:'Barrier',cost:35,desc:'Blocks all damage for 3 seconds.'},
   phase:{name:'Phase',cost:20,desc:'For 1.5 seconds weapons pass straight through you, and so do other frames and smoke.'},
-  decoy:{name:'Decoy',cost:15,desc:'Drops a flare. Homing missiles, the Swarm and the Hunter chasing you go for it instead.'},
+  reflector:{name:'Reflector',cost:10,desc:'For 0.75 seconds shots that would hit you turn round and fly back down the track as yours: Cannon, Rockets, Missile, Swarm, Hunter and Bouncer. Mines, Quake, Shockwave and EMP still get through.'},
+  decoy:{name:'Flares',cost:0,passive:true,auto:true,desc:''},
   rockets:{name:'Rockets',cost:20,desc:'Three straight rockets in a spread. No homing: aim with your frame.'},
   swarm:{name:'Swarm',cost:35,desc:'Four small homing missiles, one for each of the nearest frames ahead.'},
   quake:{name:'Quake',cost:35,desc:'A wave that rolls up the track ahead with one gap in it, hitting every frame it catches and clearing mines.'},
@@ -25,12 +31,15 @@ const WDEF={missile:{name:'Missile',cost:25,desc:'Homing missile. Fires backward
   overdrive:{name:'Overdrive',cost:60,desc:'3 seconds untouchable and faster. Ram other frames to dent their shields and slow them.'},
   scoopS:{name:'Shield scoop',cost:0,passive:true,desc:'Not a weapon: green strips recharge your shield twice as fast. It takes a module slot, and you cannot fit it with the Ammo scoop.'},
   scoopA:{name:'Ammo scoop',cost:0,passive:true,desc:'Not a weapon: purple strips refill your ammo twice as fast. It takes a module slot, and you cannot fit it with the Shield scoop.'}};
+/* what Flares spend against each homing attack: K times its module cost; a Swarm missile is a quarter of the Swarm's */
+const flareCostOf=(type,mini)=>FLARE_K*(type==='hunter'?WDEF.hunter.cost:mini?WDEF.swarm.cost/4:WDEF.missile.cost);
+WDEF.decoy.desc=`Automatic: no button. When a homing attack locks on you, Flares spend ${FLARE_K} times its ammo cost to pull it off you: ${Math.round(flareCostOf('missile'))} for a Missile, ${Math.round(flareCostOf('missile',true))} for each Swarm missile, ${Math.round(flareCostOf('hunter'))} for a Hunter. A small attack gets one flare, a Hunter most of the payload. With less ammo than that, nothing fires and you get hit.`;
 const SCOOPS=['scoopS','scoopA'],bothScoops=w=>SCOOPS.every(k=>w.includes(k));
 /* Icons (Prototype 32): one line drawing per weapon and for boost, shield and ammo, drawn in the colour of whatever holds them. */
 const SH='M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z';
 const ICON={missile:'<path d="M4 10h11l5 2-5 2H4zM7 10L5 6M7 14l-2 4M1 12h1"/>',cannon:'<path d="M3 8h6M3 12h10M3 16h6M13 8h2M17 12h4M13 16h2"/>',
   mines:'<path d="M12 6l6 6-6 6-6-6zM12 2v3M12 19v3M2 12h3M19 12h3"/>',shock:'<circle cx="12" cy="12" r="2"/><path d="M7.5 7.5a6.5 6.5 0 0 0 0 9M16.5 7.5a6.5 6.5 0 0 1 0 9M4.5 4.5a10.5 10.5 0 0 0 0 15M19.5 4.5a10.5 10.5 0 0 1 0 15"/>',
-  turbo:'<path d="M4 6l6 6-6 6M12 6l6 6-6 6"/>',barrier:'<path d="'+SH+'"/>',phase:'<circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/><path d="M2 12h20M19 9l3 3-3 3"/>',
+  turbo:'<path d="M4 6l6 6-6 6M12 6l6 6-6 6"/>',barrier:'<path d="'+SH+'"/>',phase:'<circle cx="12" cy="12" r="7" stroke-dasharray="3 3"/><path d="M2 12h20M19 9l3 3-3 3"/>',reflector:'<path d="M17 3v18M2 5l13 7M15 12L2 19M2 19v-4.5M2 19h4.5"/>',
   decoy:'<path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l4 4M15 15l4 4M19 5l-4 4M9 15l-4 4"/>',rockets:'<path d="M3 12L18 5M3 12h17M3 12l15 7"/>',
   swarm:'<circle cx="16" cy="5" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="16" cy="19" r="2"/><path d="M3 5h10M4 12h12M3 19h10"/>',quake:'<path d="M2 15l4-6 4 8 4-10 4 8 4-4"/>',
   bouncer:'<circle cx="17" cy="7" r="3.5"/><path d="M3 8l5 11 5-9"/>',hunter:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>',

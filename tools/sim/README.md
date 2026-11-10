@@ -141,3 +141,7 @@ python3 trials.py results/tr*.jsonl                  # gap to the fastest frame 
 python3 driftgain.py results/tr.jsonl -- results/nd.jsonl   # what drifting is worth per frame
 python3 orbvar.py results/tr.jsonl -- results/orb.jsonl     # a frame's variant against the full set (framevar.py: any frame)
 ```
+
+## Flares (Prototype 60)
+
+`node flares.js stress|field N OFFSET` measures how much of the homing fire Flares (the old Decoy, key `decoy`) block: carriers count the Missile, Swarm and Hunter attacks that locked on them (`r.fl` in the game: lock, fire, dry, block, hit). `stress` puts four carriers against four homing-heavy racers (`SECOND=cannon|turbo|scoopA` is the carriers' other module); `field` is eight random module pairs. Build the game with `SRC=../../build/hoverline.html python3 gen.py` first. The multiplier is `FLARE_K` in `src/js/ships/007-ships-builds.js`.

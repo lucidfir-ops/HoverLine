@@ -289,7 +289,7 @@ function physics(r,inp,dt){
     else if(pr)slotFx(k,r.ammo<WDEF[w].cost?'empty':'cd');
     if(!ok&&pr&&r.ammo<WDEF[w].cost&&S.t>ammoWarnT){ammoWarnT=S.t+0.6;audio.deny();cue('amM','deny',400)}}
   if(r===player)LOG.src=LOG.by=null;if(r.stat&&(r.boost>0||r.selfBoost))r.stat.boostT+=dt;
-  r.scrape=Math.max(0,(r.scrape||0)-dt);r.emp=Math.max(0,(r.emp||0)-dt);r.od=Math.max(0,(r.od||0)-dt);r.autoT=Math.max(0,(r.autoT||0)-dt);r.ink=Math.max(0,(r.ink||0)-dt);r.phase=Math.max(0,(r.phase||0)-dt);r.boost=Math.max(0,r.boost-dt);r.barrier=Math.max(0,r.barrier-dt);r.inv=Math.max(0,r.inv-dt);
+  r.scrape=Math.max(0,(r.scrape||0)-dt);r.emp=Math.max(0,(r.emp||0)-dt);r.od=Math.max(0,(r.od||0)-dt);r.autoT=Math.max(0,(r.autoT||0)-dt);r.ink=Math.max(0,(r.ink||0)-dt);r.phase=Math.max(0,(r.phase||0)-dt);r.refl=Math.max(0,(r.refl||0)-dt);r.boost=Math.max(0,r.boost-dt);r.barrier=Math.max(0,r.barrier-dt);r.inv=Math.max(0,r.inv-dt);
   if(r.stun>0)r.stun-=dt;spinStep(r,dt);
   lapCheck(r)}
 function collide(){
