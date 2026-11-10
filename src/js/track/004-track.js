@@ -782,12 +782,27 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
       /* no stretch outside shorter than 140 m, none inside shorter than 260 m */
       const tidy=(v,minL)=>{let s=-1;for(let i=0;i<N;i++)if(ins[i]!==v){s=i;break}if(s<0)return;
         for(let k=0;k<N;){const i=(s+k)%N;if(ins[i]!==v){k++;continue}let n=0;while(n<N-k&&ins[(i+n)%N]===v)n++;if(n*ds<minL)for(let j=0;j<n;j++)ins[(i+j)%N]=1-v;k+=n}};
+      tidy(0,140);tidy(1,260);
+      /* Prototype 60: no way in or out of the mountain on a feature (a jump, loop, twist, corkscrew, helix or spire) or a
+         split, nor within 60 m of one. The cave mouth's tunnel follows the centreline and the cavern can't close round a
+         road that flies, rolls or stacks there, so those ways in were open to the sky (NX130F38-P's way out on a jump and
+         in a loop, NXD8C77A-P's way in on a spire), and on a split the tunnel stood between the two routes, in both of
+         them (NX130F38-P, SLC32957-P, NXL1FDB51-...-P3443). Each such stretch now lies wholly on the side most of it was
+         on; tidying again only merges stretches, so it never adds a way in. */
+      const bz=new Uint8Array(N),mg=Math.round(60/ds);for(let i=0;i<N;i++)if(kind[i]||gap[i]||spl[i])for(let k=-mg;k<=mg;k++)bz[((i+k)%N+N)%N]=1;
+      let s0=-1;for(let i=0;i<N;i++)if(!bz[i]){s0=i;break}
+      if(s0<0){let c=0;for(let i=0;i<N;i++)c+=ins[i];ins.fill(c*2>=N?1:0)}
+      else for(let k=0;k<N;){const i=(s0+k)%N;if(!bz[i]){k++;continue}let n=0,c=0;while(k+n<N&&bz[(s0+k+n)%N]){c+=ins[(s0+k+n)%N];n++}const v=c*2>=n?1:0;for(let j=0;j<n;j++)ins[(s0+k+j)%N]=v;k+=n}
       tidy(0,140);tidy(1,260)}
     /* the road as points on a grid, each marked inside or out (a split route follows the main line beside it) */
     const SP=[],SG=new Map(),SC=48,sk=(a,b)=>a*65537+b;
     const sAdd=(x,y,z,i)=>{const o={x,y,z,i,n:ins[i]};const key=sk(Math.floor(x/SC),Math.floor(z/SC));let a=SG.get(key);if(!a)SG.set(key,a=[]);a.push(o);SP.push(o)};
     for(let i=0;i<N;i++)sAdd(P[i].x,P[i].y,P[i].z,i);
-    for(const S0 of splits){const L0=S0.pts.length;S0.pts.forEach((q,k)=>sAdd(q.x,q.y,q.z,(S0.i0+Math.round(S0.n*k/Math.max(1,L0-1)))%N))}
+    /* Prototype 60: every route of a split (and pit lane and cut) at every sample, where its road is drawn (the route's
+       line and height in the main road's frame, as the road strips are built). It used the route's points every 12 m,
+       which left the rock between them in the road: rock poked through split routes (NX130F38-P at 2.3 km, NXL7D6FF6-
+       33224444222-P3443 at 3.7, 4.3, 6.6 and 6.8 km) */
+    for(const S0 of splits)for(const B of S0.b){const n=B.c.length-1;for(let k=0;k<=n;k++){const i=(S0.i0+k)%N,p=P[i],r=R[i],u=U[i],c=B.c[k],hh=B.h[k];sAdd(p.x+r.x*c+u.x*hh,p.y+r.y*c+u.y*hh,p.z+r.z*c+u.z*hh,i)}}
     const scan=(x,z,R,fn)=>{const c0=Math.floor((x-R)/SC),c1=Math.floor((x+R)/SC),d0=Math.floor((z-R)/SC),d1=Math.floor((z+R)/SC);
       for(let a=c0;a<=c1;a++)for(let c=d0;c<=d1;c++){const Lc=SG.get(sk(a,c));if(Lc)for(const o of Lc){const d2=(o.x-x)**2+(o.z-z)**2;if(d2<R*R)fn(o,d2)}}};
     /* is (x,y,z) inside the space the road needs: over the road and less than 26 m above it */
@@ -822,6 +837,7 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
     PR.inside=(x,y,z)=>zoneAt(x,z)&&y<bil(Ch,x,z)-1&&y>bil(Fh,x,z);PR.h=(x,z)=>bil(Mh,x,z);PR.f=(x,z)=>bil(Fh,x,z);PR.c=(x,z)=>bil(Ch,x,z);PR.ground=(x,z)=>zoneAt(x,z)?bil(Fh,x,z):bil(Mh,x,z);PR.mode=mode;PR.ins=ins;
     const zv=[];for(let k=0;k<NV;k++)if(Wz[k]>0.75)zv.push(k);const vx=k=>x0+(k%nx)*cs,vz=k=>z0+Math.floor(k/nx)*cs;
     const em=[];/* lights baked into the cavern rock: {x,y,z,r,c:[r,g,b]} */
+    const skirts=[];/* Prototype 60: rock skirts hung from the edges of lakes and pools, built with the rock (skirt(), below) */
     /* lakes and rivers: a flowing glow of lava or of water */
     const liquid=(water)=>{const m=new THREE.ShaderMaterial({side:THREE.DoubleSide,uniforms:{uT:{value:0},uW:{value:water?1:0}},
       vertexShader:`varying vec3 vW;void main(){vec4 wp=modelMatrix*vec4(position,1.0);vW=wp.xyz;gl_Position=projectionMatrix*viewMatrix*wp;}`,
@@ -853,7 +869,7 @@ void main(){vec2 q=vW.xz+vec2(uT*(uW>0.5?3.0:1.2),uT*0.7);float n=vn(q/16.0)*0.6
     for(let i=0;i<N;i+=Math.round(400/ds)){if(!ins[i])continue;for(let t=0;t<8;t++){const n0=pools.length,a=pr()*TAU,d=50+pr()*150;tryPool(P[i].x+Math.cos(a)*d,P[i].z+Math.sin(a)*d);if(pools.length>n0)break}}
     for(let t=0;t<900&&pools.length<nPool;t++){const k=zv[Math.floor(pr()*zv.length)];tryPool(vx(k),vz(k))}
     for(const p of pools){for(let k=0;k<NV;k++){if(Wz[k]<=0)continue;const d=Math.hypot(vx(k)-p.x,vz(k)-p.z);if(d<p.r)Fh[k]=Math.min(Fh[k],p.lv-3);else if(d<p.r*1.7)Fh[k]=Math.max(Fh[k],p.lv+1+(d-p.r)*0.2)}
-      const m=new THREE.Mesh(new THREE.CylinderGeometry(p.r,p.r,0.6,24),new THREE.MeshBasicMaterial({color:p.lava?0xff5212:0x2a9be8}));m.position.set(p.x,p.lv,p.z);group.add(m);
+      const m=new THREE.Mesh(new THREE.CylinderGeometry(p.r,p.r,0.6,24),new THREE.MeshBasicMaterial({color:p.lava?0xff5212:0x2a9be8}));m.position.set(p.x,p.lv,p.z);group.add(m);skirts.push({x:p.x,z:p.z,y:p.lv+0.28,rho:()=>p.r,n:24,dep:24,out:8,inside:true});
       const m2=new THREE.Mesh(new THREE.CylinderGeometry(p.r*0.55,p.r*0.55,0.6,18),new THREE.MeshBasicMaterial({color:p.lava?0xffa030:0x7fd8ff}));m2.position.set(p.x+p.r*0.15,p.lv+0.15,p.z-p.r*0.1);group.add(m2);
       em.push({x:p.x,y:p.lv+8,z:p.z,r:p.r*3.5,c:p.lava?[0.8,0.24,0.04]:[0.05,0.2,0.42]});
       const roof=bil(Ch,p.x,p.z);let fx=0,fz=0,fw=10+pr()*10,fok=false;
@@ -868,24 +884,32 @@ void main(){vec2 q=vW.xz+vec2(uT*(uW>0.5?3.0:1.2),uT*0.7);float n=vn(q/16.0)*0.6
        raised round each (never into the road) so the lake never shows an edge */
     const lakes=[];if(mode!=='in'){const L=[];for(let i=0;i<N;i+=Math.round(40/ds)){if(ins[i]||gap[i]||kind[i])continue;const p=P[i],g=bil(Mh,p.x,p.z);if(p.y-g>32&&!zoneAt(p.x,p.z))L.push([p.y-g,i])}
       L.sort((a,b)=>b[0]-a[0]);for(const[d,i]of L){if(lakes.length>=(dens>=2?3:2))break;const p=P[i];if(lakes.some(q=>Math.hypot(q.x-p.x,q.z-p.z)<700))continue;
-        const lv=bil(Mh,p.x,p.z)+6,R0=170+pr()*90;let bad=false;for(let k=0;k<NV&&!bad;k++)if(Wz[k]>0&&Math.hypot(vx(k)-p.x,vz(k)-p.z)<R0*1.25)bad=true;
+        const lv=bil(Mh,p.x,p.z)+6,R0=170+pr()*90;let bad=false;for(let k=0;k<NV&&!bad;k++)if(Wz[k]>0&&Math.hypot(vx(k)-p.x,vz(k)-p.z)<Math.max(R0*1.25,R0*1.18+2.5*cs))bad=true;
         /* (P54) and no other stretch of road (or a split route) may pass lower than well above it anywhere over it */
-        scan(p.x,p.z,R0*1.4+W/2+4,o=>{if(o.y<lv+14)bad=true});if(bad)continue;
+        /* (Prototype 60: over its rim too, which is wider now, below) */
+        scan(p.x,p.z,Math.max(R0*1.4,R0*1.18+3*cs)+W/2+4,o=>{if(o.y<lv+14)bad=true});if(bad)continue;
         lakes.push({x:p.x,z:p.z,lv,r:R0,lava:lakes.length%2===0})}
-      for(const q of lakes){for(let k=0;k<NV;k++){const d=Math.hypot(vx(k)-q.x,vz(k)-q.z);if(d<q.r)Mh[k]=Math.min(Mh[k],q.lv-1.5+(vn(vx(k)/30,vz(k)/30)>0.82?4:0));else if(d<q.r*1.35)Mh[k]=Math.max(Mh[k],q.lv+3);Mh[k]=Math.min(Mh[k],Lo[k]);if(Wz[k]>0)Mh[k]=Math.max(Mh[k],Ch[k]+30)}
-        const g=new THREE.CircleGeometry(q.r*1.18,56);g.rotateX(-Math.PI/2);const A=g.attributes.position;for(let k=1;k<A.count;k++){const a=Math.atan2(A.getZ(k),A.getX(k)),sc=1+0.08*Math.sin(a*3+q.r)+0.04*Math.sin(a*7);A.setX(k,A.getX(k)*sc);A.setZ(k,A.getZ(k)*sc)}
-        const m=new THREE.Mesh(g,liquid(!q.lava));m.position.set(q.x,q.lv,q.z);group.add(m)}}
+      /* Prototype 60: the lake's sheet reached 4 to 32% past the bed, into a rim only a third of its radius wide, and the
+         ground is a grid of 16 to 26 m cells: where the valley fell away outside the rim, a cell under the sheet's edge
+         sloped down from the rim and the edge stood out of the slope, a flat sheet floating over the valley when seen from
+         the side. Now the sheet's edge lies at least one and a half cells inside a rim that is flat at 3 m over the lake
+         all the way round it, so every cell the edge crosses is rim and the edge is under the rock; outside, the rim falls
+         away as a bank, and a skirt of rock hangs from the edge (skirt(), below) in case anything still leaves it open. */
+      for(const q of lakes){const RR=q.r*1.18+3*cs;q.rho=a=>q.r+1.5*cs+q.r*(0.09+0.06*Math.sin(a*3+q.r)+0.03*Math.sin(a*7));
+        for(let k=0;k<NV;k++){const d=Math.hypot(vx(k)-q.x,vz(k)-q.z);if(d<q.r)Mh[k]=Math.min(Mh[k],q.lv-1.5+(vn(vx(k)/30,vz(k)/30)>0.82?4:0));else if(d<RR)Mh[k]=Math.max(Mh[k],q.lv+3);else if(d<RR+90)Mh[k]=Math.max(Mh[k],q.lv+3-(d-RR)*0.8);Mh[k]=Math.min(Mh[k],Lo[k]);if(Wz[k]>0)Mh[k]=Math.max(Mh[k],Ch[k]+30)}
+        const g=new THREE.CircleGeometry(1,56);g.rotateX(-Math.PI/2);const A=g.attributes.position;for(let k=1;k<A.count;k++){const a=Math.atan2(A.getZ(k),A.getX(k)),sc=q.rho(a);A.setX(k,A.getX(k)*sc);A.setZ(k,A.getZ(k)*sc)}
+        const m=new THREE.Mesh(g,liquid(!q.lava));m.position.set(q.x,q.lv,q.z);group.add(m);skirts.push({x:q.x,z:q.z,y:q.lv,rho:q.rho,n:56,dep:60,out:30,inside:false})}}
     /* calderas: craters on outer peaks well away from the road and the caverns, with lava lakes and lava geysers */
     const cal=[];if(mode!=='in')for(let t=0;t<500&&cal.length<(dens>=2?3:2);t++){const x=x0+pr()*(x1-x0),z=z0+pr()*(z1-z0),h=bil(Mh,x,z);if(h<base+(top-base)*0.5||zoneAt(x,z)||lakes.some(q=>Math.hypot(q.x-x,q.z-z)<q.r*1.4+300))continue;
       let nr=false;scan(x,z,380,()=>{nr=true});if(nr||cal.some(c=>(c.x-x)**2+(c.z-z)**2<500**2))continue;cal.push({x,z,r:70+pr()*40,h})}
     for(const c of cal)for(let k=0;k<NV;k++){if(Wz[k]>0)continue;const d=Math.hypot(vx(k)-c.x,vz(k)-c.z);if(d<c.r)Mh[k]=c.h-40+46*(d/c.r)**3;else if(d<c.r*2)Mh[k]=Math.max(Mh[k],c.h+6-(d-c.r)*0.9)}
-    for(const c of cal){const m=new THREE.Mesh(new THREE.CylinderGeometry(c.r*0.54,c.r*0.54,0.6,20),new THREE.MeshBasicMaterial({color:0xff5a12}));m.position.set(c.x,c.h-36,c.z);group.add(m);
+    for(const c of cal){const m=new THREE.Mesh(new THREE.CylinderGeometry(c.r*0.54,c.r*0.54,0.6,20),new THREE.MeshBasicMaterial({color:0xff5a12}));m.position.set(c.x,c.h-36,c.z);group.add(m);skirts.push({x:c.x,z:c.z,y:c.h-35.72,rho:()=>c.r*0.54,n:20,dep:16,out:5,inside:false});
       for(let k=0;k<2;k++){const a=pr()*TAU,rr=pr()*c.r*0.4;geys.push({x:c.x+Math.cos(a)*rr,z:c.z+Math.sin(a)*rr,base:c.h-40,h:90+pr()*80,per:5+pr()*5,ph:pr()*12,lava:1})}}
     /* falls down the outer cliffs, water or lava */
     if(mode!=='in')for(let t=0;t<1500&&fallsL.filter(f=>f.out).length<nFall;t++){const x=x0+pr()*(x1-x0),z=z0+pr()*(z1-z0);if(zoneAt(x,z))continue;let nr=false;scan(x,z,W/2+110,()=>{nr=true});if(nr)continue;const b0=bil(Mh,x,z);
       let best=null;for(let a=0;a<8;a++){const dx=Math.cos(a/8*TAU),dz=Math.sin(a/8*TAU),h2=bil(Mh,x+dx*24,z+dz*24);if(!best||h2>best.h2)best={h2,dx,dz}}
       if(best.h2-b0<55||cal.some(c=>Math.hypot(x-c.x,z-c.z)<c.r*2.2)||fallsL.some(f=>Math.hypot(x-f.x,z-f.z)<350))continue;const lava=pr()<0.45,fw=12+pr()*10,dir=Math.atan2(-best.dx,-best.dz);
-      fallsL.push({x,z,top:best.h2-6,bot:b0,w:fw,dir,lava,out:1});const m=new THREE.Mesh(new THREE.CylinderGeometry(fw*0.9,fw*0.9,0.6,16),new THREE.MeshBasicMaterial({color:lava?0xff5a12:0x2f8fd8}));m.position.set(x-best.dx*8,b0+0.4,z-best.dz*8);group.add(m)}
+      fallsL.push({x,z,top:best.h2-6,bot:b0,w:fw,dir,lava,out:1});const m=new THREE.Mesh(new THREE.CylinderGeometry(fw*0.9,fw*0.9,0.6,16),new THREE.MeshBasicMaterial({color:lava?0xff5a12:0x2f8fd8}));m.position.set(x-best.dx*8,b0+0.4,z-best.dz*8);group.add(m);skirts.push({x:x-best.dx*8,z:z-best.dz*8,y:b0+0.68,rho:()=>fw*0.9,n:16,dep:24,out:8,inside:false})}
     /* stalactites from the roof, stalagmites from the floor (never in the road's way), and a few pillars where they meet */
     let nSpk=0;const SV=[],SI=[],spike=(x,yb,z,len,rad,dir,shape)=>{const rs=7,hs2=6,b=SV.length/3,tw=pr()*TAU,lean=[(pr()-0.5)*0.25*len,(pr()-0.5)*0.25*len];
       for(let a=0;a<=hs2;a++){const t=a/hs2,rr=rad*(shape?(0.55+0.45*Math.abs(2*t-1)**1.5):Math.pow(1-t,1.15))*(a===hs2&&!shape?0:1);
@@ -961,14 +985,18 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
        roof of a cavern, up over it), or for the mountain where the road is going into it, up over the road as the start of
        the tunnel. Only the few small triangles still crossing it are left out, so the rock has no holes but the road's own
        way through. sgn: -1 down, 1 up, 0 by the road (down beside the road outside, up over it where it goes in) */
-    let liftR=W/2+2;const RAMP=12;const lift=(x,y,z,sgn)=>{let lo=1e9,hi=-1e9,nIn=0,nOut=0,up=-1e9,dn=1e9;
+    let liftR=W/2+2,liftD=0;const RAMP=12;const lift1=(x,y,z,sgn)=>{let lo=1e9,hi=-1e9,nIn=0,nOut=0,up=-1e9,dn=1e9;liftD=0;
       /* (P55) and tapered: beyond the road's own band the rock is moved less and less over RAMP metres, so the lift makes a
          rounded arch or bank, never a sheer step (which stood as a flat slab beside the road) */
       scan(x,z,liftR+RAMP,o=>{const d=Math.hypot(o.x-x,o.z-z),b=o.y+tilt(o,x,z);if(d<liftR&&y>b-1&&y<b+26){lo=Math.min(lo,b);hi=Math.max(hi,b);if(o.n)nIn++;else nOut++}
         const f=d<liftR?1:sm(liftR+RAMP,liftR,d),dir=sgn||(o.n?1:-1);if(f<=0)return;
         if(dir>0&&y>b-30&&y<b+26.5)up=Math.max(up,y+(b+26.5-y)*f);if(dir<0&&y>b-1.6&&y<b+30)dn=Math.min(dn,y-(y-(b-1.6))*f)});
-      if(lo<1e9){const s=sgn||(nIn&&!nOut?1:nOut&&!nIn?-1:0);return s<0?lo-1.6:s>0?hi+26.5:y}
-      return up>-1e9&&dn<1e9?y:up>-1e9?up:dn<1e9?dn:y};
+      if(lo<1e9){const s=sgn||(nIn&&!nOut?1:nOut&&!nIn?-1:0);liftD=s;return s<0?lo-1.6:s>0?hi+26.5:y}
+      if(up>-1e9&&dn<1e9)return y;if(up>-1e9){liftD=1;return up}if(dn<1e9){liftD=-1;return dn}return y};
+    /* Prototype 60: and again, the same way, until the point is clear of every road: where roads are stacked (a spire,
+       a helix, a crossover, a lap passing over another) a point lifted over one stretch could land in the road's space
+       of the one above it, and was left out there, leaving holes over the spires (NXD8C77A-P, NXL1FDB51-...-P3443) */
+    const lift=(x,y,z,sgn)=>{let y1=lift1(x,y,z,sgn);const d=liftD;if(!d)return y1;for(let k=0;k<6;k++){const y2=lift1(x,y1,z,d);if(Math.abs(y2-y1)<1e-3)break;y1=d>0?Math.max(y1,y2):Math.min(y1,y2)}return y1};
     let cutA=0;
     const unshard=(idx)=>{for(let it=0;it<2;it++){const E=new Map(),ek=(a,b)=>a<b?a*4194304+b:b*4194304+a;for(let t=0;t<idx.length;t+=3)for(let e=0;e<3;e++){const k=ek(idx[t+e],idx[t+(e+1)%3]);E.set(k,(E.get(k)||0)+1)}
         const K=[];for(let t=0;t<idx.length;t+=3){let sh=0;for(let e=0;e<3;e++)if(E.get(ek(idx[t+e],idx[t+(e+1)%3]))>1)sh++;if(sh>0)K.push(idx[t],idx[t+1],idx[t+2])}idx.length=0;for(const q of K)idx.push(q)}};
@@ -996,6 +1024,15 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
       const pos=new Float32Array(P3),g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();
       const NV2=pos.length/3,gl=new Float32Array(NV2*3);if(inside)for(let k=0;k<NV2;k++){if(k<NV&&!(Wz[k]>0))continue;glowAt(pos[k*3],pos[k*3+1],pos[k*3+2],gl,k*3)}g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));
       const m=new THREE.Mesh(g,rockMat(inside));m.frustumCulled=false;group.add(m);PR.meshes.push(m);return m};
+    /* Prototype 60: a skirt of rock from the edge of each lake, pool and caldera lake down into the ground, a little
+       outward, so that wherever the ground round it is lower than the liquid the edge meets rock, never air: from the side
+       a lake used to show as a flat sheet floating over the slope (Eric's photos of the lava and water lakes). Where the
+       ground is higher, the skirt is under it and unseen. Its top ring is the liquid's own edge. */
+    PR.skirts=[];const skirt=(q)=>{const pos=[],ind=[],n=q.n;for(let k=0;k<n;k++){const a=k/n*TAU,c=Math.cos(a),s2=Math.sin(a),r0=q.rho(a),r1=r0+q.out;pos.push(q.x+c*r0,q.y,q.z+s2*r0,q.x+c*r1,q.y-q.dep,q.z+s2*r1)}
+      for(let k=0;k<n;k++){const a=k*2,b=((k+1)%n)*2;for(const t of[[a,a+1,b],[b,a+1,b+1]]){const A=t.map(v=>v*3);if(clearTri(pos[A[0]],pos[A[0]+1],pos[A[0]+2],pos[A[1]],pos[A[1]+1],pos[A[1]+2],pos[A[2]],pos[A[2]+1],pos[A[2]+2]))ind.push(...t)}}
+      const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(ind);g.computeVertexNormals();const gl=new Float32Array(pos.length);if(q.inside)for(let k=0;k<pos.length;k+=3)glowAt(pos[k],pos[k+1],pos[k+2],gl,k);
+      g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,q.inside?skirtIn:skirtOut);group.add(m);PR.skirts.push(m)};
+    const skirtIn=rockMat(true),skirtOut=rockMat(false);for(const q of skirts)skirt(q);
     /* (P54) the caverns' roof and floor meet the outside of the mountain round their edge (they were left at height 0 there,
        which tore holes round the ways in) */
     for(let k=0;k<NV;k++)if(!(Wz[k]>0)){Fh[k]=Mh[k];Ch[k]=Mh[k]}
