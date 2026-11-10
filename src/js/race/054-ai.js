@@ -74,7 +74,7 @@ const ailM=r=>{const L=ailOf();if(!L.sb||!r.isAI)return 1;const g=bandRef()-r.ut
 function aiHands(r,o,dt){if(!hands(r)||r.wreck>0){r.hs=o.steer;r.hn=0;r.hT=0;return o}
   const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();
   r.hs=(r.hs??o.steer)+(o.steer-(r.hs??o.steer))*Math.min(1,dt/(P.tau*L.tau));
-  r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk*(aiSmoked(r)?SMOKE_AI.wander:1)/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
   /* (P58) a spell with the nose forgotten (Easy) */
   if(L.nose>0){r.nfT=(r.nfT||0)-dt;if(r.nfT<=0){r.nfT=2+Math.random()*3;r.nf=Math.random()<L.nose*mk}if(r.nf&&!r.air)o.pitch=0}
   o.steer=clamp(r.hs+r.hn,-1,1);
