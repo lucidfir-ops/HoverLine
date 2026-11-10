@@ -1,5 +1,5 @@
 // Urban city (Prototype 60): the city is dense, stands on the street grid (or faces the road), and never meets the road.
-// node tools/tests/urban-city.js [seeds, default 8]
+// node tools/tests/urban-city.js [seeds, default 8]   (Prototype 60: or whole track codes, built as the game builds them, in Urban)
 // For each map, reads every building (the instanced mesh with lit windows) and checks:
 //  - there are many (at least 800 at the default density, the old city had about 400),
 //  - every footprint stays at least W/2+40 m (horizontally, nearest face) from every road point and every split route,
@@ -7,13 +7,13 @@
 //  - each building is on the street grid (turned a multiple of 90 degrees) or faces the road (its long face within 5
 //    degrees of the heading of some road within 150 m).
 const { launch, open, ok, done } = require('./lib.js');
-const seeds = process.argv.slice(2).length ? process.argv.slice(2).map(Number) : [11, 222, 3333, 4, 57, 808, 9001, 31337];
+const seeds = process.argv.slice(2).length ? process.argv.slice(2).map((a) => /^\d+$/.test(a) ? Number(a) : a) : [11, 222, 3333, 4, 57, 808, 9001, 31337];
 (async () => {
   const b = await launch(); const p = await open(b, 'city', { render: true });
   let rot = 0, tot = 0;
-  for (const s of seeds) for (const wk of ['N', 'W']) {
+  for (const s of seeds) for (const wk of typeof s === 'string' ? [null] : ['N', 'W']) {
     const r = await p.evaluate(([s, wk]) => {
-      const h = window.__hl; h.loadTrack(s, wk, null, null, null, { k: 'U', d: null });
+      const h = window.__hl; if (typeof s === 'string') { const c = h.parseCode(s); h.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp || null, { k: 'U', d: c.bm && c.bm.d }) } else h.loadTrack(s, wk, null, null, null, { k: 'U', d: null });
       const T = h.T, W = T.D.w, pts = [...T.P];
       for (const S of T.splits || []) for (const q of S.pts || []) pts.push(q);
       let best = null; h.scene.traverse((o) => { if (o.isInstancedMesh && o.material.emissiveMap && (!best || o.count > best.count)) best = o });

@@ -229,7 +229,8 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
            Tb.c[k]=-side*W/4*(1-e);Tb.w[k]=W/4+W/4*e;Tb.h[k]=0;if(gap[(i0+k)%N])Tb.gp[k]=1;
            Lb.c[k]=side*(W/4+A*S2);Lb.w[k]=W/4+(wL-W/4)*e;Lb.h[k]=jB.lipH*(1-ss01(x))-yo}
          const pts=routePts(i0,n,m,Lb);if(!pts)continue;finishB(B);Lb.long=true;Tb.long=false;const S0={kind:'dsplit',i0,n,u0:i0*ds,u1:(i0+n)*ds,side,longB:lb,tb:1-lb,b:B,pts,feat:1};mark(S0);jB.sp=S0;jB.b=1-lb;break}}
-     else if(f.kind==='sjump'){const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Ls/ds),Hu=f.hu;if(!inGI(i0,n))continue;
+     else if(f.kind==='sjump'){/* the upper road where a frame leaving the lip at 175 m/s gets to, over the gap as built (0.3 m lower for the step of a 60 Hz frame) */
+       const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Ls/ds),Hu=flyY(175,j.G,j.lipH,j.slope,32)-0.3;if(!inGI(i0,n))continue;
        const A=W+14+rf()*20,Ad=6+rf()*6,pref=rf()<0.5?1:-1,bonus=f.bonus;
        for(const side of[pref,-pref]){const B=B2(n),ub=side>0?1:0,Ub=B[ub],Db=B[1-ub];
          for(let k=0;k<=n;k++){const x=k/n,a1=ss01((x-0.1)/0.22)*ss01((0.97-x)/0.22),q=ss01((x-0.6)/0.3);
@@ -1511,13 +1512,23 @@ function addFeatures(b,r,W,opt={}){
         /* on a sloping stretch a rise or drop is made smaller, so together they stay under about 35 degrees */
         if(kd==='climb'||kd==='dive'||kd==='sweep'){let sb=0;for(let k=0;k<n;k+=2){const t=Tg[Math.min(N-1,i+k)];sb=Math.max(sb,Math.abs(t.y)/Math.max(0.2,Math.hypot(t.x,t.z)))}const room=Math.max(0.12,0.7-sb);
           if(kd==='climb')site.Hh=Math.min(site.Hh,room*2*site.Lr/Math.PI);else if(kd==='dive')site.D=Math.min(site.D,room*site.len/Math.PI);else site.amp=site.amp.map(a=>Math.min(a,room*site.lam/Math.PI))}
+        /* Prototype 60: a new jump runs straight: from its ramp (40-100 m before the lip) to 150-220 m past the landing the
+           road follows the straight line between those two points, blending in and out over 150 m, so a frame flying the
+           gap (and the 100-480 m it flies past it) isn't carried into the fence by a bend under it */
+        if(site.prof&&!site.sw){const sw=new Float32Array(n),sx=new Float32Array(n),sz=new Float32Array(n),wins=[],Bl=150,ix=xm=>Math.min(N-1,i+Math.max(0,Math.round(xm/ds)));let acc=0;
+          for(const q of site.prof){if(q.gap){const k=q.gap.kind;wins.push([acc-(k==='drop'?40:k==='sjump'?100:70),acc+q.L+(k==='drop'?150:220)])}acc+=q.L}
+          for(const[xa,xb]of wins){const A=P[ix(xa)],B=P[ix(xb)],dx=B.x-A.x,dz=B.z-A.z,L0=Math.hypot(dx,dz)||1,ux=dx/L0,uz=dz/L0;
+            for(let j=0;j<n;j++){const xm=j*ds;if(xm<xa-Bl||xm>xb+Bl)continue;let w,tx,tz;
+              if(xm<xa){w=ss01((xm-xa+Bl)/Bl);tx=A.x+ux*(xm-xa);tz=A.z+uz*(xm-xa)}else if(xm>xb){w=ss01((xb+Bl-xm)/Bl);tx=B.x+ux*(xm-xb);tz=B.z+uz*(xm-xb)}else{const t=(xm-xa)/(xb-xa);w=1;tx=A.x+dx*t;tz=A.z+dz*t}
+              if(w>sw[j]){const q=P[ix(xm)];sw[j]=w;sx[j]=tx-q.x;sz[j]=tz-q.z}}}
+          site.sw=sw;site.sx=sx;site.sz=sz}
         for(let j=0;j<n&&i<N;j++,i++){const x=j/n,xm=j*ds,s=shiftAt(),p=P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),u=upAt(i);
           if(kd==='twist'){const ph=TAU*ss01(x);emit(p,u.clone().multiplyScalar(Math.cos(ph)).addScaledVector(R[i],Math.sin(ph)))}
           else if(kd==='corkscrew'){const ph=TAU*ss01(x);emit(p.addScaledVector(U[i],rc*(1-Math.cos(ph))).addScaledVector(R[i],-rc*Math.sin(ph)),u.clone().multiplyScalar(Math.cos(ph)).addScaledVector(R[i],Math.sin(ph)))}
           else if(kd==='dive'){emit(p.addScaledVector(Y1,-site.D*(1-Math.cos(TAU*x))/2),u)}
           else if(kd==='climb'){const{Hh,Lr,Lp}=site,y=(site.sg||1)*xm<Lr?Hh*(1-Math.cos(Math.PI*xm/Lr))/2:xm<Lr+Lp?Hh:Hh*(1+Math.cos(Math.PI*Math.min(1,(xm-Lr-Lp)/Lr)))/2;emit(p.addScaledVector(Y1,y),u)}
           else if(kd==='sweep'){const k=Math.min(site.n-1,Math.floor(xm/site.lam)),xx=xm/site.lam-k;emit(p.addScaledVector(Y1,site.sg[k]*site.amp[k]*(1-Math.cos(TAU*xx))/2),u)}
-          else if(site.prof){let x=xm,sg=null;for(const q of site.prof){if(x<q.L){sg=q;break}x-=q.L}const y=sg?sg.f(x):site.prof[site.prof.length-1].y1;emit(p.addScaledVector(Y1,y),u);
+          else if(site.prof){if(site.sw[j]>0){p.x+=site.sx[j]*site.sw[j];p.z+=site.sz[j]*site.sw[j]}let x=xm,sg=null;for(const q of site.prof){if(x<q.L){sg=q;break}x-=q.L}const y=sg?sg.f(x):site.prof[site.prof.length-1].y1;emit(p.addScaledVector(Y1,y),u);
             /* the lip is the first sample of a gap, the landing the first after it */
             const gp=!!(sg&&sg.gap);if(gp&&!site._g)marks.push({kind:'lip2',a:oP.length-1,d:sg.gap});if(!gp&&site._g)marks.push({kind:'land2',a:oP.length-1,d:site._g});site._g=gp?sg.gap:null}
           else{emit(p.addScaledVector(Y1,xm<lr?1.2*(xm/lr)**2:gapC((xm-lr)/jumpG,jumpG)),u);if(Math.abs(xm-lr)<ds/2)marks.push({kind:'lip',a:oP.length-1});if(Math.abs(xm-lr-jumpG)<ds/2)marks.push({kind:'land',a:oP.length-1})}}
