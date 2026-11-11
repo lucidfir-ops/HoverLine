@@ -37,28 +37,41 @@ function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SP
   const nS=q===0?1+(r()<0.5?1:0):2+(r()<0.5?1:0),secs=[];const u00=r()*L;
   for(let k=0;k<nS;k++)secs.push({u:(u00+k*L/nS+(r()-0.5)*L/(nS*3)+L)%L,half:150+r()*200,fade:120+r()*80,peak:0.85+r()*0.15});
   const chunks=new Map(),Lof=u=>{const c=Math.floor(((u%L)+L)%L/chunk);let C=chunks.get(c);if(!C)chunks.set(c,C={lA:[],lB:[],lN:[],lM:[],mn:[1e9,1e9,1e9],mx:[-1e9,-1e9,-1e9]});return C};
-  let segs=0,cut=0,nodesN=0;
-  for(const s of secs){const reach=s.half+s.fade+60,R=[];for(let du=-reach-60;du<=reach+60;du+=6){const u=((s.u+du)%L+L)%L,i=Math.floor(u/ds)%N;if(ctx.gap[i])continue;R.push({u:s.u+du,p:P[i],an:P[i].clone().addScaledVector(U[i],6)})}
+  let segs=0,cut=0,nodesN=0;const tms={col:0,str:0};let t0=0;
+  for(const s of secs){const reach=s.half+s.fade+60,R=[];for(let du=-reach-60;du<=reach+60;du+=6){const u=((s.u+du)%L+L)%L,i=Math.floor(u/ds)%N;if(ctx.gap[i])continue;R.push({u:s.u+du,p:P[i],an0:P[i].clone().addScaledVector(U[i],6)})}
     if(!R.length)continue;const mn=new V3(1e9,1e9,1e9),mx=new V3(-1e9,-1e9,-1e9);for(const q0 of R){mn.min(q0.p);mx.max(q0.p)}mn.x-=ext;mn.z-=ext;mx.x+=ext;mx.z+=ext;mn.y+=y0;mx.y+=y1;
     /* the road points in a 2D grid, for the nearest one to each node */
     const RG=new Map(),rk=(a,b)=>a*65536+b,RC=60;for(const q0 of R){const k=rk(Math.floor(q0.p.x/RC),Math.floor(q0.p.z/RC));let A=RG.get(k);if(!A)RG.set(k,A=[]);A.push(q0)}
     const nearest=p=>{let b=null,d=1e18;const cx=Math.floor(p.x/RC),cz=Math.floor(p.z/RC);for(let a=-4;a<=4;a++)for(let c=-4;c<=4;c++){const A=RG.get(rk(cx+a,cz+c));if(A)for(const q0 of A){const dd=q0.p.distanceToSquared(p);if(dd<d){d=dd;b=q0}}}return{q:b,d:Math.sqrt(d)}};
     const I0=Math.floor(mn.x/sp),I1=Math.ceil(mx.x/sp),J0=Math.floor(mn.y/sp),J1=Math.ceil(mx.y/sp),K0=Math.floor(mn.z/sp),K1=Math.ceil(mx.z/sp),H=mx.y-mn.y,node=new Map(),key=(i,j,k)=>((i-I0)*1024+(j-J0))*1024+(k-K0);
-    const okP=(p,an)=>clr.ok(p.x,p.y,p.z,1.2)&&clr.ok(p.x+(an.x-p.x)*tight,p.y+(an.y-p.y)*tight,p.z+(an.z-p.z)*tight,1.2);
+    /* where a node is drawn to at full tightening (round 2: 26% of the way to 6 m over the road; here never more than 30 m,
+       so the far struts' sweep stays small enough to check) */
+    const anc=(p,a0)=>{const d=p.distanceTo(a0);return d>115?p.clone().lerp(a0,115/d):a0.clone()};
+    /* a node, and a strut every 5 m along it, at no, half and full tightening, each ball as big as the sweep between */
+    const qt=(x,y,z)=>clr.quick(x,y,z),okN=(p,an)=>{if(qt(p.x+(an.x-p.x)*tight/2,p.y+(an.y-p.y)*tight/2,p.z+(an.z-p.z)*tight/2))return true;for(const tg of[0,tight/2,tight]){const r0=1.2+p.distanceTo(an)*tight/4;if(!clr.ok(p.x+(an.x-p.x)*tg,p.y+(an.y-p.y)*tg,p.z+(an.z-p.z)*tg,r0))return false}return true};
+    /* (first the quick test at five points at half tightening: each covers 3.75 m of strut, 2.6 m round it and the 3.9 m it
+       can sweep either way, inside the quick test's 11 m) */
+    const okS=(a,b)=>{let qa=true;const h=tight/2;for(let q=0;q<=4&&qa;q++){const f=q/4;qa=qt(a.p.x+(b.p.x-a.p.x)*f+((a.an.x-a.p.x)+(b.an.x-a.an.x-b.p.x+a.p.x)*f)*h,a.p.y+(b.p.y-a.p.y)*f+((a.an.y-a.p.y)+(b.an.y-a.an.y-b.p.y+a.p.y)*f)*h,a.p.z+(b.p.z-a.p.z)*f+((a.an.z-a.p.z)+(b.an.z-a.an.z-b.p.z+a.p.z)*f)*h)}if(qa)return true;
+      const len=a.p.distanceTo(b.p),n=Math.max(2,Math.ceil(len/5)),sw=Math.max(a.p.distanceTo(a.an),b.p.distanceTo(b.an))*tight/4;
+      for(const tg of[0,tight/2,tight])for(let q=1;q<n;q++){const f=q/n,x=a.p.x+(b.p.x-a.p.x)*f,y=a.p.y+(b.p.y-a.p.y)*f,z=a.p.z+(b.p.z-a.p.z)*f,ax=a.an.x+(b.an.x-a.an.x)*f,ay=a.an.y+(b.an.y-a.an.y)*f,az=a.an.z+(b.an.z-a.an.z)*f;
+        if(!clr.ok(x+(ax-x)*tg,y+(ay-y)*tg,z+(az-z)*tg,2.6+sw))return false}return true};
+    t0=Date.now();
     /* column by column: the road points within reach of it, then the nearest of them to each node up the column */
     for(let i=I0;i<=I1;i++)for(let k=K0;k<=K1;k++){const x=i*sp,z=k*sp,cx=Math.floor(x/RC),cz=Math.floor(z/RC),C=[];for(let a=-4;a<=4;a++)for(let c=-4;c<=4;c++){const A=RG.get(rk(cx+a,cz+c));if(A)for(const q0 of A){const h2=(q0.p.x-x)**2+(q0.p.z-z)**2;if(h2<ext*ext)C.push(q0,h2)}}
       if(!C.length)continue;for(let j=J0;j<=J1;j++){const y=j*sp;let b=null,d=1e18;for(let m=0;m<C.length;m+=2){const dd=C[m+1]+(C[m].p.y-y)**2;if(dd<d){d=dd;b=C[m]}}d=Math.sqrt(d);
-        if(!b||d<clear||d>ext||Math.abs(b.u-s.u)>reach)continue;const p=new V3(x,y,z);if(!okP(p,b.an)){cut++;continue}node.set(key(i,j,k),{p,d,u:b.u,an:b.an});nodesN++}}
-    const seg=(a,b,tier)=>{const mid=a.p.clone().lerp(b.p,0.5),amid=a.an.clone().lerp(b.an,0.5);if(!okP(mid,amid)){cut++;return}
+        if(!b||d<clear||d>ext||Math.abs(b.u-s.u)>reach)continue;const p=new V3(x,y,z),an=anc(p,b.an0);if(!okN(p,an)){cut++;continue}node.set(key(i,j,k),{p,d,u:b.u,an});nodesN++}}
+    const seg=(a,b,tier)=>{const mid=a.p.clone().lerp(b.p,0.5);if(!okS(a,b)){cut++;return}
       const u=(a.u+b.u)/2,C=Lof(u),pc=Math.min(0.999,0.08+(mid.y-mn.y)/H*0.75+(((u%900)+900)%900)/900*0.15);
       C.lA.push(a.p.x,a.p.y,a.p.z,((u%L)+L)%L);C.lB.push(b.p.x,b.p.y,b.p.z,tier*10+pc);C.lN.push(a.an.x,a.an.y,a.an.z,a.d);C.lM.push(b.an.x,b.an.y,b.an.z,b.d);
       for(const p of[a.p,b.p]){C.mn[0]=Math.min(C.mn[0],p.x);C.mn[1]=Math.min(C.mn[1],p.y);C.mn[2]=Math.min(C.mn[2],p.z);C.mx[0]=Math.max(C.mx[0],p.x);C.mx[1]=Math.max(C.mx[1],p.y);C.mx[2]=Math.max(C.mx[2],p.z)}segs++};
+    tms.col+=Date.now()-t0;t0=Date.now();
     const major=(x,y)=>((x%3)+3)%3===0&&((y%3)+3)%3===0;
     for(const[kk,a]of node){const k=kk%1024+K0,j=Math.floor(kk/1024)%1024+J0,i=Math.floor(kk/1048576)+I0;
       for(const[di,dj,dk]of[[1,0,0],[0,1,0],[0,0,1]]){const b=node.get(key(i+di,j+dj,k+dk));if(!b)continue;const beam=di?major(j,k):dj?major(i,k):major(i,j),dd=Math.max(a.d,b.d);
         if(beam)seg(a,b,0);else if(q&&(dd<170||r()<0.3))seg(a,b,1)}
       if(q===2&&((i+j+k)&1)===0&&a.d<130&&r()<0.7){const cc=new V3((i+0.5)*sp,(j+0.5)*sp,(k+0.5)*sp),nr=nearest(cc);
-        if(nr.q&&nr.d>=clear){const c={p:cc,d:nr.d,u:nr.q.u,an:nr.q.an};for(const dd of[[0,0,0],[1,1,0],[1,0,1],[0,1,1]]){const b=node.get(key(i+dd[0],j+dd[1],k+dd[2]));if(b)seg(c,b,2)}}}}}
+        if(nr.q&&nr.d>=clear){const an=anc(cc,nr.q.an0);if(!okN(cc,an))continue;const c={p:cc,d:nr.d,u:nr.q.u,an};for(const dd of[[0,0,0],[1,1,0],[1,0,1],[0,1,1]]){const b=node.get(key(i+dd[0],j+dd[1],k+dd[2]));if(b)seg(c,b,2)}}}}}
+  tms.str=Date.now()-t0;
   /* one material for every chunk; its uniforms are the lattice's controls (004r) */
   const sec=secs.slice(0,6).map(s=>new THREE.Vector4(s.u,s.half,s.fade,s.peak));while(sec.length<6)sec.push(new THREE.Vector4(0,0,1,0));
   const LU={uSec:{value:sec},uL:{value:L},uTight:{value:0},uBase:{value:0},uSwellT:{value:1},uSwellL:{value:1},uSFk:{value:0},uPV:{value:260},uPK:{value:0},uGainL:{value:1},uFog:{value:new THREE.Vector2(180,1500)},uWidth:{value:0.34},uMinPx:{value:1.2},uMaxPx:{value:6}};
@@ -67,4 +80,4 @@ function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SP
     for(const k of['lA','lB','lN','lM'])g.setAttribute(k,new THREE.InstancedBufferAttribute(new Float32Array(C[k]),4));g.instanceCount=n;
     const c=new V3((C.mn[0]+C.mx[0])/2,(C.mn[1]+C.mx[1])/2,(C.mn[2]+C.mx[2])/2);g.boundingSphere=new THREE.Sphere(c,Math.hypot(C.mx[0]-C.mn[0],C.mx[1]-C.mn[1],C.mx[2]-C.mn[2])/2+40);
     const m=new THREE.Mesh(g,mat);m.frustumCulled=true;m.renderOrder=2;meshes.push(m)}
-  clr.stats.cut+=cut;return{meshes,mat,U:LU,secs,segs,nodes:nodesN,cut,tight}}
+  clr.stats.cut+=cut;return{meshes,mat,U:LU,secs,segs,nodes:nodesN,cut,tight,tms}}

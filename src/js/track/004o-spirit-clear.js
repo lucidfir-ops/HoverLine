@@ -16,8 +16,9 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
   const air=new Uint8Array(N),mark=(u0,u1)=>{for(let u=u0;u<=u1;u+=ds){air[(((Math.round(u/ds))%N)+N)%N]=1}};
   for(const j of jumps||[])mark(j.u0-30,j.u1+80);for(const d of drops)if(d.u0!=null)mark(d.u0-30,(d.u1!=null?d.u1:d.u0)+80);
   for(const f of feats||[])if(f.kind==='drop'||f.kind==='sjump'||f.kind==='cjump')mark(f.u0-30,f.u1+80);
-  /* the samples: {p, r, up, t, hw, above}, in a 3D grid of CELL metres */
-  const CELL=24,G=new Map(),key=(a,b,c)=>((a+4096)*8192+(b+4096))*8192+(c+4096),S=[];
+  /* the samples: {p, r, up, t, hw, above}, in a 3D grid of CELL metres (grid keys wrap every 1024 cells, 20 km and more:
+     a far cell that shares a key only adds candidates, which the exact tests then turn away) */
+  const CELL=24,G=new Map(),key=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023),S=[];
   const addS=(p,r,up,t,h,above)=>{const s={x:p.x,y:p.y,z:p.z,r,up,t,hw:h,ab:above};S.push(s);const k=key(Math.floor(p.x/CELL),Math.floor(p.y/CELL),Math.floor(p.z/CELL));let L=G.get(k);if(!L)G.set(k,L=[]);L.push(s)};
   for(let i=0;i<N;i++){if(ctx.gap&&ctx.gap[i]&&!air[i])continue;addS(P[i],R[i],U[i],Tg[i],hw,air[i]?O.jumpAbove:O.above)}
   const _p=new THREE.Vector3();
@@ -29,9 +30,14 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
       for(const s of L){const dx=x-s.x,dy=y-s.y,dz=z-s.z;if(Math.abs(dx*s.t.x+dy*s.t.y+dz*s.t.z)>ds*0.75+r)continue;if(Math.abs(dx*s.r.x+dy*s.r.y+dz*s.r.z)>s.hw+O.margin+r)continue;
         const h=dx*s.up.x+dy*s.up.y+dz*s.up.z;if(h>-O.below-r&&h<s.ab+r)return true}}return false};
   /* the sight lines, as segments in a coarse grid (cells of SG metres; a segment goes in every cell its box touches) */
-  const SG=40,SL=[],SM=new Map(),skey=(a,b,c)=>((a+2048)*4096+(b+2048))*4096+(c+2048);
+  const SG=40,SL=[],SM=new Map(),skey=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023);
   const step=Math.max(1,Math.round(O.camStep/ds)),tst=Math.max(1,Math.round(O.tgtStep/ds)),nT=Math.round(O.sight/O.tgtStep),back=Math.round(O.camBack/ds);
   const ptAt=(i,l,h,o)=>{o.x=P[i].x+R[i].x*l+U[i].x*h;o.y=P[i].y+R[i].y*l+U[i].y*h;o.z=P[i].z+R[i].z*l+U[i].z*h;return o};
+  /* the quick test (for small balls, r up to 11 m): 20 m cells near any road sample (QN, every cell within 3 of one) and
+     cells a sight line passes (QS, a point every 10 m): a ball in a cell of neither, and with no sight cell next to it,
+     is clear without the exact tests (they are only needed near the road and near the bends' sight lines) */
+  const QC=20,qk=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023),QN=new Set(),QS=new Set();
+  for(let n=0;n<S.length;n+=3){const s=S[n],a=Math.floor(s.x/QC),b=Math.floor(s.y/QC),c=Math.floor(s.z/QC);for(let da=-3;da<=3;da++)for(let db=-3;db<=3;db++)for(let dc=-3;dc<=3;dc++)QN.add(qk(a+da,b+db,c+dc))}
   const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0};let nIn=0;
   for(let i=0;i<N;i+=step){if(ctx.gap&&ctx.gap[i])continue;const ic=(i-back+N)%N;
     for(const cl of[-hw*0.6,0,hw*0.6]){ptAt(ic,cl,O.camUp+1,ca);
@@ -48,7 +54,8 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
         /* long rays cross many cells: put them only in the cells the line passes near (every half cell along it) */
         const len=Math.hypot(sg[3]-sg[0],sg[4]-sg[1],sg[5]-sg[2]),nn=Math.max(1,Math.ceil(len/(SG*0.5)));const seen=new Set();
         if((a1-a0+1)*(b1-b0+1)*(c1-c0+1)<=8){for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++)seen.add(skey(a,b,c))}
-        else for(let q=0;q<=nn;q++){const f=q/nn,x=sg[0]+(sg[3]-sg[0])*f,y=sg[1]+(sg[4]-sg[1])*f,z=sg[2]+(sg[5]-sg[2])*f;for(const dx of[-1,0,1])for(const dz of[-1,0,1])seen.add(skey(Math.floor((x+dx*SG*0.3)/SG),Math.floor(y/SG),Math.floor((z+dz*SG*0.3)/SG)))}
+        else for(let q=0;q<=nn;q++){const f=q/nn,x=sg[0]+(sg[3]-sg[0])*f,y=sg[1]+(sg[4]-sg[1])*f,z=sg[2]+(sg[5]-sg[2])*f;for(const dx of[-1,0,1])for(const dz of[-1,0,1])seen.add(skey(Math.floor((x+dx*SG*0.3)/SG),Math.floor(y/SG),Math.floor((z+dz*SG*0.3)/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y+SG*0.3)/SG),Math.floor(z/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y-SG*0.3)/SG),Math.floor(z/SG)))}
+        for(let q=0,nq=Math.max(1,Math.ceil(len/10));q<=nq;q++){const f=q/nq;QS.add(qk(Math.floor((sg[0]+(sg[3]-sg[0])*f)/QC),Math.floor((sg[1]+(sg[4]-sg[1])*f)/QC),Math.floor((sg[2]+(sg[5]-sg[2])*f)/QC)))}
         for(const kk of seen){let L=SM.get(kk);if(!L)SM.set(kk,L=[]);L.push(n)}}}}}
   /* does a ball touch a sight line? (a little margin for the other camera views) */
   const sight=(x,y,z,r)=>{r+=1.5;const a0=Math.floor((x-r)/SG),a1=Math.floor((x+r)/SG),b0=Math.floor((y-r)/SG),b1=Math.floor((y+r)/SG),c0=Math.floor((z-r)/SG),c1=Math.floor((z+r)/SG);
@@ -60,6 +67,7 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
     if((c1-c0+1)*(d1-d0+1)*(e1-e0+1)>4000)return false;
     for(let a=c0;a<=c1;a++)for(let b=d0;b<=d1;b++)for(let c=e0;c<=e1;c++)if(G.has(key(a,b,c)))return false;return true};
   const stats={tried:0,placed:0,moved:0,dropped:0,cut:0};
-  const ok=(x,y,z,r)=>(r>=30&&far(x,y,z,r))||(!keep(x,y,z,r)&&!sight(x,y,z,r));
+  const quick=(x,y,z)=>{const a=Math.floor(x/QC),b=Math.floor(y/QC),c=Math.floor(z/QC);if(QN.has(qk(a,b,c)))return false;for(let da=-1;da<=1;da++)for(let db=-1;db<=1;db++)for(let dc=-1;dc<=1;dc++)if(QS.has(qk(a+da,b+db,c+dc)))return false;return true};
+  const ok=(x,y,z,r)=>(r<=11&&quick(x,y,z))||(r>=30&&far(x,y,z,r))||(!keep(x,y,z,r)&&!sight(x,y,z,r));
   const okPts=(L,r)=>L.every(p=>ok(p[0],p[1],p[2],p[3]!=null?p[3]:r));
-  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,stats,S,SL,O}}
+  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,stats,S,SL,O}}

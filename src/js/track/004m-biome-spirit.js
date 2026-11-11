@@ -46,7 +46,7 @@ function scenerySpirit(ctx){
 
   /* ---- stepped stacks: a tier slides out and turns a quarter on its beat; medium carved pairs near, huge ones far ---- */
   const stack=(name,o)=>{const nT=o.tiers,nS=o.stacks,sz=o.size,th=sz*0.42;
-    put(name,8,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),hgt=nT*th,rad=Math.hypot(sz*nS*0.9,hgt/2)*0.75+sz*0.4;
+    put(name,8,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),hgt=nT*th,rad=Math.hypot((nS-1)/2*1.25*sz+0.8*sz,0.71*sz,hgt/2)*1.03;
       const mid=new V3(...c).addScaledVector(UP,hgt/2);return{b:[[mid.x,mid.y,mid.z,rad]],add:()=>{for(let s=0;s<nS;s++){const ox=(s-(nS-1)/2)*sz*1.25,nt=nT-(s%2);
         for(let t=0;t<nt;t++){const w=sz*(1-t*0.09);(o.carve?W2.glyph:W2.box).add({c,q:qq,off:[ox,(t+0.5)*th,0],s:[w,th*0.92,w],m:[4,nt,(t+s)%nt,sz*0.3*(t%2?1:-1)],gl:o.carve?(t+s)%4:-1,pal:o.pal,pc:t/nt,k:1,per:o.per||60,br:0.02})}}}}})};
   for(let n=0,nn=cnt(1.2,[0,0.6,1]);n<nn;n++)stack('stacks',{tiers:5,stacks:2,size:R2(10,15),d0:48,d1:90,h0:-8,h1:4,carve:true,pal:4});
@@ -57,7 +57,7 @@ function scenerySpirit(ctx){
     put('pyramids',6,k=>{const i=Math.floor(r()*N),j=ix(i+du);if(!roadOK(i)||!roadOK(j))return null;const sd=sgn(),y=R2(-50,-25),A=new V3(...at(i,sd*d,y)),B=new V3(...at(j,-sd*d,y)),fa=flat(i),fb=flat(j),sa=side(i),sb=side(j);
       const cubes=(C,f,s0)=>{const o=[];for(let t=0;t<nt;t++){const m=nt-t;for(let a=0;a<m;a++)for(let b=0;b<m;b++)o.push({t,p:C.clone().addScaledVector(s0,(a-(m-1)/2)*pitch).addScaledVector(f,(b-(m-1)/2)*pitch).addScaledVector(UP,(t+0.5)*pitch)})}return o};
       const LA=cubes(A,fa,sa),LB=cubes(B,fb,sb),crA=LA.filter(c=>c.t>=nt-3),crB=LB.filter(c=>c.t>=nt-3),balls=[];
-      for(const[C,s]of[[A,1],[B,1]])for(let t=0;t<nt;t++){const m=nt-t,p=C.clone().addScaledVector(UP,(t+0.5)*pitch);balls.push([p.x,p.y,p.z,m*pitch*0.72])}
+      for(const[C,s]of[[A,1],[B,1]])for(let t=0;t<nt;t++){const m=nt-t,p=C.clone().addScaledVector(UP,(t+0.5)*pitch);balls.push([p.x,p.y,p.z,Math.sqrt(0.5*m*m+0.25)*pitch*1.02])}
       /* each crown block's arc over the road: raised until it is clear (or the pyramid sheds nothing) */
       const fly=[];let shed=q>0;if(shed)for(let c=0;c<crA.length&&shed;c++){const a=crA[c].p,b=crB[c%crB.length].p;let lift=R2(70,110),okA=false;
         for(let tr=0;tr<10&&!okA;tr++,lift+=18){const mid=a.clone().lerp(b,0.5).addScaledVector(UP,lift);okA=true;for(let s=1;s<16&&okA;s++){const u=s/16,iu=1-u,p=a.clone().multiplyScalar(iu*iu).addScaledVector(mid,2*u*iu).addScaledVector(b,u*u);if(!clr.ok(p.x,p.y,p.z,cu))okA=false}}
@@ -70,10 +70,10 @@ function scenerySpirit(ctx){
   /* ---- the stepped sky: inverted ziggurats hanging beside the road and far off ---- */
   const zig=(name,o)=>{const n=R2(o.n0,o.n1)|0,sh=R2(o.sh0,o.sh1),half=R2(o.w0,o.w1),inv=r()<o.inv;
     put(name,6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,o.mid?0:sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),dir=inv?-1:1,cy=c[1]+dir*n*sh/2;
-      return{b:[[c[0],cy,c[2],Math.hypot(half,n*sh/2)]],add:()=>{const pal=pick([1,2,5]),pc=r();for(let t=0;t<n;t++){const w=half*2*(1-t/(n+0.6));W2.box.add({c,q:qq,off:[0,dir*(t+0.5)*sh,0],s:[w,sh*0.94,w],pal,pc:pc+t*0.05,per:300,k:0.9,br:0.015})}}}})};
+      return{b:[[c[0],cy,c[2],Math.hypot(half,half,n*sh/2)*1.02]],add:()=>{const pal=pick([1,2,5]),pc=r();for(let t=0;t<n;t++){const w=half*2*(1-t/(n+0.6));W2.box.add({c,q:qq,off:[0,dir*(t+0.5)*sh,0],s:[w,sh*0.94,w],pal,pc:pc+t*0.05,per:300,k:0.9,br:0.015})}}}})};
   for(let n=0,nn=cnt(2.5,[0.3,0.6,1]);n<nn;n++)zig('stepped sky',{n0:5,n1:8,sh0:7,sh1:11,w0:28,w1:55,d0:110,d1:300,h0:-60,h1:60,inv:0.4});
   for(let n=0,nn=cnt(1,[0,0.5,1]);n<nn;n++)zig('stepped sky (far)',{n0:6,n1:10,sh0:12,sh1:20,w0:60,w1:120,d0:300,d1:520,h0:-120,h1:60,inv:0.5});
-  if(q===2)zig('stepped sky (over the road)',{n0:8,n1:10,sh0:16,sh1:20,w0:120,w1:150,mid:1,h0:190,h1:230,inv:1.1});
+  if(q===2)zig('stepped sky (over the road)',{n0:6,n1:8,sh0:12,sh1:16,w0:110,w1:140,mid:1,h0:230,h1:290,inv:1.1});
 
   /* ---- block rings round the road on straights: a notch each bar, swelling on the kick (group of boxes per ring) ---- */
   const ringR=Math.hypot(W/2+SPC_O.margin,(SPC_O.above+SPC_O.below)/2)+5,hc=(SPC_O.above-SPC_O.below)/2;
@@ -91,7 +91,7 @@ function scenerySpirit(ctx){
   for(let n=0,nn=cnt(1.5,[0.3,0.6,1]);n<nn;n++){const size=R2(10,24);put('gyroscopes',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(45,110),R2(14,50));return{b:[[...c,size*1.08]],add:()=>gyro(LB(i),c,SP_Q0,size,4+(n%2),'beat',pick([1,2,3,4,5]))}})}
   if(q)put('gyroscopes (huge)',8,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(700,950),R2(330,420));return{b:[[...c,260]],add:()=>gyro(farL,c,SP_Q0,240,6,'spin',5)}});
   if(q&&STR.length&&r()<0.75)put('gyroscope gate',6,k=>{const i=pick(STR),qq=qRoad(i),c=new V3().copy(P[i]).addScaledVector(U[i],hc),balls=[],r0=ringR+2;
-    for(let a=0;a<40;a++){const th=a*TAU/40;for(const rr of[r0,r0+14]){const p=c.clone().addScaledVector(R[i],Math.cos(th)*rr).addScaledVector(U[i],Math.sin(th)*rr);balls.push([p.x,p.y,p.z,2.5])}}
+    for(let a=0;a<48;a++){const th=a*TAU/48;for(const rr of[r0,r0+4.5,r0+9,r0+14]){const p=c.clone().addScaledVector(R[i],Math.cos(th)*rr).addScaledVector(U[i],Math.sin(th)*rr);balls.push([p.x,p.y,p.z,2.5])}}
     return{b:balls,add:()=>{const Lb=LB(i),pal=pick([1,2,5]);for(let k2=0;k2<4;k2++){Lb.obj({c:[c.x,c.y,c.z],q:qq,m:k2%2?[2,TAU/32,0,0]:[1,0.25*(k2-1.5),0,0],ax:[0,0,1],pal,br:0.03,ext:r0+16});
       SPS.tickRing(r0+k2*4.5,48,1.2,true).forEach(([a,b,pc])=>Lb.seg(a,b,pc,1.1))}st.gate=Math.round(ix(i)*ds)}}});
 
@@ -103,7 +103,7 @@ function scenerySpirit(ctx){
 
   /* ---- unfolding solids: a cube opens into its cross and folds back, a tetrahedron into its star (faces hinge on the beat) ---- */
   if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),cube=n%2===0;
-    put('unfolding solids',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(40,80),R2(14,34));return{b:[[...c,s*(cube?1.9:1.6)]],add:()=>{const Lb=LB(i),pal=pick([0,1,2,3,4,5]),ph=r(),qq=rq(),h=s/2;
+    put('unfolding solids',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(40,80),R2(14,34));return{b:[[...c,s*(cube?2.3:2)]],add:()=>{const Lb=LB(i),pal=pick([0,1,2,3,4,5]),ph=r(),qq=rq(),h=s/2;
       if(cube){const sq=(pts,piv,ax,amp,pc)=>{Lb.obj({c,q:qq,m:[7,0,ph,amp],ax,piv,pal,ext:s*2});SPS.loop(pts).forEach(([a,b])=>Lb.seg(a,b,pc,1.1));Lb.seg(pts[0],pts[2],pc,0.5)};
         sq([[-h,-h,-h],[h,-h,-h],[h,-h,h],[-h,-h,h]],[0,0,0],[1,0,0],0,0);
         sq([[-h,-h,h],[h,-h,h],[h,h,h],[-h,h,h]],[0,-h,h],[1,0,0],Math.PI/2,0.3);sq([[-h,-h,-h],[h,-h,-h],[h,h,-h],[-h,h,-h]],[0,-h,-h],[1,0,0],-Math.PI/2,0.5);
@@ -123,7 +123,7 @@ function scenerySpirit(ctx){
 
   /* ---- pieces of the other realms drifting past (Prism rock, an Urban block, a Reef coral head, a Forest crown) ---- */
   if(q)for(let n=0,nn=cnt(1,[0,0.6,1]);n<nn;n++){const kd=n%4,s=R2(14,24);put('other realms',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(60,120),R2(10,40));
-    return{b:[[...c,s*1.25]],add:()=>addSegs(LB(i),{c,m:[1,0.1*sgn(),r()*TAU,s*0.05],ax:[0,1,0],pal:[0,3,4,4][kd],br:0.03,ext:s*1.3},SPS.realm(kd,s,r),1.1)}})}
+    return{b:[[...c,s*1.45]],add:()=>addSegs(LB(i),{c,m:[1,0.1*sgn(),r()*TAU,s*0.05],ax:[0,1,0],pal:[0,3,4,4][kd],br:0.03,ext:s*1.3},SPS.realm(kd,s,r),1.1)}})}
 
   /* ---- free shoals wheeling beside the road: they bunch on the kick and scatter on the drop ---- */
   if(q)for(let n=0,nn=cnt(0.8,[0,0.6,1]);n<nn;n++){const rad=R2(26,40),nf=q===2?140:70,fz=R2(1,1.6);
@@ -151,7 +151,7 @@ function scenerySpirit(ctx){
     const Lb=LB(i0),pal=pick([2,5]),wx=W/2+SPC_O.margin+3,top=SPC_O.above+4,bot=-SPC_O.below-4,stp=Math.max(1,Math.round(10/ds)),cols=[-wx,-wx/2,0,wx/2,wx],rows=[bot,top*0.5,top];
     Lb.obj({pal,ext:0});let prev=null;let cut=0;
     const pt=(j,x,y)=>{const p=P[j],rr=R[j],uu=U[j];return[p.x+rr.x*x+uu.x*y,p.y+rr.y*x+uu.y*y,p.z+rr.z*x+uu.z*y]};
-    const segOK=(a,b)=>{const m=[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2],l=Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2]);for(const f of[0.15,0.5,0.85]){const p=[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];if(!clr.ok(p[0],p[1],p[2],0.8))return false}return l>0};
+    const segOK=(a,b)=>{const m=[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2],l=Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2]);const n=Math.max(2,Math.ceil(l/2));for(let q=0;q<=n;q++){const f=q/n,p=[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];if(!clr.ok(p[0],p[1],p[2],1.2))return false}return l>0};
     const S=(a,b,pc,pk)=>{if(segOK(a,b))Lb.seg(a,b,pc,pk);else cut++};
     for(let k=0;k<=n0;k+=stp){const j=ix(i0+k),f=k/n0,fade=Math.min(1,f*6,(1-f)*6);
       const ring=[pt(j,-wx,bot),pt(j,-wx,top),pt(j,wx,top),pt(j,wx,bot)];for(let e=0;e<3;e++)S(ring[e],ring[e+1],0.2+e*0.15,0.9*fade);S(ring[3],ring[0],0.1,0.5*fade);
@@ -168,19 +168,19 @@ function scenerySpirit(ctx){
     let rr=0;for(let k=a2;k<=b2;k+=4){const p=P[ix(k)];rr+=Math.hypot(p.x-cx0,p.z-cz0)}rr/=Math.ceil((b2-a2+1)/4);const y0=lo-SPC_O.below-16,segs=[],nb=Math.round(TAU*rr/7);
     for(let s=0;s<nb;s++){const th=s/nb*TAU*0.92,wv=Math.sin(s*0.35)*2.5,x=cx0+Math.cos(th)*(rr+wv),z=cz0+Math.sin(th)*(rr+wv),w=(W*0.9)*(0.5+0.5*Math.sin(Math.PI*Math.min(1,s/nb*1.15+0.05)));segs.push({x,y:y0+Math.sin(s*0.21)*1.5,z,w,th})}
     const last=segs[segs.length-1];for(let s=1;s<=10;s++){const th=last.th+s*0.03,R0=rr+s*4+20;segs.push({x:cx0+Math.cos(th)*R0,y:y0+s*s*0.9,z:cz0+Math.sin(th)*R0,w:W*0.5,th})}
-    if(segs.every(s=>clr.ok(s.x,s.y,s.z,Math.max(3,s.w*0.45))))segs.forEach((s,k)=>{_q.setFromAxisAngle(UP,-s.th);W2.box.add({c:[s.x,s.y,s.z],bq:[_q.x,_q.y,_q.z,_q.w],s:[s.w*0.9,3.2,6.2],pal:4,pc:k/segs.length,per:20,br:0.02,k:k>=segs.length-10?1.3:1})});else why.serpent=(why.serpent||0)+1}
+    if(segs.every(s=>clr.ok(s.x,s.y,s.z,0.5*Math.hypot(0.9*s.w,3.2,6.2)+0.3)))segs.forEach((s,k)=>{_q.setFromAxisAngle(UP,-s.th);W2.box.add({c:[s.x,s.y,s.z],bq:[_q.x,_q.y,_q.z,_q.w],s:[s.w*0.9,3.2,6.2],pal:4,pc:k/segs.length,per:20,br:0.02,k:k>=segs.length-10?1.3:1})});else why.serpent=(why.serpent||0)+1}
 
   /* ---- arches that assemble ahead of the leader and burst after the last racer (groups 1..; 004r drives them) ---- */
   const arches=[];if(q&&STR.length)for(let n=0,nn=Math.min(4,1+(q===2?1:0)+(km>6?1:0));n<nn;n++){const span=ringR+2,rise=1.25,nb=19,bs=3.2;
     put('arches',8,k=>{const i=pick(STR);if(arches.some(a=>Math.abs(wrapI(a.i-i))*ds<300))return null;const c=new V3().copy(P[i]),balls=[],rad=a=>new V3().addScaledVector(R[i],Math.cos(a)).addScaledVector(U[i],Math.sin(a)*rise).normalize();
-      for(let b=0;b<nb;b++){const a=b/(nb-1)*Math.PI,home=c.clone().addScaledVector(R[i],Math.cos(a)*span).addScaledVector(U[i],Math.sin(a)*span*rise),d=rad(a);for(let f=0;f<=5;f++){const p=home.clone().addScaledVector(d,f*45).addScaledVector(Tg[i],f*8);balls.push([p.x,p.y,p.z,bs*1.2])}}
+      for(let b=0;b<nb;b++){const a=b/(nb-1)*Math.PI,home=c.clone().addScaledVector(R[i],Math.cos(a)*span).addScaledVector(U[i],Math.sin(a)*span*rise),d=rad(a);for(let f=0;f<=36;f++){const p=home.clone().addScaledVector(d,f/36*225).addScaledVector(Tg[i],f/36*40);balls.push([p.x,p.y,p.z,bs*1.2])}}
       return{b:balls,add:()=>{const g=1+arches.length,pal=pick([1,4]);arches.push({i,u:ix(i)*ds,g});for(let b=0;b<nb;b++){const a=b/(nb-1)*Math.PI,home=c.clone().addScaledVector(R[i],Math.cos(a)*span).addScaledVector(U[i],Math.sin(a)*span*rise),d=rad(a),from=home.clone().addScaledVector(d,225).addScaledVector(Tg[i],40);
         _m.lookAt(new V3(),d,Tg[i]);_q.setFromRotationMatrix(_m);W2.glyph.add({c:[0,0,0],off:[from.x,from.y,from.z],fly:[home.x,home.y,home.z,b%2?0.25:0.05],g,s:[bs,bs*1.1,bs*1.6],bq:[_q.x,_q.y,_q.z,_q.w],m:[5,3*sgn(),0,0],ax:rax(),gl:b===(nb>>1)?3:-1,pal,pc:b/nb,per:25,k:1.1})}}}})}
 
   /* ---- colossi, 1.3 to 1.9 km tall, sunk to the waist in the void's floor; their heads follow the leader (slots 4..6) ---- */
   const floorY=minY-300,colossi=[];for(let n=0,nn=q===2?3:q===1?2:1;n<nn;n++){const H=R2(1300,1900);
     put('colossi',10,k=>{const a=r()*TAU,d=R2(1700,2300),c=[cxT+Math.cos(a)*d,floorY,czT+Math.sin(a)*d];if(colossi.some(o=>Math.hypot(o.c[0]-c[0],o.c[2]-c[2])<900))return null;
-      return{b:[[c[0],c[1]+H*0.3,c[2],H*0.32]],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length;
+      return{b:[[c[0],c[1]+H*0.35,c[2],H*0.45]],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length;
         addSegs(live,{c,q:qq,pal:[5,1,3][n%3],br:0.01,ext:H},cl.body,1,0,1);live.obj({c,q:qq,m:[8,0,0,0],piv:cl.neck,slot,pal:[5,1,3][n%3],ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
         colossi.push({c,H,yaw,slot,neck:cl.neck})}}})}
   /* ---- wireframe heads pacing the pack (slots 0..3) and rare neon ghost riders (slots 7..12); posed by 004r ---- */

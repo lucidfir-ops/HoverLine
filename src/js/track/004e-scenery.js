@@ -40,7 +40,7 @@
      and geysers), jelSoft (see-through jellyfish), bubbles (geysers rise as bubbles) */
 /* the builders by biome letter: a new biome is a new file with its builder and a line here */
 const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryStratos,R:sceneryReef,P:sceneryPrism,S:scenerySpirit};
-function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
+function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,drops,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
   const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall0,nGey0,nTun]=dial,nFall=RES.low?0:nFall0,nGey=RES.low?0:nGey0,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
   const er=rng((seed^0xE7A1)>>>0),cxT=(minX+maxX)/2,czT=(minZ+maxZ)/2;
   const lnA=new THREE.LineBasicMaterial({color:0xffb000}),lnB=new THREE.LineBasicMaterial({color:0x2b3d52}),lnBio=new THREE.LineBasicMaterial({color:LK.edge});
@@ -213,7 +213,7 @@ function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,spli
             for(let a2=0;a2<=n;a2++)for(let b2=0;b2<=n-a2;b2++){const u=a2/n,v=b2/n,w=1-u-v;if(inRoad(ax*u+bx*v+cx*w,ay*u+by*v+cy*w,az*u+bz*v+cz*w))return false}}}}
         return true};
     return{scan,tilt,inRoad,clearTri}};
-  const ctx={seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
+  const ctx={seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,drops,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
   return ctx}
 function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   const{bk,LK,day,er,floorY,ds,lam,BOX,group,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,pl}=ctx;
