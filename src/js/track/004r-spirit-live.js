@@ -74,14 +74,16 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
   /* the posed slots */
   const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<24;s++)OP[s].w=0;
   const lp=lead?sampleAt(lead.u,_spS):null;
-  sp.heads.forEach((h,k)=>{if(!lead){return}const f=sampleAt(lead.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1;h.push=h.push||0;let d=h.d+h.push,x,y,z,okH=false;
-    for(let tr=0;tr<6&&!okH;tr++){x=f.p.x+sx/sl*h.sd*d;y=f.p.y+h.up;z=f.p.z+sz/sl*h.sd*d;okH=sp.clr.ok(x,y,z,h.s*0.6);if(!okH)d+=12}
-    h.push+=(d-h.d-h.push)*(okH?0.08:1);x=f.p.x+sx/sl*h.sd*(h.d+h.push);z=f.p.z+sz/sl*h.sd*(h.d+h.push);
-    OP[k].set(x,y+Math.sin(t*0.7+k)*h.s*0.05,z,okH?1:0);_spM.lookAt(_spA.set(x,y,z),_spB.copy(lead.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
+  /* each head: the nearest clear place, outward from its own, 12 m at a time; out at once, back in slowly; the place shown
+     is checked again, and the head is hidden for that frame if it is not clear */
+  sp.heads.forEach((h,k)=>{if(!lead)return;const f=sampleAt(lead.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
+    h.push=h.push||0;let want=-1;for(let tr=0;tr<8&&want<0;tr++){const q=at(h.d+tr*12);if(sp.clr.ok(q[0],y,q[1],r0))want=tr*12}
+    if(want<0){h.push=96;return}h.push=want>h.push?want:h.push+(want-h.push)*0.05;const q=at(h.d+h.push),by=y+Math.sin(t*0.7+k)*h.s*0.05;
+    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);_spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(lead.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
   for(const c of sp.colossi){const s=c.slot,tx=lead?lead.ship.position:mine?camera.position:_spA.set(0,0,0),dx=tx.x-c.c[0],dz=tx.z-c.c[2];let yaw=Math.atan2(dx,dz)-c.yaw;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));yaw=Math.max(-1.2,Math.min(1.2,yaw));
     c.y=c.y==null?yaw:c.y+(yaw-c.y)*Math.min(1,dt*0.8);OP[s].set(0,0,0,1);_spQ.setFromAxisAngle(_spUp,c.y);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}
-  /* rare ghost riders: now and then (about one race minute in three), a few neon riders fly beside the pack for 4 s */
-  if(sp.riders&&lead&&S.state==='race'){const slot=Math.floor(S.raceT/20);if(slot!==sp.rideSlot){sp.rideSlot=slot;if(spHash(slot*7919+sp.seed)<0.33&&S.raceT>8)sp.ride={t0:S.raceT,n:3+Math.floor(spHash(slot*31+5)*3)}}
+  /* rare ghost riders: now and then (one half minute of a race in five), a few neon riders fly beside the pack for 4 s */
+  if(sp.riders&&lead&&S.state==='race'){const slot=Math.floor(S.raceT/30);if(slot!==sp.rideSlot){sp.rideSlot=slot;if(spHash(slot*7919+sp.seed)<0.2&&S.raceT>8)sp.ride={t0:S.raceT,n:3+Math.floor(spHash(slot*31+5)*3)}}
     const R0=sp.ride;if(R0&&S.raceT-R0.t0<4.5){const e=S.raceT-R0.t0,fade=Math.min(1,e*2,(4.5-e)*2);for(let k=0;k<Math.min(R0.n,sp.riders);k++){const sd=k%2?1:-1,f=sampleAt(lead.u-25+k*14,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,lat=W/2+SPC_O.margin+5+(k>>1)*5;
       const x=f.p.x+sx/sl*sd*lat,y=f.p.y+3+k%3,z=f.p.z+sz/sl*sd*lat;if(!sp.clr.ok(x,y,z,3))continue;const fl=0.75+0.25*Math.sin(e*TAU*2+k);OP[7+k].set(x,y,z,fade*fl*0.8);
       _spM.lookAt(_spA.set(0,0,0),_spB.copy(f.t),f.u);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[7+k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}}}
