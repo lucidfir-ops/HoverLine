@@ -2,13 +2,14 @@
 /* ---------- menu pages (Prototype 32) ----------
    The title holds Race, Options and Leaderboard and a small music player. Race opens the mode page (Career, Race, Time
    trial, Multiplayer, Ship lab); Race and Time trial open the track page (#menu), Career its own page. Options holds Music,
-   Settings, Controls and the Nose guide, and opens from the title, the pause menu or a lobby. */
-const PAGES=['title','play','menu','career','train','opts'];let page='title',optsFrom=null;
+   Settings and Controls, and opens from the title, the pause menu or a lobby. Prototype 61: Training (trmenu) is four
+   buttons: Nose guide, Control tutorial, First flight and Practice tracks (the drill tracks, #train). */
+const PAGES=['title','play','menu','career','trmenu','train','opts'];let page='title',optsFrom=null;
 function showPage(p){page=p;for(const id of PAGES)$(id).hidden=id!==p;optsFrom=null;
   if(p==='menu'){updateMenuBest();drawPreview()}else if(p==='career')carUI();else if(p==='train')trUI();else if(p==='play'){buildSummary();modeGo();const o=carOpen(),done=car.best.filter(x=>x&&x<=3).length;
     $('carBtnSub').textContent=car.best.some(x=>x)?(done>=CAR_N?'Every race cleared':`Next: ${CAR_T[o>>2].n} ${(o&3)+1}`)+` · ${car.cr.toLocaleString('en')} ¢`:'Start here · easy races first, harder as you win'}}
 const hidePages=()=>{for(const id of PAGES)$(id).hidden=true};
-function openOpts(from){optsFrom=from;$('tutBtn').hidden=from!=='title';$(from).hidden=true;$('opts').hidden=false}
+function openOpts(from){optsFrom=from;$(from).hidden=true;$('opts').hidden=false}
 function closeOpts(){$('opts').hidden=true;const f=optsFrom||'title';optsFrom=null;$(f).hidden=false;if(f==='mp')mpView()}
 $('playBtn').onclick=()=>showPage('play');$('playBack').onclick=()=>showPage('title');
 $('optBtn').onclick=()=>openOpts('title');$('pauseOpt').onclick=()=>openOpts('pause');$('mpOpt').onclick=()=>openOpts('mp');$('optDone').onclick=closeOpts;

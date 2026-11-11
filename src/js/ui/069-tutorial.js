@@ -1,9 +1,11 @@
 //# ui/069-tutorial.js: the tutorial
-/* ---------- tutorial (Prototype 38) ----------
-   Six short steps when the career starts (it asks first; Options replays it): the frame floats over a stretch of road
+/* ---------- control tutorial (Prototype 38) ----------
+   Six short steps when the career starts (straight after First flight; a later new career asks first; Training › Control
+   tutorial replays it with the frame you have): the frame floats over a stretch of road
    in the Frame lab's scene and answers your controls, and each step ends as soon as you have done it. The control
    names follow what you are using: keys, the pad in your hand (its own button names), touch (the controls highlighted
-   on screen) or tilt. Skip, Esc or the pad's Menu button ends it at any time. */
+   on screen) or tilt, and change as soon as you pick up another (Prototype 61: the touch controls show only while you
+   are touching the screen). Skip, Esc or the pad's Menu button ends it at any time. */
 const TUT=[
   {k:'steer',n:'Steer',why:'The frame always flies forward. You only steer.',cam:[0,2.7,8.8],at:[0,0.3,-4]},
   {k:'down',n:'Nose down · faster',why:'On straights and downhill. A green V on the road means nose down.',mark:'dive',cam:[9.4,3.1,1.8],at:[0,-0.2,-0.9]},
@@ -21,7 +23,7 @@ function tutT(k){const tl=tilt.enabled&&tilt.ok,tp=tilt.ok&&tilt.pitchMode<2,awa
   if(k==='steer')return tl||steerMode==='tilt'?'Tilt the screen like a wheel':steerMode==='btns'?'Hold ◀ and ▶':steerMode==='slider'?'Slide left and right':'Thumb left and right on the stick';
   if(k==='down'||k==='up'){const t=thumb(k==='down'?'up':'down'),w=`Tip the top of the screen ${k==='down'?away:near}`;return tp?w+(t?', or '+t.toLowerCase():''):t||(tilt.pitchMode<2?w:'Turn on the pitch slider in Controls')}
   return k==='boost'?'Hold the boost button':k==='brake'?'Steer and hold Brake':'Tap a module button'}
-function tutDo(k){if(k==='fx')return tutFxDo();const key=lastDev==='key',pad=lastDev==='pad',inv=bind.padInvert;if(!key&&!pad)return tutT(k);
+function tutDo(k){if(k==='fx')return tutFxDo();const key=lastDev==='key'||!coarse&&lastDev!=='pad',pad=lastDev==='pad',inv=bind.padInvert;if(!key&&!pad)return tutT(k);
   if(k==='steer')return key?'<kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd>':'Left stick, left and right';
   if(k==='down')return key?'Hold <kbd>↑</kbd> or <kbd>W</kbd>':`Push the left stick ${inv?'down':'up'}`;
   if(k==='up')return key?'Hold <kbd>↓</kbd> or <kbd>S</kbd>':`Pull the left stick ${inv?'up':'down'}`;
@@ -29,12 +31,12 @@ function tutDo(k){if(k==='fx')return tutFxDo();const key=lastDev==='key',pad=las
   if(k==='brake')return key?'Steer and hold '+tutK('brake'):'Steer and hold '+tutB('brake');
   return key?`<kbd>${esc(keyName(bind.key.w1[0]))}</kbd> or <kbd>${esc(keyName(bind.key.w2[0]))}</kbd>`:pad?`${tutB('w1')} or ${tutB('w2')}`:'Tap a module button'}
 /* the touch control to look at in each step */
-function tutHi(k){document.querySelectorAll('.tutHi').forEach(e=>e.classList.remove('tutHi'));if(!coarse||!k)return;
+function tutHi(k){document.querySelectorAll('.tutHi').forEach(e=>e.classList.remove('tutHi'));if(!touchUI()||!k)return;
   const st=steerMode==='btns'?['sl','sr']:steerMode==='slider'?['steerSl']:steerMode==='tilt'?[]:['stick'],pt=pitchSlider&&(steerMode==='slider'||steerMode==='tilt')?['pslide']:st,ids={steer:st,down:pt,up:pt,boost:['bst'],brake:['brk'],fire:['w1','w2']}[k]||[];
   for(const id of ids)if($(id))$(id).classList.add('tutHi')}
 function tutText(){const st=TUT[tut.i];tut.dev=lastDev;$('tutDots').innerHTML=TUT.map((x,k)=>k<tut.i||k===tut.i&&tut.ok>=0?'<b>●</b>':k===tut.i?'<b>○</b>':'○').join(' ');
   $('tutName').textContent=st.n;const d=$('tutDo');d.classList.toggle('ok',tut.ok>=0);d.innerHTML=tut.ok>=0?'✓ '+tutDo(st.k):tutDo(st.k);$('tutWhy').textContent=(st.why||'')+(st.k==='steer'&&coarse&&tilt.ok&&(tilt.enabled||steerMode==='tilt')?' If tilt pulls one way, Recentre tilt is in the pause menu.':'');
-  $('tutSkip').textContent=lastDev==='key'?'Skip · Esc':lastDev==='pad'?'Skip · '+padName(bind.pad.pause):'Skip';$('tut').classList.toggle('touch',coarse);tutHi(tut.ok>=0?null:st.k);tut.cardB=document.querySelector('#tut .tcard').getBoundingClientRect().bottom}
+  $('tutSkip').textContent=lastDev==='key'?'Skip · Esc':lastDev==='pad'?'Skip · '+padName(bind.pad.pause):'Skip';$('tut').classList.toggle('touch',touchUI());tutHi(tut.ok>=0?null:st.k);tut.cardB=document.querySelector('#tut .tcard').getBoundingClientRect().bottom}
 function tutShow(i){tutFxEnd();tut.i=i;if(TUT[i].k==='fx')tutFxStart();tut.t=tut.h=tut.l=tut.r=tut.flash=0;tut.ok=-1;tut.done=false;tutText()}
 /* the scene: a stretch of road under the frame (the lab's stand is hidden meanwhile), road marks and strips that stream
    past, green speed lines when the nose is down, and the shots a module fires */
@@ -50,33 +52,25 @@ function tutScene(){if(!tut.g){const g=new THREE.Group(),rt=roadTex.clone();rt.n
   tut.hid=labScene.children.filter(o=>o.visible&&!o.isLight);for(const o of tut.hid)o.visible=false;labScene.add(tut.g);
   tut.ship=makeShip(paintOf(build),build.stats,build.frame);tut.ship.rotation.order='YXZ';labScene.add(tut.ship);tut.p={pitch:0,steer:0,brk:0,boost:0};tut.v=30;
   labCam.position.set(...TUT[0].cam);labCam.lookAt(...TUT[0].at);tut.at=new THREE.Vector3(...TUT[0].at)}
-function tutStart(from){if(tut.on)return;tut.from=from;TUT.length=TUT_N;if(TUT_FX[build.frame])TUT.push(TUT_FX[build.frame]);tut.on=true;S.state='tut';hidePages();['opts','tutAsk'].forEach(i=>$(i).hidden=true);
+function tutStart(from){if(tut.on)return;tut.from=from;TUT.length=TUT_N;if(TUT_FX[build.frame])TUT.push(TUT_FX[build.frame]);tut.on=true;S.state='tut';hidePages();['trmenu','tutAsk'].forEach(i=>$(i).hidden=true);
   try{document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}catch(e){}
   tutScene();if(tilt.enabled&&tilt.ok){tilt.neutral=tilt.ang;tilt.np=tilt.pa}
-  if(coarse){$('touch').hidden=false;touchLayout();for(let k=0;k<2;k++){const w=build.weapons[k],b=$('w'+(k+1));b._h=null;b.innerHTML=`${icon(w)}<small>${WDEF[w].name}</small>`;b.classList.toggle('rdy',!WDEF[w].passive)}}
+  if(coarse){$('touch').hidden=!touchUI();touchLayout();for(let k=0;k<2;k++){const w=build.weapons[k],b=$('w'+(k+1));b._h=null;b.innerHTML=`${icon(w)}<small>${WDEF[w].name}</small>`;b.classList.toggle('rdy',!WDEF[w].passive)}}
   tut.hold=[true,true];tut.pp=true;tut.now=0;tut.fin=false;$('tut').hidden=false;tutShow(0)}
-function tutEnd(){if(!tut.on)return;const early=!tut.fin;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');if(tut.sv){build.frame=tut.sv;tut.sv=null}tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
+function tutEnd(){if(!tut.on)return;const early=!tut.fin;tutFxEnd();tut.on=false;store.set('hoverline.tut','1');tutHi(null);$('tut').hidden=true;$('touch').hidden=true;
   for(const k of['steer','pitch','psl','brake','boost','f1','f2'])touch[k]=0;showStick(0,0);
   for(const s of tut.shots)labScene.remove(s.m);tut.shots=[];labScene.remove(tut.g);if(tut.ship){labScene.remove(tut.ship);disposeObj(tut.ship);tut.ship=null}for(const o of tut.hid)o.visible=true;tut.hid=[];
-  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='opts')$('opts').hidden=false;else if(tut.from==='ff')showPage('title');else showPage('career');
-  if(early)note(FF_NOTE,5000)}
+  labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='train')showPage('trmenu');else showPage('career');
+  if(early&&tut.from==='career')note(TUT_NOTE,5000)}
 function tutAsk(){hidePages();$('tutAsk').hidden=false}
-$('tutYes').onclick=async()=>{if(coarse){goFull();if(!(await tiltCheck()))return}tutStart('career')};
-$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career');note(FF_NOTE,5000)};
-/* Prototype 60: the new-player experience has a name, First flight: the spoken frame select (a new career), the guidance
-   question and the tutorial. It is offered once on a first launch and replays from Options > Tutorial. A replay picks a
-   frame only for the tutorial (the frame is put back afterwards) and never touches the career, its credits, the saved
-   build or any setting. Skipping anywhere sets hoverline.tut and says where to find it again. */
-const FF_NOTE='First flight skipped. Replay it any time from Options › Tutorial.';
-const ff={from:null};
-async function ffBegin(from){if(coarse){goFull();if(!(await tiltCheck()))return}ff.from=from;fsOpen()}
-function ffBack(){const f=ff.from;ff.from=null;if(f==='opts')$('opts').hidden=false;else ffOpen()}
-function ffOpen(){hidePages();$('ffAsk').hidden=false;S.state='menu'}
-$('tutBtn').onclick=()=>ffBegin('opts');
-$('ffYes').onclick=()=>{$('ffAsk').hidden=true;ffBegin('ff')};
-$('ffNo').onclick=()=>{store.set('hoverline.tut','1');$('ffAsk').hidden=true;showPage('title');note(FF_NOTE,5000)};
-/* only when nothing has been saved yet: no tutorial flag, no career and no saved best laps or build */
-setTimeout(()=>{if(S.state==='menu'&&page==='title'&&!store.get('hoverline.tut')&&!carExists()&&!store.get('hoverline.best')&&!store.get('hoverline.build')&&!store.get('hoverline.name'))ffOpen()},0);
+/* Prototype 61: the control tutorial (Prototype 60 had called it First flight, which is Eric's name for the five quick
+   races) starts with the frame you have: straight after a new career's frame select, from the guidance question, or from
+   Training › Control tutorial. Leaving it early in a new career says where to find it again. */
+const TUT_NOTE='Control tutorial skipped. Replay it any time from Training › Control tutorial.';
+async function tutGo(from){if(coarse){goFull();if(!(await tiltCheck())){if(from==='career'&&$('tutAsk').hidden)showPage('career');return}}tutStart(from)}
+$('tutYes').onclick=()=>tutGo('career');
+$('tutNo').onclick=()=>{store.set('hoverline.tut','1');$('tutAsk').hidden=true;showPage('career');note(TUT_NOTE,5000)};
+$('tutBtn').onclick=()=>tutGo('train');
 $('tutSkip').onclick=tutEnd;addEventListener('resize',()=>{if(tut.on&&!tut.fin)tutText()});
 addEventListener('keydown',e=>{if(S.state==='tut'&&(e.code==='Escape'||keyIs('pause',e.code))){e.preventDefault();tutEnd()}});
 function tutFrame(dt){const inp=readInput(),st=TUT[tut.i],P=tut.p,sh=tut.ship,now=performance.now(),rt=Math.min(0.25,Math.max(0,(now-(tut.now||now))/1000));tut.now=now;tut.t+=rt;
@@ -121,6 +115,6 @@ function tutFrame(dt){const inp=readInput(),st=TUT[tut.i],P=tut.p,sh=tut.ship,no
   /* the camera eases to each step's view: behind for steering, the side for the nose, behind and above for the rest */
   const asp=cw/Math.max(1,ch),kd=asp<1?Math.max(1,0.8/asp):1;labCam.aspect=asp;labCam.fov=asp<1?46:38;
   /* the frame sits in the middle of the space left free by the card above (and the thumb controls below, in portrait) */
-  {const lo=ch-(coarse&&asp<1?190:0),dy=clamp(((tut.cardB||0)+lo)/2-ch/2,0,ch*0.25);labCam.setViewOffset(cw,ch,0,-dy,cw,ch)}
+  {const lo=ch-(touchUI()&&asp<1?190:0),dy=clamp(((tut.cardB||0)+lo)/2-ch/2,0,ch*0.25);labCam.setViewOffset(cw,ch,0,-dy,cw,ch)}
   const at=new THREE.Vector3(...st.at),cp=new THREE.Vector3(...st.cam).sub(at).multiplyScalar(kd).add(at);if(asp<1)cp.y+=0.6*kd;
   const e=1-Math.exp(-dt*3);labCam.position.lerp(cp,e);tut.at.lerp(at,e);labCam.lookAt(tut.at);labCam.updateProjectionMatrix()}

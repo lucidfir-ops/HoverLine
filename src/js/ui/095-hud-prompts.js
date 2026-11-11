@@ -31,7 +31,7 @@ function qkTips(n){const q=QK_T[n],out=[],at=(k,u)=>{if(u!=null&&isFinite(u))out
     /* the brake is for drifting: the prompt comes before the longest bend (106 degrees, from 1198 m), after the strip */
     at('drift',1110)}
   return out.sort((a,b)=>(a.t!=null?a.t*90:a.u)-(b.t!=null?b.t*90:b.u))}
-function qkTipShow(k){const el=$('qkTip');el.innerHTML=qkSay(k);el.hidden=false;void el.offsetWidth;el.classList.add('on');QK.tip=k;QK.tipT=2.8;tutHi(null);if(coarse&&QK_HI[k]&&$(QK_HI[k]))$(QK_HI[k]).classList.add('tutHi')}
+function qkTipShow(k){const el=$('qkTip');el.innerHTML=qkSay(k);el.hidden=false;void el.offsetWidth;el.classList.add('on');QK.tip=k;QK.tipT=2.8;tutHi(null);if(touchUI()&&QK_HI[k]&&$(QK_HI[k]))$(QK_HI[k]).classList.add('tutHi')}
 function qkTipHide(){const el=$('qkTip');if(!el)return;el.classList.remove('on');QK.tip=null;try{tutHi(null)}catch(e){}clearTimeout(el._h);el._h=setTimeout(()=>{if(!QK.tip)el.hidden=true},400)}
 function qkHud(dt){if(!QK.live)return;
   if(S.state==='race'&&QK.tip){QK.tipT-=dt;if(QK.tipT<=0)qkTipHide()}

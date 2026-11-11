@@ -54,8 +54,10 @@ function trUI(){if(!TRN.on)return;const D0=trDrill(TRN.d),L=$('trDrills');
 document.querySelectorAll('[data-trw]').forEach(b=>b.onclick=()=>{TRN.w=b.dataset.trw;trSave();trLoad();trUI()});
 document.querySelectorAll('[data-trs]').forEach(b=>b.onclick=()=>{TRN.cube=b.dataset.trs==='cube';trSave();trShip();trUI()});
 document.querySelectorAll('[data-trl]').forEach(b=>b.onclick=()=>{TRN.laps=+b.dataset.trl;LAPS=TRN.laps;trSave();trUI()});
-$('trainBtn').onclick=()=>{trEnter();showPage('train')};
-$('trBack').onclick=()=>{trLeave();showPage('play')};
+/* Prototype 61: Training is a page of four; Practice tracks is the drill page that Training used to open */
+$('trainBtn').onclick=()=>showPage('trmenu');$('trmBack').onclick=()=>showPage('play');
+$('pracBtn').onclick=()=>{trEnter();showPage('train')};$('ffBtn').onclick=()=>qkReplay();
+$('trBack').onclick=()=>{trLeave();showPage('trmenu')};
 $('trGo').onclick=startRace;
 /* the lab always edits your own ship: from the cube it switches to it */
 $('trLab').onclick=()=>{if(TRN.cube){TRN.cube=false;trSave();trShip()}openLab()};

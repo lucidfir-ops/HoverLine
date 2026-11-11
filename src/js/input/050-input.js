@@ -35,7 +35,16 @@ const keyIs=(a,code)=>bind.key[a].includes(code);
 const keyHeld=a=>bind.key[a].some(c=>keys[c]);
 /* The last thing used decides which button names the HUD shows. */
 let lastDev=coarse?'touch':'key';
-const setDev=d=>{if(lastDev!==d){lastDev=d;hudT=0;if(S.state==='lab')try{labSlotTags()}catch(e){}}};
+const setDev=d=>{if(lastDev!==d){lastDev=d;hudT=0;if(S.state==='lab')try{labSlotTags()}catch(e){}try{touchSync()}catch(e){}}};
+/* Prototype 61: the touch controls follow the device in use. A Steam Deck has a touch screen and a pad, so touch being
+   on (coarse) only means they may show: they do while the last input was a touch, hide after a pad press or a key, and
+   come back with the next touch, in races, the quick races and the control tutorial. (Split screen keeps its own rule:
+   there the touch controls belong to whoever plays on this device.) */
+const touchUI=()=>coarse&&lastDev==='touch';
+function touchSync(){const on=touchUI(),T0=$('touch');if(!T0)return;$('slots').hidden=on;if(QK.live)qkClasses();
+  if(tut.on){T0.hidden=!on;if(!tut.fin)tutText()}
+  else if(!(SPL&&SPL.race)&&!$('hudL').hidden&&(S.state==='race'||S.state==='countdown'||S.state==='paused'||S.state==='done'))T0.hidden=!on;
+  if(!T0.hidden)touchLayout();if(!$('qkTap').hidden)qkGoLabel()}
 const actLabel=a=>lastDev==='pad'?padName(bind.pad[a]):keyName(bind.key[a][0]);
 /* the pad last pressed names the buttons: a new kind of pad redraws every label that shows them */
 function padSeen(p){if(p.id===PAD.id)return;PAD.id=p.id;const k=padKindOf(p.id);if(k===PAD.kind)return;PAD.kind=k;store.set('hoverline.padkind',k);hudT=0;padLabels()}
