@@ -17,7 +17,7 @@ async function prep(p, c) {
     if (!c.T || c._code !== code) { c.loadTrack(q.seed, q.wk, q.cx, q.lk, q.sp || null, q.bm); c._code = code }
     return SW.voidify({ pal }) }, [c.code || 'W1000456-0000000010-P', c.pal || 'prism']);
   await p.evaluate(([w, h]) => SW.size(w, h), [W, H]);
-  await p.evaluate(() => { SW.camReset(); SW.slow = 1; SW.slowFn = null; SW.preRender = null; SW.camF = null; SW.fx = 0.2; SW.vMul = 1; SW.cap = null; const el = document.getElementById('swcap'); if (el) el.remove() });
+  await p.evaluate(() => { SW.camReset(); SW.slow = 1; SW.slowFn = null; SW.ringKick = SW.ringStep = SW.tierStep = SW.carvedStep = false; SW.pyrDrive = null; SW.beatAmt = 0.5; SW.h.U.uGain.value = 1; SW.preRender = null; SW.camF = null; SW.fx = 0.2; SW.vMul = 1; SW.cap = null; const el = document.getElementById('swcap'); if (el) el.remove() });
   await p.evaluate(c.setup, c.arg || null);
   await p.evaluate(() => SW.reflect());
   // warm up: a second of flight so the exhaust streams out, not drawn

@@ -50,7 +50,7 @@ function encode(dir, out, fps, opt = {}) {
   for (const [gw, gf, nc] of tries) {
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', pat, '-vf',
       `fps=${gf},scale=${gw}:-2:flags=lanczos,split[a][b];[a]palettegen=max_colors=${nc}:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3:diff_mode=rectangle`, out + '.gif']);
-    if (fs.statSync(out + '.gif').size < (opt.gifMax || 4.2e6)) break }
+    if (fs.statSync(out + '.gif').size < (opt.gifMax || 3.3e6)) break }
   return { gif: fs.statSync(out + '.gif').size, mp4: fs.statSync(out + '.mp4').size };
 }
 module.exports = { launch, openPage, encode, ROOT };

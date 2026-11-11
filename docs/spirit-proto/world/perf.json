@@ -75,17 +75,17 @@
  },
  "tunnel": {
   "frames": 90,
-  "avgCalls": 252,
-  "maxCalls": 267,
-  "avgTris": 83175,
-  "maxTris": 83816,
+  "avgCalls": 262,
+  "maxCalls": 271,
+  "avgTris": 84692,
+  "maxTris": 84920,
   "parts": {
    "stars": {
     "prims": 1400,
     "calls": 1
    },
    "lattice": {
-    "prims": 18894,
+    "prims": 18893,
     "calls": 1
    },
    "lattice packets": {
@@ -101,15 +101,15 @@
     "calls": 1
    },
    "tunnel rings": {
-    "prims": 1440,
+    "prims": 2040,
     "calls": 1
    },
    "tunnel streaks": {
-    "prims": 1428,
+    "prims": 2028,
     "calls": 1
    },
    "tunnel boost pads": {
-    "prims": 1080,
+    "prims": 1536,
     "calls": 1
    }
   }
@@ -147,6 +147,376 @@
    },
    "heads": {
     "prims": 9888,
+    "calls": 20
+   }
+  }
+ },
+ "void_chase": {
+  "frames": 90,
+  "avgCalls": 179,
+  "maxCalls": 183,
+  "avgTris": 90328,
+  "maxTris": 90452,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 19082,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 192,
+    "calls": 1
+   },
+   "block rings": {
+    "prims": 2472,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   },
+   "stepped sky": {
+    "prims": 888,
+    "calls": 1
+   }
+  }
+ },
+ "portal_last": {
+  "frames": 120,
+  "avgCalls": 171,
+  "maxCalls": 207,
+  "avgTris": 97261,
+  "maxTris": 101700,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18858,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 192,
+    "calls": 1
+   },
+   "portal": {
+    "prims": 4624,
+    "calls": 8
+   },
+   "portal ramp and catch road": {
+    "prims": 19340,
+    "calls": 20
+   }
+  }
+ },
+ "portal_jumper": {
+  "frames": 105,
+  "avgCalls": 111,
+  "maxCalls": 201,
+  "avgTris": 92044,
+  "maxTris": 100268,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18849,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 192,
+    "calls": 1
+   },
+   "portal": {
+    "prims": 4624,
+    "calls": 8
+   },
+   "portal ramp and catch road": {
+    "prims": 19340,
+    "calls": 20
+   }
+  }
+ },
+ "serpent_ride": {
+  "frames": 98,
+  "avgCalls": 193,
+  "maxCalls": 202,
+  "avgTris": 83930,
+  "maxTris": 85156,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18895,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 96,
+    "calls": 1
+   },
+   "serpent body": {
+    "prims": 800,
+    "calls": 1
+   },
+   "serpent fins": {
+    "prims": 1200,
+    "calls": 1
+   },
+   "serpent head": {
+    "prims": 388,
+    "calls": 11
+   }
+  }
+ },
+ "serpent_wide": {
+  "frames": 98,
+  "avgCalls": 192,
+  "maxCalls": 194,
+  "avgTris": 83348,
+  "maxTris": 83386,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 12,
+    "calls": 1
+   },
+   "serpent body": {
+    "prims": 800,
+    "calls": 1
+   },
+   "serpent fins": {
+    "prims": 1200,
+    "calls": 1
+   },
+   "serpent head": {
+    "prims": 388,
+    "calls": 11
+   }
+  }
+ },
+ "ghosts": {
+  "frames": 98,
+  "avgCalls": 228,
+  "maxCalls": 247,
+  "avgTris": 88975,
+  "maxTris": 90316,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 19082,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 2768,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 96,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   }
+  }
+ },
+ "echoes": {
+  "frames": 90,
+  "avgCalls": 316,
+  "maxCalls": 325,
+  "avgTris": 94430,
+  "maxTris": 94936,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 19082,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 2368,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 72,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   }
+  }
+ },
+ "music": {
+  "frames": 120,
+  "avgCalls": 180,
+  "maxCalls": 184,
+  "avgTris": 91161,
+  "maxTris": 91280,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 19082,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 192,
+    "calls": 1
+   },
+   "block rings": {
+    "prims": 3240,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   },
+   "stepped sky": {
+    "prims": 948,
+    "calls": 1
+   }
+  }
+ },
+ "portal_diag": {
+  "frames": 105,
+  "avgCalls": 202,
+  "maxCalls": 222,
+  "avgTris": 99170,
+  "maxTris": 100494,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18711,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 48,
+    "calls": 1
+   },
+   "portal": {
+    "prims": 4624,
+    "calls": 8
+   },
+   "portal ramp and catch road": {
+    "prims": 17620,
+    "calls": 20
+   }
+  }
+ },
+ "portal_wide": {
+  "frames": 105,
+  "avgCalls": 187,
+  "maxCalls": 222,
+  "avgTris": 99847,
+  "maxTris": 102182,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18656,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 48,
+    "calls": 1
+   },
+   "portal": {
+    "prims": 4624,
+    "calls": 8
+   },
+   "portal ramp and catch road": {
+    "prims": 19340,
     "calls": 20
    }
   }

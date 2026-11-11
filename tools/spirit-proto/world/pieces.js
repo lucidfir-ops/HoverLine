@@ -11,10 +11,10 @@ const WUP = new V3(0, 1, 0);
 // ---------------------------------------------------------------- shared materials
 // a see-through neon body (ghost riders, echoes): bright at the silhouette, faint in the middle
 const GHOST_V = `varying vec3 vN; varying vec3 vV; void main(){ vec4 w=modelMatrix*vec4(position,1.); vN=normalize(mat3(modelMatrix)*normal); vV=cameraPosition-w.xyz; gl_Position=projectionMatrix*viewMatrix*w; }`;
-const GHOST_F = `uniform vec3 uC; uniform float uA; varying vec3 vN; varying vec3 vV; void main(){ float f=1.-abs(dot(normalize(vN),normalize(vV))); float k=0.16+1.25*pow(f,2.0); gl_FragColor=vec4(uC*k*uA,1.); }`;
-function ghostMat(col, a = 1) { return new THREE.ShaderMaterial({ vertexShader: GHOST_V, fragmentShader: GHOST_F, uniforms: { uC: { value: new Col(col) }, uA: { value: a } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }) }
+const GHOST_F = `uniform vec3 uC; uniform float uA; varying vec3 vN; varying vec3 vV; void main(){ float f=1.-abs(dot(normalize(vN),normalize(vV))); float k=0.22+1.6*pow(f,2.0); gl_FragColor=vec4(uC*k*uA,1.); }`;
+function ghostMat(col, a = 1) { return new THREE.ShaderMaterial({ vertexShader: GHOST_V, fragmentShader: GHOST_F, uniforms: { uC: { value: new Col(col) }, uA: { value: a } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide }) }
 SW.ghostMat = ghostMat;
-function ghostOf(ship, mat) { const g = ship.clone(true); g.traverse((o) => { if (o.isMesh || o.isLine || o.isPoints) { o.material = mat; o.castShadow = false } }); return g }
+function ghostOf(ship, mat) { const g = ship.clone(true); g.traverse((o) => { if (o.isLine || o.isPoints || (o.isMesh && !o.geometry.attributes.normal)) o.visible = false; else if (o.isMesh) { o.material = mat; o.castShadow = false } }); return g }
 // the swirl in a portal (view a: one draw), coloured by the palette
 const SWIRL_F = SW.GL_COMMON + `varying vec2 vUv; uniform float uSpin; void main(){ vec2 q=vUv*2.-1.; float r=length(q); if(r>1.) discard; float a=atan(q.y,q.x);
   float s=sin(a*5.+r*16.-uT*uSpin); float arms=smoothstep(0.35,1.,s)*(0.35+0.65*r); vec3 c=pal(r*110.+uT*25.)*arms*1.3+vec3(0.015,0.005,0.03);
@@ -228,7 +228,7 @@ SW.ghostRiders = function (o = {}) {
     out.forEach((q, k) => { const g = q.g; const fade = ss((t - g.t0) / (g.fin || 1.0)) * (1 - ss((t - g.t1) / (g.fout || 1.0)));
       const u = base + g.du + (g.dv || 0) * (t - g.t0), f = fr(u), lat = g.lat + Math.sin(t * 1.3 + k) * 1.5, up = g.up + Math.sin(t * 2 + k) * 0.5;
       q.m.position.copy(f.p).addScaledVector(f.r, lat).addScaledVector(f.u, up); _m.makeBasis(f.r, f.u, f.t.clone().negate()); q.m.quaternion.setFromRotationMatrix(_m);
-      q.m.rotateZ(-Math.cos(t * 1.3 + k) * 0.25); const flick = 0.75 + 0.25 * Math.sin(t * 23 + k * 7) * Math.sin(t * 7.3 + k); q.mat.uniforms.uA.value = fade * flick * (g.a || 1); q.m.visible = fade > 0.01;
+      q.m.rotateZ(-Math.cos(t * 1.3 + k) * 0.25); q.m.scale.setScalar(g.s || 1); const flick = 0.75 + 0.25 * Math.sin(t * 23 + k * 7) * Math.sin(t * 7.3 + k); q.mat.uniforms.uA.value = fade * flick * (g.a || 1); q.m.visible = fade > 0.01;
       q.hist.unshift(q.m.position.clone()); if (q.hist.length > 60) q.hist.pop(); const A = q.trail.geometry.attributes.position.array; for (let i = 0; i < 60; i++) { const v = q.hist[Math.min(i, q.hist.length - 1)]; A[i * 3] = v.x; A[i * 3 + 1] = v.y; A[i * 3 + 2] = v.z }
       q.trail.geometry.attributes.position.needsUpdate = true; q.trail.material.opacity = 0.7 * fade }) });
   return out };
@@ -236,9 +236,9 @@ SW.ghostRiders = function (o = {}) {
 // ---------------------------------------------------------------- 7. echoes of the leaders (57): where the racers ahead were, 0.2 to 1.4 s ago
 SW.echoes = function (o = {}) {
   const C0 = C(), K = o.k || 6, every = o.every || 3, out = [];
-  SW.P.forEach((P, i) => { if (i === SW.camI) return; const col = o.col ? o.col(i) : SW.palCol(i * 45 + 15).getHex(); const list = [];
+  SW.P.forEach((P, i) => { if (i === SW.camI || P.q.du < (o.minLead ?? 40)) return; const col = o.col ? o.col(i) : SW.palCol(i * 45 + 15).getHex(); const list = [];
     for (let j = 1; j <= K; j++) { const mat = ghostMat(col, (1 - j / (K + 1)) * (o.a || 0.9)); const m = ghostOf(P.r.ship, mat); H.G.add(m); list.push({ m, mat, j }) } out.push({ P, list }) });
-  SW.anim.push(() => { out.forEach(({ P, list }) => list.forEach(({ m, j }) => { const h = P.hist[j * every]; if (!h) { m.visible = false; return } m.visible = h.vis; m.position.copy(h.p); m.quaternion.copy(h.q) })) });
+  SW.anim.push(() => { out.forEach(({ P, list }) => list.forEach(({ m, j }) => { const h = P.hist[j * every]; if (!h) { m.visible = false; return } const me = SW.P[SW.camI].r.ship.position, f = SW.fr(SW.P[SW.camI].r.u).t; m.visible = h.vis && h.p.clone().sub(me).dot(f) > (o.gap ?? 18); m.position.copy(h.p); m.quaternion.copy(h.q) })) });
   return out };
 
 // ---------------------------------------------------------------- light trails behind racers in the air (so a jump reads from far off)
@@ -255,6 +255,16 @@ SW.airTrails = function (o = {}) {
       const sd = new V3().crossVectors(d, tc).normalize().multiplyScalar((o.w || 1.2) * (1 - k / N)); if (!isFinite(sd.x)) sd.set(0, 0, 0);
       A.set([h.p.x + sd.x, h.p.y + sd.y, h.p.z + sd.z, h.p.x - sd.x, h.p.y - sd.y, h.p.z - sd.z], k * 6) } m.geometry.attributes.position.needsUpdate = true }) });
   return out };
+
+// ---------------------------------------------------------------- the music hooks (58) on a simulated 140 bpm clock:
+// bar 1 build, bars 2-3 drop, bar 4 breakdown, bar 5 on drop. Kick: rings swell, edges brighten. Bar: rings turn a notch,
+// one tier of each stepped stack slides out and back. Beat: carved blocks turn an eighth. Drop: pyramids shed, breakdown: they rebuild, the world dims.
+SW.musicHooks = function () {
+  SW.clock({ bpm: 140, bars: [[0, 'build'], [1, 'drop'], [3, 'breakdown'], [4, 'drop']], offset: 0 });
+  SW.ringKick = true; SW.ringStep = true; SW.tierStep = true; SW.carvedStep = true; SW.beatAmt = 0.7;
+  let ph = 0; SW.pyrDrive = (t, b) => { const tgt = b && b.sec === 'drop' ? 1 : 0; ph += (tgt - ph) * 0.06; return ph };
+  SW.anim.push((t, dt, b) => { U.uGain.value = b && b.sec === 'breakdown' ? 0.45 : b && b.sec === 'build' ? 0.6 + 0.4 * b.barF : 1 });
+  SW.cap = () => { const b = SW.b; return b ? b.sec.toUpperCase() + '  bar ' + (b.barN + 1) + '  ' + [0, 1, 2, 3].map((i) => i === Math.floor(b.barF * 4) ? '●' : '○').join(' ') + '   (simulated 140 bpm)' : '' } };
 
 // ---------------------------------------------------------------- 8. the music clock (58): bars, beats, sections and the kick
 // o: {bpm, bars: [[startBar, 'drop'], ...], offset}, or o.tl: [{t, sec}] bar starts from a rendered tune, o.env: a kick envelope per frame

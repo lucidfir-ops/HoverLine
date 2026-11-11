@@ -15,29 +15,23 @@ const JUMP = [
 const UE = 4000;
 const SPIRE = 'W1000456-00000000001-P'; // the same seed with a rising spire: a spiral climbing 134 m from 2600 to 3840 m // the portal's entrance, 506 m into the straight
 const ECHO = [
-  { f: 'dart', du: 70, lat: 3, weave: 4 }, { f: 'blade', du: 58, lat: -5, weave: 4.5 }, { f: 'skiff', du: 46, lat: 6, weave: 3.5 }, { f: 'hauler', du: 36, lat: -2, weave: 5 },
-  { f: 'mono', du: 26, lat: 2, weave: 4 }, { f: 'orb', du: 16, lat: 7.5, weave: 2 }, { f: 'roller', du: 8, lat: -6, weave: 3 }, { f: 'tether', du: 0, lat: 0, weave: 1 }];
-const MUSIC = (a) => { // the hooks: a simulated 140 bpm clock (bars 0 build, 1-2 drop, 3 breakdown, 4- drop)
-  SW.clock({ bpm: 140, bars: [[0, 'build'], [1, 'drop'], [3, 'breakdown'], [4, 'drop']], offset: 0 });
-  SW.ringKick = true; SW.ringStep = true; SW.tierStep = true; SW.carvedStep = true; SW.beatAmt = 0.7;
-  let ph = 0; SW.pyrDrive = (t, b) => { const tgt = b && b.sec === 'drop' ? 1 : 0; ph += (tgt - ph) * 0.06; return ph };
-  SW.anim.push((t, dt, b) => { SW.h.U.uGain.value = b && b.sec === 'breakdown' ? 0.45 : b && b.sec === 'build' ? 0.6 + 0.4 * b.barF : 1 });
-  SW.cap = () => { const b = SW.b; return b ? `${b.sec.toUpperCase()}  bar ${b.barN + 1}  ` + [0, 1, 2, 3].map((i) => i === Math.floor(b.barF * 4) ? '●' : '○').join(' ') + '   (simulated 140 bpm)' : '' } };
+  { f: 'dart', du: 92, lat: 3, weave: 6 }, { f: 'blade', du: 78, lat: -5, weave: 6.5 }, { f: 'skiff', du: 64, lat: 6, weave: 5.5 }, { f: 'hauler', du: 52, lat: -2, weave: 7 },
+  { f: 'mono', du: 40, lat: 2, weave: 6 }, { f: 'orb', du: 14, lat: 7.5, weave: 2 }, { f: 'roller', du: 7, lat: -6, weave: 3 }, { f: 'tether', du: 0, lat: 0, weave: 1 }];
 module.exports = {
   ghosts: { title: 'Ghost riders fading in and out beside the pack', code: TRACK, secs: 6.5, arg: { u: 3540, pack: PACK },
     setup: (a) => { SW.base({ u0: a.u - 100, u1: a.u + 1000, rings: false, carvedN: 8, density: 0.7 }); SW.pack(a.pack, { u: a.u });
-      SW.ghostRiders({ list: [{ du: 30, lat: -24, up: 4, t0: 0.6, t1: 4.6, dv: 6 }, { du: 18, lat: -30, up: 7, t0: 0.9, t1: 4.9, dv: 6 }, { du: 44, lat: -27, up: 10, t0: 1.2, t1: 5.0, dv: 6 }, { du: 50, lat: 26, up: 5, t0: 1.6, t1: 5.4, dv: 4 }, { du: 32, lat: 31, up: 9, t0: 1.9, t1: 5.6, dv: 4 }] });
+      SW.ghostRiders({ list: [{ du: 6, lat: -19, up: 3, t0: 0.5, t1: 4.4, dv: 3, s: 2.2 }, { du: 20, lat: -26, up: 7, t0: 0.8, t1: 4.7, dv: 3, s: 2.6 }, { du: 34, lat: -21, up: 11, t0: 1.1, t1: 5.0, dv: 3, s: 2.4 }, { du: 14, lat: 20, up: 4, t0: 1.5, t1: 5.3, dv: 2, s: 2.4 }, { du: 30, lat: 27, up: 9, t0: 1.8, t1: 5.6, dv: 2, s: 2.8 }] });
       SW.camO = { mode: 'chase', d: 13, h: 5, l: 16, lu: 2, fov: 82 }; SW.cap = () => 'Hallucination: ghost riders' } },
   echoes: { title: 'Echoes of the leaders (57)', code: TRACK, secs: 6, arg: { u: 3540, pack: ECHO },
-    setup: (a) => { SW.base({ u0: a.u - 100, u1: a.u + 1000, rings: false, carvedN: 6, density: 0.6 }); SW.pack(a.pack, { u: a.u }); SW.echoes({ k: 6, every: 3, a: 0.8 });
-      SW.camO = { mode: 'chase', d: 12, h: 5, l: 16, lu: 1, fov: 78 }; SW.cap = () => 'Echoes: where the racers ahead were, 0.2 to 1.2 s ago' } },
+    setup: (a) => { SW.base({ u0: a.u - 100, u1: a.u + 1000, rings: false, carvedN: 6, density: 0.6 }); SW.pack(a.pack, { u: a.u }); SW.echoes({ k: 6, every: 2, a: 1.0, minLead: 30, gap: 10 });
+      SW.camO = { mode: 'chase', d: 12, h: 5, l: 16, lu: 1, fov: 78 }; SW.cap = () => 'Echoes: where the leaders were, 0.13 to 0.9 s ago' } },
   music: { title: 'The world on the beat (58)', code: TRACK, secs: 8, arg: { u: 3540, pack: PACK },
     setup: (a) => { SW.base({ u0: a.u - 100, u1: a.u + 1000, ringEvery: 80, stepped: { big: [{ u: a.u + 700, side: 0, y: 200, half: 140, n: 8, sh: 18, inv: true }], n: 10, far: 4, stairs: false } });
-      SW.pack(a.pack, { u: a.u }); MUSIC(a); SW.camO = { mode: 'chase', d: 12, h: 4.5, l: 16, lu: 2, fov: 78 } } },
-  portal_diag: { title: 'Diagonal portal jump (50), from the side', code: TRACK, secs: 7, arg: { u: UE - 500, uE: UE, pack: SPREAD },
+      SW.pack(a.pack, { u: a.u }); SW.musicHooks(); SW.camO = { mode: 'chase', d: 12, h: 4.5, l: 16, lu: 2, fov: 78 } } },
+  portal_diag: { title: 'Diagonal portal jump (50), from the side', code: TRACK, secs: 7, arg: { u: UE - 440, uE: UE, pack: SPREAD },
     setup: (a) => { const E = SW.fr(a.uE); SW.avoid = [{ c: E.p.clone().addScaledVector(E.t, -150), r: 280 }]; SW.base({ u0: a.u - 100, u1: a.u + 900, rings: false, pyr: false, carvedN: 4 });
       SW.pack(a.pack, { u: a.u }); const J = SW.portalJump({ uE: a.uE, a: 45, back: 200 }); SW.jumpAll(); SW.airTrails({ n: 18, all: true }); SW.slow = 0.5;
-      const c = J.E.p.clone().addScaledVector(J.f0, -130).add(new THREE.Vector3(0, 10, 0)); const pos = J.E.p.clone().addScaledVector(J.f0, -60).addScaledVector(J.r0, -170).add(new THREE.Vector3(0, 70, 0));
+      const c = J.E.p.clone().addScaledVector(J.f0, -120).addScaledVector(J.r0, 10).add(new THREE.Vector3(0, 12, 0)); const pos = J.E.p.clone().addScaledVector(J.f0, -20).addScaledVector(J.r0, -110).add(new THREE.Vector3(0, 40, 0));
       SW.camO = { mode: 'fixed', pos, look: c, fov: 66 }; SW.cap = () => 'Diagonal portal jump (50) · half speed' } },
   void_chase: { title: 'Everything together in the void, chase view', code: TRACK, secs: 6, arg: { u: 3540, pack: PACK },
     setup: (a) => { SW.base({ u0: a.u - 100, u1: a.u + 1000, stepped: { big: [{ u: a.u + 700, side: 0, y: 200, half: 140, n: 8, sh: 18, inv: true }], n: 8, far: 4, stairs: false } });
@@ -72,10 +66,11 @@ module.exports = {
     setup: (a) => { const E = SW.fr(a.uE); SW.avoid = [{ c: E.p.clone().addScaledVector(E.t, -120), r: 200 }]; SW.base({ u0: a.u - 100, u1: a.u + 900, rings: false, pyr: false });
       SW.pack(a.pack, { u: a.u }); SW.portalJump({ uE: a.uE, breaking: false }); SW.jumpAll(); SW.airTrails({ n: 16 }); SW.slow = 0.5;
       SW.camO = { mode: 'chase', d: 11, h: 4.5, l: 14, lu: 5, fov: 70 }; SW.cap = () => 'Portal jump (49) · half speed' } },
-  portal_wide: { title: 'Portal jump (49), the whole piece from the side', code: TRACK, secs: 6, arg: { u: UE - 560, uE: UE, pack: SPREAD },
-    setup: (a) => { const E = SW.fr(a.uE); SW.avoid = [{ c: E.p.clone(), r: 260 }]; SW.base({ u0: a.u - 100, u1: a.u + 900, rings: false, pyr: false, carvedN: 6 }); SW.pack(a.pack, { u: a.u }); const J = SW.portalJump({ uE: a.uE }); SW.jumpAll();
-      const c = J.E.p.clone().addScaledVector(J.f0, -105).addScaledVector(J.r0, 5).add(new THREE.Vector3(0, 8, 0)); const pos = J.E.p.clone().addScaledVector(J.f0, -20).addScaledVector(J.r0, -150).add(new THREE.Vector3(0, 55, 0));
-      SW.camO = { mode: 'fixed', pos, look: c, fov: 66 } } },
+  portal_wide: { title: 'Portal jump (49), the whole piece from the side', code: TRACK, secs: 7, arg: { u: UE - 420, uE: UE, pack: SPREAD },
+    setup: (a) => { const E = SW.fr(a.uE); SW.avoid = [{ c: E.p.clone().addScaledVector(E.t, -120), r: 300 }]; SW.base({ u0: a.u - 100, u1: a.u + 900, rings: false, pyr: false, carvedN: 4 });
+      SW.pack(a.pack, { u: a.u }); const J = SW.portalJump({ uE: a.uE }); SW.jumpAll(); SW.airTrails({ n: 18, all: true }); SW.slow = 0.5;
+      const c = J.E.p.clone().addScaledVector(J.f0, -105).addScaledVector(J.r0, 10).add(new THREE.Vector3(0, 12, 0)); const pos = J.E.p.clone().addScaledVector(J.f0, -15).addScaledVector(J.r0, -105).add(new THREE.Vector3(0, 38, 0));
+      SW.camO = { mode: 'fixed', pos, look: c, fov: 62 }; SW.cap = () => 'Portal jump (49) · from the side · half speed' } },
   portal_top: { title: 'debug: from above', code: TRACK, secs: 3, arg: { u: UE - 560, uE: UE, pack: SPREAD },
     setup: (a) => { const E = SW.fr(a.uE); SW.avoid = [{ c: E.p.clone(), r: 400 }]; SW.base({ u0: a.u - 100, u1: a.u + 900, rings: false, pyr: false, carvedN: 0, lattice: false }); SW.pack(a.pack, { u: a.u }); const J = SW.portalJump({ uE: a.uE }); SW.jumpAll();
       const c = J.E.p.clone().addScaledVector(J.f0, -100).addScaledVector(J.r0, -40); const pos = c.clone().add(new THREE.Vector3(0, 420, 0)).addScaledVector(J.f0, -1);
