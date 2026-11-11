@@ -240,6 +240,7 @@ SW.stars = function (o = {}) { const r = rng(o.seed || 9), n = o.n || 1500, pp =
 function scatter(o, r, n, place) { const out = []; let tries = 0;
   while (out.length < n && tries++ < n * 30) { const u = lerp(o.u0, o.u1, r()), side = (r() < 0.5 ? -1 : 1) * lerp(o.side0 || 40, o.side1 || 420, Math.pow(r(), o.sideP || 1.3)), up = lerp(o.up0 ?? -160, o.up1 ?? 240, r());
     const p = at(u, side, up); const s = place ? place(r) : 1; const d = dRoad(p.x, p.y, p.z); if (d < (o.clear || 30) + s * 0.9) continue;
+    if (window.SPC && SPC.on && !SPC.ok(p, s * 0.9 * (o.rk || 1.25), o.name || 'scatter')) continue;
     if ((SW.avoid || []).some((a) => a.c.distanceTo(p) < a.r + s)) continue; out.push({ p, s, u }) } return out }
 SW.solids = function (o = {}) {
   const r = rng(o.seed || 5), n = o.n || 260;
@@ -267,12 +268,15 @@ SW.carved = function (o = {}) {
 SW.pyramids = function (o = {}) {
   const r = rng(o.seed || 21), pairs = o.pairs || [{ u: o.u0 + 150, side: -1 }], all = [];
   for (const pr of pairs) { const n = pr.n || 8, pitch = pr.pitch || 9, cu = pitch * 0.92, A = at(pr.u, pr.side * (pr.d || 110), pr.y ?? -40), B = at(pr.u + (pr.du || 140), -pr.side * (pr.d || 110), pr.y ?? -40);
+    if (window.SPC && SPC.on && (!SPC.okBox(A, n * pitch / 2, n * pitch, false, 'pyramids') || !SPC.okBox(B, n * pitch / 2, n * pitch, false, 'pyramids'))) continue;
     const fA = fr(pr.u), fB = fr(pr.u + (pr.du || 140)); const mk = (c, f) => { const L = []; for (let k = 0; k < n; k++) { const m = n - k; for (let a = 0; a < m; a++) for (let b = 0; b < m; b++)
       L.push({ k, p: c.clone().addScaledVector(f.r, (a - (m - 1) / 2) * pitch).addScaledVector(f.t, (b - (m - 1) / 2) * pitch).add(new V3(0, (k + 0.5) * pitch, 0)) }) } return L };
     const LA = mk(A, fA), LB = mk(B, fB); const crown = (L) => L.filter((c) => c.k >= n - 3); const moveA = crown(LA), restB = crown(LB);
     for (const c of LA) if (!moveA.includes(c)) all.push({ home: c.p, s: cu, fixed: true });
     for (const c of LB) if (!restB.includes(c)) all.push({ home: c.p, s: cu, fixed: true });
     moveA.forEach((c, i) => { const tgt = restB[i % restB.length].p; const mid = c.p.clone().lerp(tgt, 0.5).add(new V3(0, 60 + r() * 50, 0)).addScaledVector(fA.t, (r() - 0.5) * 40);
+      if (window.SPC && SPC.on) { let k = 0; const bez = (u) => { const iu = 1 - u; return new V3().addScaledVector(c.p, iu * iu).addScaledVector(mid, 2 * u * iu).addScaledVector(tgt, u * u) };
+        while (k++ < 12 && [...Array(24)].some((_, j) => !SPC.ok(bez(j / 23), cu * 0.9, null))) mid.y += 15; if (k > 1) SPC.note('pyramid arcs raised', k - 1) }
       all.push({ home: c.p, tgt, mid, s: cu, delay: r() * 0.5, spin: new V3(r() - 0.5, r() - 0.5, r() - 0.5).normalize(), sp: lerp(2, 6, r()) * (r() < 0.5 ? -1 : 1) }) });
     // a ghost of the finished pyramid B (gold lines): built as 4 lines
   }
@@ -290,7 +294,7 @@ SW.pyramids = function (o = {}) {
 // rings of blocks round the road, each turning slowly about the road (concept 3 and 8)
 SW.rings = function (o = {}) {
   const r = rng(o.seed || 31), list = [], us = o.us || []; if (!us.length) for (let u = o.u0; u < o.u1; u += o.every || 70) us.push(u);
-  us.forEach((u, ri) => { const f = fr(u), R = (o.R || C.W * 0.5 + 9) + (ri % 3) * 2.2, N = (o.N || 14) + 2 * (ri % 3), sz = o.size || 2.6;
+  us.forEach((u, ri) => { const f = fr(u), R = (o.R || (window.SPC && SPC.on ? SPC.ringR(1.5, (o.size || 2.6) * 1.4) : C.W * 0.5 + 9)) + (ri % 3) * 2.2, N = (o.N || 14) + 2 * (ri % 3), sz = o.size || 2.6;
     for (let i = 0; i < N; i++) list.push({ f, ri, i, N, R, sz, ph: r() * 0.4 + ri * 0.7 }) });
   const m = instanced(BOX, wireMat({ mode: 'QUAD', inst: true, cs: 1.6, con: 0.6 }), list.length);
   list.forEach((c, i) => m.aI.setXYZW(i, c.i * 4 + c.ri * 13, -1, 1.1, 1));
@@ -306,14 +310,14 @@ SW.stepped = function (o = {}) {
   const r = rng(o.seed || 11), boxes = [];
   const zig = (c, f, half, n, sh, inv, hue) => { for (let k = 0; k < n; k++) { const sz = half * (1 - k / (n + 0.6)); boxes.push({ p: c.clone().addScaledVector(new V3(0, 1, 0), (inv ? -1 : 1) * (k + 0.5) * sh), f, sx: sz * 2, sy: sh, sz: sz * 2, k, n, inv, hue, dir: r() < 0.5 ? -1 : 1 }) } };
   const big = o.big || [{ u: o.u0 + 420, side: 0, y: 190, half: 150, n: 9, sh: 18, inv: true }];
-  for (const b of big) zig(at(b.u, b.side, b.y), fr(b.u), b.half, b.n, b.sh, b.inv, 0);
+  for (const b of big) { const c = at(b.u, b.side, b.y); if (window.SPC && SPC.on && !SPC.okBox(c, b.half, b.n * b.sh, b.inv, 'stepped sky (big)')) continue; zig(c, fr(b.u), b.half, b.n, b.sh, b.inv, 0) }
   for (let i = 0; i < (o.n || 16); i++) { const u = lerp(o.u0, o.u1, i / (o.n || 16)) + r() * 30, side = (i % 2 ? -1 : 1) * (95 + r() * 120), y = -70 + r() * 110, h = 30 + r() * 26;
-    const c = at(u, side, y); if (dRoad(c.x, c.y, c.z) < h * 1.6 + 20) continue; zig(c, fr(u), h, 5 + Math.floor(r() * 3), 7 + r() * 3, r() < 0.3, r() * 40) }
+    const c = at(u, side, y); if (dRoad(c.x, c.y, c.z) < h * 1.6 + 20) continue; const n = 5 + Math.floor(r() * 3), sh = 7 + r() * 3, inv = r() < 0.3, hue = r() * 40; if (window.SPC && SPC.on && !SPC.okBox(c, h, n * sh, inv, 'stepped sky')) continue; zig(c, fr(u), h, n, sh, inv, hue) }
   for (let i = 0; i < (o.far || 8); i++) { const u = lerp(o.u0, o.u1, r()) + 200, side = (r() < 0.5 ? -1 : 1) * (260 + r() * 200), y = -120 + r() * 160, h = 60 + r() * 60;
-    const c = at(u, side, y); if (dRoad(c.x, c.y, c.z) < h * 1.5 + 30) continue; zig(c, fr(u), h, 6 + Math.floor(r() * 4), 12 + r() * 8, r() < 0.5, r() * 40) }
+    const c = at(u, side, y); if (dRoad(c.x, c.y, c.z) < h * 1.5 + 30) continue; const n = 6 + Math.floor(r() * 4), sh = 12 + r() * 8, inv = r() < 0.5, hue = r() * 40; if (window.SPC && SPC.on && !SPC.okBox(c, h, n * sh, inv, 'stepped sky')) continue; zig(c, fr(u), h, n, sh, inv, hue) }
   // floating stair flights beside the road
   if (o.stairs !== false) for (let u = o.u0 + 40; u < o.u1; u += 9) for (const sd of [-1, 1]) { const k = Math.floor((u - o.u0) / 9); const c = at(u, sd * (C.W / 2 + 7 + (k % 3) * 1.4), -3 - (k % 4) * 0.6);
-    boxes.push({ p: c, f: fr(u), sx: 4.4, sy: 1.2, sz: 7, k: 0, n: 1, inv: false, hue: 0, step: true }) }
+    if (window.SPC && SPC.on && !SPC.ok(c, 4.5, 'stair slabs')) continue; boxes.push({ p: c, f: fr(u), sx: 4.4, sy: 1.2, sz: 7, k: 0, n: 1, inv: false, hue: 0, step: true }) }
   const m = instanced(BOX, wireMat({ mode: 'QUAD', inst: true, cs: 3.2, con: 0.75 }), boxes.length);
   const upd = (t, dt, b) => { boxes.forEach((q, i) => { const f = q.f; _m.makeBasis(f.r.clone().setY(0).normalize(), new V3(0, 1, 0), f.t.clone().setY(0).normalize()); _q.setFromRotationMatrix(_m);
       let off = 0; if (b && SW.tierStep && q.n > 1) { const bar = b.barN + b.barF; const which = Math.floor(bar) % q.n; off = (which === q.k ? ss(b.barF * 2) - ss(b.barF * 2 - 1) : 0) * q.sx * 0.18 * q.dir }
@@ -371,13 +375,13 @@ SW.cam = function (dt, o) {
   else if (o.mode === 'rail') { const u = (o.u != null ? o.u : SW.P[o.i ?? 0].r.u) + (o.at || 0), a = fr(u), b = fr(u + (o.look ?? 40));
     pos = a.p.clone().addScaledVector(a.r, o.side || 0).addScaledVector(a.u, o.up ?? 6); look = b.p.clone().addScaledVector(b.r, o.ls || 0).addScaledVector(b.u, o.lu ?? 1); up = o.worldUp ? new V3(0, 1, 0) : a.u }
   else { pos = typeof o.pos === 'function' ? o.pos(SW.t) : o.pos; look = typeof o.look === 'function' ? o.look(SW.t) : o.look; up = new V3(0, 1, 0) }
-  cam.position.copy(pos); cam.up.copy(up); cam.lookAt(look); if (o.roll) cam.rotateZ(o.roll); cam.fov = o.fov || 74; cam.near = 0.3; cam.far = 3000; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
+  cam.position.copy(pos); cam.up.copy(up); cam.lookAt(look); if (o.roll) cam.rotateZ(o.roll); cam.fov = o.fov || 74; cam.near = 0.3; cam.far = SW.far || 3000; cam.updateProjectionMatrix(); cam.updateMatrixWorld();
 };
 SW.camReset = () => { camS.init = false; camS.inP = false; camS.airK = 0 };
 // one frame: the world's clock, the pack, the camera, the exhaust, then the game's own draw (bloom, speed blur, grade)
 SW.frame = function (dt0, camO, fx) {
-  if (SW.slowFn) SW.slow = lerp(SW.slow || 1, SW.slowFn(), 1 - Math.exp(-dt0 * 6)); const dt = dt0 * (SW.slow || 1); SW.movePack(dt); SW.cam(dt, camO); SW.update(dt); if (SW.preRender) SW.preRender(dt);
-  C.VFX.update(dt); C.scene.background.setHex(0); C.scene.fog.color.setHex(0);
+  if (SW.slowFn) SW.slow = lerp(SW.slow || 1, SW.slowFn(), 1 - Math.exp(-dt0 * 6)); const dt = dt0 * (SW.slow || 1); SW.movePack(dt); SW.cam(dt, camO); if (SW.camPost) SW.camPost(dt); SW.update(dt); if (SW.preRender) SW.preRender(dt);
+  C.VFX.update(dt); C.scene.background.setHex(0); C.scene.fog.color.setHex(0); if (SW.preDraw) SW.preDraw(dt);
   C.GFX.fx = fx ?? 0.45; C.GFX.gl = 0; C.gfxRender(C.scene, C.camera); return { calls: C.GFX.calls, tris: C.GFX.tris };
 };
 SW.size = function (w, h) { C.fit(); C.renderer.setPixelRatio(1); C.renderer.setSize(w, h, false); C.camera.aspect = w / h; C.camera.updateProjectionMatrix() };

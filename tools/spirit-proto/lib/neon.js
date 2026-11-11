@@ -55,11 +55,13 @@
       #endif
       return modelViewMatrix*w;}`;
 
-  const LINE_VS = `attribute vec3 pa;attribute vec3 pb;attribute float side;attribute float endp;attribute float pc;attribute float pk;
+  // the line vertex shader; o.vhead / o.vpre (round 2) inject declarations and a custom world-to-view step (toView2,
+  // used instead of toView when o.custom is set) and o.vpost runs after the quad is placed (extra varyings)
+  const lineVS = (o = {}) => `attribute vec3 pa;attribute vec3 pb;attribute float side;attribute float endp;attribute float pc;attribute float pk;
     uniform vec2 uRes,uFog;uniform float uWidth,uMinPx,uMaxPx,uSwell;
     varying vec3 vCol;varying float vS;varying float vF;
-    ${PALF}${PIECEV}
-    void main(){vec4 a=toView(pa),b=toView(pb);float nz=-0.35;
+    ${PALF}${PIECEV}float gW=1.,gK=1.;${o.vhead || ''}
+    void main(){${o.vpre || ''}vec4 a=${o.custom ? 'toView2(pa,0.)' : 'toView(pa)'},b=${o.custom ? 'toView2(pb,1.)' : 'toView(pb)'};float nz=-0.35;
       if(a.z>nz&&b.z>nz){gl_Position=vec4(0.,0.,-2.,1.);return;}
       if(a.z>nz)a=mix(a,b,(a.z-nz)/(a.z-b.z));if(b.z>nz)b=mix(b,a,(b.z-nz)/(b.z-a.z));
       vec4 ca=projectionMatrix*a,cb=projectionMatrix*b;vec2 sa=ca.xy/ca.w*uRes*0.5,sb=cb.xy/cb.w*uRes*0.5;
@@ -69,11 +71,14 @@
       #ifdef USE_INSTANCING
       sc*=length(instanceMatrix[0].xyz);
       #endif
-      float px=clamp(uWidth*sc*uSwell*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx,uMaxPx*uSwell);
+      float px=clamp(uWidth*gW*sc*uSwell*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx,uMaxPx*uSwell);
       c.xy+=(n*side+d*(endp<0.5?-1.:1.))*px*0.5/uRes*2.*c.w;gl_Position=c;
-      vS=side;vF=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);vCol=pal(pc)*pk;}`;
-  const LINE_FS = `uniform float uGain,uSwell;varying vec3 vCol;varying float vS;varying float vF;
-    void main(){float e=1.-abs(vS);float a=smoothstep(0.,0.4,e);gl_FragColor=vec4(vCol*uGain*(1.+(uSwell-1.)*0.6)*vF*a*(0.85+0.6*e*e),1.);}`;
+      vS=side;vF=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);vCol=pal(pc)*pk*gK;${o.vpost || ''}}`;
+  const LINE_VS = lineVS();
+  const lineFS = (o = {}) => `uniform float uGain,uSwell;varying vec3 vCol;varying float vS;varying float vF;${o.fhead || ''}
+    void main(){float e=1.-abs(vS);float a=smoothstep(0.,0.4,e);vec3 col=vCol*uGain*(1.+(uSwell-1.)*0.6)*vF*a*(0.85+0.6*e*e);${o.fpost || ''}gl_FragColor=vec4(col,1.);}`;
+  const LINE_FS = lineFS();
+  SPFX.lineVS = lineVS; SPFX.lineFS = lineFS;
 
   // a material for neon lines; o: width (world m), minPx, maxPx, gain, pieces (bool), pal (uniform), shift
   SPFX.lineMat = function (o = {}) {
@@ -81,7 +86,8 @@
       uWidth: { value: o.width == null ? 0.12 : o.width }, uMinPx: { value: o.minPx || 1.9 }, uMaxPx: { value: o.maxPx || 7 },
       uSwell: { value: 1 }, uGain: { value: o.gain == null ? 1 : o.gain },
       uExplode: { value: 0 }, uMorph: { value: 0 }, uStag: { value: o.stag == null ? 0.6 : o.stag }, uSpin: { value: o.spin == null ? 1 : o.spin } };
-    const m = new THREE.ShaderMaterial({ uniforms: u, vertexShader: LINE_VS, fragmentShader: LINE_FS, transparent: true,
+    if (o.uniforms) Object.assign(u, o.uniforms);
+    const m = new THREE.ShaderMaterial({ uniforms: u, vertexShader: o.shader ? lineVS(o.shader) : LINE_VS, fragmentShader: o.shader ? lineFS(o.shader) : LINE_FS, transparent: true,
       blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, defines: o.pieces ? { PIECES: 1 } : {} });
     return m;
   };
