@@ -128,7 +128,7 @@ SPR.lattice = function (o = {}) {
       if (obj.music) { // the music: pulses on the kick, a flare on the drop, dim in the breakdown, drawn in in the build
         for (let q = 0; q < 4; q++) U.uKA.value[q] = b.kA ? b.kA[q] : 9; U.uPK.value = 1 - 0.7 * b.brk;
         const flare = b.drop * 1.6, tgt = b.sec === 'rise' ? tight * ss(b.build) : 0; obj.tight = obj.tight == null ? tgt : (tgt < obj.tight ? lerp(obj.tight, tgt, 0.35) : tgt); U.uTight.value = obj.tight;
-        mat.uniforms.uGain.value = (o.gain || 1) * (1 + flare + 0.35 * b.build) * (1 - 0.62 * b.brk); mat.uniforms.uSwell.value = 1 + 0.25 * b.drop + 0.08 * b.k * (1 - b.brk) }
+        mat.uniforms.uGain.value = (o.gain || 1) * (1 + flare + 0.35 * b.build) * (1 - 0.75 * b.brk); mat.uniforms.uSwell.value = 1 + 0.25 * b.drop + 0.08 * b.k * (1 - b.brk) }
       else { mat.uniforms.uGain.value = o.gain || 1 } } };
   SPR.add(obj, 'lattice (sections)'); return obj;
 };
@@ -212,7 +212,7 @@ SPR.shoalForm = function (segs, o = {}) {
   const mesh = new THREE.InstancedMesh(base, mat, n); mesh.frustumCulled = false; mesh.renderOrder = 2; const grp = new THREE.Group(); grp.add(mesh);
   const per = (o.bars || 2) * 4;
   // for rule A: the shape's lines, padded by how far the fish loosen
-  const spcPoints = () => { grp.updateMatrixWorld(true); const out = [], r = (o.amp || 8) * 1.6 + (o.fish || 1) * 2; for (const [a, b] of segs) { const k = Math.max(1, Math.ceil(a.distanceTo(b) / 6)); for (let j = 0; j <= k; j++) out.push({ p: a.clone().lerp(b, j / k).applyMatrix4(grp.matrixWorld), r }) } return out };
+  const spcPoints = () => { grp.updateMatrixWorld(true); const out = [], r = (o.amp || 8) * 1.6 + (o.fish || 1) * 2; for (const [a, b] of segs) { const k = Math.max(1, Math.ceil(a.distanceTo(b) / Math.max(6, r * 0.8))); for (let j = 0; j <= k; j++) out.push({ p: a.clone().lerp(b, j / k).applyMatrix4(grp.matrixWorld), r }) } return out };
   return { group: grp, mat, U, n, spcPoints, update(t, bt) { bt = bt || SPC.fakeBeat(t); U.uTime.value = t;
       // a long loosening every `bars` bars (out over half a bar, hanging, back over a bar), a puff on every kick, all of it on the drop
       const ph = ((bt.b % per) + per) % per, big = ph < 0.6 ? ss(ph / 0.6) : ph < 2 ? 1 : ph < 5.5 ? 1 - ss((ph - 2) / 3.5) : 0;

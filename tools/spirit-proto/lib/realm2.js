@@ -139,7 +139,8 @@ SPR.everything = function (o = {}) {
   // gyroscopes beside the road (and the gate over it)
   for (let i = 0; i < Math.round(4 * k); i++) breathe(P('gyroscopes', O.gyro(THREE, { pal: pk(), size: R(10, 26), rings: 4 + (i % 2), tick: true }), along(i, 4), side() * R(45, 110), R(14, 50)));
   P('gyroscopes (huge)', O.gyro(THREE, { pal: 'iceViolet', size: 260, rings: 6, speeds: [0.05, -0.08, 0.11, -0.14, 0.2, -0.25] }), u1 - 200, side() * 900, 380, { nt: 3 });
-  if (o.gate) { const g = SPR.gyroGate({ tick: true, pal: 'goldViolet' }); SPR.put('gyroscope gate (road through it)', g, (kk) => ({ u: o.gate + kk * 15, lat: 0, h: 0 }), { tries: 16, nt: 10 }); breathe(g, 0.03) }
+  if (o.gate) { const cands = [].concat(o.gate), g = SPR.gyroGate({ tick: true, pal: 'goldViolet' });
+    const ok = SPR.put('gyroscope gate (road through it)', g, (kk) => ({ u: cands[kk % cands.length], lat: 0, h: 0 }), { tries: cands.length, nt: 8 }); if (ok) { breathe(g, 0.03); SPR.extra = Object.assign(SPR.extra || {}, { gateAt: Math.round(g.group.position.x) + ',' + Math.round(g.group.position.z) }) } else SPR.extra = Object.assign(SPR.extra || {}, { gateBad: SPC.lastBad }) }
   // knots, unfolding solids
   for (let i = 0; i < Math.round(2 * k); i++) breathe(P('knots', O.knot(THREE, { pal: pk(), size: R(14, 24), bars: 2, seg: 240, strands: 3 }), along(i, 2) + 60, side() * R(55, 100), R(20, 50)));
   P('knots (huge)', O.knot(THREE, { pal: 'jade', size: 240, bars: 2, phase: 1.3, strands: 4, seg: 300 }), u0 + (u1 - u0) * 0.6, side() * 800, 300, { nt: 4 });
@@ -159,8 +160,8 @@ SPR.everything = function (o = {}) {
     const sh = SPR.shoalForm(segs, { n: 2200, fish: 6, amp: 60, pal: 'emberWhite', slideM: 40, slide: 0.05, swirl: 1 }); col('shoal colossus', sh, (u1 - u0) * 1.0 + 300, -1600) }
   // arches assembling ahead of the leader (blocks fly in along their own radius); one made of shoals
   const span = 2 * (W / 2 + SPC.o.margin) * 1.6, rise = SPC.o.above * 1.9;
-  (o.arches || []).forEach((ua, i) => { if (o.shoalSome !== false && i === 1) { const segs = SPR.shape.arch(span * 1.15, rise * 1.15, 17, 5); const sh = SPR.shoalForm(segs, { n: 900, fish: 0.9, amp: 5, pal: 'jade', mode: 'both' }); SPR.put('arch of shoals', sh, (kk) => ({ u: ua + kk * 20, lat: 0, h: 0 }), { tries: 10, nt: 3 }); return }
-    SPR.put('arches (assemble ahead of the leader)', O.arch(THREE, { pal: i % 2 ? 'jade' : 'goldViolet', u: ua, span, rise, n: 19, block: 3.2, ready: 140, flyIn: 260, after: 20, lastDu: -45, outward: true, seed: 5 + i }), (kk) => ({ u: ua + kk * 20, lat: 0, h: 0 }), { tries: 10, nt: 3, times: [null] }) });
+  (o.arches || []).forEach((uas, i) => { const cand = [].concat(uas), ua = cand[0], cu = (kk) => cand.length > 1 ? cand[kk % cand.length] : ua + (kk % 2 ? 1 : -1) * kk * 15; if (o.shoalSome !== false && i === 1) { const segs = SPR.shape.arch(span * 1.15, rise * 1.15, 17, 5); const sh = SPR.shoalForm(segs, { n: 900, fish: 0.9, amp: 5, pal: 'jade', mode: 'both' }); SPR.put('arch of shoals', sh, (kk) => ({ u: cu(kk), lat: 0, h: 0 }), { tries: Math.max(12, cand.length), nt: 3 }) || (SPR.extra = Object.assign(SPR.extra || {}, { archShoalBad: SPC.lastBad })); return }
+    SPR.put('arches (assemble ahead of the leader)', O.arch(THREE, { pal: i % 2 ? 'jade' : 'goldViolet', u: ua, span, rise, n: 19, block: 3.2, ready: 140, flyIn: 260, after: 20, lastDu: -45, outward: true, seed: 5 + i }), (kk) => ({ u: cu(kk), lat: 0, h: 0 }), { tries: Math.max(12, cand.length), nt: 3, times: [null] }) || (SPR.extra = Object.assign(SPR.extra || {}, { ['archBad' + i]: SPC.lastBad })) });
   // a pyramid and a ring made of shoals ("just sometimes")
   if (o.shoalSome !== false) { P('pyramid of shoals', SPR.shoalForm(SPR.shape.pyramid(70, 6), { n: 1000, fish: 1.4, amp: 10, pal: 'goldViolet' }), u0 + (u1 - u0) * 0.5, side() * 150, -30, { level: true, nt: 3 }) }
   // sacred geometry
