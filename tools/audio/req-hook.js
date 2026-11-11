@@ -44,7 +44,7 @@ function hookMain(LMAP, HOOKLN, STRICT, CUT) {
   };
   const rec = (chan, k) => {
     if (QUIET.n || typeof k !== 'string' || k === 'then') return;
-    if (STRICT && CUT.has(k)) throw new Error('request for a pruned sound: ' + chan + '.' + k + ' (' + window.__SC.label + ')');
+    if (STRICT && CUT.has(k)) { (window.__CUTHIT || (window.__CUTHIT = [])).push(chan + '.' + k + ' (' + window.__SC.label + ')'); throw new Error('request for a pruned sound: ' + chan + '.' + k + ' (' + window.__SC.label + ')') }
     const R = REQ[chan] || (REQ[chan] = {}); let r = R[k]; if (!r) r = R[k] = { n: 0, by: {}, ex: [], sites: [] };
     const S = window.__SC; r.n++; const newKind = !r.by[S.kind]; r.by[S.kind] = (r.by[S.kind] || 0) + 1;
     if (r.ex.length < 3 && !r.ex.includes(S.label)) r.ex.push(S.label);

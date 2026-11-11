@@ -32,6 +32,12 @@ function driverMain() {
   /* play() and onBar() are wrapped so a throw is counted (the scheduler's own try/catch would hide it) */
   let perr = [];
   for (const n of ['play', 'onBar']) { const f = M[n]; M[n] = function (...a) { try { return f.apply(this, a) } catch (e) { if (perr.length < 5) perr.push(n + ': ' + String(e && e.stack || e).split('\n').slice(0, 2).join(' | ').slice(0, 220)); throw e } } }
+  /* the lowest and highest note each recorded instrument is asked for (an instrument has a recording every few
+     semitones and plays the nearest, so which recordings can be reached depends on which notes can be asked for) */
+  const MR = window.__MR = {};
+  const note = (k, m) => { const r = MR[k] || (MR[k] = { min: 1e9, max: -1e9, n: 0 }); if (m < r.min) r.min = m; if (m > r.max) r.max = m; r.n++ };
+  { const IX = E('INSTX'), iN = M.instNote; M.instNote = function (kind, m, ...a) { const XI = IX[kind]; note('instNote:' + kind, m + (XI && XI.oct || 0)); return iN.call(this, kind, m, ...a) };
+    const tV = M.tV; M.tV = function (inst, m, ...a) { note('tV:' + inst, m); return tV.call(this, inst, m, ...a) } }
   /* the speed/position script a race gives the reactive music: cruising, flat out, braking, a fight */
   const SCRIPT = [{ speed: 0.82, rank: 0.4 }, { speed: 0.97, rank: 0.1 }, { speed: 0.6, rank: 0.7, brake: 1 }, { speed: 0.85, rank: 0.3, boost: 1 }];
   const prelude = async (st, o) => {
