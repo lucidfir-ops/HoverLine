@@ -18,7 +18,7 @@ function driverMain() {
   const tick = (ms) => new Promise((r) => setTimeout(r, ms || 0));
   /* the audio context and the music, once per page: the whole embedded-recording path (decode, kits, extras) */
   D.boot = async (o = {}) => {
-    real = new OfflineAudioContext(2, SR, SR); A.ctx = real; A.master = real.createGain(); A.master.connect(real.destination);
+    seedRandom(7); real = new OfflineAudioContext(2, SR, SR); A.ctx = real; A.master = real.createGain(); A.master.connect(real.destination);
     const nb = real.createBuffer(1, SR * 0.6, SR); A.noise = nb; A.engine = () => {};
     M.ctx = null; M.timer = null; M.lite = !!o.lite; M.kit = null; M.init();
     if (M.readyP) await M.readyP; if (M.extP) await M.extP;
@@ -103,6 +103,15 @@ function driverMain() {
   const digest = (buf) => { const out = { ch: [], rms: 0, peak: 0, sr: buf.sampleRate, secs: +(buf.length / buf.sampleRate).toFixed(2) }; let e = 0, n = 0;
     for (let c = 0; c < buf.numberOfChannels; c++) { const x = buf.getChannelData(c), u = new Uint32Array(x.buffer, x.byteOffset, x.length); let h = 0x811C9DC5; for (let i = 0; i < u.length; i++) { h = Math.imul(h ^ u[i], 0x01000193) >>> 0; const a = Math.abs(x[i]); if (a > out.peak) out.peak = a; e += x[i] * x[i]; n++ } out.ch.push(h.toString(16)) }
     out.rms = +(10 * Math.log10(e / n + 1e-12)).toFixed(2); out.peak = +out.peak.toFixed(4); return out };
+  /* every recording of every table, decoded the way the game decodes it, as a hash of its samples (the before/after check
+     that what is kept is bit for bit what it was) */
+  D.tableHashes = async () => {
+    const SL = E('SL'), c = new OfflineAudioContext(1, 4410, SR), out = {};
+    const hash = (b) => { const x = b.getChannelData(0), u = new Uint32Array(x.buffer, x.byteOffset, x.length); let h = 0x811C9DC5; for (let i = 0; i < u.length; i++) h = Math.imul(h ^ u[i], 0x01000193) >>> 0; return b.length + ':' + b.sampleRate + ':' + h.toString(16) };
+    for (const n of ['SMP', 'VOX', 'EXT', 'EXT2', 'SFX']) { const v = await M.decodeVox(c, () => true, SL[n]); out[n] = {}; for (const [k, b] of Object.entries(v)) out[n][k] = hash(b) }
+    out.CVOX = {}; const CV = E('CVOX'); for (const [k, b64] of Object.entries(CV)) { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); out.CVOX[k] = hash(await c.decodeAudioData(u.buffer)) }
+    return out;
+  };
   D.pregenHash = async (st, o = {}) => {
     const P = E('parseTune'); if (typeof st === 'string') st = P(st);
     seedRandom(o.rs || 1); M.ctx = null; M.timer = null; M.init(new OfflineAudioContext(2, 4410, SR)); M.lite = !!o.lite; await settle();
@@ -112,9 +121,9 @@ function driverMain() {
     stubOn = false; const pr = await prelude(st, { kind: 'render', ...o }); st = pr.st; const bars = o.bars || 24, secs = Math.ceil(bars * 4 * 60 / 120) + 12;
     const oc = new OfflineAudioContext(2, SR * secs, SR); M.ctx = null; M.timer = null; M.init(oc); M.setState(st); await settle(); M.cueRace(); await settle();
     fakeT = 0; M.ctx = mkCtx(oc); M.timer = -1; M.nextT = 0.08; M.pos = 0; M.live = { steer: 0, brake: 0, boost: 0, rank: 0.4, speed: 0.8 };
-    M.setMood('count'); const goT = M.countIn(2.999); let goNow = false, bar0 = -1, nBars = 0, step = 0;
-    while (nBars < bars && step < 8000) { fakeT += 0.1; step++; if (!goNow && fakeT >= goT) { goNow = true; M.setMood('race') } try { M.tick() } catch (e) {} const bn = Math.floor(M.pos / 16); if (bar0 < 0) bar0 = bn; nBars = bn - bar0; if (step % 50 === 0) await tick(0) }
-    M.ctx = oc; const buf = await oc.startRendering(); stubOn = true; return digest(buf);
+    M.setMood('count'); const goT = M.countIn(2.999); let goNow = false, bar0 = -1, nBars = 0, step = 0; seedRandom(o.rs || 1); const pn = performance.now; performance.now = () => fakeT * 1000; /* nothing may yield from here to the render: anything else drawing Math.random would move the sequence */
+    while (nBars < bars && step < 8000) { fakeT += 0.1; step++; if (!goNow && fakeT >= goT) { goNow = true; M.setMood('race') } try { M.tick() } catch (e) {} const bn = Math.floor(M.pos / 16); if (bar0 < 0) bar0 = bn; nBars = bn - bar0; }
+    performance.now = pn; M.ctx = oc; const buf = await oc.startRendering(); stubOn = true; return digest(buf);
   };
   /* the older generator's choice tables, enumerated: build() is cheap (microseconds), so every kit, instrument,
      percussion, texture and accent choice the codes can make is built for every flavour and every kx and kx2 value

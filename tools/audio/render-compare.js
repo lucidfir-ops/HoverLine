@@ -6,7 +6,10 @@
 //   pregen  the race tune through Pregen (pgMake: what the game plays as one recording), and
 //   gen     the live engine for 24 bars on a fake clock, into a real offline context (as tools/music/tools/render.js),
 // in both builds, with Math.random seeded the same, and compares an FNV-1a hash of every channel's float bits. Equal
-// hashes mean the buffers are identical, bit for bit. Any difference is listed with the level of each side.
+// hashes mean the buffers are identical, bit for bit. The live engine is not reproducible from one run to the next, even in
+// the same build (it draws Math.random where the fake clock cannot pin it, and some of its timing is real), so a render
+// difference is judged by level: rms (dB) and peak (x20) must agree within 0.4 dB, the spread two runs of one build already
+// show. What IS exact: every recording both builds have is decoded and hashed, and must match sample for sample.
 const fs = require('fs');
 const path = require('path');
 const { open, launch, ROOT } = require('./page.js');
@@ -19,7 +22,15 @@ const OUT = cli('out', null);
 const IDS = QUICK ? [5, 34, 88, 114] : [5, 12, 14, 22, 27, 34, 40, 45, 55, 60, 63, 70, 82, 88, 98, 103, 107, 111, 114, 125, 131];
 const TUNE = (id, seed) => 'S' + id.toString(16).toUpperCase().padStart(2, '0') + (seed >>> 0).toString(16).toUpperCase().padStart(8, '0');
 (async () => {
-  const browser = await launch(), rows = []; let same = 0, diff = 0;
+  const browser = await launch(), rows = []; let same = 0, diff = 0, far = 0, maxd = 0;
+  /* 1. every recording the two builds both have decodes to the same samples */
+  const TH = {};
+  for (const [n, f] of [['a', A], ['b', B]]) { const p = await open(browser, { file: f, samples: false }); await p.evaluate(`(${driverMain})()`); TH[n] = await p.evaluate(() => __D.tableHashes()); await p.context().close() }
+  let kept = 0, gone = 0; const changed = [], added = [];
+  for (const t of Object.keys(TH.a)) { for (const k of Object.keys(TH.a[t])) { if (!(k in TH.b[t])) gone++; else if (TH.a[t][k] === TH.b[t][k]) kept++; else changed.push(t + '.' + k) } for (const k of Object.keys(TH.b[t])) if (!(k in TH.a[t])) added.push(t + '.' + k) }
+  console.log('recordings: ' + kept + ' identical sample for sample, ' + gone + ' only in the first build (removed), ' + changed.length + ' changed' + (changed.length ? ': ' + changed.join(' ') : '') + ', ' + added.length + ' added');
+  if (changed.length || added.length) far++;
+  /* 2. renders */
   for (const samples of [false, true]) {
     const pages = {};
     for (const [n, f] of [['a', A], ['b', B]]) { const p = pages[n] = await open(browser, { file: f, samples }); await p.evaluate(`(${driverMain})()`); await p.evaluate(() => __D.boot()) }
@@ -29,12 +40,13 @@ const TUNE = (id, seed) => 'S' + id.toString(16).toUpperCase().padStart(2, '0') 
       const r = {};
       for (const n of ['a', 'b']) r[n] = await pages[n].evaluate(([c, k]) => (k === 'pregen' ? __D.pregenHash(c, { rs: 5 }) : __D.renderGen(c, { rs: 5, bars: 24 })), [code, kind]).catch((e) => ({ err: String(e.message).slice(0, 120) }));
       const eq = r.a.ch && r.b.ch && r.a.ch.join() === r.b.ch.join(); eq ? same++ : diff++;
+      const dl = r.a.ch && r.b.ch ? Math.max(Math.abs(r.a.rms - r.b.rms), 20 * Math.abs(r.a.peak - r.b.peak)) : 99; maxd = Math.max(maxd, dl); if (dl > 0.4) far++;
       rows.push({ samples: samples ? 'present' : 'absent', kind, code, same: !!eq, a: r.a, b: r.b });
       console.log((eq ? 'same ' : 'DIFF ') + (samples ? 'present' : 'absent ') + ' ' + kind.padEnd(6) + code + '  ' + (r.a.ch ? r.a.secs + ' s, ' + r.a.rms + ' dB rms, peak ' + r.a.peak : JSON.stringify(r.a)) + (eq ? '' : '  vs ' + (r.b.ch ? r.b.rms + ' dB, peak ' + r.b.peak : JSON.stringify(r.b))));
     }
     for (const p of Object.values(pages)) await p.context().close();
   }
-  console.log(`\n${same} of ${same + diff} renders identical bit for bit` + (diff ? `, ${diff} differ` : ''));
+  console.log(`\n${same} of ${same + diff} renders identical bit for bit, ${diff} differ (see the note at the top); largest level difference ${maxd.toFixed(2)} dB; ${far} outside the noise band or with changed recordings`);
   if (OUT) fs.writeFileSync(OUT, JSON.stringify({ a: A, b: B, same, diff, rows }, null, 1));
-  await browser.close(); process.exit(diff ? 1 : 0);
+  await browser.close(); process.exit(far ? 1 : 0);
 })().catch((e) => { console.error('FAIL', e); process.exit(1) });
