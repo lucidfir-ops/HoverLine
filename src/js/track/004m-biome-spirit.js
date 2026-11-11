@@ -11,7 +11,8 @@ function scenerySpirit(ctx){
   const{seed,N,ds,P,R,U,Tg,kind,gap,spl,feats,minY,maxY,cxT,czT,group,dens}=ctx,V3=THREE.Vector3;
   const r=rng((seed^0x5A17)>>>0),q=RES.low?0:(g2('anim')&&g2('bloom'))?2:1,L=N*ds,km=L/1000,dm=[0.4,0.7,1,1.3][dens]||1;
   const cnt=(perKm,qs)=>Math.round(perKm*km*dm*(qs||[0.3,0.6,1])[q]);
-  const clr=spClear(ctx),st=clr.stats,why={};
+  const ms={t:Date.now()},lap=k=>{const n=Date.now();ms[k]=n-ms.t;ms.t=n};
+  const clr=spClear(ctx),st=clr.stats,why={};lap('rule');
   const ix=i=>((i%N)+N)%N,R2=(a,b)=>a+(b-a)*r(),sgn=()=>r()<0.5?-1:1,pick=a=>a[Math.floor(r()*a.length)];
   const _m=new THREE.Matrix4(),_q=new THREE.Quaternion(),_x=new V3(),_y=new V3(),_z=new V3();
   const qB=(x,y)=>{_x.copy(x).normalize();_y.copy(y).normalize();_z.crossVectors(_x,_y).normalize();_y.crossVectors(_z,_x);_m.makeBasis(_x,_y,_z);_q.setFromRotationMatrix(_m);return[_q.x,_q.y,_q.z,_q.w]};
@@ -203,8 +204,9 @@ function scenerySpirit(ctx){
         float dc=distance(vW.xz,cameraPosition.xz);g*=1.-smoothstep(1500.,3200.,dc);gl_FragColor=vec4(vec3(0.45,0.3,1.)*g*0.35*(1.+0.4*uKick*(1.-uCalm))*uWorld,1.);}`,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
     floor.position.set(cxT,floorY,czT);floor.renderOrder=0;floor.frustumCulled=false;group.add(floor)}
 
+  lap('pieces');
   /* ---- the lattice, the backbone (004q) ---- */
-  const lat=spLattice(ctx,clr,r,q);
+  const lat=spLattice(ctx,clr,r,q);lap('lattice');
   /* ---- into the scene: wire solids (one draw a shape), lines by region (culled), far lines, knots, the live slots, shoals ---- */
   const meshes=[];const addM=m=>{if(m){group.add(m);meshes.push(m)}return m};
   const fogN=[500,2400],fogF=[900,3000];
@@ -213,7 +215,7 @@ function scenerySpirit(ctx){
   const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;addM(live.mesh(liveMat,false));addM(sh.mesh());
   for(const m of lat.meshes)addM(m);
   /* what the moving parts need (004r), and the line that describes the track */
-  ctx.spirit={L,seed,q,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};
+  lap('meshes');delete ms.t;ctx.spirit={ms,L,seed,q,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};
   ctx.tick=(t,anim)=>spLive(ctx.spirit,t,anim);
-  ctx.info.push('the Spirit realm'+(rooms.length?' · '+ctx.pl(rooms.length,'room'):'')+(arches.length?' · '+ctx.pl(arches.length,'arch'):''));
+  ctx.info.push('the Spirit realm'+(rooms.length?' · '+ctx.pl(rooms.length,'room'):'')+(arches.length?' · '+arches.length+(arches.length>1?' arches':' arch'):''));
   function wrapI(d){d=((d%N)+N)%N;return d>N/2?d-N:d}}

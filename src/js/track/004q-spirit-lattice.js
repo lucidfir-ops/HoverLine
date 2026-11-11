@@ -45,8 +45,10 @@ function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SP
     const nearest=p=>{let b=null,d=1e18;const cx=Math.floor(p.x/RC),cz=Math.floor(p.z/RC);for(let a=-4;a<=4;a++)for(let c=-4;c<=4;c++){const A=RG.get(rk(cx+a,cz+c));if(A)for(const q0 of A){const dd=q0.p.distanceToSquared(p);if(dd<d){d=dd;b=q0}}}return{q:b,d:Math.sqrt(d)}};
     const I0=Math.floor(mn.x/sp),I1=Math.ceil(mx.x/sp),J0=Math.floor(mn.y/sp),J1=Math.ceil(mx.y/sp),K0=Math.floor(mn.z/sp),K1=Math.ceil(mx.z/sp),H=mx.y-mn.y,node=new Map(),key=(i,j,k)=>((i-I0)*1024+(j-J0))*1024+(k-K0);
     const okP=(p,an)=>clr.ok(p.x,p.y,p.z,1.2)&&clr.ok(p.x+(an.x-p.x)*tight,p.y+(an.y-p.y)*tight,p.z+(an.z-p.z)*tight,1.2);
-    for(let i=I0;i<=I1;i++)for(let j=J0;j<=J1;j++)for(let k=K0;k<=K1;k++){const p=new V3(i*sp,j*sp,k*sp),nr=nearest(p);if(!nr.q||nr.d<clear||nr.d>ext)continue;if(Math.abs(nr.q.u-s.u)>reach)continue;
-      if(!okP(p,nr.q.an)){cut++;continue}node.set(key(i,j,k),{p,d:nr.d,u:nr.q.u,an:nr.q.an});nodesN++}
+    /* column by column: the road points within reach of it, then the nearest of them to each node up the column */
+    for(let i=I0;i<=I1;i++)for(let k=K0;k<=K1;k++){const x=i*sp,z=k*sp,cx=Math.floor(x/RC),cz=Math.floor(z/RC),C=[];for(let a=-4;a<=4;a++)for(let c=-4;c<=4;c++){const A=RG.get(rk(cx+a,cz+c));if(A)for(const q0 of A){const h2=(q0.p.x-x)**2+(q0.p.z-z)**2;if(h2<ext*ext)C.push(q0,h2)}}
+      if(!C.length)continue;for(let j=J0;j<=J1;j++){const y=j*sp;let b=null,d=1e18;for(let m=0;m<C.length;m+=2){const dd=C[m+1]+(C[m].p.y-y)**2;if(dd<d){d=dd;b=C[m]}}d=Math.sqrt(d);
+        if(!b||d<clear||d>ext||Math.abs(b.u-s.u)>reach)continue;const p=new V3(x,y,z);if(!okP(p,b.an)){cut++;continue}node.set(key(i,j,k),{p,d,u:b.u,an:b.an});nodesN++}}
     const seg=(a,b,tier)=>{const mid=a.p.clone().lerp(b.p,0.5),amid=a.an.clone().lerp(b.an,0.5);if(!okP(mid,amid)){cut++;return}
       const u=(a.u+b.u)/2,C=Lof(u),pc=Math.min(0.999,0.08+(mid.y-mn.y)/H*0.75+(((u%900)+900)%900)/900*0.15);
       C.lA.push(a.p.x,a.p.y,a.p.z,((u%L)+L)%L);C.lB.push(b.p.x,b.p.y,b.p.z,tier*10+pc);C.lN.push(a.an.x,a.an.y,a.an.z,a.d);C.lM.push(b.an.x,b.an.y,b.an.z,b.d);

@@ -32,10 +32,17 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
   const SG=40,SL=[],SM=new Map(),skey=(a,b,c)=>((a+2048)*4096+(b+2048))*4096+(c+2048);
   const step=Math.max(1,Math.round(O.camStep/ds)),tst=Math.max(1,Math.round(O.tgtStep/ds)),nT=Math.round(O.sight/O.tgtStep),back=Math.round(O.camBack/ds);
   const ptAt=(i,l,h,o)=>{o.x=P[i].x+R[i].x*l+U[i].x*h;o.y=P[i].y+R[i].y*l+U[i].y*h;o.z=P[i].z+R[i].z*l+U[i].z*h;return o};
-  const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0};
+  const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0};let nIn=0;
   for(let i=0;i<N;i+=step){if(ctx.gap&&ctx.gap[i])continue;const ic=(i-back+N)%N;
     for(const cl of[-hw*0.6,0,hw*0.6]){ptAt(ic,cl,O.camUp+1,ca);
       for(let k=1;k<=nT;k++){const it=(i+k*tst)%N;if(ctx.gap&&ctx.gap[it])continue;for(const tl of[-hw,0,hw]){ptAt(it,tl,1,tb);
+        /* a sight line that stays inside the keep-out all the way adds nothing (anything on it is already kept out): most
+           do, on any road that isn't bending hard, so they are left out (checked at six points, each in the box of a
+           road sample near where it should be) */
+        const span=back+k*tst;let inside=true;for(let f=1;f<=6&&inside;f++){const fr=f/7,x=ca.x+(tb.x-ca.x)*fr,y=ca.y+(tb.y-ca.y)*fr,z=ca.z+(tb.z-ca.z)*fr,m0=ic+Math.round(fr*span);let hit=false;
+          for(let dm=-3;dm<=3&&!hit;dm++){const m=((m0+dm)%N+N)%N,dx=x-P[m].x,dy=y-P[m].y,dz=z-P[m].z;if(Math.abs(dx*Tg[m].x+dy*Tg[m].y+dz*Tg[m].z)>ds*0.75)continue;if(Math.abs(dx*R[m].x+dy*R[m].y+dz*R[m].z)>hw+O.margin-0.5)continue;const h=dx*U[m].x+dy*U[m].y+dz*U[m].z;if(h>-O.below+0.5&&h<O.above-0.5)hit=true}
+          if(!hit)inside=false}
+        if(inside){nIn++;continue}
         const sg=[ca.x,ca.y,ca.z,tb.x,tb.y,tb.z],n=SL.push(sg)-1;
         const a0=Math.floor(Math.min(sg[0],sg[3])/SG),a1=Math.floor(Math.max(sg[0],sg[3])/SG),b0=Math.floor(Math.min(sg[1],sg[4])/SG),b1=Math.floor(Math.max(sg[1],sg[4])/SG),c0=Math.floor(Math.min(sg[2],sg[5])/SG),c1=Math.floor(Math.max(sg[2],sg[5])/SG);
         /* long rays cross many cells: put them only in the cells the line passes near (every half cell along it) */
@@ -53,6 +60,6 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
     if((c1-c0+1)*(d1-d0+1)*(e1-e0+1)>4000)return false;
     for(let a=c0;a<=c1;a++)for(let b=d0;b<=d1;b++)for(let c=e0;c<=e1;c++)if(G.has(key(a,b,c)))return false;return true};
   const stats={tried:0,placed:0,moved:0,dropped:0,cut:0};
-  const ok=(x,y,z,r)=>far(x,y,z,r)||(!keep(x,y,z,r)&&!sight(x,y,z,r));
+  const ok=(x,y,z,r)=>(r>=30&&far(x,y,z,r))||(!keep(x,y,z,r)&&!sight(x,y,z,r));
   const okPts=(L,r)=>L.every(p=>ok(p[0],p[1],p[2],p[3]!=null?p[3]:r));
-  return{ok,okPts,keep,sight,far,stats,S,SL,O}}
+  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,stats,S,SL,O}}
