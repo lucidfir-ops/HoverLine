@@ -1250,7 +1250,7 @@ const markTex=kind=>makeTex((g,w,h)=>{g.lineJoin='miter';g.lineCap='butt';
   if(kind==='level'){g.fillStyle='rgba(255,176,0,.92)';g.fillRect(6,h*0.12,w-12,h*0.26);g.fillRect(6,h*0.62,w-12,h*0.26);return}
   g.strokeStyle=kind==='dive'?'rgba(70,255,140,.92)':'rgba(205,214,224,.92)';g.lineWidth=h*0.26;g.beginPath();
   if(kind==='dive'){g.moveTo(14,h*0.1);g.lineTo(w/2,h*0.86);g.lineTo(w-14,h*0.1)}else{g.moveTo(14,h*0.9);g.lineTo(w/2,h*0.14);g.lineTo(w-14,h*0.9)}g.stroke()},256,128);
-const diveTex=markTex('dive'),levelTex=markTex('level'),gripTex=markTex('grip');
+const diveTex=markTex('dive'),gripTex=markTex('grip');
 const jumpTex=makeTex((g,w,h)=>{g.fillStyle='rgba(205,214,224,.12)';g.fillRect(0,0,w,h);g.strokeStyle='#cdd6e0';g.lineWidth=10;
   for(let k=0;k<3;k++){const y=h*0.2+k*h*0.27;g.beginPath();g.moveTo(12,y+30);g.lineTo(w/2,y);g.lineTo(w-12,y+30);g.stroke()}},128,256);
 const checkTex=makeTex((g,w,h)=>{for(let x=0;x<16;x++)for(let y=0;y<3;y++){g.fillStyle=(x+y)%2?'#f2efe6':'#111';g.fillRect(x*10,y*10,10,10)}},160,30);
@@ -1411,7 +1411,7 @@ function roadShape(seed,wk,cx,lk,sp){
      let placed=false;const starts=[];for(let i=Math.floor(N*0.12);i+n+m<Math.floor(N*0.83);i+=Math.max(1,Math.round(25/ds)))starts.push(i);
      for(let t=starts.length-1;t>0;t--){const j=Math.floor(rs()*(t+1));[starts[t],starts[j]]=[starts[j],starts[t]]}
      for(const i0 of starts){if(placed)break;if(i0+n+m>gI0)continue;let ok=true;
-       let cmax=0,csum=0;for(let k=i0-m;k<=i0+n+m&&ok;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.0045)ok=false;cmax=Math.max(cmax,Math.abs(Cs[kk]));csum+=Cs[kk]}
+       let cmax=0;for(let k=i0-m;k<=i0+n+m&&ok;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.0045)ok=false;cmax=Math.max(cmax,Math.abs(Cs[kk]))}
        if(!ok||A>0.45/Math.max(cmax,1e-4))continue;
        /* the long route goes to either side (the other if that side is blocked); a crossover swings out one side, passes
           over the short route on a bridge and comes back in on the other side */
@@ -3922,7 +3922,7 @@ const parseTune=str=>{{const q=/^S([0-9A-F]{2})([0-9A-F]{8})$/.exec((str||'').to
 /* Prototype 46: the high-pass on each non-bass bus (Hz), and in breakdowns, where the bass is out */
 const MHP={pad:200,keys:180,arp:220,resp:180,amb:150},MHPB={pad:90,keys:70};
 const MOV=[['drop',16],['b',16],['brk',8],['rise',8],['drop',16],['sw',8],['a',8],['brk',8],['rise',8]],LAYERS=['amb','pad','tex','kick','snare','hat','bass','lead','arp','echo','resp','keys'];
-const rmp=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a))),rnd2=x=>Math.max(2,Math.round(x/2)*2);
+const rmp=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a)));
 const PENT={minor:[0,3,5,7,10],major:[0,2,4,7,9]},AMBDEG={minor:[0,3,5,7,8,10],major:[0,2,4,5,7,9]};
 const LV={a:{pad:.8,tex:0,kick:.9,snare:.9,hat:.85,bass:.9,lead:.55,arp:.35,keys:.6},b:{pad:.8,tex:0,kick:1,snare:1,hat:.9,bass:1,lead:.7,arp:.6,keys:.35},
   drop:{pad:.65,tex:0,kick:1,snare:1,hat:1,bass:1,lead:.75,arp:.8,keys:.3},sw:{pad:.55,tex:.2,kick:1,snare:1,hat:.85,bass:1,lead:0,arp:.55,keys:.4},
@@ -4117,8 +4117,6 @@ registerProcessor('hl-mono',HLMono);`;
 const SCX={minor:[0,2,3,5,7,8,10],harm:[0,2,3,5,7,8,11],dorian:[0,2,3,5,7,9,10],phryg:[0,1,3,5,7,8,10],phrdom:[0,1,4,5,7,8,10],major:[0,2,4,5,7,9,11],mixo:[0,2,4,5,7,9,10],
   yu:[0,3,5,7,10],gong:[0,2,4,7,9],bhairav:[0,1,4,5,7,8,11]};
 const SCXH={minor:'harm',harm:'harm',dorian:'dorian',phryg:'phryg',phrdom:'phrdom',major:'major',mixo:'mixo',yu:'minor',gong:'major',bhairav:'bhairav'};
-const TPL_FAM={phonk:'wave / drift phonk',glitch:'glitch-hop / neuro-funk',techno:'techno / industrial',house:'house / bass house',dub:'dubstep / tearout',euro:'eurobeat',dnb:'drum & bass',
-  jungle:'jungle / breakcore',trance:'trance',psy:'psytrance',hardcore:'happy hardcore',metal:'metal',world:'world'};
 /* the genres the player can switch off (Settings, Music); a template plays only when all its genres are on */
 const GENRES=[['phonk','Phonk'],['glitch','Glitch-hop'],['techno','Techno'],['house','House'],['dub','Dubstep'],['trance','Trance'],['psy','Psytrance'],['euro','Eurobeat'],
   ['dnb','Drum & bass'],['jungle','Jungle & breakcore'],['hardcore','Happy hardcore'],['metal','Metal'],['world','World']].filter(g=>g[0]!=='dub');
@@ -5517,8 +5515,8 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   mlog(e,o){try{if(this===music&&LOG.cur)logEv(e,o)}catch(x){}},
   played(){return this.ctx?Math.round((this.ctx.currentTime-(this.tuneAt||0))*10)/10:null},
   /* ---- once per bar: phase changes, arrangement, layer faders ---- */
-  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let entered=false,fresh=false,lv=null,dur=bd;
-    if(this.want){this.phase=this.want;this.want=null;this.pb=0;entered=true;
+  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
+    if(this.want){this.phase=this.want;this.want=null;this.pb=0;
       if(this.phase==='pre'||this.phase==='drop'){const N=this.phase==='pre'?this.cinN:0,fin=this.finalPending;this.finalPending=false;
         this.phase='groove';fresh=true;this.swT0=null;this.hb=32-N;this.gb=0;this.mi=0;this.buildT0=-1;this.revealAt=-1;this.padUntil=0;this.queue=[];
         if(N>0){this.sec=['rise',0,N];this.queue=[['drop',fin?1e9:16]]}else{this.sec=['drop',0,fin?1e9:16];this.dropFx=true}}
@@ -7018,7 +7016,6 @@ const rtrailMat=new THREE.MeshBasicMaterial({color:0xff8a1f,transparent:true,opa
 const htrailMat=new THREE.MeshBasicMaterial({color:0x3f8cff,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide});
 const orbGeo=new THREE.SphereGeometry(0.6,14,10),orbMat=new THREE.MeshBasicMaterial({color:0x9fe04a}),orbWire=new THREE.MeshBasicMaterial({color:0xe8ffd0,wireframe:true});
 const quakeGeo=new THREE.PlaneGeometry(1,1);
-const puffGeo=new THREE.SphereGeometry(1,10,8);
 /* One mesh per shot type, shared by local and network-spawned shots. */
 const SMOKE_BOX=new THREE.BoxGeometry(1,1,1),_sm4=new THREE.Matrix4(),_sq=new THREE.Quaternion(),_se=new THREE.Euler(),_sp=new THREE.Vector3(),_ss=new THREE.Vector3();
 /* the smoke cloud billows out and up as it tumbles, and shrinks away at the end */
@@ -7192,11 +7189,7 @@ const debrisGeo=[new THREE.BoxGeometry(0.34,0.07,0.5),new THREE.TetrahedronGeome
 const sparkGeo=new THREE.BoxGeometry(0.05,0.05,0.8),sparkMat=new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false});
 const puffGeo2=new THREE.IcosahedronGeometry(0.6,0),puffMat=new THREE.MeshBasicMaterial({color:0x1c1d22,transparent:true,opacity:.55,depthWrite:false});
 const fireMat=new THREE.MeshBasicMaterial({color:0xff8a1f,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false});
-const starGeo=new THREE.OctahedronGeometry(0.75,0),confGeo=new THREE.PlaneGeometry(0.22,0.13);
-const FW_COL=[0xffb000,0x3ff0ff,0xff4a3d,0x46ff8c,0xbe5aff,0xff5fa8,0xffffff,0x6f9bff];
-const fwMats=FW_COL.map(c=>new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));
-const confMats=FW_COL.map(c=>new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide}));
-const fxV=new THREE.Vector3(),fxQ=new THREE.Quaternion(),rnd=(a,b)=>a+Math.random()*(b-a);
+const fxV=new THREE.Vector3(),rnd=(a,b)=>a+Math.random()*(b-a);
 function rdir(o){o.set(Math.random()*2-1,Math.random()*2-1,Math.random()*2-1);if(o.lengthSq()<1e-4)o.set(0,1,0);return o.normalize()}
 function fxAdd(m,o){if(fx.length>=FX_MAX){const old=fx.shift();scene.remove(old.m)}m.position.copy(o.p);scene.add(m);
   fx.push(Object.assign({m,t:0,g:22,drag:0,sv:m.scale.clone(),grow:0,av:new THREE.Vector3(rnd(-9,9),rnd(-9,9),rnd(-9,9))},o,{v:o.v.clone()}));}
@@ -7534,7 +7527,7 @@ function aiInput(r,dt){
     /* (P58) Phase, Barrier and Decoy (P60: now the Reflector; Flares fire themselves): Hard watches for its moment every frame; Easy misses some */
     const dfn=hn&&(w==='phase'||w==='barrier'||w==='reflector');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
     r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+rand(r)*0.3:0.45+rand(r)*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&rand(r)<Lv.react*ailM(r)))fireW[k]=true}
-  const kn=Math.max(T.Kn[idxAt(r.u+r.v*0.2)],T.Kn[idxAt(r.u+r.v*0.4)]),kc=T.Kn[idxAt(r.u+r.v*0.35)];
+  const kc=T.Kn[idxAt(r.u+r.v*0.35)];
   const slA=T.Tg[idxAt(r.u+12)].y,pitch=rUp?1:r.air&&r.air!==true?F.ja:r.air===true||kc<-0.0011?-1:brake>0.05?0.7:Math.abs(T.Cs[idxAt(r.u+look*0.6)])>0.009?0.5*(r.sty?r.sty.up:1):slA>0.03?clamp(slA/0.08,0,1)*(r.sty?clamp(r.sty.up,0.4,1.2):1):slA<-0.03&&r.d.aero>0?-clamp(-slA*F.dv/0.08,0,1)*(r.sty?clamp(r.sty.dive,0.4,1.2):1):0;
   /* Held boost costs shield, so the AI saves it for straights while its shield is healthy; on a green strip the strip pays
      for it, so it boosts there whatever its shield (above the cut-out) unless the corner ahead is tight. */
@@ -7655,7 +7648,6 @@ $('logChip').onclick=()=>{LOG.on=!LOG.on;store.set('hoverline.logrec',LOG.on?'1'
 $('shareChip').onclick=()=>{LOG.share=!LOG.share;store.set('hoverline.share',LOG.share?'1':'0');logUI()};
 /* Landing on the road can shake you and cost a little shield, but never wreck you. */
 const landHit=(r,a)=>{if(r.d.soft||a<=0||r.hp<=1)return;LOG.src='landing';damage(r,Math.min(a,(r.hp-1)/(r===player?T.D.dmg:1)),null,0,true);LOG.src=null};
-function jumpAt(u){for(const j of T.jumps)if(u>=j.u0&&u<=j.u1)return j;return null}
 /* ---------- Prototype 43: hold the brake while steering and it drifts, at once ----------
    For people: the player, the tutorial's stand-in, tools/sim's r.hum pilots and, since Prototype 50, the AI pilots with
    hands (aiHands). Never the autopilot, a bot or anyone in a quick race: their brake is the brake it always was.
@@ -7890,7 +7882,7 @@ function physics(r,inp,dt){
     if(a>0){const vl=-r.v*Math.sin(r.yaw-yb0),d=vl<0?r.lat-lo0:hi0-r.lat,tt=Math.abs(vl)>0.5?Math.max(0,d)/Math.abs(vl):9;
       if(tt<LANE_T)r.yaw-=(r.yaw-yb0)*a*(1-tt/LANE_T)*dt}}
   const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g*(r.air&&r.air.kind?jArc(r.air,uPrev):1);r.yaw-=T.K[idxAt(r.u+du/2)]*du;r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
-  const uu=modU(r.u),sf=surf(uu,r.lat,r),kvB=sf.kv,slB=sf.sl,ybB=sf.yb,loB=sf.lo,hiB=sf.hi;
+  const uu=modU(r.u),sf=surf(uu,r.lat,r),kvB=sf.kv,ybB=sf.yb,loB=sf.lo,hiB=sf.hi;
   // jumps: leave the lip on a ballistic arc, land past the gap; too slow and you fall in
   /* Height above the road. The hover hold (gE) is stronger nose-down and weaker nose-up. Over a crest the road falls away at
      v²·|curvature|; if that beats the hold, the ship lifts off (losing thrust and half its steering) until it settles again. */
@@ -8048,7 +8040,6 @@ const bioTok=()=>bio.k+(bio.d?bio.d.join(''):'');
 const bioStr=()=>bio.k==='U'&&!bio.d?'':'-'+bioTok();
 const roadStr=()=>spec&&spec.quick?'Q'+spec.quick+'-W':spec&&spec.train?'T-'+trDrill(spec.train).n.toUpperCase().replace(/[^A-Z]/g,'')+'-'+wid:wid+(cplx?'X':'')+(lenK!=='M'?lenK:'')+seed.toString(16).toUpperCase().padStart(6,'0')+(spec?'-'+specStr(spec):'');
 const codeStr=()=>roadStr()+(spec&&spec.quick?'':bioStr());
-const seedStr=()=>codeStr();
 /* Speed classes (Prototype 47): Glide 70%, Surge 80%, Rush 90% and Redline, full speed and the default. The class scales
    top speed (S.cls), and with it the AI's and the jumps' gravity, as the career always has. Race and Time trial share one
    pick on the track page; in a room the host picks and everyone races at it. Career tiers keep their names and show their
@@ -8280,7 +8271,7 @@ function edUI(){const sp=ed.sp,box=$('edFeats');
     for(const row of sb.children){const di=+row.dataset.di,v=ed.bm.d[di],mx=BDIAL[di][2],c=row.querySelector('.ec');c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=mx}}
   const fit=$('edFit'),want=FK.reduce((a,k)=>a+sp.n[k],0);
   if(ed.dirty){fit.className='';fit.textContent='Building…';return}
-  const dr=T.sp?Object.entries(T.dropped||{}):[],lost=dr.reduce((a,[,n])=>a+n,0),got=T.feats.length;
+  const dr=T.sp?Object.entries(T.dropped||{}):[],lost=dr.reduce((a,[,n])=>a+n,0);
   if(!T.sp){fit.className='';fit.textContent='This is a generated track. Change any count to make your own.';return}
   if(lost){fit.className='warn';fit.textContent=`Room for ${want-lost} of ${want} on a ${T.LN.name.toLowerCase()} track: left out ${dr.map(([k,n])=>n+' '+FLBL[k][0].toLowerCase().replace(/s$/,n>1?'s':'')).join(', ')}.${ed.lk!=='L'?' A longer track has more room.':''}`}
   else{fit.className='';fit.textContent=want?`All ${want} feature${want>1?'s':''} fitted · track code ${codeStr()}`:`A flat circuit with no features · track code ${codeStr()}`}}
@@ -8367,7 +8358,6 @@ document.addEventListener('visibilitychange',()=>{const c=audio.ctx;
   if(document.hidden){clearTimeout(PZ.vis);PZ.vis=setTimeout(()=>{if(document.hidden&&(S.state==='race'||S.state==='countdown')&&!(mp.on&&mp.auto))togglePause('hidden')},250);if(c&&c.state==='running')c.suspend()}
   else{clearTimeout(PZ.vis);if(c&&c.state==='suspended')c.resume()}});
 let framed=false;try{framed=window.top!==window.self}catch(e){framed=true}
-const onItch=/itch\.(zone|io)$/.test(location.hostname);
 /* Prototype 42: the game's own tab, for a framed page that gets no motion readings. ?tilt=1 sets tilt there (below). */
 const canOwnTab=/^https?:$/.test(location.protocol);
 function ownTabUrl(){try{const u=new URL(location.href);u.searchParams.set('tilt','1');return u.href}catch(e){return location.href}}
@@ -8396,7 +8386,6 @@ $('touchChip').onclick=()=>{coarse=!coarse;store.set('hoverline.touch',coarse?'1
    on the first tap. Controls has four quick setups and the individual options, with a sketch of the layout; it opens
    from the menu, the pause menu and the multiplayer lobby, so the layout can be changed mid-race. */
 const canFull=!!document.documentElement.requestFullscreen;
-function ownTabLabel(){return'Open with tilt'}
 /* Prototype 40: full screen without forcing landscape (it used to lock every phone sideways). A race holds whichever way the
    phone is held when its HUD comes up, portrait or landscape, so turning the phone to steer by tilt can't turn the screen;
    menus let go of the lock. iPhones have neither full screen nor a lock for web pages, so there the page just follows the
@@ -8899,7 +8888,6 @@ function tutEnd(){if(!tut.on)return;const early=!tut.fin;tutFxEnd();tut.on=false
   for(const s of tut.shots)labScene.remove(s.m);tut.shots=[];labScene.remove(tut.g);if(tut.ship){labScene.remove(tut.ship);disposeObj(tut.ship);tut.ship=null}for(const o of tut.hid)o.visible=true;tut.hid=[];
   labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='train')showPage('trmenu');else showPage('career');
   if(early&&tut.from==='career')note(TUT_NOTE,5000)}
-function tutAsk(){hidePages();$('tutAsk').hidden=false}
 /* Prototype 61: the control tutorial (Prototype 60 had called it First flight, which is Eric's name for the five quick
    races) starts with the frame you have: straight after a new career's frame select, from the guidance question, or from
    Training › Control tutorial. Leaving it early in a new career says where to find it again. */
@@ -9135,7 +9123,7 @@ function tutFxDo(){const F=tut.fx,fr=F&&F.fr;if(!F)return'';if(F.do)return F.do;
 function tutFxEnd(){const F=tut.fx;if(!F)return;for(const o of F.objs)labScene.remove(o);for(const p of F.pcs)labScene.remove(p.m);for(const b of F.booms){labScene.remove(b.m);b.m.material.dispose()}
   if(F.ghost)disposeObj(F.ghost);S.cls=F.cls;tut.fx=null;tut.vfx=null;if(tut.ship)tut.ship.visible=true;if(tut.g)tut.g.rotation.x=0;$('tutFx').hidden=true}
 const tutBar=(l,v,max,col)=>`<span class="tm"><em>${l}</em><i><b style="width:${clamp(v/max*100,0,100).toFixed(1)}%;background:${col}"></b></i><em>${Math.round(v)}</em></span>`;
-function tutFx(dt,inp,rt){const F=tut.fx;if(!F)return;const sh=tut.ship,fr=F.fr,P=tut.p,ud=sh.userData,ph0=F.ph,vs=v=>30*v/110;F.t+=rt;
+function tutFx(dt,inp,rt){const F=tut.fx;if(!F)return;const sh=tut.ship,fr=F.fr,P=tut.p,ud=sh.userData,vs=v=>30*v/110;F.t+=rt;
   let hud=null,spinV=null;
   if(fr==='tether'){const r=F.r,b=F.b;
     if(F.ph<2){const i=tutIn({steer:0,brake:0,pitch:0},{boost:true});tutRun(r,i,dt,true);tutRun(b,i,dt,true);P.boost=1;if(F.ph===0&&F.t>0.05){F.ph=1;audio.sfx('boost')}
@@ -11264,8 +11252,8 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
       const m=T&&T.mats;if(m){const p=g2('pulse')?this.pulse:0;if(p>0.005||this.lp>0.005){m.edgeM.color.setScalar(1+0.9*p);m.rail.color.setRGB(1+0.4*p,0.69*(1+0.6*p),0.25*p);m.glass.opacity=0.10+0.14*p}this.lp=p}}
     if(T&&T.env){T.env.update(S.t,g2('anim'));if(T.env.cave)T.env.cave(camera);if(T.env.sky)T.env.sky.position.copy(camera.position);this.moteCol=T.look.mote}
     if(++this.tick%30===0)this.applyEnv()}};
-const _eu=new THREE.Euler(),_em=new THREE.Matrix4(),_eq=new THREE.Quaternion(),_es=new THREE.Vector3(),_ep=new THREE.Vector3(),_ec=new THREE.Color();
-const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_vd=new THREE.Vector3(),_ve2=new THREE.Vector3(),_vbk=new THREE.Vector3(),_vm=new THREE.Matrix4(),_vq=new THREE.Quaternion(),_vq2=new THREE.Quaternion(),_vq3=new THREE.Quaternion(),_ve=new THREE.Vector3(),_vp=new THREE.Vector3(),_vs=new THREE.Vector3(),_vcol=new THREE.Color();
+const _eu=new THREE.Euler(),_em=new THREE.Matrix4(),_eq=new THREE.Quaternion(),_es=new THREE.Vector3(),_ep=new THREE.Vector3();
+const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_vd=new THREE.Vector3(),_ve2=new THREE.Vector3(),_vbk=new THREE.Vector3(),_vm=new THREE.Matrix4(),_vq=new THREE.Quaternion(),_vq2=new THREE.Quaternion(),_vq3=new THREE.Quaternion(),_ve=new THREE.Vector3(),_vp=new THREE.Vector3(),_vs=new THREE.Vector3();
 function fpsTick(d){const ov=(g2('scan')?'s':'')+(g2('vig')?'v':'');if(ov!==FPS.ov){FPS.ov=ov;$('scrS').hidden=!g2('scan');$('scrV').hidden=!g2('vig');$('scrS').style.setProperty('--sl',(4/Math.min(devicePixelRatio||1,2)).toFixed(2)+'px')}
   if(!FPS.on||!(d>0))return;FPS.n++;FPS.acc+=d;if(FPS.acc>=0.5){$('fps').textContent=Math.round(FPS.n/FPS.acc)+' FPS';FPS.n=0;FPS.acc=0}}
 function frame(now){
@@ -11283,7 +11271,7 @@ function frame(now){
   requestAnimationFrame(frame)}
 
 
-let lastRank=-1,splitSaid='',lapT0=3;
+let lastRank=-1,lapT0=3;
 /* Tune codes: the current tune's state packed as D/T + 8 hex digits. Keep saves it locally; Load plays it back; the tune then evolves from there. */
 function tuneUI(){try{mmSync()}catch(e){}try{for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.liked()))}for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.disliked()))}}catch(e){}const c=music.code(),so=music.soOn&&music.soCur,pre=music.modeEff()==='pre'&&music.style!=='off'?music.pgBusy?' · pregen: rendering':music.pg&&music.pgH()&&music.pg.code===codeOf(music.pgH())?' · pregen: ready':'':'';$('tuneHud').textContent=so?'♪ '+so.t+' · '+so.a:c?'♪ '+KEYS[music.st.key]+' '+THEMES[music.st.theme].mode+' · '+c:'';$('tuneInfo').textContent=music.info();const ml=music.modeLabel();$('titleTune').textContent=so?'♪ '+so.t+' · '+so.a+' ('+so.l+')':c&&music.style!=='off'?(ml?ml+' · ':'♪ ')+c+' · '+music.info()+pre:'';
   if(document.activeElement!==$('tuneIn'))$('tuneIn').value=c;

@@ -62,7 +62,6 @@ function tutEnd(){if(!tut.on)return;const early=!tut.fin;tutFxEnd();tut.on=false
   for(const s of tut.shots)labScene.remove(s.m);tut.shots=[];labScene.remove(tut.g);if(tut.ship){labScene.remove(tut.ship);disposeObj(tut.ship);tut.ship=null}for(const o of tut.hid)o.visible=true;tut.hid=[];
   labCam.fov=38;labCam.clearViewOffset();S.state='menu';camInit=false;if(tut.from==='train')showPage('trmenu');else showPage('career');
   if(early&&tut.from==='career')note(TUT_NOTE,5000)}
-function tutAsk(){hidePages();$('tutAsk').hidden=false}
 /* Prototype 61: the control tutorial (Prototype 60 had called it First flight, which is Eric's name for the five quick
    races) starts with the frame you have: straight after a new career's frame select, from the guidance question, or from
    Training › Control tutorial. Leaving it early in a new career says where to find it again. */

@@ -104,7 +104,7 @@ function roadShape(seed,wk,cx,lk,sp){
      let placed=false;const starts=[];for(let i=Math.floor(N*0.12);i+n+m<Math.floor(N*0.83);i+=Math.max(1,Math.round(25/ds)))starts.push(i);
      for(let t=starts.length-1;t>0;t--){const j=Math.floor(rs()*(t+1));[starts[t],starts[j]]=[starts[j],starts[t]]}
      for(const i0 of starts){if(placed)break;if(i0+n+m>gI0)continue;let ok=true;
-       let cmax=0,csum=0;for(let k=i0-m;k<=i0+n+m&&ok;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.0045)ok=false;cmax=Math.max(cmax,Math.abs(Cs[kk]));csum+=Cs[kk]}
+       let cmax=0;for(let k=i0-m;k<=i0+n+m&&ok;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.0045)ok=false;cmax=Math.max(cmax,Math.abs(Cs[kk]))}
        if(!ok||A>0.45/Math.max(cmax,1e-4))continue;
        /* the long route goes to either side (the other if that side is blocked); a crossover swings out one side, passes
           over the short route on a bridge and comes back in on the other side */

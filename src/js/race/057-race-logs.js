@@ -92,4 +92,3 @@ $('logChip').onclick=()=>{LOG.on=!LOG.on;store.set('hoverline.logrec',LOG.on?'1'
 $('shareChip').onclick=()=>{LOG.share=!LOG.share;store.set('hoverline.share',LOG.share?'1':'0');logUI()};
 /* Landing on the road can shake you and cost a little shield, but never wreck you. */
 const landHit=(r,a)=>{if(r.d.soft||a<=0||r.hp<=1)return;LOG.src='landing';damage(r,Math.min(a,(r.hp-1)/(r===player?T.D.dmg:1)),null,0,true);LOG.src=null};
-function jumpAt(u){for(const j of T.jumps)if(u>=j.u0&&u<=j.u1)return j;return null}
