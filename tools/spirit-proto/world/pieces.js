@@ -61,32 +61,41 @@ SW.heads = function (o = {}) {
 // Its body follows the road's own centreline a few metres under it (so the pack rides its back up the spiral), its
 // segments sway out past the road's edges, and the head rises at the front, turned back to look at the racers.
 SW.serpent = function (o = {}) {
-  const n = o.n || 46, segL = o.segL || 9, gap = o.gap || 1.4, depth = o.depth || 9, w = o.w || (C().W + 10);
-  const segs = SW.h.instanced(BOX, SW.wireMat({ mode: 'QUAD', inst: true, cs: 2.2, con: 0.6, fill: 0x061410 }), n * 3);
-  const L = []; for (let i = 0; i < n; i++) { const k = i / (n - 1), taper = i < 3 ? lerp(0.7, 1, i / 3) : 1 - 0.7 * Math.pow(k, 2.2); L.push({ i, taper }) }
-  for (let i = 0; i < n * 3; i++) segs.aI.setXYZW(i, (i % n) * 5, -1, 1.2, 1);
-  // the head: skull, snout, open jaw, horns, eyes (boxes in a group)
-  const head = new THREE.Group(), hm = SW.wireMat({ mode: 'QUAD', cs: 2, con: 0.5, fill: 0x061410 }); hm.uniforms.uI.value.set(30, -1, 1.4, 1);
+  const n = o.n || 46, segL = o.segL || 9, gap = o.gap || 1.3, rad = o.rad || (C().W / 2 + 8), flat = o.flat || 0.36, depth = o.depth || rad * flat + 1.0, neck = o.neck || 8;
+  // the body: open octagonal rings drawn as a wire grid (an edge per facet), one instanced draw; fins: boxes, a second draw
+  const ringG = new THREE.CylinderGeometry(1, 1, 1, 8, 1, true); ringG.rotateX(Math.PI / 2);
+  const body = SW.h.instanced(ringG, SW.wireMat({ mode: 'GRID', grid: [8, 1], inst: true, cs: 2.2, con: 0.7, fill: 0x04100c, side: THREE.DoubleSide }), n);
+  const fins = SW.h.instanced(BOX, SW.wireMat({ mode: 'QUAD', inst: true, cs: 1.5, con: 0.5, fill: 0x04100c }), n * 2);
+  for (let i = 0; i < n; i++) { body.aI.setXYZW(i, (i % 3) * 45 + 20, -1, 1.25, 1); fins.aI.setXYZW(i, 70, -1, 1.1, 1); fins.aI.setXYZW(n + i, 70, -1, 1.1, 1) }
+  const L = []; for (let i = 0; i < n; i++) { const k = i / (n - 1); L.push({ i, taper: i < 3 ? lerp(0.75, 1, i / 3) : 1 - 0.75 * Math.pow(k, 2.0) }) }
+  // the head: skull, snout, open jaw, horns, eyes
+  const head = new THREE.Group(), hm = SW.wireMat({ mode: 'QUAD', cs: 0.12, con: 0.5, fill: 0x04100c }); hm.uniforms.uI.value.set(30, -1, 1.5, 1);
   const bx = (sx, sy, sz, x, y, z, rx = 0, ry = 0, rz = 0) => { const b = new THREE.Mesh(BOX, hm); b.scale.set(sx, sy, sz); b.position.set(x, y, z); b.rotation.set(rx, ry, rz); head.add(b); return b };
-  bx(1.0, 0.62, 1.0, 0, 0.15, 0); bx(0.62, 0.36, 0.95, 0, 0.12, 0.9, -0.08); const jaw = bx(0.56, 0.18, 1.05, 0, -0.32, 0.78, 0.35);
+  bx(1.0, 0.62, 1.0, 0, 0.15, 0); bx(0.62, 0.36, 0.95, 0, 0.12, 0.9, -0.08); const jaw = bx(0.56, 0.18, 1.05, 0, -0.3, 0.78, 0.35);
   bx(0.12, 0.12, 0.9, 0.32, 0.62, -0.45, 0.9, 0.25); bx(0.12, 0.12, 0.9, -0.32, 0.62, -0.45, 0.9, -0.25); bx(0.2, 0.2, 0.25, 0.42, 0.25, 0.42); bx(0.2, 0.2, 0.25, -0.42, 0.25, 0.42);
+  bx(0.06, 0.06, 1.2, 0.2, 0.0, 1.5, 0, 0.5, 0); bx(0.06, 0.06, 1.2, -0.2, 0.0, 1.5, 0, -0.5, 0);
   for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffffff })); e.position.set(sx * 0.4, 0.32, 0.5); head.add(e) }
-  head.scale.setScalar(o.headS || 16); SW.track('serpent', segs); SW.track('serpent head', head);
+  head.scale.setScalar(o.headS || 15); SW.track('serpent body', body); SW.track('serpent fins', fins); SW.track('serpent head', head);
+  const outSide = (u) => { const a = fr(u), b = fr(u + 25); return -Math.sign(b.t.clone().sub(a.t).dot(a.r)) || 1 };
   const st = { u: o.u ?? 0 };
   SW.anim.push((t, dt) => { const P = SW.P; const lead = P && P.length ? Math.max(...P.map((q) => q.r.u)) : 0;
-    const uh = o.follow ? lead + (o.ahead || 60) : st.u + (o.v || 160) * t; // head position along the road
-    L.forEach((s, i) => { const u = uh - i * (segL + gap), f = fr(u); const sway = Math.sin(u * 0.045 - t * 2.2) * (o.sway ?? 5) * Math.min(1, i / 4);
-      const c = f.p.clone().addScaledVector(f.u, -depth * s.taper - (1 - s.taper) * 2).addScaledVector(f.r, sway); _m.makeBasis(f.r, f.u, f.t); _q.setFromRotationMatrix(_m);
-      const roll = Math.sin(u * 0.045 - t * 2.2 + 1) * 0.12; _q.multiply(new Q4().setFromAxisAngle(new V3(0, 0, 1), roll));
-      _s.set(w * s.taper, 7 * s.taper, segL); setI(segs, i, c, _q, _s);
-      // two fins on each segment, angled out past the road's edges so the body reads from the road
-      for (const sd of [-1, 1]) { const fp = c.clone().addScaledVector(f.r, sd * (w * 0.5 * s.taper + 2.5)).addScaledVector(f.u, 2.5 * s.taper);
-        const fq = _q.clone().multiply(new Q4().setFromAxisAngle(new V3(0, 0, 1), sd * 0.55)); _s.set(6 * s.taper, 0.8, segL * 0.7); setI(segs, n + i + (sd > 0 ? n : 0), fp, fq, _s) } });
-    segs.instanceMatrix.needsUpdate = true;
-    const f = fr(uh + 14), lift = o.lift ?? 6; head.position.copy(f.p).addScaledVector(f.u, -depth + lift + Math.sin(t * 1.3) * 1.5).addScaledVector(f.r, Math.sin(uh * 0.045 - t * 2.2) * 4);
-    _v.copy(f.t); if (o.lookBack) _v.negate(); _m.lookAt(new V3(), _v.clone().negate(), f.u); head.quaternion.setFromRotationMatrix(_m); head.rotateX(-0.25 + Math.sin(t * 0.9) * 0.08);
+    const uh = o.follow ? lead + (o.ahead || 60) : st.u + (o.v || 160) * t, sd = o.side || (st.sd = st.sd || outSide(uh));
+    const pts = L.map((s, i) => { const u = uh - i * (segL + gap), f = fr(u); const sway = Math.sin(u * 0.05 - t * 2.4) * (o.sway ?? 2.5) * Math.min(1, i / 6);
+      // the neck: the first segments climb out beside the road, so the head rises past the edge, ahead of the pack
+      const nk = ss(1 - i / neck), sOff = nk * (C().W / 2 + rad * s.taper + 6), side = sd * sOff, lift = ss((sOff - (C().W / 2 + rad * s.taper + 1)) / 5) * (depth + 12);
+      const c = f.p.clone().addScaledVector(f.u, -depth * (0.6 + 0.4 * s.taper) + lift).addScaledVector(f.r, sway + side); return { c, f, s, lk: lift / (depth + 12) } });
+    pts.forEach(({ c, f, s, lk }, i) => { const nx = pts[Math.min(i + 1, n - 1)].c, pv = pts[Math.max(i - 1, 0)].c, tg = pv.clone().sub(nx).normalize();
+      const rr = new V3().crossVectors(tg, f.u).normalize(), uu = new V3().crossVectors(rr, tg); _m.makeBasis(rr, uu, tg); _q.setFromRotationMatrix(_m);
+      const R = rad * s.taper * lerp(1, 0.6, lk); _s.set(R, rad * s.taper * lerp(flat, 0.5, lk), segL); setI(body, i, c, _q, _s);
+      for (const k of [-1, 1]) { const fp = c.clone().addScaledVector(rr, k * (R + 2.2)).addScaledVector(uu, -R * flat * 0.5); const fq = _q.clone().multiply(new Q4().setFromAxisAngle(new V3(0, 0, 1), -k * 0.6));
+        _s.set(5.5 * s.taper, 0.7, segL * 0.6); setI(fins, i + (k > 0 ? n : 0), fp, fq, _s) } });
+    body.instanceMatrix.needsUpdate = true; fins.instanceMatrix.needsUpdate = true;
+    const h0 = pts[0], h1 = pts[1]; const dir = h0.c.clone().sub(h1.c).normalize(); head.position.copy(h0.c).addScaledVector(dir, 10).addScaledVector(WUP, 3);
+    // the head looks back over its shoulder at the pack
+    const tgt = SW.P[SW.camI].r.ship.position.clone(); const look = o.lookBack ? tgt : head.position.clone().add(dir);
+    _m.lookAt(look, head.position, WUP); head.quaternion.setFromRotationMatrix(_m); head.rotateY(Math.PI); head.rotateX(Math.sin(t * 0.9) * 0.08);
     jaw.rotation.x = 0.35 + Math.sin(t * 2.1) * 0.15 });
-  return { segs, head } };
+  return { body, fins, head } };
 
 // ---------------------------------------------------------------- 3. road ribbons (portal ramps, catch roads) in the game's road look
 // pts: [{p, r, u}] every metre or two. The surface uses the game's road material (it reflects the realm as the road does).

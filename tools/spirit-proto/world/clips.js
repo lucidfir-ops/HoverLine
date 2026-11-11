@@ -12,8 +12,16 @@ const SPREAD = [
 const JUMP = [
   { f: 'dart', du: 150, lat: 1.5 }, { f: 'blade', du: 110, lat: -4 }, { f: 'skiff', du: 40, lat: 5 }, { f: 'hauler', du: 0, lat: -1 },
   { f: 'mono', du: -60, lat: 1 }, { f: 'orb', du: -85, lat: 7 }, { f: 'roller', du: -110, lat: -4.5 }, { f: 'tether', du: -140, lat: 2 }];
-const UE = 4000; // the portal's entrance, 506 m into the straight
+const UE = 4000;
+const SPIRE = 'W1000456-00000000001-P'; // the same seed with a rising spire: a spiral climbing 134 m from 2600 to 3840 m // the portal's entrance, 506 m into the straight
 module.exports = {
+  serpent_ride: { title: 'Serpent (18) under the spiral, from the pack', code: SPIRE, secs: 6.5, arg: { u: 2760, pack: PACK },
+    setup: (a) => { SW.base({ u0: a.u - 100, u1: a.u + 900, rings: false, pyr: false, carvedN: 8 }); SW.pack(a.pack, { u: a.u }); SW.serpent({ follow: true, ahead: 150, n: 50, neck: 10, lookBack: true });
+      SW.camO = { mode: 'chase', d: 14, h: 9, l: 18, lu: -2.5, fov: 80 }; SW.cap = () => 'Serpent of segments (18) under the rising spiral' } },
+  serpent_wide: { title: 'Serpent (18) under the spiral, from outside', code: SPIRE, secs: 6.5, arg: { u: 2700, pack: PACK },
+    setup: (a) => { SW.avoid = [{ c: new THREE.Vector3(-320, 70, -460), r: 520, lat: 1 }]; SW.base({ u0: a.u - 600, u1: a.u + 900, rings: false, pyr: false, carvedN: 6, lattice: false }); SW.pack(a.pack, { u: a.u }); SW.serpent({ follow: true, ahead: 150, n: 50, neck: 10, lookBack: true });
+      const c = new THREE.Vector3(-320, 70, -460); SW.camO = { mode: 'fixed', pos: (t) => c.clone().add(new THREE.Vector3(Math.cos(0.9 + t * 0.06) * 300, 30, Math.sin(0.9 + t * 0.06) * 300)), look: c.clone().add(new THREE.Vector3(0, 10, 0)), fov: 55 };
+      SW.cap = () => 'Serpent (18) under the rising spiral · wide' } },
   test: { title: 'test still', code: TRACK, secs: 2, arg: { u: 3560, pack: PACK },
     setup: (a) => { SW.base({ u0: a.u - 100, u1: a.u + 900 }); SW.pack(a.pack, { u: a.u }); SW.camO = { mode: 'chase', d: 11, h: 3.9, l: 14, fov: 76 } } },
   portal_last: { title: 'Portal jump (49) from the last racer', code: TRACK, secs: 8, arg: { u: UE - 420, uE: UE, pack: SPREAD },
