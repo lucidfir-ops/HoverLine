@@ -1,8 +1,8 @@
 //# music/engine/039-per-bar.js: music: once per bar: sections, arrangement, layer faders
 //# A fragment of the `music` object literal (it opens in music/engine/*-music-object.js): methods only, not a stand-alone script.
   /* ---- once per bar: phase changes, arrangement, layer faders ---- */
-  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let entered=false,fresh=false,lv=null,dur=bd;
-    if(this.want){this.phase=this.want;this.want=null;this.pb=0;entered=true;
+  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
+    if(this.want){this.phase=this.want;this.want=null;this.pb=0;
       if(this.phase==='pre'||this.phase==='drop'){const N=this.phase==='pre'?this.cinN:0,fin=this.finalPending;this.finalPending=false;
         this.phase='groove';fresh=true;this.swT0=null;this.hb=32-N;this.gb=0;this.mi=0;this.buildT0=-1;this.revealAt=-1;this.padUntil=0;this.queue=[];
         if(N>0){this.sec=['rise',0,N];this.queue=[['drop',fin?1e9:16]]}else{this.sec=['drop',0,fin?1e9:16];this.dropFx=true}}

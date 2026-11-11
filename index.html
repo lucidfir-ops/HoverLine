@@ -1411,7 +1411,7 @@ function roadShape(seed,wk,cx,lk,sp){
      let placed=false;const starts=[];for(let i=Math.floor(N*0.12);i+n+m<Math.floor(N*0.83);i+=Math.max(1,Math.round(25/ds)))starts.push(i);
      for(let t=starts.length-1;t>0;t--){const j=Math.floor(rs()*(t+1));[starts[t],starts[j]]=[starts[j],starts[t]]}
      for(const i0 of starts){if(placed)break;if(i0+n+m>gI0)continue;let ok=true;
-       let cmax=0,csum=0;for(let k=i0-m;k<=i0+n+m&&ok;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.0045)ok=false;cmax=Math.max(cmax,Math.abs(Cs[kk]));csum+=Cs[kk]}
+       let cmax=0;for(let k=i0-m;k<=i0+n+m&&ok;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.0045)ok=false;cmax=Math.max(cmax,Math.abs(Cs[kk]))}
        if(!ok||A>0.45/Math.max(cmax,1e-4))continue;
        /* the long route goes to either side (the other if that side is blocked); a crossover swings out one side, passes
           over the short route on a bridge and comes back in on the other side */
@@ -5515,8 +5515,8 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   mlog(e,o){try{if(this===music&&LOG.cur)logEv(e,o)}catch(x){}},
   played(){return this.ctx?Math.round((this.ctx.currentTime-(this.tuneAt||0))*10)/10:null},
   /* ---- once per bar: phase changes, arrangement, layer faders ---- */
-  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let entered=false,fresh=false,lv=null,dur=bd;
-    if(this.want){this.phase=this.want;this.want=null;this.pb=0;entered=true;
+  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
+    if(this.want){this.phase=this.want;this.want=null;this.pb=0;
       if(this.phase==='pre'||this.phase==='drop'){const N=this.phase==='pre'?this.cinN:0,fin=this.finalPending;this.finalPending=false;
         this.phase='groove';fresh=true;this.swT0=null;this.hb=32-N;this.gb=0;this.mi=0;this.buildT0=-1;this.revealAt=-1;this.padUntil=0;this.queue=[];
         if(N>0){this.sec=['rise',0,N];this.queue=[['drop',fin?1e9:16]]}else{this.sec=['drop',0,fin?1e9:16];this.dropFx=true}}
