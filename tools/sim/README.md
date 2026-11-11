@@ -106,9 +106,13 @@ ls results/p36/full_*.jsonl | grep -v races | xargs cat > results/p36all_full.js
 python3 analyse.py p36all; python3 bugs.py results/p36
 ```
 
+## Repeatable races (Prototype 61)
+
+Everything in a race that was left to chance (the AI's mistakes and choices, the grid habits, a Quake's gap, a Bouncer's sideways speed) is now drawn from a stream of the race's own, made from the track seed and the race's number (`RACE.n`, in the game's race log as `rn`). The looks (particles, shake, flicker) stay on `Math.random` and move nothing. `gen.py` makes `RACE.n` from the track seed and how many races this process has run on it, so **two runs of the same command give the same races without `seedrand.js`** (the same lines, apart from the timing fields), and a baseline run and a variant run with the same offsets get the same numbers: their per-race differences are the change, not luck. `H.RACE.force = N` before `H.startRace()` sets a race's number (in the browser: `?racen=N`, to replay a logged race: its track code and its `rn`). What is still `Math.random`: the pilot models of `PILOT=human` and `eric.js` (their own wander), which `seedrand.js` still pins.
+
 ## Comparing two builds exactly (Prototype 40)
 
-The game draws from `Math.random`, so two runs of the same build differ. `seedrand.js` makes it repeatable, and `same.py` compares two result files race for race, ignoring timing fields. A change that should leave races alone (new menus, sound, the quick race) must give the same lines:
+Before Prototype 61 the game drew from `Math.random`, so two runs of the same build differed. `seedrand.js` still makes any `Math.random` repeatable (it is still needed for the pilot models above and for drawing changes), and `same.py` compares two result files race for race, ignoring timing fields. A change that should leave races alone (new menus, sound, the quick race) must give the same lines:
 
 ```
 SRC=../../src/hoverline.html OUT=new.js python3 gen.py          # and old.js from the previous source
