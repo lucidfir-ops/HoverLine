@@ -35,9 +35,11 @@ module.exports = {
       SPR.roomLattice({ u0: 3820, len: 520, bodies: 7 }); SW.pack(a.pack, { u: a.u, speed: 0.55 }); SW.camO = { mode: 'chase', d: 12, h: 4.8, l: 16, lu: 2, fov: 80 };
       ${cap('<b style="color:#ffb000">A</b> The rule: nothing on the road, nothing in front of it<br><span style="color:#b8bfcc">the road runs through the gyroscope’s open middle (its rings turn only round the road); the lattice hall follows the bend and opens where its inner wall would hide the road · 82 m/s</span>')} SPR.meter = true;`) },
   '00-rule-a': { title: 'A: the keep-out and the sight lines, drawn', code: SPIRE, secs: 1, range: [2400, 5543], arg: { u: 2950, pack: PACK, all: ALL, sim: SIM },
-    setup: new Function('a', `SPR.useClock(a.sim); SPR.everything(a.all); SW.pack(a.pack, { u: a.u }); SW.h.G.add(SPC.debug({ u0: 2400, u1: 5540, ps: 2.2 }));
-      const c = SW.fr(3150).p.clone(); SW.camO = { mode: 'fixed', pos: c.clone().add(new THREE.Vector3(420, 520, 380)), look: c, fov: 60 };
-      ${cap('<b style="color:#ffb000">A</b> The rule, drawn: red = the keep-out round the road (width + 6 m each side, 4 m under, 16 m over); cyan = every sight line from a chase camera to the next 300 m of road. Nothing is placed where it touches either.')}`) },
+    setup: new Function('a', `SPR.useClock(a.sim); SW.stars({ u0: 2400, u1: 5500, n: 1200 }); SPR.lattice({ u0: 2500, u1: 4200, sections: [{ u: 3300, half: 900, fade: 200, peak: 0.45 }] });
+      for (let i = 0; i < 6; i++) SPR.put('gyroscopes', SPFX.obj.gyro(THREE, { pal: 'goldViolet', size: 14, rings: 4 }), (k) => ({ u: 2700 + i * 180 + k * 10, lat: (i % 2 ? 1 : -1) * (30 + k * 8), h: 18 }));
+      SW.pack(a.pack, { u: a.u }); SW.h.G.add(SPC.debug({ u0: 2400, u1: 4300, ps: 0.9 }));
+      const c = SW.fr(3150).p.clone(); SW.camO = { mode: 'fixed', pos: c.clone().add(new THREE.Vector3(330, 300, 380)), look: c.clone().add(new THREE.Vector3(0, 40, 0)), fov: 62 };
+      ${cap('<b style="color:#ffb000">A</b> The rule, drawn: red = the keep-out round the road (width + 6 m each side, 4 m under, 16 m over); cyan = every sight line from a chase camera to the next 300 m of road. Nothing is placed where it touches either (gold: gyroscopes; violet: the lattice, cut round both).')}`) },
   // ---------------------------------------------------------------- F: the game's own tune on the lattice
   '05-music': { title: 'F: the world on the game\'s own tune (with sound)', code: TRACK, secs: 20, range: [3100, 5160], arg: { u: 3400, pack: PACK },
     music: { from: 'brkEnd', brkBars: 3, secs: 20, code: 'S5800016053' },

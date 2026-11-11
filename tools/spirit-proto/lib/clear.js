@@ -139,7 +139,7 @@ SPC.debug = function (o = {}) {
   const km = new THREE.LineSegments(kg, new THREE.LineBasicMaterial({ color: 0xff4a3d, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })); km.frustumCulled = false; g.add(km);
   const sp = []; for (const L of SPC.sight.values()) for (let i = 0; i < L.length; i += 3) sp.push(L[i], L[i + 1], L[i + 2]);
   const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3));
-  const sm = new THREE.Points(sg, new THREE.PointsMaterial({ color: 0x3ff0ff, size: o.ps || 1.6, sizeAttenuation: true, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false })); sm.frustumCulled = false; g.add(sm);
+  const sm = new THREE.Points(sg, new THREE.PointsMaterial({ color: 0x3ff0ff, size: o.ps || 1.6, sizeAttenuation: true, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false })); sm.frustumCulled = false; g.add(sm);
   return g;
 };
 })();

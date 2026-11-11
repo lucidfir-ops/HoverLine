@@ -1,10 +1,10 @@
 {
  "01-all-chase": {
   "frames": 210,
-  "avgCalls": 537,
-  "maxCalls": 551,
-  "avgTris": 279892,
-  "maxTris": 305488,
+  "avgCalls": 533,
+  "maxCalls": 545,
+  "avgTris": 279365,
+  "maxTris": 304960,
   "parts": {
    "stars": {
     "prims": 1600,
@@ -1335,10 +1335,10 @@
  },
  "09-shoal-forms": {
   "frames": 150,
-  "avgCalls": 179,
-  "maxCalls": 185,
-  "avgTris": 171300,
-  "maxTris": 177048,
+  "avgCalls": 175,
+  "maxCalls": 179,
+  "avgTris": 184451,
+  "maxTris": 190164,
   "parts": {
    "stars": {
     "prims": 1400,
@@ -1347,6 +1347,10 @@
    "lattice (sections)": {
     "prims": 51368,
     "calls": 6
+   },
+   "arch of shoals": {
+    "prims": 13200,
+    "calls": 1
    },
    "pyramid of shoals": {
     "prims": 15600,
@@ -1364,10 +1368,10 @@
   "spc": {
    "arch of shoals": {
     "tried": 1,
-    "placed": 0,
+    "placed": 1,
     "moved": 0,
-    "dropped": 1,
-    "pts": 0
+    "dropped": 0,
+    "pts": 1632
    },
    "pyramid of shoals": {
     "tried": 1,
