@@ -99,4 +99,16 @@
 "quick5":{"road":"94c7ef88","scene":"387aefdf","n":"53/42972","env":"92a6870c","info":"Urban · 1 waterfall · 1 lava fall"},
 "trainJ-U":{"road":"f1151c55","scene":"e36cd7b","n":"116/63359","env":"a8c0250a","info":"Urban"},
 "trainS-P":{"road":"4617d892","scene":"8198123c","n":"105/157340","env":"e39e0f05","info":"Prism · 1 waterfall · 1 lava fall · 2 geysers · all inside the mountain · 4 rivers","prism":"fcc72afc"},
-"trainR-O":{"road":"b219f9cf","scene":"746335ae","n":"55/38027","env":"5820160c","info":"Ocean"}}
+"trainR-O":{"road":"b219f9cf","scene":"746335ae","n":"55/38027","env":"5820160c","info":"Ocean"},
+"W1234567-S@night":{"road":"2dd14c07","scene":"7651c7c3","n":"121/70948","env":"db606e38","info":"Spirit · the Spirit realm · 1 room · 1 arch"},
+"W1234567-S@day":{"road":"2dd14c07","scene":"7651c7c3","n":"121/70948","env":"db606e38","info":"Spirit · the Spirit realm · 1 room · 1 arch"},
+"NX1ABCDEF-S@night":{"road":"59063cc5","scene":"9c628931","n":"126/56114","env":"29b717a7","info":"Spirit · the Spirit realm · 2 arches"},
+"NX1ABCDEF-S@day":{"road":"59063cc5","scene":"9c628931","n":"126/56114","env":"29b717a7","info":"Spirit · the Spirit realm · 2 arches"},
+"SL1C0FFEE-S@night":{"road":"7eb42257","scene":"284ddc10","n":"129/85658","env":"2785b12e","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
+"SL1C0FFEE-S@day":{"road":"7eb42257","scene":"284ddc10","n":"129/85658","env":"2785b12e","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
+"NXL1C0D0E5-100000000000001-S@night":{"road":"95f797d7","scene":"17314cba","n":"130/68066","env":"57c3aca7","info":"Spirit · the Spirit realm · 1 room · 2 arches"},
+"NXL1C0D0E5-100000000000001-S@day":{"road":"95f797d7","scene":"17314cba","n":"130/68066","env":"57c3aca7","info":"Spirit · the Spirit realm · 1 room · 2 arches"},
+"WXL10F1F26-1000000000001-S@night":{"road":"4bce5dda","scene":"606dd164","n":"80/74368","env":"aa517e32","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
+"WXL10F1F26-1000000000001-S@day":{"road":"4bce5dda","scene":"606dd164","n":"80/74368","env":"aa517e32","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
+"NXQ5102B5-33224444222-S@night":{"road":"b3a20aab","scene":"ff01e7b1","n":"83/38002","env":"f496033f","info":"Spirit · the Spirit realm · 1 room · 1 arch"},
+"NXQ5102B5-33224444222-S@day":{"road":"b3a20aab","scene":"ff01e7b1","n":"83/38002","env":"f496033f","info":"Spirit · the Spirit realm · 1 room · 1 arch"}}

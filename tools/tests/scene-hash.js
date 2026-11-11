@@ -53,7 +53,10 @@ const HASH = (job) => {
   const mat = (m) => { str(m.type); for (const k of ['color', 'emissive']) if (m[k]) u32(m[k].getHex()); for (const k of ['opacity', 'side', 'blending', 'size', 'polygonOffsetFactor']) if (m[k] != null) num(m[k]);
     for (const k of ['transparent', 'depthWrite', 'vertexColors', 'fog', 'sizeAttenuation', 'polygonOffset']) str(k + m[k]);
     tex(m.map); if (m.emissiveMap) tex(m.emissiveMap);
-    if (m.uniforms) for (const k of Object.keys(m.uniforms).sort()) { const v = m.uniforms[k].value; str(k); if (typeof v === 'number') num(v); else if (v && v.isColor) u32(v.getHex()); else if (v && v.isVector3) { num(v.x); num(v.y); num(v.z) } }
+    /* (P62) the Spirit realm's materials (they have uWorld) share uniforms the music and the clock set every frame: those
+       are not part of what is built */
+    const RUN = m.uniforms && m.uniforms.uWorld ? /^(uT|uBeat|uKick|uKA|uDrop|uBuild|uBrk|uBreath|uCalm|uLvl|uWorld|uRes|uSF|uG|uOP|uOQ|uTight|uPK|uGainL|uSwellL|uSwellT|uSFk)$/ : null;
+    if (m.uniforms) for (const k of Object.keys(m.uniforms).sort()) { if (RUN && RUN.test(k)) continue; const v = m.uniforms[k].value; str(k); if (typeof v === 'number') num(v); else if (v && v.isColor) u32(v.getHex()); else if (v && v.isVector3) { num(v.x); num(v.y); num(v.z) } }
     if (m.vertexShader && m.type === 'ShaderMaterial') { str(m.vertexShader); str(m.fragmentShader) } if (m.onBeforeCompile) str(String(m.onBeforeCompile)) };
   // the road (as trackfeat60, but every array exactly)
   cut('road', () => { u32(T.N); num(T.L); num(T.ds); for (let i = 0; i < T.N; i++) for (const V of [T.P[i], T.R[i], T.U[i], T.Tg[i]]) { num(V.x); num(V.y); num(V.z) }
