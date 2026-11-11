@@ -85,10 +85,12 @@ $('libUndoB').onclick=()=>{if(!libU)return;music.restore(libU.k,libU.i);note(lib
 for(const id of['radioBack','radioBack2','radioBack3']){const b=$(id);if(b)b.onclick=()=>{audio.init();music.toRadio();music.ensure();syncMusic();tuneUI();note('Back to the radio',1400)}}
 /* Menu music: the ambient theme by default; the Race music button plays the race arrangement in the menu instead
    (for this visit only, so the game always opens on the ambient theme). */
-let menuListen=false;
+/* Prototype 61: a fresh browser's menus play the race music (the radio of tunes); Ambient is the other choice, remembered
+   in hoverline.menumus ('race' | 'ambient'). A player who had music settings saved before this keeps the old ambient menu. */
+let menuListen=(()=>{const v=store.get('hoverline.menumus');return v?v==='race':!store.get('hoverline.music')})();
 function menuMusic(){music.sense({steer:0,brake:0,boost:0,rank:0.5,speed:0});if(menuListen)music.listen();else{music.toAmbient();music.setMood('menu')}}
-{const lcs=document.querySelectorAll('.listen'),sy=()=>lcs.forEach(lc=>{lc.setAttribute('aria-pressed',String(menuListen));lc.textContent=(menuListen?'❚❚':'▶')+' Race music'});sy();
-  lcs.forEach(lc=>lc.onclick=()=>{audio.init();if(music.style==='off'){music.setStyle('dnb');syncMusic()}music.ensure();menuListen=!menuListen;sy();if(S.state==='menu')menuMusic()})}
+{const lcs=document.querySelectorAll('.listen'),sy=()=>lcs.forEach(lc=>{lc.setAttribute('aria-pressed',String(menuListen));lc.textContent='Menu music: '+(menuListen?'Race':'Ambient')});sy();
+  lcs.forEach(lc=>lc.onclick=()=>{audio.init();if(music.style==='off'){music.setStyle('dnb');syncMusic()}music.ensure();menuListen=!menuListen;store.set('hoverline.menumus',menuListen?'race':'ambient');sy();if(S.state==='menu')menuMusic()})}
 {const sc=$('shufChip'),sy=()=>sc.setAttribute('aria-pressed',String(music.shuffle));sy();sc.onclick=()=>{music.shuffle=!music.shuffle;store.set('hoverline.shuffle',music.shuffle?'1':'0');sy();
     if(music.shuffle&&music.ctx){music.pinned=false;music.nextShuffle=music.ctx.currentTime+150}note(music.shuffle?'Shuffle · a new tune takes over at each breakdown in a race, and every couple of minutes in the menu':'Shuffle off · one tune per race, and the menu keeps this tune',2400)}}
 {const lc=$('liteChip'),sy=()=>lc.setAttribute('aria-pressed',String(music.lite));sy();lc.onclick=()=>{music.lite=!music.lite;store.set('hoverline.alite',music.lite?'1':'0');sy();
@@ -105,7 +107,7 @@ document.querySelectorAll('.mmode').forEach(b=>b.onclick=()=>{audio.init();const
 function songsUI(){perfSongs();$('songNote').textContent=SONGS.ok?'Recorded tracks for the Songs music mode (the music button on the title screen and in Settings): a new one starts at each GO. All are CC0 (public domain).':'Recorded tracks for the Songs music mode, all CC0 (public domain). They come as files with the itch.io zip and the Wi-Fi host pack; in this copy Songs plays the generative music.';
   const el=$('songList');el.textContent='';SONGS.list.forEach((x,i)=>{if(i)el.append(document.createElement('br'));const a=document.createElement('a');a.style.color='inherit';a.href=x.u;a.target='_blank';a.rel='noopener';a.textContent=x.t+' · '+x.a;el.append(a,' ('+x.al+', '+x.l+')')})}
 songsUI();mmSync();
-const wake=()=>{audio.init();if(!music.timer&&music.style!=='off'){music.ensure();music.setMood(S.state==='menu'?'menu':S.state==='countdown'?'count':'race')}};
+const wake=()=>{audio.init();if(!music.timer&&music.style!=='off'){music.ensure();if(S.state==='menu')menuMusic();else music.setMood(S.state==='countdown'?'count':'race')}};
 addEventListener('pointerdown',wake,true);addEventListener('keydown',wake,true);
 /* Only the visible tab makes sound: hiding the page (switching tabs, opening the full-screen tilt tab, locking the phone)
    suspends all audio and pauses a race; coming back resumes the sound. */

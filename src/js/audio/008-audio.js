@@ -12,7 +12,11 @@ const audio={ctx:null,on:store.get('hoverline.sound')!=='0',
     const o1=c.createOscillator(),o2=c.createOscillator();o1.type='sawtooth';o2.type='square';const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=400;const g=c.createGain();g.gain.value=0.05;
     o1.connect(f);o2.connect(f);f.connect(g);g.connect(this.master);o1.start();o2.start();Object.assign(this,{o1,o2,f,eg:g});
     const nb=c.createBuffer(1,c.sampleRate*0.6,c.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;this.noise=nb;setTimeout(()=>{this.voice('');this.loadFx()},0)}catch(e){this.ctx=null}},
-  engine(v,boost){if(!this.ctx)return;const t=this.ctx.currentTime,fr=38+v*0.85;this.o1.frequency.setTargetAtTime(fr,t,0.05);this.o2.frequency.setTargetAtTime(fr*0.502,t,0.05);this.f.frequency.setTargetAtTime(260+v*11+boost*900,t,0.08)},
+  /* Prototype 61: the engine hum is for flying only. It fades to nothing (not a cut) in every menu, the frame select, the
+     Frame lab, the pause and the results; `fly` comes from the loop (race, countdown, tutorial). */
+  /* its level while flying: 0.05 alone, 0.028 under the music (it was set in music.ensure, which fought the fade) */
+  engLvl(){return typeof music!=='undefined'&&music.style!=='off'?0.028:0.05},
+  engine(v,boost,fly=true){if(!this.ctx)return;const t=this.ctx.currentTime,fr=38+v*0.85;this.eg.gain.setTargetAtTime(fly&&this.on?this.engLvl():0,t,fly?0.12:0.15);this.o1.frequency.setTargetAtTime(fr,t,0.05);this.o2.frequency.setTargetAtTime(fr*0.502,t,0.05);this.f.frequency.setTargetAtTime(260+v*11+boost*900,t,0.08)},
   /* announcer lines, decoded on first use */
   voice(k){if(!this.ctx||!this.on||!annOn)return false;if(!this.vb){this.vb={};music.decodeVox.call(music,this.ctx,x=>x[0]==='v').then(v=>{this.vb=v});return false}
     const b=this.vb['v_'+k];if(!b)return false;const s=this.ctx.createBufferSource(),g=this.ctx.createGain();s.buffer=b;g.gain.value=0.9;s.connect(g);g.connect(this.master);s.start();return true},

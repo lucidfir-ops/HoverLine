@@ -237,7 +237,7 @@ function step(dt){
     if(!racers.some(r=>r.remote&&!r.left&&r.finishT==null)){mp.bg=false;mp.go=null;clearShots()}else mpTick()}
   if(mp.on&&mp.sess&&(S.state==='race'||S.state==='done'||S.state==='countdown'||S.state==='mpwait'||S.state==='paused'))mpTick();
   S.shake=Math.max(0,S.shake-dt*2.5);
-  {const ear=SPL.race?splLead():player;audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:ear.v,ear.boost)}
+  {const ear=SPL.race?splLead():player;audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:ear.v,ear.boost,S.state==='race'||S.state==='countdown'||S.state==='tut')}
   {const ck=player.charging||(S.t-(player.chgEnd??-9)<0.3?player.chgKind:null);audio.charge(S.state==='race'&&player.wreck<=0?ck:null,ck==='hp'?player.hp/player.d.hp:player.ammo/player.d.ammo)}
   for(const r of racers){placeShip(r,S.t);if(r.isGhost||RES.low)r.shadow.visible=false}
   trimStep(dt);inkStep(dt);drFxStep(dt);empFxStep(dt);
