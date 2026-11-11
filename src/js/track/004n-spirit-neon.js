@@ -58,7 +58,7 @@ const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
     vec4 ca=projectionMatrix*a,cb=projectionMatrix*b;vec2 sa=ca.xy/ca.w*uRes*0.5,sb=cb.xy/cb.w*uRes*0.5;
     vec2 d=sb-sa;float l=length(d);d=l>1e-4?d/l:vec2(1.,0.);vec2 n=vec2(-d.y,d.x);
     float e=corner.y;vec4 v=e<0.5?a:b;vec4 c=e<0.5?ca:cb;
-    float px=clamp(uWidth*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx,uMaxPx);
+    float pk2=clamp(uRes.y/400.,0.35,2.5),px=clamp(uWidth*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx*pk2,uMaxPx*pk2);
     c.xy+=(n*corner.x+d*(e<0.5?-1.:1.))*px*0.5/uRes*2.*c.w;gl_Position=c;
     float f=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);vS=corner.x;
     vCol=pal(iX.w,e<0.5?sA.w:sB.w)*sB.w*f*va*uGain*uWorld;}`;
