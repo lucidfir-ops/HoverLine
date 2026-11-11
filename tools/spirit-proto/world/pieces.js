@@ -42,19 +42,19 @@ function headGeo() {
 SW.heads = function (o = {}) {
   const geo = headGeo(), list = o.list || [{ side: -1, d: 34, up: 10, s: 9, du: 30 }, { side: 1, d: 46, up: 16, s: 13, du: 70 }, { side: -1, d: 120, up: 40, s: 34, du: 160 }];
   const out = [];
-  list.forEach((h, k) => { const mat = SW.wireMat({ mode: 'GRID', grid: [36, 26], cs: 1e6, con: 0, fill: 0x07050d, side: THREE.FrontSide }); mat.uniforms.uI.value.set(k * 37 + 10, -1, 1.25, 1); mat.uniforms.uHueK.value = 0.2;
+  list.forEach((h, k) => { const mat = SW.wireMat({ mode: 'GRID', grid: [18, 13], cs: 1e6, con: 0, fill: 0x030208, side: THREE.FrontSide }); mat.uniforms.uI.value.set(k * 37 + 10, -1, 0.55, 1); mat.uniforms.uHueK.value = 0.2;
     const m = new THREE.Mesh(geo, mat); const eyes = new THREE.Group();
     for (const sx of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(0.075, 12, 8), new THREE.MeshBasicMaterial({ color: 0xffffff })); e.position.set(sx * 0.26, 0.12, 0.8); eyes.add(e);
       const halo = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 8), new THREE.MeshBasicMaterial({ color: SW.palCol(k * 60 + 30), transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false })); halo.position.copy(e.position); eyes.add(halo) }
     const grp = new THREE.Group(); grp.add(m); grp.add(eyes); grp.scale.setScalar(h.s); SW.track('heads', grp); out.push({ h, grp, mat }) });
   SW.anim.push((t, dt, b) => { const P = SW.P; if (!P || !P.length) return; let um = 0; for (const q of P) um += q.r.u; um /= P.length;
-    const tgt = SW.P[SW.camI].r.ship.position;
+    const tgt = SW.P[0].r.ship.position;
     out.forEach(({ h, grp, mat }, k) => { const fade = h.t0 != null ? ss((t - h.t0) / 1.2) * (h.t1 != null ? 1 - ss((t - h.t1) / 1.2) : 1) : 1;
       const u = um + h.du + Math.sin(t * 0.35 + k) * 6, f = fr(u); grp.position.copy(f.p).addScaledVector(f.r, h.side * h.d).addScaledVector(WUP, h.up + Math.sin(t * 0.8 + k * 2) * h.s * 0.06);
       // turn to watch the pack: the racers nearest, with a slow lag
       _v.copy(tgt).sub(grp.position); _v.y *= 0.5; const want = Math.atan2(_v.x, _v.z), pitch = -Math.atan2(_v.y, Math.hypot(_v.x, _v.z)) * 0.6;
       grp.rotation.set(pitch, want + Math.sin(t * 0.5 + k) * 0.08, Math.sin(t * 0.3 + k) * 0.05, 'YXZ');
-      mat.uniforms.uI.value.z = 1.25 * fade * (1 + (b ? b.kick * 0.5 : 0)); grp.visible = fade > 0.01; grp.children[1].children.forEach((e) => { if (e.material.opacity != null && e.material.transparent) e.material.opacity = 0.6 * fade }) }) });
+      mat.uniforms.uI.value.z = 0.55 * fade * (1 + (b ? b.kick * 0.5 : 0)); grp.visible = fade > 0.01; grp.children[1].children.forEach((e) => { if (e.material.opacity != null && e.material.transparent) e.material.opacity = 0.6 * fade }) }) });
   return out };
 
 // ---------------------------------------------------------------- 2. the serpent of segments under the spiral road

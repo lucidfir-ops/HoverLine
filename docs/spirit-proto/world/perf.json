@@ -1,0 +1,154 @@
+{
+ "void_wide": {
+  "frames": 90,
+  "avgCalls": 171,
+  "maxCalls": 187,
+  "avgTris": 90154,
+  "maxTris": 91044,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18999,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 192,
+    "calls": 1
+   },
+   "block rings": {
+    "prims": 2664,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   },
+   "stepped sky": {
+    "prims": 1248,
+    "calls": 1
+   }
+  }
+ },
+ "bestiary": {
+  "frames": 90,
+  "avgCalls": 178,
+  "maxCalls": 182,
+  "avgTris": 87093,
+  "maxTris": 87212,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18863,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 312,
+    "calls": 2
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   }
+  }
+ },
+ "tunnel": {
+  "frames": 90,
+  "avgCalls": 252,
+  "maxCalls": 267,
+  "avgTris": 83175,
+  "maxTris": 83816,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 18894,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 3952,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 72,
+    "calls": 1
+   },
+   "tunnel rings": {
+    "prims": 1440,
+    "calls": 1
+   },
+   "tunnel streaks": {
+    "prims": 1428,
+    "calls": 1
+   },
+   "tunnel boost pads": {
+    "prims": 1080,
+    "calls": 1
+   }
+  }
+ },
+ "heads": {
+  "frames": 90,
+  "avgCalls": 195,
+  "maxCalls": 199,
+  "avgTris": 94581,
+  "maxTris": 95664,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice": {
+    "prims": 19082,
+    "calls": 1
+   },
+   "lattice packets": {
+    "prims": 260,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 2768,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 72,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   },
+   "heads": {
+    "prims": 9888,
+    "calls": 20
+   }
+  }
+ }
+}

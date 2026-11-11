@@ -326,7 +326,8 @@ SW.base = function (o = {}) {
   SW.stars({ u0, u1, n: 1400 });
   if (o.lattice !== false) SW.lattice({ u0, u1, sp: 44, clear: 44, a: 0.3, ext: [700, 260, 700], thin: 0.22, diag: 0.18 });
   if (o.lattice2) SW.lattice({ u0, u1, sp: 52, clear: 60, a: 0.35, ext: [700, 300, 700], yaw: 0.6435, hue: 70, seed: 9, packets: 120, thin: 0.6, diag: 0.2 });
-  SW.solids({ u0: u0 - 100, u1: u1 + 500, n: Math.round(320 * k), side0: 40, side1: 520, up0: -200, up1: 300, clear: 30 });
+  SW.solids({ u0: u0 - 100, u1: u1 + 500, n: Math.round(200 * k), side0: 45, side1: 420, up0: -120, up1: 260, clear: 34, s0: 5, s1: 26 });
+  if (o.sky !== false) SW.solids({ u0: u0 - 200, u1: u1 + 900, n: Math.round(170 * k), side0: 0, side1: 700, up0: 90, up1: 520, clear: 70, s0: 14, s1: 60, seed: 77, spin: 0.12 });
   SW.carved({ u0, u1: u1 + 200, n: o.carvedN ?? Math.round(16 * k), tumble: true });
   if (o.rings !== false) SW.rings({ u0: u0 + 60, u1: u1 + 300, every: o.ringEvery || 110 });
   if (o.pyr !== false) SW.pyramids({ u0, pairs: o.pairs || [{ u: u0 + 260, side: -1, d: 105, du: 160 }, { u: u0 + 700, side: 1, d: 115, du: 150 }] });
