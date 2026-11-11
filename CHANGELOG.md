@@ -1,5 +1,15 @@
 # Changelog
 
+## Prototype 62
+- **The Spirit realm is in the game**: a new setting, "Spirit" (track codes ending in -S), on the Race screen, in the track editor and in rooms. It is the look you approved over two rounds of clips: a black void, neon wireframe, the lattice strong in sections that fade in and out, and everything at once: stacks, pyramids shedding and reforming, block rings, gyroscopes, knots, unfolding solids, shoals (and now and then a shape made of shoals), arches that assemble ahead of the leader, sacred geometry, bestiary blocks, the hanging stepped sky, pieces of the other realms, rooms the road runs through, the serpent under spirals, heads pacing the pack, colossi sunk to the waist, rare ghost riders, and echoes of the leaders collapsing 3, 2, 1 on two short stretches.
+  - **Your rule holds in code:** nothing touches the road or blocks the view of the road ahead. Every piece is checked through its whole motion when the track is built, and a test rechecks it on twelve tracks.
+  - **It answers the game's own music** in every mode, as in the clip you liked (pulses on the kick, a flare on the drop, dimmer in the breakdown, tighter in the build). On top, subtly, the lattice's colour carries the sound: bass low, treble high, rippling out from the road while the shape stays put. Songs mode is wired the same way but untested here.
+  - **Calm visuals**, a new switch on the Graphics page: no breathing, soft flares, a slow colour sweep. Nothing flashes more than three times a second in any mode.
+  - **Built for phones:** about 20 to 25 extra draw calls on Default (the clips used about 370 extra), fewer on Lite and Ultra low, which drop the heavier pieces.
+  - **Not yet:** portals (designed in docs/spirit-p62/PORTALS.md, not built: they change the road and weren't safe to finish in this pass); echoes and ghost riders use a generic frame outline; stacks step but don't re-stack.
+- **Behind the scenes:** the track builder (one 200 KB file) is now the road in its own parts and one file per biome, which is how Spirit went in as new files without touching the others; a new test checks every piece of scenery on 100 or so tracks is bit-for-bit unchanged. About 20 unused leftovers were removed. Nothing looks or plays differently.
+- Existing tracks, codes and race times are unchanged; board era stays 58. Shared logs and public rooms are version 62.
+
 ## Prototype 61
 From your notes after Prototype 60 on the Deck and phone, and your screenshots of W1AAE848.
 - **First flight is back, and it is the five short races.** It hadn't started by itself since Prototype 51: a setting written at every launch made every browser look already used. Prototype 60 then put the controls tutorial in its place under the wrong name (our mistake). Now a new player launches straight into race 1 in the Blade, no frame select. Skip is always in the corner and says where to replay it. Finishing race 5 offers **Start new career**: frame select, then the control tutorial with that frame, then the career page.

@@ -596,7 +596,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
 <div id="title" class="overlay">
   <div class="card">
     <div class="logo">HOVER<b>LINE</b></div>
-    <div class="sub">Prototype 61</div>
+    <div class="sub">Prototype 62</div>
     <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" data-icon="fullscreen" hidden>Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open with tilt</a>
     <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip listen" aria-pressed="false" title="What the menus play: the race music (the radio of tunes) or the quiet Ambient. Tap to switch.">Menu music: Race</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip" id="radioBack" hidden>Back to radio</button><button class="chip mmode" aria-label="Music mode">Generative</button><button class="heart" id="likeTune" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button></div>
@@ -729,7 +729,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="row" role="group" aria-label="Track types for new tracks"><button class="chip pool" data-width="W" aria-pressed="false">Wide</button><button class="chip pool" data-width="S" aria-pressed="false">Standard</button><button class="chip pool" data-width="N" aria-pressed="false">Narrow</button>
       <span class="sep"></span><button class="chip pool" data-layout="S" aria-pressed="false">Simple</button><button class="chip pool" data-layout="X" aria-pressed="false">Complex</button><button class="chip pool" data-layout="C" aria-pressed="false">Custom</button><button class="chip" id="edBtn">Edit…</button>
       <span class="sep"></span><button class="chip pool" data-len="Q" aria-pressed="false">Short</button><button class="chip pool" data-len="M" aria-pressed="false">Medium</button><button class="chip pool" data-len="L" aria-pressed="false">Long</button></div>
-    <div class="row" role="group" aria-label="Scenery for new tracks"><span class="sub">Scenery</span><button class="chip bio" data-bio="U">Urban</button><button class="chip bio" data-bio="O">Ocean</button><button class="chip bio" data-bio="F">Forest</button><button class="chip bio" data-bio="N">Stratos</button><button class="chip bio" data-bio="R">Reef</button><button class="chip bio" data-bio="P">Prism</button><span class="sep"></span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
+    <div class="row" role="group" aria-label="Scenery for new tracks"><span class="sub">Scenery</span><button class="chip bio" data-bio="U">Urban</button><button class="chip bio" data-bio="O">Ocean</button><button class="chip bio" data-bio="F">Forest</button><button class="chip bio" data-bio="N">Stratos</button><button class="chip bio" data-bio="R">Reef</button><button class="chip bio" data-bio="P">Prism</button><button class="chip bio" data-bio="S">Spirit</button><span class="sep"></span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
     <div class="row" id="clsRow"><span class="sub">Class</span><select class="pick" id="clsSel" aria-label="Speed class"></select><span class="small" id="clsNote"></span><button class="chip" id="pacBtn" aria-pressed="false" title="No modules for anyone">Pacifist</button></div>
     <div class="row" id="lapRow"><span class="sub">Laps</span><select class="pick" id="lapSel" aria-label="Laps"></select><span class="small" id="lapNote"></span></div>
     <div class="row" id="ailRow"><span class="sub">Rivals</span><select class="pick" id="ailSel" aria-label="Rivals"></select><span class="small" id="ailNote"></span></div>
@@ -751,7 +751,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="row" role="group" aria-label="Width and length"><button class="chip" data-edw="W">Wide</button><button class="chip" data-edw="S">Standard</button><button class="chip" data-edw="N">Narrow</button><span class="sep"></span><button class="chip" data-edlen="Q">Short</button><button class="chip" data-edlen="M">Medium</button><button class="chip" data-edlen="L">Long</button></div>
     <div class="row" role="group" aria-label="Layout"><span class="sub">Layout</span><button class="chip" data-edb="0">Smooth</button><button class="chip" data-edb="1">Normal</button><button class="chip" data-edb="2">Twisty</button><button class="chip" data-edb="3">Figure 8</button></div>
     <div id="edFeats" class="efeats"></div>
-    <div class="row" role="group" aria-label="Scenery"><span class="sub">Scenery</span><button class="chip" data-edbio="U">Urban</button><button class="chip" data-edbio="O">Ocean</button><button class="chip" data-edbio="F">Forest</button><button class="chip" data-edbio="N">Stratos</button><button class="chip" data-edbio="R">Reef</button><button class="chip" data-edbio="P">Prism</button></div>
+    <div class="row" role="group" aria-label="Scenery"><span class="sub">Scenery</span><button class="chip" data-edbio="U">Urban</button><button class="chip" data-edbio="O">Ocean</button><button class="chip" data-edbio="F">Forest</button><button class="chip" data-edbio="N">Stratos</button><button class="chip" data-edbio="R">Reef</button><button class="chip" data-edbio="P">Prism</button><button class="chip" data-edbio="S">Spirit</button></div>
     <div id="edScene" class="efeats"></div>
     <p id="edFit"></p>
     <div class="row"><button class="btn go" id="edRace">Race it</button><button class="btn" id="edDone" data-back>Done</button><button class="btn" id="edShuffle">Reshuffle</button><button class="btn" id="edClear">Clear</button></div>
@@ -817,7 +817,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
       <div class="row" role="group" aria-label="Sky on this device"><span class="sub">Sky</span><button class="chip pool" data-tod="night">Night</button><button class="chip pool" data-tod="day">Day</button></div>
       <div id="mpHostRow" class="col">
         <div class="row"><button class="chip" data-mpw="W">Wide</button><button class="chip" data-mpw="S">Standard</button><button class="chip" data-mpw="N">Narrow</button><span class="sep"></span><button class="chip" data-mpl="S">Simple</button><button class="chip" data-mpl="X">Complex</button><button class="chip" data-mpl="C">Custom…</button><span class="sep"></span><button class="chip" data-mplen="Q">Short</button><button class="chip" data-mplen="M">Medium</button><button class="chip" data-mplen="L">Long</button></div>
-        <div class="row"><span class="sub">Scenery</span><button class="chip bio" data-mpbio="U">Urban</button><button class="chip bio" data-mpbio="O">Ocean</button><button class="chip bio" data-mpbio="F">Forest</button><button class="chip bio" data-mpbio="N">Stratos</button><button class="chip bio" data-mpbio="R">Reef</button><button class="chip bio" data-mpbio="P">Prism</button></div>
+        <div class="row"><span class="sub">Scenery</span><button class="chip bio" data-mpbio="U">Urban</button><button class="chip bio" data-mpbio="O">Ocean</button><button class="chip bio" data-mpbio="F">Forest</button><button class="chip bio" data-mpbio="N">Stratos</button><button class="chip bio" data-mpbio="R">Reef</button><button class="chip bio" data-mpbio="P">Prism</button><button class="chip bio" data-mpbio="S">Spirit</button></div>
         <div class="row"><button class="btn" id="mpNew">New track</button></div>
         <div class="row"><span class="sub">Laps</span><button class="chip" data-mplaps="1">1</button><button class="chip" data-mplaps="2">2</button><button class="chip" data-mplaps="3">3</button><button class="chip" data-mplaps="5">5</button><button class="chip" data-mplaps="7">7</button><button class="chip" data-mplaps="10">10</button><span class="sep"></span><button class="chip" id="mpAI" aria-pressed="true">Fill with AI</button><span class="sep"></span><span class="sub">Class</span><select class="pick" id="mpCls" aria-label="Speed class for this room"></select></div>
       </div>
@@ -949,6 +949,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
       <div class="slrow"><label for="fcapR">Frame rate cap</label><input type="range" id="fcapR" min="0" max="18" step="1"><span id="fcapV"></span></div>
       <p class="gline">Lower resolution = higher fps</p>
       <div class="gopt" id="goptList"></div>
+      <div class="row"><button class="chip" id="calmBtn" aria-pressed="false">Calm visuals</button></div><p class="gline">Spirit realm: no breathing, soft flares, slow colour. On by itself while Speed blur is off.</p>
       <div class="row"><button class="btn go" id="gDone" data-back>Done</button></div>
     </div>
     <div class="gpv" aria-hidden="true"><div><canvas id="gPvC"></canvas><b id="gPvL"></b></div><p id="gPvT"></p></div>
@@ -1271,13 +1272,16 @@ const BIOMES={U:{k:'U',n:'Urban',bg:0x090b10,fog:[160,1100],haze:0x16213a,mote:0
   F:{k:'F',n:'Forest',bg:0x050d08,fog:[150,1150],haze:0x0f2a1c,mote:0xc8ff8a,edge:0x46ff8c},
   N:{k:'N',n:'Stratos',bg:0x010207,fog:[500,2500],haze:0x0b1024,mote:0xd8e0ff,edge:0x3ff0ff},
   R:{k:'R',n:'Reef',bg:0x01101a,fog:[90,1000],haze:0x04263a,mote:0x7ff8ff,edge:0x3ff0ff,hemi:[0x2f7f9f,0x01070c,0.8],sun:[0x7fdcff,0.35]},
-  P:{k:'P',n:'Prism',bg:0x05030a,fog:[200,1500],haze:0x150a24,mote:0xd8b0ff,edge:0x9f7bff,hemi:[0x6a5a9a,0x0a0610,0.75],sun:[0xd8c8ff,0.4]}};
+  P:{k:'P',n:'Prism',bg:0x05030a,fog:[200,1500],haze:0x150a24,mote:0xd8b0ff,edge:0x9f7bff,hemi:[0x6a5a9a,0x0a0610,0.75],sun:[0xd8c8ff,0.4]},
+  /* Prototype 62: the Spirit realm, a black void with neon wireframe; one look by night and by day */
+  S:{k:'S',n:'Spirit',bg:0x000000,fog:[600,2600],haze:0x07040e,mote:0xc8a8ff,edge:0xb070ff,hemi:[0x5a4a8a,0x05030a,0.7],sun:[0xd8c8ff,0.35]}};
 const BIOMES_DAY={U:{k:'U',n:'Urban',day:true,bg:0x9cbad6,fog:[280,1900],haze:0xb4c8dc,mote:0xffffff,edge:0xffb000,hemi:[0xdde8f4,0x3a3c44,1.1],sun:[0xfff1d6,1.0],sky:['#3f78c0','#7fb0e2','#b0cfe8','#9cbad6','#7f95a8','#4f5c68']},
   O:{k:'O',n:'Ocean',day:true,bg:0xa9d6f2,fog:[320,2100],haze:0xbfe0f4,mote:0xffffff,edge:0xe8f4ff,hemi:[0xd8ecff,0x2a4a5c,1.15],sun:[0xfff4dc,1.1],sky:['#2a6fc9','#5ea6ea','#9ccdf0','#a9d6f2','#8cc0e2','#2d6f9c']},
   F:{k:'F',n:'Forest',day:true,bg:0xa8cfb8,fog:[240,1700],haze:0xbcdcc4,mote:0xf4ffd8,edge:0x46ff8c,hemi:[0xe4f2dc,0x24382a,1.05],sun:[0xfff4d6,0.95],sky:['#3a7cc0','#78b4dc','#b4dcd0','#a8cfb8','#6f9a7c','#2e4a36']},
   R:{k:'R',n:'Reef',day:true,bg:0x1f86a6,fog:[70,1100],haze:0x3aa6c4,mote:0xe8ffff,edge:0x3ff0ff,hemi:[0xc8f6ff,0x1e5a6a,1.05],sun:[0xeafcff,0.85]},
   N:{k:'N',n:'Stratos',day:true,bg:0x9ccff4,fog:[600,2800],haze:0xbfe2fa,mote:0xffffff,edge:0x3ff0ff,hemi:[0xe8f4ff,0x8fb8dc,1.15],sun:[0xfff6e0,1.0],sky:['#2a6fc9','#5ea6ea','#a4d4f6','#c4e4fa','#a4d4f6','#6aa8e0']},
-  P:{k:'P',n:'Prism',day:true,bg:0xc8b8e0,fog:[300,1900],haze:0xd8cce8,mote:0xffffff,edge:0x9f7bff,hemi:[0xece4ff,0x3a3048,1.1],sun:[0xfff0e8,1.0],sky:['#5a62c8','#9a8ee0','#d4c4ec','#c8b8e0','#8a7aa8','#3a3050']}};
+  P:{k:'P',n:'Prism',day:true,bg:0xc8b8e0,fog:[300,1900],haze:0xd8cce8,mote:0xffffff,edge:0x9f7bff,hemi:[0xece4ff,0x3a3048,1.1],sun:[0xfff0e8,1.0],sky:['#5a62c8','#9a8ee0','#d4c4ec','#c8b8e0','#8a7aa8','#3a3050']},
+  S:{k:'S',n:'Spirit',day:true,bg:0x000000,fog:[600,2600],haze:0x07040e,mote:0xc8a8ff,edge:0xb070ff,hemi:[0x5a4a8a,0x05030a,0.7],sun:[0xd8c8ff,0.35]}};
 let tod=store.get('hoverline.tod')==='day'?'day':'night';const lookOf=k=>(tod==='day'?BIOMES_DAY:BIOMES)[k]||BIOMES.U;
 /* Night and Day can both be ticked (Prototype 31): then every new track picks one of them. */
 let todOn=(()=>{const v=(store.get('hoverline.tods')||tod).split(',').filter(x=>x==='night'||x==='day');return v.length?v:[tod]})();
@@ -1285,7 +1289,7 @@ let todOn=(()=>{const v=(store.get('hoverline.tods')||tod).split(',').filter(x=>
 const BDIAL=[['Scenery','towers, trees, islands or slabs · 0 to 3',3],['Falls','water or lava from a block',4],['Geysers','bursts of water or steam',4],['Tunnels','long ones, built round the road',3]];
 /* What a generated track gets: the city has one or two falls, usually a tunnel or two and sometimes a geyser; the sea a
    geyser or two, the reef a bubble vent or two; the forest and Stratos just their own scenery. */
-function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='P'?[2,a<0.5?2:3,b<0.5?2:3,0]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
+function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='P'?[2,a<0.5?2:3,b<0.5?2:3,0]:k==='S'?[2,0,0,0]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
 /* feature kinds built into the road shape (splits are added afterwards, beside it) */
 const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump'];
 /* Prototype 60: bit 24 of a seed marks a code made from Prototype 60 on (seven hex digits, starting with 1). */
@@ -2103,8 +2107,8 @@ const wrapU=d=>{const L=T.L;d=((d%L)+L)%L;return d>L/2?d-L:d};
      info (more for bmInfo), geyName (bmInfo's word for a geyser), gCol (geyser particle colours), plainFx (unlit falls
      and geysers), jelSoft (see-through jellyfish), bubbles (geysers rise as bubbles) */
 /* the builders by biome letter: a new biome is a new file with its builder and a line here */
-const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryStratos,R:sceneryReef,P:sceneryPrism};
-function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
+const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryStratos,R:sceneryReef,P:sceneryPrism,S:scenerySpirit};
+function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,drops,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
   const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall0,nGey0,nTun]=dial,nFall=RES.low?0:nFall0,nGey=RES.low?0:nGey0,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
   const er=rng((seed^0xE7A1)>>>0),cxT=(minX+maxX)/2,czT=(minZ+maxZ)/2;
   const lnA=new THREE.LineBasicMaterial({color:0xffb000}),lnB=new THREE.LineBasicMaterial({color:0x2b3d52}),lnBio=new THREE.LineBasicMaterial({color:LK.edge});
@@ -2277,7 +2281,7 @@ function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,spli
             for(let a2=0;a2<=n;a2++)for(let b2=0;b2<=n-a2;b2++){const u=a2/n,v=b2/n,w=1-u-v;if(inRoad(ax*u+bx*v+cx*w,ay*u+by*v+cy*w,az*u+bz*v+cz*w))return false}}}}
         return true};
     return{scan,tilt,inRoad,clearTri}};
-  const ctx={seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
+  const ctx={seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,drops,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
   return ctx}
 function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   const{bk,LK,day,er,floorY,ds,lam,BOX,group,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,pl}=ctx;
@@ -2294,7 +2298,8 @@ function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   /* in Prism's caverns the haze turns dark (by day too), and back again outside */
   if(ctx.inside){env.ik=0;env.fb=new THREE.Color();const dk=new THREE.Color(0x06040b);env.cave=(cam)=>{const c=cam.position,tg=ctx.inside(c.x,c.y,c.z)?1:0;if(env.ik<0.002&&!tg){env.fb.copy(scene.fog.color);env.ik=0;return}
     if(env.ik<0.002)env.fb.copy(scene.fog.color);env.ik+=(tg-env.ik)*0.08;if(!tg&&env.ik<0.002)env.ik=0;scene.fog.color.copy(env.fb).lerp(dk,env.ik);scene.background.copy(scene.fog.color)}}
-  env.update=(t,anim)=>{if(anim){for(const u of ctx.clock)u.value=t}if(!anim&&env.last>=0)return;env.last=t;env.n++;const M4=_em,Q=_eq,Sv=_es,Pv=_ep;
+  /* Prototype 62: a biome's own moving parts (the Spirit realm's, 004r) */
+  env.spirit=ctx.spirit||null;env.update=(t,anim)=>{if(ctx.tick)ctx.tick(t,anim);if(anim){for(const u of ctx.clock)u.value=t}if(!anim&&env.last>=0)return;env.last=t;env.n++;const M4=_em,Q=_eq,Sv=_es,Pv=_ep;
     const fl=(m,items)=>{if(!m)return;items.forEach((o,k)=>{const y=o.top-((anim?t*o.spd:0)+o.ph)%o.H;Pv.set(o.x,y,o.z);Q.identity();Sv.set(o.sz,o.sz*1.4,o.sz);M4.compose(Pv,Q,Sv);m.setMatrixAt(k,M4)});m.instanceMatrix.needsUpdate=true};
     fl(env.falls,env.fallItems);fl(env.lava,env.lavaItems);
     if(env.gey){env.gItems.forEach((o,k)=>{const g=o.g,fT=2*o.v0/24;let s=((t+g.ph)%g.per)-o.tau;if(!anim)s=fT*(0.2+0.6*((k*0.618)%1));Q.identity();
@@ -2975,6 +2980,710 @@ function prismGates(pz){const{N,ds,P,R,U,group,PR,mode,ins,Mh,bil,glowAt,skirtIn
       PR.gates=[];for(const[I,mat,glow]of[[gIn,skirtIn,true],[gOut,skirtOut,false]]){if(!I.length)continue;const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(gP,3));g.setIndex(I);g.computeVertexNormals();
         const gl=new Float32Array(gP.length);if(glow)for(let k=0;k<gP.length;k+=3)glowAt(gP[k],gP[k+1],gP[k+2],gl,k);g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,mat);group.add(m);PR.gates.push(m)}}
     return nMouth}
+/* Prototype 62: Eric approved this look over two rounds of in-engine clips (docs/spirit-proto, "it's epic"). Everything
+   at once at round 2's density, with his rule kept in code: nothing ever touches the road or stands between a chase
+   camera and the road ahead (004o, spClear; every piece is checked through its whole motion and moved or left out).
+   Drawn in batches (004n): one draw per kind of thing, so the realm costs tens of draw calls, not hundreds.
+   Detail: Default (q 2) everything; Lite (q 1: Moving scenery or Glow off) fewer pieces, no hanging bodies in the rooms,
+   no shoal-built shapes, a lighter lattice; Ultra low (q 0, Low detail) a thin realm: the lattice's beams, solids, a few
+   blocks. The Scenery dial scales how many pieces there are. All numbers come from the scenery's own random stream, so a
+   track code always builds the same realm. What moves each frame is in 004r (spLive); nothing touches the race. */
+function scenerySpirit(ctx){
+  const{seed,N,ds,P,R,U,Tg,kind,gap,spl,feats,minY,maxY,cxT,czT,group,dens}=ctx,V3=THREE.Vector3;
+  const r=rng((seed^0x5A17)>>>0),q=RES.low?0:(g2('anim')&&g2('bloom'))?2:1,L=N*ds,km=L/1000,dm=[0.4,0.7,1,1.3][dens]||1;
+  const cnt=(perKm,qs)=>Math.round(perKm*km*dm*(qs||[0.3,0.6,1])[q]);
+  const ms={t:Date.now()},lap=k=>{const n=Date.now();ms[k]=n-ms.t;ms.t=n};
+  const clr=spClear(ctx),st=clr.stats,why={};lap('rule');
+  const ix=i=>((i%N)+N)%N,R2=(a,b)=>a+(b-a)*r(),sgn=()=>r()<0.5?-1:1,pick=a=>a[Math.floor(r()*a.length)];
+  const _m=new THREE.Matrix4(),_q=new THREE.Quaternion(),_x=new V3(),_y=new V3(),_z=new V3();
+  const qB=(x,y)=>{_x.copy(x).normalize();_y.copy(y).normalize();_z.crossVectors(_x,_y).normalize();_y.crossVectors(_z,_x);_m.makeBasis(_x,_y,_z);_q.setFromRotationMatrix(_m);return[_q.x,_q.y,_q.z,_q.w]};
+  const rq=()=>{_q.setFromEuler(new THREE.Euler(r()*TAU,r()*TAU,r()*TAU));return[_q.x,_q.y,_q.z,_q.w]},rax=()=>{const v=new V3(r()-0.5,r()-0.5,r()-0.5).normalize();return[v.x,v.y,v.z]};
+  const flat=i=>{const t=Tg[ix(i)],l=Math.hypot(t.x,t.z)||1;return new V3(t.x/l,0,t.z/l)},side=i=>{const f=flat(i);return new V3(-f.z,0,f.x)};
+  const at=(i,lat,h)=>{i=ix(i);const s=side(i);return[P[i].x+s.x*lat,P[i].y+h,P[i].z+s.z*lat]};
+  const qLevel=i=>qB(side(i),new V3(0,1,0)),qRoad=i=>qB(R[ix(i)],U[ix(i)]),UP=new V3(0,1,0);
+  const roadOK=i=>{i=ix(i);return!gap[i]&&!spl[i]};
+  /* straights: 50 m either way within 2.5 degrees, level and plain, for the things the road runs through */
+  const straight=(i,h=50)=>{const n=Math.round(h/ds),t0=Tg[ix(i)];for(let k=-n;k<=n;k+=2){const j=ix(i+k);if(kind[j]||gap[j]||spl[j]||U[j].y<0.97||Tg[j].dot(t0)<0.999)return false}return true};
+  const STR=[];for(let i=0;i<N;i+=Math.max(1,Math.round(12/ds)))if(straight(i))STR.push(i);
+  /* put(name, tries, gen): gen(k) gives a candidate {b: balls [[x,y,z,r]...], add()}; the first clear one is added */
+  const put=(name,tries,gen)=>{st.tried++;for(let k=0;k<tries;k++){const c=gen(k);if(!c)continue;if(clr.okPts(c.b)){c.add();st.placed++;if(k)st.moved++;return true}}st.dropped++;why[name]=(why[name]||0)+1;return false};
+  /* the batches */
+  const W2={box:spWires('box'),glyph:spWires('box'),oct:spWires('oct'),tet:spWires('tet'),ico:spWires('ico'),dod:spWires('dod')},solids=['oct','tet','ico','dod'];
+  const REG=600,regs=[],LB=i=>{const k=Math.floor(ix(i)*ds/REG);return regs[k]||(regs[k]=spLines())},farL=spLines(),knotL=spLines(),live=spLines(),sh=spShoals();
+  const addSegs=(Lb,o,segs,pk=1,pc0=0,pcK=1)=>{Lb.obj(o);for(const[a,b,pc]of segs)Lb.seg(a,b,pc0+pc*pcK,pk);return Lb};
+  const nearCount={};const tally=k=>{nearCount[k]=(nearCount[k]||0)+1};
+
+  /* ---- floating solids near the road and in the sky (round 2: SW.solids twice) ---- */
+  const solidAt=(kind0,nMax,o)=>{for(let n=0;n<nMax;n++){const s0=o.s0+(o.s1-o.s0)*Math.pow(r(),1.6),ys=r()<0.3?R2(0.5,1.8):1,shp=r()<0.6?'box':pick(solids),bob=s0*0.08,rad=s0*0.75*Math.max(1,ys)+bob+(shp==='box'?s0*0.12:0);
+    put(kind0,4,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1));
+      return{b:[[...c,rad]],add:()=>{W2[shp].add({c,s:[s0,s0*ys,s0],bq:rq(),m:[1,(r()-0.5)*o.spin,r()*TAU,bob],ax:rax(),pal:Math.floor(r()*6),pc:r(),k:0.75+r()*0.5,per:o.per});tally(kind0)}}})}};
+  solidAt('floating solids',cnt(60,[0.35,0.6,1]),{s0:3,s1:20,d0:40,d1:380,h0:-110,h1:240,spin:0.5,per:60});
+  solidAt('sky solids',cnt(40,[0.2,0.5,1]),{s0:14,s1:55,d0:60,d1:700,h0:90,h1:560,spin:0.2,per:160});
+
+  /* ---- bestiary blocks: one creature on every side, turning an eighth on each beat (round 1: carved blocks) ---- */
+  for(let n=0,nn=cnt(4,[0.4,0.7,1]);n<nn;n++){const s0=R2(9,16),hk=1.55,rad=Math.hypot(s0,s0*hk)*0.6+1;
+    put('bestiary blocks',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(36,140),R2(-10,55));
+      return{b:[[...c,rad]],add:()=>W2.glyph.add({c,s:[s0,s0*hk,s0],m:[2,TAU/8*sgn(),r()*TAU,0],ax:[0,1,0],gl:Math.floor(r()*4),pal:pick([1,3,4]),pc:r(),k:1.05,br:0.03,per:40})}})}
+
+  /* ---- stepped stacks: a tier slides out and turns a quarter on its beat; medium carved pairs near, huge ones far ---- */
+  const stack=(name,o)=>{const nT=o.tiers,nS=o.stacks,sz=o.size,th=sz*0.42;
+    put(name,8,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),hgt=nT*th,rad=Math.hypot((nS-1)/2*1.25*sz+0.8*sz,0.71*sz,hgt/2)*1.03;
+      const mid=new V3(...c).addScaledVector(UP,hgt/2);return{b:[[mid.x,mid.y,mid.z,rad]],add:()=>{for(let s=0;s<nS;s++){const ox=(s-(nS-1)/2)*sz*1.25,nt=nT-(s%2);
+        for(let t=0;t<nt;t++){const w=sz*(1-t*0.09);(o.carve?W2.glyph:W2.box).add({c,q:qq,off:[ox,(t+0.5)*th,0],s:[w,th*0.92,w],m:[4,nt,(t+s)%nt,sz*0.3*(t%2?1:-1)],gl:o.carve?(t+s)%4:-1,pal:o.pal,pc:t/nt,k:1,per:o.per||60,br:0.02})}}}}})};
+  for(let n=0,nn=cnt(1.2,[0,0.6,1]);n<nn;n++)stack('stacks',{tiers:5,stacks:2,size:R2(10,15),d0:48,d1:90,h0:-8,h1:4,carve:true,pal:4});
+  for(let n=0,nn=Math.max(q?1:0,cnt(0.4,[0.5,0.7,1]));n<nn;n++)stack('stacks (huge)',{tiers:6,stacks:3,size:R2(80,130),d0:420,d1:700,h0:-160,h1:-70,pal:3,per:400});
+
+  /* ---- block pyramids that shed their crowns across the road onto an unfinished twin, and take them back (group 0) ---- */
+  for(let n=0,nn=cnt(0.5,[0.4,0.6,1]);n<nn;n++){const nt=R2(6,8)|0,pitch=R2(8,10),cu=pitch*0.92,d=R2(95,140),du=R2(110,170)/ds|0;
+    put('pyramids',6,k=>{const i=Math.floor(r()*N),j=ix(i+du);if(!roadOK(i)||!roadOK(j))return null;const sd=sgn(),y=R2(-50,-25),A=new V3(...at(i,sd*d,y)),B=new V3(...at(j,-sd*d,y)),fa=flat(i),fb=flat(j),sa=side(i),sb=side(j);
+      const cubes=(C,f,s0)=>{const o=[];for(let t=0;t<nt;t++){const m=nt-t;for(let a=0;a<m;a++)for(let b=0;b<m;b++)o.push({t,p:C.clone().addScaledVector(s0,(a-(m-1)/2)*pitch).addScaledVector(f,(b-(m-1)/2)*pitch).addScaledVector(UP,(t+0.5)*pitch)})}return o};
+      const LA=cubes(A,fa,sa),LB=cubes(B,fb,sb),crA=LA.filter(c=>c.t>=nt-3),crB=LB.filter(c=>c.t>=nt-3),balls=[];
+      for(const[C,s]of[[A,1],[B,1]])for(let t=0;t<nt;t++){const m=nt-t,p=C.clone().addScaledVector(UP,(t+0.5)*pitch);balls.push([p.x,p.y,p.z,Math.sqrt(0.5*m*m+0.25)*pitch*1.02])}
+      /* each crown block's arc over the road: raised until it is clear (or the pyramid sheds nothing) */
+      const fly=[];let shed=q>0;if(shed)for(let c=0;c<crA.length&&shed;c++){const a=crA[c].p,b=crB[c%crB.length].p;let lift=R2(70,110),okA=false;
+        for(let tr=0;tr<10&&!okA;tr++,lift+=18){const mid=a.clone().lerp(b,0.5).addScaledVector(UP,lift);okA=true;for(let s=1;s<16&&okA;s++){const u=s/16,iu=1-u,p=a.clone().multiplyScalar(iu*iu).addScaledVector(mid,2*u*iu).addScaledVector(b,u*u);if(!clr.ok(p.x,p.y,p.z,cu))okA=false}}
+        if(okA)fly.push({a,b,lift:lift-18});else shed=false}
+      return{b:balls,add:()=>{const crS=new Set(crA),crBS=new Set(crB),pal=pick([0,1,3,4]);
+        for(const c of LA)if(!shed||!crS.has(c))W2.box.add({c:[c.p.x,c.p.y,c.p.z],s:[cu,cu,cu],q:qLevel(i),pal,pc:c.t/nt,per:80});
+        for(const c of LB)if(!crBS.has(c))W2.box.add({c:[c.p.x,c.p.y,c.p.z],s:[cu,cu,cu],q:qLevel(j),pal,pc:c.t/nt,per:80});
+        if(shed)fly.forEach(f=>W2.box.add({c:[0,0,0],off:[f.a.x,f.a.y,f.a.z],fly:[f.b.x,f.b.y,f.b.z,r()*0.5],lift:f.lift,g:0,s:[cu,cu,cu],m:[5,R2(2,6)*sgn(),0,0],ax:rax(),pal,pc:0.8,per:80}))}}})}
+
+  /* ---- the stepped sky: inverted ziggurats hanging beside the road and far off ---- */
+  const zig=(name,o)=>{const n=R2(o.n0,o.n1)|0,sh=R2(o.sh0,o.sh1),half=R2(o.w0,o.w1),inv=r()<o.inv;
+    put(name,6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,o.mid?0:sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),dir=inv?-1:1,cy=c[1]+dir*n*sh/2;
+      return{b:[[c[0],cy,c[2],Math.hypot(half,half,n*sh/2)*1.02]],add:()=>{const pal=pick([1,2,5]),pc=r();for(let t=0;t<n;t++){const w=half*2*(1-t/(n+0.6));W2.box.add({c,q:qq,off:[0,dir*(t+0.5)*sh,0],s:[w,sh*0.94,w],pal,pc:pc+t*0.05,per:300,k:0.9,br:0.015})}}}})};
+  for(let n=0,nn=cnt(2.5,[0.3,0.6,1]);n<nn;n++)zig('stepped sky',{n0:5,n1:8,sh0:7,sh1:11,w0:28,w1:55,d0:110,d1:300,h0:-60,h1:60,inv:0.4});
+  for(let n=0,nn=cnt(1,[0,0.5,1]);n<nn;n++)zig('stepped sky (far)',{n0:6,n1:10,sh0:12,sh1:20,w0:60,w1:120,d0:300,d1:520,h0:-120,h1:60,inv:0.5});
+  if(q===2)zig('stepped sky (over the road)',{n0:6,n1:8,sh0:12,sh1:16,w0:110,w1:140,mid:1,h0:230,h1:290,inv:1.1});
+
+  /* ---- block rings round the road on straights: a notch each bar, swelling on the kick (group of boxes per ring) ---- */
+  const ringR=Math.hypot(W/2+SPC_O.margin,(SPC_O.above+SPC_O.below)/2)+5,hc=(SPC_O.above-SPC_O.below)/2;
+  if(q&&STR.length)for(let n=0,nn=cnt(1.4,[0,0.6,1]);n<nn;n++){const nb=14+2*(n%3),Rr=ringR+(n%3)*2.2,bs=2.6;
+    put('block rings',5,k=>{const i=pick(STR),qq=qRoad(i),c=new V3().copy(P[i]).addScaledVector(U[i],hc),balls=[];
+      for(let a=0;a<48;a++){const th=a*TAU/48,p=c.clone().addScaledVector(R[i],Math.cos(th)*Rr).addScaledVector(U[i],Math.sin(th)*Rr);balls.push([p.x,p.y,p.z,bs*1.8])}
+      return{b:balls,add:()=>{const pal=pick([0,1,2,4]),ph=r()*TAU;for(let b=0;b<nb;b++){const th=ph+b*TAU/nb;_q.setFromAxisAngle(new V3(0,0,1),th);
+        W2.box.add({c:[c.x,c.y,c.z],q:qq,off:[Math.cos(th)*Rr,Math.sin(th)*Rr,0],bq:[_q.x,_q.y,_q.z,_q.w],s:[bs,Rr*TAU/nb*0.7,bs*1.4],m:[3,TAU/nb/2*(n%2?1:-1),0,0.12*(n%2?1:-1)],ax:[0,0,1],pal,pc:b/nb,per:30})}}}})}
+
+  /* ---- gyroscopes beside the road (a notch on each beat), one huge one far off, and a gate the road runs through ---- */
+  const gyro=(Lb,c,qq,size,nR,mode,pal)=>{for(let k=0;k<nR;k++){const rad=size*(1-k*0.13),n=new V3(...rax()),a=new V3(...rax()).cross(n).normalize(),pts=[],u0=new V3().crossVectors(n,a).normalize();
+      for(let s=0;s<40;s++){const t=s*TAU/40;pts.push([Math.cos(t)*rad*a.x+Math.sin(t)*rad*u0.x,Math.cos(t)*rad*a.y+Math.sin(t)*rad*u0.y,Math.cos(t)*rad*a.z+Math.sin(t)*rad*u0.z])}
+      Lb.obj({c,q:qq,m:mode==='beat'?[2,TAU/24*(k%2?1:-1),r()*TAU,0]:[1,(0.05+k*0.04)*(k%2?1:-1),r()*TAU,0],ax:[a.x,a.y,a.z],pal,br:0.04,ext:size});SPS.loop(pts,k/nR).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,1))}
+    Lb.obj({c,q:qq,m:[1,0.6,0,0],ax:[0,1,0],pal,ext:size});SPS.solid(2,size*0.16).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,1.2))};
+  for(let n=0,nn=cnt(1.5,[0.3,0.6,1]);n<nn;n++){const size=R2(10,24);put('gyroscopes',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(45,110),R2(14,50));return{b:[[...c,size*1.08]],add:()=>gyro(LB(i),c,SP_Q0,size,4+(n%2),'beat',pick([1,2,3,4,5]))}})}
+  if(q)put('gyroscopes (huge)',8,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(700,950),R2(330,420));return{b:[[...c,260]],add:()=>gyro(farL,c,SP_Q0,240,6,'spin',5)}});
+  if(q&&STR.length&&r()<0.75)put('gyroscope gate',6,k=>{const i=pick(STR),qq=qRoad(i),c=new V3().copy(P[i]).addScaledVector(U[i],hc),balls=[],r0=ringR+2;
+    for(let a=0;a<48;a++){const th=a*TAU/48;for(const rr of[r0,r0+4.5,r0+9,r0+14]){const p=c.clone().addScaledVector(R[i],Math.cos(th)*rr).addScaledVector(U[i],Math.sin(th)*rr);balls.push([p.x,p.y,p.z,2.5])}}
+    return{b:balls,add:()=>{const Lb=LB(i),pal=pick([1,2,5]);for(let k2=0;k2<4;k2++){Lb.obj({c:[c.x,c.y,c.z],q:qq,m:k2%2?[2,TAU/32,0,0]:[1,0.25*(k2-1.5),0,0],ax:[0,0,1],pal,br:0.03,ext:r0+16});
+      SPS.tickRing(r0+k2*4.5,48,1.2,true).forEach(([a,b,pc])=>Lb.seg(a,b,pc,1.1))}st.gate=Math.round(ix(i)*ds)}}});
+
+  /* ---- knots that untie and tie again as another knot (KNOT: two shapes, one morph) ---- */
+  const knotAt=(Lb,c,size,pal,fast)=>{const A=SPS.knot(2,3,size*0.6,size*0.28,fast?120:180,3,size*0.05),B=SPS.knot(3,5,size*0.55,size*0.25,fast?120:180,3,size*0.05);
+    Lb.obj({c,m:[1,0.15*sgn(),r()*TAU,0],ax:rax(),pal,br:0.04,ext:size});A.forEach((S,s)=>{for(let i=0;i<S.length-1;i++)Lb.seg(S[i],S[i+1],i/S.length,1,B[s][i],B[s][i+1])})};
+  if(q)for(let n=0,nn=cnt(0.8,[0,0.6,1]);n<nn;n++){const size=R2(14,24);put('knots',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(55,100),R2(20,50));return{b:[[...c,size*1.0]],add:()=>knotAt(knotL,c,size,pick([1,3,4,5]),q<2)}})}
+  if(q===2)put('knots (huge)',6,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(700,900),R2(250,350));return{b:[[...c,240]],add:()=>knotAt(knotL,c,240,4)}});
+
+  /* ---- unfolding solids: a cube opens into its cross and folds back, a tetrahedron into its star (faces hinge on the beat) ---- */
+  if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),cube=n%2===0;
+    put('unfolding solids',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(40,80),R2(14,34));return{b:[[...c,s*(cube?2.3:2)]],add:()=>{const Lb=LB(i),pal=pick([0,1,2,3,4,5]),ph=r(),qq=rq(),h=s/2;
+      if(cube){const sq=(pts,piv,ax,amp,pc)=>{Lb.obj({c,q:qq,m:[7,0,ph,amp],ax,piv,pal,ext:s*2});SPS.loop(pts).forEach(([a,b])=>Lb.seg(a,b,pc,1.1));Lb.seg(pts[0],pts[2],pc,0.5)};
+        sq([[-h,-h,-h],[h,-h,-h],[h,-h,h],[-h,-h,h]],[0,0,0],[1,0,0],0,0);
+        sq([[-h,-h,h],[h,-h,h],[h,h,h],[-h,h,h]],[0,-h,h],[1,0,0],Math.PI/2,0.3);sq([[-h,-h,-h],[h,-h,-h],[h,h,-h],[-h,h,-h]],[0,-h,-h],[1,0,0],-Math.PI/2,0.5);
+        sq([[h,-h,-h],[h,-h,h],[h,h,h],[h,h,-h]],[h,-h,0],[0,0,1],-Math.PI/2,0.7);sq([[-h,-h,-h],[-h,-h,h],[-h,h,h],[-h,h,-h]],[-h,-h,0],[0,0,1],Math.PI/2,0.9);
+        sq([[-h,h,-h],[h,h,-h],[h,h,h],[-h,h,h]],[0,-h,-h],[1,0,0],-Math.PI/2,1)}
+      else{const T3=[0,1,2].map(k2=>[Math.cos(k2*TAU/3)*s*0.6,-h*0.6,Math.sin(k2*TAU/3)*s*0.6]),top=[0,s*0.6,0];Lb.obj({c,q:qq,pal,ext:s*2});SPS.loop(T3).forEach(([a,b])=>Lb.seg(a,b,0,1.1));
+        for(let k2=0;k2<3;k2++){const a=T3[k2],b=T3[(k2+1)%3],ax=new V3(b[0]-a[0],0,b[2]-a[2]).normalize();Lb.obj({c,q:qq,m:[7,0,ph,-1.9],ax:[ax.x,ax.y,ax.z],piv:a,pal,ext:s*2});Lb.seg(a,top,0.5+k2*0.15,1.1).seg(b,top,0.5+k2*0.15,1.1).seg(a,b,0.4,0.6)}}}}})}
+
+  /* ---- sacred geometry: the five solids in a turning ring, the flower of life, star tetrahedra, nested solids far off ---- */
+  if(q)for(let n=0,nn=cnt(1.2,[0,0.6,1]);n<nn;n++){const kd=n%3;
+    put('sacred geometry',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const size=kd===0?4:kd===1?34:3.5,c=at(i,sgn()*(kd===1?R2(70,110):R2(30,60)),kd===1?R2(35,60):R2(8,26)),rad=kd===0?size*4.2:kd===1?size*0.65:size*1.5;
+      return{b:[[...c,rad]],add:()=>{const Lb=LB(i),pal=pick([1,2,3,5]);
+        if(kd===0){for(let s=0;s<5;s++){const a=s*TAU/5;Lb.obj({c,m:[1,0.3,0,0],ax:[0,1,0],pal,br:0.05,ext:rad});SPS.solid(s,size*0.8,[Math.cos(a)*size*3,0,Math.sin(a)*size*3]).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,s/5,1.2))}}
+        else if(kd===1){const dir=new V3(...c).sub(P[i]).setY(0).normalize(),qq=qB(new V3(-dir.z,0,dir.x),UP);Lb.obj({c,q:qq,m:[1,0.08*sgn(),0,0],ax:[0,0,1],pal,br:0.03,ext:rad});SPS.flower(size).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,0.9))}
+        else for(const sg of[1,-1]){Lb.obj({c,m:[1,0.4*sg,0,0],ax:[0,1,0],pal,br:0.05,ext:rad});SPS.edges(new THREE.TetrahedronGeometry(size,0),sg).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,1.2))}}}})}
+  if(q===2)put('sacred geometry (huge)',6,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(650,850),R2(380,460));return{b:[[...c,260]],add:()=>{for(let s=4;s>=0;s--){farL.obj({c,m:[1,0.05*(s%2?1:-1)*(1+s*0.3),0,0],ax:rax(),pal:1,ext:260});SPS.solid(s,60+s*40).forEach(([p0,p1,pc])=>farL.seg(p0,p1,s/5+pc*0.2,1))}}}});
+
+  /* ---- pieces of the other realms drifting past (Prism rock, an Urban block, a Reef coral head, a Forest crown) ---- */
+  if(q)for(let n=0,nn=cnt(1,[0,0.6,1]);n<nn;n++){const kd=n%4,s=R2(14,24);put('other realms',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(60,120),R2(10,40));
+    return{b:[[...c,s*1.45]],add:()=>addSegs(LB(i),{c,m:[1,0.1*sgn(),r()*TAU,s*0.05],ax:[0,1,0],pal:[0,3,4,4][kd],br:0.03,ext:s*1.3},SPS.realm(kd,s,r),1.1)}})}
+
+  /* ---- free shoals wheeling beside the road: they bunch on the kick and scatter on the drop ---- */
+  if(q)for(let n=0,nn=cnt(0.8,[0,0.6,1]);n<nn;n++){const rad=R2(26,40),nf=q===2?140:70,fz=R2(1,1.6);
+    put('shoals',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(110,150),R2(40,70));return{b:[[...c,rad+8]],add:()=>{const pal=pick([1,2,4,5]),w=R2(0.2,0.4)*sgn();
+      for(let f=0;f<nf;f++){const a=r()*TAU,rr=rad*(0.6+0.4*r()),h=(r()-0.5)*rad*0.4,d=new V3(r()-0.5,r()-0.5,r()-0.5).normalize();sh.fish([c[0]+Math.cos(a)*rr,c[1]+h,c[2]+Math.sin(a)*rr,r()*TAU],[d.x,d.y,d.z,fz],[c[0],c[1],c[2],w],[pal,4,r(),0])}}}})}
+
+  /* ---- shapes made of shoals ("all, occasionally": Default only, one or two a track) ---- */
+  const shoalForm=(segs,c,qq,o)=>{let tot=0;for(const[a,b]of segs)tot+=Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2]);const per=tot/o.n,Q=new THREE.Quaternion(qq[0],qq[1],qq[2],qq[3]),pa=new V3(),pb=new V3();
+    for(const[a,b]of segs){const l=Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2]);for(let f=r()*per;f<l;f+=per){const t=f/l;pa.set(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t).applyQuaternion(Q);
+      const d=pa.clone().normalize();sh.fish([c[0]+pa.x,c[1]+pa.y,c[2]+pa.z,r()*TAU],[d.x,d.y,d.z,o.fish*(0.7+0.6*r())],[0,0,0,0],[o.pal,o.amp,r()*0.2,0])}}};
+  if(q===2){const forms=['pyramid','ring','arch','colossus'].filter(()=>r()<0.45);if(!forms.length)forms.push(pick(['pyramid','ring','arch']));
+    for(const f of forms.slice(0,2)){
+      if(f==='pyramid'){const sz=70;put('shoal pyramid',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(150,220),-30);return{b:[[c[0],c[1]+sz*0.4,c[2],sz*0.85]],add:()=>{const segs=[];for(let t=0;t<6;t++){const w=sz*(1-t/6)/2,y=t*sz*0.15;SPS.loop([[-w,y,-w],[w,y,-w],[w,y,w],[-w,y,w]],0,segs)}for(const[x,z]of[[-1,-1],[1,-1],[1,1],[-1,1]])segs.push([[x*sz/2,0,z*sz/2],[0,sz*0.9,0],0]);shoalForm(segs,c,qLevel(i),{n:1000,fish:1.4,amp:8,pal:1})}}})}
+      else if(f==='ring'&&STR.length){put('shoal ring',6,k=>{const i=pick(STR),Rr=ringR+6,c=new V3().copy(P[i]).addScaledVector(U[i],hc),balls=[];for(let a=0;a<40;a++){const th=a*TAU/40,p=c.clone().addScaledVector(R[i],Math.cos(th)*Rr).addScaledVector(U[i],Math.sin(th)*Rr);balls.push([p.x,p.y,p.z,6])}
+        return{b:balls,add:()=>shoalForm(SPS.loop(SPS.ring(Rr,48,'xy')),[c.x,c.y,c.z],qRoad(i),{n:700,fish:0.9,amp:2,pal:2})}})}
+      else if(f==='arch'&&STR.length){put('shoal arch',6,k=>{const i=pick(STR),span=ringR+6,c=new V3().copy(P[i]),balls=[];for(let a=0;a<=24;a++){const th=a*Math.PI/24,p=c.clone().addScaledVector(R[i],Math.cos(th)*span).addScaledVector(U[i],Math.sin(th)*span*1.3);balls.push([p.x,p.y,p.z,6])}
+        return{b:balls,add:()=>{const segs=[];for(const w of[0,3])segs.push(...SPS.path(Array.from({length:25},(_,a)=>{const th=a*Math.PI/24;return[Math.cos(th)*(span+w),Math.sin(th)*(span+w)*1.3,0]})));shoalForm(segs,[c.x,c.y,c.z],qRoad(i),{n:900,fish:0.9,amp:2.5,pal:4})}}})}
+      else if(f==='colossus'){const H=1100;put('shoal colossus',8,k=>{const a=r()*TAU,d=R2(1500,1900),c=[cxT+Math.cos(a)*d,minY-260,czT+Math.sin(a)*d];return{b:[[c[0],c[1]+H*0.3,c[2],H*0.4]],add:()=>{const cl=SPS.colossus(H);shoalForm(cl.body.concat(cl.head.map(([a2,b2,pc])=>[[a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc])),c,qB(new V3(Math.cos(a+Math.PI/2),0,Math.sin(a+Math.PI/2)),UP),{n:2200,fish:6,amp:30,pal:3})}}})}}}
+
+  /* ---- rooms the road passes through: the lattice hall, following the road's frames round bends; its inner wall and
+     beams open wherever they would hide the road ahead (cut segment by segment by the rule) ---- */
+  const rooms=[];if(q){const nRoom=Math.max(1,cnt(0.18,[0,1,1]));for(let n=0;n<nRoom;n++){const len=R2(320,520),n0=Math.round(len/ds);let i0=-1;
+    for(let t=0;t<30&&i0<0;t++){const i=Math.floor(r()*N);let okR=true;for(let k=0;k<=n0&&okR;k+=4){const j=ix(i+k);if(gap[j]||spl[j]||kind[j]||U[j].y<0.9)okR=false}if(okR&&!rooms.some(o=>Math.abs(wrapI(o.i0-i))<n0*2))i0=i}
+    if(i0<0){why.rooms=(why.rooms||0)+1;continue}rooms.push({i0,n0});
+    const Lb=LB(i0),pal=pick([2,5]),wx=W/2+SPC_O.margin+3,top=SPC_O.above+4,bot=-SPC_O.below-4,stp=Math.max(1,Math.round(10/ds)),cols=[-wx,-wx/2,0,wx/2,wx],rows=[bot,top*0.5,top];
+    Lb.obj({pal,ext:0});let prev=null;let cut=0;
+    const pt=(j,x,y)=>{const p=P[j],rr=R[j],uu=U[j];return[p.x+rr.x*x+uu.x*y,p.y+rr.y*x+uu.y*y,p.z+rr.z*x+uu.z*y]};
+    const segOK=(a,b)=>{const m=[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2],l=Math.hypot(b[0]-a[0],b[1]-a[1],b[2]-a[2]);const n=Math.max(2,Math.ceil(l/2));for(let q=0;q<=n;q++){const f=q/n,p=[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f];if(!clr.ok(p[0],p[1],p[2],1.2))return false}return l>0};
+    const S=(a,b,pc,pk)=>{if(segOK(a,b))Lb.seg(a,b,pc,pk);else cut++};
+    for(let k=0;k<=n0;k+=stp){const j=ix(i0+k),f=k/n0,fade=Math.min(1,f*6,(1-f)*6);
+      const ring=[pt(j,-wx,bot),pt(j,-wx,top),pt(j,wx,top),pt(j,wx,bot)];for(let e=0;e<3;e++)S(ring[e],ring[e+1],0.2+e*0.15,0.9*fade);S(ring[3],ring[0],0.1,0.5*fade);
+      if(prev){for(const x of cols){S(prev.t[x],pt(j,x,top),0.6,0.7*fade);S(prev.b[x],pt(j,x,bot),0.05,0.5*fade)}for(const y of rows){S(prev.l[y],pt(j,-wx,y),0.4,0.7*fade);S(prev.r[y],pt(j,wx,y),0.4,0.7*fade)}
+        if((k/stp)%2===0){S(prev.l[bot],pt(j,-wx,top),0.5,0.45*fade);S(prev.r[top],pt(j,wx,bot),0.5,0.45*fade);S(prev.t[-wx],pt(j,wx,top),0.7,0.4*fade)}}
+      prev={t:{},b:{},l:{},r:{}};for(const x of cols){prev.t[x]=pt(j,x,top);prev.b[x]=pt(j,x,bot)}for(const y of rows){prev.l[y]=pt(j,-wx,y);prev.r[y]=pt(j,wx,y)}}
+    st.cut+=cut;
+    /* hanging lattice bodies (Default only): nested solids hung from above the ceiling, clear of everything */
+    if(q===2)for(let b=0;b<4;b++){const j=ix(i0+Math.round((b+0.5)/4*n0)),s=R2(5,8),c=pt(j,R2(-wx,wx)*0.6,top+s*1.6+4);
+      if(clr.ok(c[0],c[1],c[2],s*1.4)){Lb.obj({c,m:[1,0.25*sgn(),0,0],ax:[0,1,0],pal,br:0.04,ext:s*2});SPS.solid(4,s).forEach(([a,b2,pc])=>Lb.seg(a,b2,pc,1.2));SPS.solid(1,s*0.5).forEach(([a,b2,pc])=>Lb.seg(a,b2,pc,0.9))}}}}
+
+  /* ---- the segmented serpent under each spiral: one coil under its lowest turn, the neck and head rising outside ---- */
+  if(q)for(const f of feats){if(f.kind!=='helix'&&f.kind!=='dhelix')continue;const a2=Math.floor(f.u0/ds),b2=Math.ceil(f.u1/ds);let cx0=0,cz0=0,n=0,lo=1e9;for(let k=a2;k<=b2;k++){const p=P[ix(k)];cx0+=p.x;cz0+=p.z;n++;lo=Math.min(lo,p.y)}if(!n)continue;cx0/=n;cz0/=n;
+    let rr=0;for(let k=a2;k<=b2;k+=4){const p=P[ix(k)];rr+=Math.hypot(p.x-cx0,p.z-cz0)}rr/=Math.ceil((b2-a2+1)/4);const y0=lo-SPC_O.below-16,segs=[],nb=Math.round(TAU*rr/7);
+    for(let s=0;s<nb;s++){const th=s/nb*TAU*0.92,wv=Math.sin(s*0.35)*2.5,x=cx0+Math.cos(th)*(rr+wv),z=cz0+Math.sin(th)*(rr+wv),w=(W*0.9)*(0.5+0.5*Math.sin(Math.PI*Math.min(1,s/nb*1.15+0.05)));segs.push({x,y:y0+Math.sin(s*0.21)*1.5,z,w,th})}
+    const last=segs[segs.length-1];for(let s=1;s<=10;s++){const th=last.th+s*0.03,R0=rr+s*4+20;segs.push({x:cx0+Math.cos(th)*R0,y:y0+s*s*0.9,z:cz0+Math.sin(th)*R0,w:W*0.5,th})}
+    if(segs.every(s=>clr.ok(s.x,s.y,s.z,0.5*Math.hypot(0.9*s.w,3.2,6.2)+0.3)))segs.forEach((s,k)=>{_q.setFromAxisAngle(UP,-s.th);W2.box.add({c:[s.x,s.y,s.z],bq:[_q.x,_q.y,_q.z,_q.w],s:[s.w*0.9,3.2,6.2],pal:4,pc:k/segs.length,per:20,br:0.02,k:k>=segs.length-10?1.3:1})});else why.serpent=(why.serpent||0)+1}
+
+  /* ---- arches that assemble ahead of the leader and burst after the last racer (groups 1..; 004r drives them) ---- */
+  const arches=[];if(q&&STR.length)for(let n=0,nn=Math.min(4,1+(q===2?1:0)+(km>6?1:0));n<nn;n++){const span=ringR+2,rise=1.25,nb=19,bs=3.2;
+    put('arches',8,k=>{const i=pick(STR);if(arches.some(a=>Math.abs(wrapI(a.i-i))*ds<300))return null;const c=new V3().copy(P[i]),balls=[],rad=a=>new V3().addScaledVector(R[i],Math.cos(a)).addScaledVector(U[i],Math.sin(a)*rise).normalize();
+      for(let b=0;b<nb;b++){const a=b/(nb-1)*Math.PI,home=c.clone().addScaledVector(R[i],Math.cos(a)*span).addScaledVector(U[i],Math.sin(a)*span*rise),d=rad(a);for(let f=0;f<=36;f++){const p=home.clone().addScaledVector(d,f/36*225).addScaledVector(Tg[i],f/36*40);balls.push([p.x,p.y,p.z,bs*1.2])}}
+      return{b:balls,add:()=>{const g=1+arches.length,pal=pick([1,4]);arches.push({i,u:ix(i)*ds,g});for(let b=0;b<nb;b++){const a=b/(nb-1)*Math.PI,home=c.clone().addScaledVector(R[i],Math.cos(a)*span).addScaledVector(U[i],Math.sin(a)*span*rise),d=rad(a),from=home.clone().addScaledVector(d,225).addScaledVector(Tg[i],40);
+        _m.lookAt(new V3(),d,Tg[i]);_q.setFromRotationMatrix(_m);W2.glyph.add({c:[0,0,0],off:[from.x,from.y,from.z],fly:[home.x,home.y,home.z,b%2?0.25:0.05],g,s:[bs,bs*1.1,bs*1.6],bq:[_q.x,_q.y,_q.z,_q.w],m:[5,3*sgn(),0,0],ax:rax(),gl:b===(nb>>1)?3:-1,pal,pc:b/nb,per:25,k:1.1})}}}})}
+
+  /* ---- colossi, 1.3 to 1.9 km tall, sunk to the waist in the void's floor; their heads follow the leader (slots 4..6) ---- */
+  const floorY=minY-300,colossi=[];for(let n=0,nn=q===2?3:q===1?2:1;n<nn;n++){const H=R2(1300,1900);
+    put('colossi',10,k=>{const a=r()*TAU,d=R2(1700,2300),c=[cxT+Math.cos(a)*d,floorY,czT+Math.sin(a)*d];if(colossi.some(o=>Math.hypot(o.c[0]-c[0],o.c[2]-c[2])<900))return null;
+      return{b:[[c[0],c[1]+H*0.35,c[2],H*0.45]],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length;
+        addSegs(live,{c,q:qq,pal:[5,1,3][n%3],br:0.01,ext:H},cl.body,1,0,1);live.obj({c,q:qq,m:[8,0,0,0],piv:cl.neck,slot,pal:[5,1,3][n%3],ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
+        colossi.push({c,H,yaw,slot,neck:cl.neck})}}})}
+  /* ---- wireframe heads pacing the pack (slots 0..3) and rare neon ghost riders (slots 7..12); posed by 004r ---- */
+  const HEADS=[{sd:-1,d:34,up:10,s:8,du:20},{sd:1,d:48,up:16,s:12,du:55},{sd:-1,d:130,up:50,s:34,du:170},{sd:1,d:170,up:80,s:46,du:280}].slice(0,q===2?4:q===1?2:0);
+  HEADS.forEach((h,k)=>{live.obj({m:[8,0,0,0],slot:k,pal:[5,2,1,3][k],ext:1e4});SPS.head().forEach(([a,b,pc])=>live.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,1))});
+  const RIDE=q?6:0;for(let k=0;k<RIDE;k++){live.obj({m:[8,0,0,0],slot:7+k,pal:2,ext:1e4});SPS.rider().forEach(([a,b,pc])=>live.seg(a,b,pc,0.9))}
+  /* echoes: three after-images of each of the first three racers (slots 13..15 and the CPU's own; see 004r) */
+  const ECHO=q?3:0;for(let k=0;k<ECHO*3&&13+k<24;k++){live.obj({m:[8,0,0,0],slot:13+k,pal:5,ext:1e4});SPS.rider().forEach(([a,b,pc])=>live.seg(a,b,pc,0.35))}
+  /* the echo stretches: two short ones (120 m) on plain road, far apart */
+  const echoes=[];if(q)for(let t=0;t<40&&echoes.length<2;t++){const i=Math.floor(r()*N),n0=Math.round(120/ds);let okE=true;for(let k=0;k<=n0;k+=3)if(gap[ix(i+k)]||kind[ix(i+k)])okE=false;if(okE&&!echoes.some(e=>Math.abs(wrapI(e.i0-i))*ds<L/4))echoes.push({i0:i,u0:i*ds,u1:i*ds+120})}
+
+  /* ---- the void: stars all round (the sky, which follows the camera), and the floor of light under the colossi ---- */
+  const sky=new THREE.Group(),ns=[400,900,1500][q],sp=new Float32Array(ns*3),ss=new Float32Array(ns);for(let k=0;k<ns;k++){const th=r()*TAU,ph=Math.acos(2*r()-1),Rs=2200+r()*500;sp[k*3]=Rs*Math.sin(ph)*Math.cos(th);sp[k*3+1]=Rs*Math.cos(ph);sp[k*3+2]=Rs*Math.sin(ph)*Math.sin(th);ss[k]=1+r()*r()*2.5}
+  {const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(sp,3));g.setAttribute('aS',new THREE.BufferAttribute(ss,1));
+    const m=new THREE.Points(g,new THREE.ShaderMaterial({uniforms:{uK:{value:1}},vertexShader:`attribute float aS;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=aS;gl_Position=projectionMatrix*mv;}`,fragmentShader:`void main(){vec2 q=gl_PointCoord-0.5;float r=1.-smoothstep(0.1,0.5,length(q));gl_FragColor=vec4(vec3(0.8,0.75,1.)*r*0.7,1.);}`,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));
+    m.frustumCulled=false;m.renderOrder=-10;sky.add(m)}
+  group.add(sky);ctx.sky=sky;
+  let floor=null;if(q&&colossi.length){const g=new THREE.PlaneGeometry(12000,12000,1,1);g.rotateX(-Math.PI/2);const cs=colossi.map(o=>new THREE.Vector3(o.c[0],o.c[2],0.14*colossi[0].H/1300));while(cs.length<3)cs.push(new THREE.Vector3(1e7,1e7,0));
+    floor=new THREE.Mesh(g,new THREE.ShaderMaterial({uniforms:Object.assign({},SPU,{uC:{value:cs}}),vertexShader:`varying vec3 vW;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`,
+      fragmentShader:`uniform float uT,uKick,uCalm,uWorld;uniform vec3 uC[3];varying vec3 vW;void main(){float g=0.;for(int i=0;i<3;i++){float d=distance(vW.xz,uC[i].xy);float w=mod(d-uT*40.,260.);g+=(exp(-w*w/600.)*0.5+0.15*exp(-d/160.))*exp(-d/1600.);}
+        float dc=distance(vW.xz,cameraPosition.xz);g*=1.-smoothstep(1500.,3200.,dc);gl_FragColor=vec4(vec3(0.45,0.3,1.)*g*0.35*(1.+0.4*uKick*(1.-uCalm))*uWorld,1.);}`,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+    floor.position.set(cxT,floorY,czT);floor.renderOrder=0;floor.frustumCulled=false;group.add(floor)}
+
+  lap('pieces');
+  /* ---- the lattice, the backbone (004q) ---- */
+  const lat=spLattice(ctx,clr,r,q);lap('lattice');
+  /* ---- into the scene: wire solids (one draw a shape), lines by region (culled), far lines, knots, the live slots, shoals ---- */
+  const meshes=[];const addM=m=>{if(m){group.add(m);meshes.push(m)}return m};
+  const fogN=[500,2400],fogF=[900,3000];
+  addM(W2.box.mesh(spWireMat({fog:fogN})));addM(W2.glyph.mesh(spWireMat({glyph:true,fog:fogN})));for(const s of solids)addM(W2[s].mesh(spWireMat({tri:true,fog:fogN})));
+  const lmat=spLineMat({fog:fogN,width:0.16});regs.forEach(Lb=>Lb&&addM(Lb.mesh(lmat,true)));addM(farL.mesh(spLineMat({fog:fogF,width:0.5,maxPx:5}),false));addM(knotL.mesh(spLineMat({fog:fogN,width:0.16,knot:true}),false));
+  const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;addM(live.mesh(liveMat,false));addM(sh.mesh());
+  for(const m of lat.meshes)addM(m);
+  /* what the moving parts need (004r), and the line that describes the track */
+  lap('meshes');delete ms.t;ctx.spirit={ms,L,seed,q,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};
+  ctx.tick=(t,anim)=>spLive(ctx.spirit,t,anim);
+  ctx.info.push('the Spirit realm'+(rooms.length?' · '+ctx.pl(rooms.length,'room'):'')+(arches.length?' · '+arches.length+(arches.length>1?' arches':' arch'):''));
+  function wrapI(d){d=((d%N)+N)%N;return d>N/2?d-N:d}}
+/* Prototype 62: the Spirit realm (S) in the game, from the Prototype 61 mock-ups (tools/spirit-proto/lib: neon.js,
+   world.js). Round 2 drew every piece as its own objects (about 540 draw calls for "everything at once"); here a piece
+   is a few numbers in a batch: one draw per kind of thing for the whole lap. A batch's rows say where a piece is (centre,
+   frame), how it is posed (offset and turn in that frame), how it moves (a mode, a rate, a phase and an amount) and how
+   it breathes; the vertex shader moves it from the shared clock below, so the CPU does no work per piece per frame.
+   Motion modes (SPM): 0 still; 1 turns at a steady rate (and bobs); 2 turns a notch on every beat; 3 turns a notch every
+   bar (and slowly), swelling on the kick; 4 a stack's tier slides out, turns a quarter and slides back when its beat
+   comes; 5 flies between two places along an arc, as a group's progress (uG) says; 7 a face hinges open and closed on the
+   beat (unfolding solids); 8 is posed from the CPU (heads, riders, echoes, a colossus's head: uOP/uOQ slots).
+   Nothing here touches the race: it reads the clock, the music and where racers are, never the race's random numbers. */
+const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8};
+/* palettes, four stops each (mirrored past 1): 0 rainbow (Prism's), 1 gold + violet, 2 cyan + magenta, 3 ember + white,
+   4 jade + turquoise + gold, 5 ice + violet; the colours the mock-ups were approved in */
+const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff9f2e','#ffe08a'],['#18e0ff','#3d8bff','#c13dff','#ff3fc4'],
+  ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff']];
+/* the uniforms every Spirit material shares (one object each, so setting a value once sets it everywhere):
+   uT time; uBeat the music's beats (float); uKick the last kick, decaying; uKA the ages of the last four kicks (s);
+   uDrop a flare after a drop starts; uBuild 0..1 through a build; uBrk 1 in a breakdown; uBreath a slow in-out (2 bars);
+   uCalm 1 with Calm visuals; uG group progress (pyramids shedding, arches assembling); uOP/uOQ the posed slots;
+   uSF the sound form (4 bands x 12 moments, newest first); uLvl the music's level; uRes the drawing size in pixels */
+const SPU={uT:{value:0},uBeat:{value:0},uKick:{value:0},uKA:{value:new THREE.Vector4(9,9,9,9)},uDrop:{value:0},uBuild:{value:0},uBrk:{value:0},uBreath:{value:0},uCalm:{value:0},
+  uG:{value:Array.from({length:6},()=>new THREE.Vector4())},uOP:{value:Array.from({length:24},()=>new THREE.Vector4(0,-9999,0,0))},uOQ:{value:Array.from({length:24},()=>new THREE.Vector4(0,0,0,1))},
+  uSF:{value:Array.from({length:12},()=>new THREE.Vector4())},uLvl:{value:0},uRes:{value:new THREE.Vector2(960,540)},uWorld:{value:1},
+  uPal:{value:SPPAL.flatMap(p=>p.map(h=>{const c=new THREE.Color(h);return new THREE.Vector3(c.r,c.g,c.b)}))}};
+const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[24];uniform vec2 uRes;
+  vec3 rotA(vec3 v,vec3 k,float a){float c=cos(a),s=sin(a);return v*c+cross(k,v)*s+k*dot(k,v)*(1.-c);}
+  vec3 rotQ(vec4 q,vec3 v){vec3 t=2.*cross(q.xyz,v);return v+q.w*t+cross(q.xyz,t);}
+  float sst(float x){x=clamp(x,0.,1.);return x*x*(3.-2.*x);}
+  float gOf(float g){int i=int(g/4.);vec4 q=uG[i];float r=mod(g,4.);return r<0.5?q.x:r<1.5?q.y:r<2.5?q.z:q.w;}
+  vec3 pal(float i,float x){x=abs(fract(x*0.5)*2.-1.)*3.;float k=floor(min(x,2.999));int b=int(i)*4+int(k);return mix(uPal[b],uPal[b+1],sst(x-k));}
+  float breathK(float amt){return 1.+amt*(0.6*uBreath+0.4*uKick*(1.-uBrk))*(1.-uCalm);}
+  float spAngle(vec4 m){if(m.x<0.5)return 0.;if(m.x<1.5)return m.y*uT+m.z;if(m.x<2.5)return m.z+m.y*(floor(uBeat)+sst(fract(uBeat)*3.));
+    if(m.x<3.5)return m.z+m.y*(floor(uBeat*.25)+sst(fract(uBeat*.25)*4.))+m.w*uT;if(m.x>6.5&&m.x<7.5){float c=fract(uBeat/8.+m.z);return m.w*sst(c*4.)*(1.-sst(c*4.-2.2));}return 0.;}`;
+
+/* ---------- neon lines: every segment an instance of one quad, as wide as a few pixels (round 2's line look) ---------- */
+const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
+  #ifdef KNOT
+  attribute vec4 sA2,sB2;
+  #endif
+  uniform vec2 uFog;uniform float uWidth,uMinPx,uMaxPx,uGain;varying vec3 vCol;varying float vS;
+  #ifdef SLOTS
+  uniform vec4 uOP[24],uOQ[24];
+  #endif
+  vec3 place(vec3 p,out float vis){vis=1.;vec3 q=p-iP.xyz;
+    #ifdef SLOTS
+    if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;q=iP.xyz+uOP[s].xyz+rotQ(uOQ[s],q);return iC.xyz+rotQ(iQ,q);}
+    #endif
+    q=rotA(q,iX.xyz,spAngle(iM))+iP.xyz;if(iM.x>0.5&&iM.x<1.5)q.y+=sin(uT*0.4+iM.z)*iM.w;
+    return iC.xyz+rotQ(iQ,q*breathK(iC.w));}
+  void main(){vec3 a0=sA.xyz,b0=sB.xyz;
+    #ifdef KNOT
+    float mk=sst(sin(uBeat*0.098+iM.z)*1.4+0.5);a0=mix(a0,sA2.xyz,mk);b0=mix(b0,sB2.xyz,mk);
+    #endif
+    float va,vb;vec4 a=viewMatrix*vec4(place(a0,va),1.),b=viewMatrix*vec4(place(b0,vb),1.);float nz=-0.35;
+    if((a.z>nz&&b.z>nz)||va<0.002){gl_Position=vec4(0.,0.,-2.,1.);return;}
+    if(a.z>nz)a=mix(a,b,(a.z-nz)/(a.z-b.z));if(b.z>nz)b=mix(b,a,(b.z-nz)/(b.z-a.z));
+    vec4 ca=projectionMatrix*a,cb=projectionMatrix*b;vec2 sa=ca.xy/ca.w*uRes*0.5,sb=cb.xy/cb.w*uRes*0.5;
+    vec2 d=sb-sa;float l=length(d);d=l>1e-4?d/l:vec2(1.,0.);vec2 n=vec2(-d.y,d.x);
+    float e=corner.y;vec4 v=e<0.5?a:b;vec4 c=e<0.5?ca:cb;
+    float pk2=clamp(uRes.y/400.,0.35,2.5),px=clamp(uWidth*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx*pk2,uMaxPx*pk2);
+    c.xy+=(n*corner.x+d*(e<0.5?-1.:1.))*px*0.5/uRes*2.*c.w;gl_Position=c;
+    float f=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);vS=corner.x;
+    vCol=pal(iX.w,e<0.5?sA.w:sB.w)*sB.w*f*va*uGain*uWorld;}`;
+const SPLINE_F=`varying vec3 vCol;varying float vS;void main(){float e=1.-abs(vS);gl_FragColor=vec4(vCol*smoothstep(0.,0.4,e)*(0.85+0.6*e*e),1.);}`;
+function spLineMat(o={}){
+  return new THREE.ShaderMaterial({uniforms:Object.assign({},SPU,{uFog:{value:new THREE.Vector2(...(o.fog||[500,2400]))},uWidth:{value:o.width||0.14},uMinPx:{value:o.minPx||1.5},uMaxPx:{value:o.maxPx||6},uGain:{value:o.gain||1}}),
+    vertexShader:SPLINE_V,fragmentShader:SPLINE_F,defines:o.knot?{KNOT:1}:{},transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})}
+const SP_Q0=[0,0,0,1],SP_X0=[0,1,0];
+/* a batch of segments: obj(o) says what the next segments belong to: c centre, q frame (quaternion as [x,y,z,w]), br
+   breath, m [mode, rate, phase, amount], ax the axis it turns about (in its frame), piv the point it turns about, pal,
+   slot (mode 8). seg(a, b, pc, pk): two points in that frame, the palette place of each end and the brightness. */
+function spLines(){const A={sA:[],sB:[],iC:[],iQ:[],iM:[],iX:[],iP:[],sA2:[],sB2:[]};let o=null,n=0;const mn=[1e9,1e9,1e9],mx=[-1e9,-1e9,-1e9];
+  const api={obj(x){o=Object.assign({c:[0,0,0],q:SP_Q0,br:0,m:[0,0,0,0],ax:SP_X0,piv:[0,0,0],pal:0,slot:0,ext:0},x);const e=o.ext||0;for(let k=0;k<3;k++){mn[k]=Math.min(mn[k],o.c[k]-e);mx[k]=Math.max(mx[k],o.c[k]+e)}return api},
+    seg(a,b,pc=0,pk=1,a2,b2){A.sA.push(a[0],a[1],a[2],pc);A.sB.push(b[0],b[1],b[2],pk);A.iC.push(o.c[0],o.c[1],o.c[2],o.br);A.iQ.push(...o.q);A.iM.push(...o.m);A.iX.push(o.ax[0],o.ax[1],o.ax[2],o.pal);A.iP.push(o.piv[0],o.piv[1],o.piv[2],o.slot);
+      if(a2){A.sA2.push(a2[0],a2[1],a2[2],0);A.sB2.push(b2[0],b2[1],b2[2],0)}
+      if(!o.ext)for(const p of[a,b])for(let k=0;k<3;k++){mn[k]=Math.min(mn[k],p[k]+o.c[k]);mx[k]=Math.max(mx[k],p[k]+o.c[k])}n++;return api},
+    poly(P,closed,pc=0,pk=1){const pcf=typeof pc==='function'?pc:()=>pc;for(let i=0;i<P.length-1;i++)api.seg(P[i],P[i+1],pcf(P[i]),pk);if(closed&&P.length>2)api.seg(P[P.length-1],P[0],pcf(P[P.length-1]),pk);return api},
+    get n(){return n},
+    /* one mesh; cull: frustum-cull it by the box of what is in it (a whole-lap batch is never culled) */
+    mesh(mat,cull){if(!n)return null;const g=new THREE.InstancedBufferGeometry();g.setAttribute('corner',new THREE.Float32BufferAttribute([-1,0,1,0,-1,1,1,1],2));g.setIndex([0,1,2,1,3,2]);
+      for(const k of['sA','sB','iC','iQ','iM','iX','iP','sA2','sB2'])if(A[k].length)g.setAttribute(k,new THREE.InstancedBufferAttribute(new Float32Array(A[k]),4));
+      g.instanceCount=n;const m=new THREE.Mesh(g,mat);m.renderOrder=2;
+      const c=new THREE.Vector3((mn[0]+mx[0])/2,(mn[1]+mx[1])/2,(mn[2]+mx[2])/2);g.boundingSphere=new THREE.Sphere(c,Math.hypot(mx[0]-mn[0],mx[1]-mn[1],mx[2]-mn[2])/2+30);g.boundingBox=new THREE.Box3(new THREE.Vector3(...mn),new THREE.Vector3(...mx));
+      m.frustumCulled=!!cull;return m}};
+  return api}
+
+/* ---------- wire solids: boxes, octahedra, tetrahedra, icosahedra; dark faces, bright edges worked out per pixel, colour by
+   height (world.js's look). Each row: centre and frame, an offset and turn in the frame, a size, a motion, a glyph. ---------- */
+const SPWIRE_V=SPGL+`attribute vec3 bary;attribute vec4 iC,iQ,iO,iB,iS,iM,iX,iF,iI;varying vec2 vUv;varying vec3 vB;varying vec3 vCol;varying float vF;varying float vPx;varying float vSide;varying float vGl;varying float vK;
+  uniform vec2 uFog;uniform float uGain;
+  void main(){vec3 v=position*iS.xyz;float md=iM.x;
+    if(md>3.5&&md<4.5){float st=floor(uBeat),f=fract(uBeat),on=1.-step(0.5,abs(mod(st,iM.y)-iM.z));v=rotA(v,vec3(0.,1.,0.),on*sst(f*2.5-0.6)*1.5708*sign(iM.w));v.x+=on*(sst(f*3.)-sst(f*3.-2.))*iM.w;}
+    vec3 b=rotQ(iB,v);
+    if(md>4.5&&md<5.5){float k=sst((gOf(iI.y)*1.6-iF.w)/1.1),j=1.-k;vec3 mid=(iO.xyz+iF.xyz)*0.5+vec3(0.,iI.z,0.);b=rotA(b,iX.xyz,sin(3.14159*k)*iM.y)+iO.xyz*j*j+mid*2.*k*j+iF.xyz*k*k;}
+    else{b+=iO.xyz;b=rotA(b,iX.xyz,spAngle(iM));if(md>2.5&&md<3.5)b*=1.+0.05*uKick*(1.-uCalm);if(md>0.5&&md<1.5)b.y+=sin(uT*0.4+iM.z)*iM.w;}
+    vec3 w=iC.xyz+rotQ(iQ,b*breathK(iC.w));vec4 mv=viewMatrix*vec4(w,1.);gl_Position=projectionMatrix*mv;
+    float dist=-mv.z;vPx=1.15*clamp(60./max(dist,1.),1.,2.2);vF=1.-smoothstep(uFog.x,uFog.y,dist);
+    vUv=uv;vB=bary;vSide=1.-abs(normal.y);float fc=normal.x>0.5?0.:normal.z>0.5?1.:normal.x<-0.5?2.:3.;vGl=iX.w<0.?-1.:mod(iX.w+fc,4.);vK=iI.x*uGain*uWorld;vCol=pal(iO.w,w.y/iI.w+iS.w);}`;
+const SPWIRE_F=`uniform vec3 uFill;uniform sampler2D uAtlas;varying vec2 vUv;varying vec3 vB;varying vec3 vCol;varying float vF;varying float vPx;varying float vSide;varying float vGl;varying float vK;
+  float aaL(float d,float px){return 1.-smoothstep(px-0.6,px+0.6,d);}
+  void main(){float e=0.;
+    #ifdef TRI
+    vec3 fw=max(fwidth(vB),vec3(1e-5));vec3 q=vB/fw;e=aaL(min(min(q.x,q.y),q.z),vPx*0.8);
+    #else
+    vec2 d=min(vUv,1.-vUv);vec2 fw=max(fwidth(vUv),vec2(1e-5));vec2 q=d/fw;e=aaL(min(q.x,q.y),vPx);
+    #endif
+    float g=0.;
+    #ifdef GLYPH
+    if(vGl>=0.&&vSide>0.5){vec2 p=vec2((vUv.x-0.12)/0.76,(vUv.y-0.07)/0.86);if(p.x>0.&&p.x<1.&&p.y>0.&&p.y<1.)g=texture2D(uAtlas,vec2((vGl+p.x)/4.,p.y)).r;}
+    #endif
+    gl_FragColor=vec4(uFill*vF+(vCol*e+mix(vCol,vec3(1.),0.35)*g*1.6)*vK*vF,1.);}`;
+let SP_ATLAS=null;
+function spWireMat(o={}){const d={};if(o.tri)d.TRI=1;if(o.glyph)d.GLYPH=1;
+  const m=new THREE.ShaderMaterial({uniforms:Object.assign({},SPU,{uFog:{value:new THREE.Vector2(...(o.fog||[500,2400]))},uGain:{value:o.gain||1},uFill:{value:new THREE.Color(o.fill==null?0x07050d:o.fill)},uAtlas:{value:o.glyph?spAtlas():null}}),
+    vertexShader:SPWIRE_V,fragmentShader:SPWIRE_F,defines:d});m.extensions={derivatives:true};return m}
+/* the shapes: a unit box (edges from its uv) and the solids (edges from a barycentric attribute) */
+function spBary(g){g=g.index?g.toNonIndexed():g;const n=g.attributes.position.count,b=new Float32Array(n*3);for(let i=0;i<n;i++)b[i*3+(i%3)]=1;g.setAttribute('bary',new THREE.BufferAttribute(b,3));
+  if(!g.attributes.uv)g.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(n*2),2));g.computeVertexNormals();return g}
+const SPGEO={box:()=>{const g=new THREE.BoxGeometry(1,1,1);g.setAttribute('bary',new THREE.BufferAttribute(new Float32Array(g.attributes.position.count*3),3));return g},
+  oct:()=>spBary(new THREE.OctahedronGeometry(0.7,0)),tet:()=>spBary(new THREE.TetrahedronGeometry(0.75,0)),ico:()=>spBary(new THREE.IcosahedronGeometry(0.65,0)),dod:()=>spBary(new THREE.DodecahedronGeometry(0.65,0))};
+/* a batch of wire solids of one shape. add(o): c centre, q frame, off offset in the frame, bq its turn in the frame, s size
+   [x,y,z], pal and pc (palette and where on it), per (metres of height per palette cycle), m motion, ax axis, br breath,
+   fly [x,y,z, delay] (mode 5's other place, in the frame), g group, lift (mode 5's arc), k brightness, gl glyph (0..3) */
+function spWires(shape){const A={iC:[],iQ:[],iO:[],iB:[],iS:[],iM:[],iX:[],iF:[],iI:[]};let n=0;
+  const api={add(o){const c=o.c,s=o.s,off=o.off||[0,0,0],fl=o.fly||[0,0,0,0];A.iC.push(c[0],c[1],c[2],o.br||0);A.iQ.push(...(o.q||SP_Q0));A.iO.push(off[0],off[1],off[2],o.pal||0);A.iB.push(...(o.bq||SP_Q0));
+      A.iS.push(s[0],s[1],s[2],o.pc||0);A.iM.push(...(o.m||[0,0,0,0]));const ax=o.ax||SP_X0;A.iX.push(ax[0],ax[1],ax[2],o.gl==null?-1:o.gl);A.iF.push(...fl);A.iI.push(o.k==null?1:o.k,o.g||0,o.lift||0,o.per||140);n++;return api},
+    get n(){return n},
+    mesh(mat){if(!n)return null;const b=SPGEO[shape](),g=new THREE.InstancedBufferGeometry();for(const k of['position','normal','uv','bary'])g.setAttribute(k,b.attributes[k]);if(b.index)g.setIndex(b.index);
+      for(const k in A)g.setAttribute(k,new THREE.InstancedBufferAttribute(new Float32Array(A[k]),4));g.instanceCount=n;const m=new THREE.Mesh(g,mat);m.frustumCulled=false;m.renderOrder=1;return m}};
+  return api}
+/* the bestiary (round 1's carvings): four creatures drawn in line, one per side of a block. Drawn from scratch in
+   geometric outline: no copied artwork, no deity, no crest figure, no glyphs (docs/SPIRIT-REALM-DOSSIER.md, J). */
+function spCreatures(){const TW=Math.PI*2,circ=(cx,cy,r,n=24)=>Array.from({length:n+1},(_,i)=>[cx+r*Math.cos(i*TW/n),cy+r*Math.sin(i*TW/n)]),mir=pl=>pl.map(p=>[-p[0],p[1]]);
+  const serpent=()=>{const N=100,Lf=[],Rt=[],ch=[],cx=t=>0.5*Math.sin(t*Math.PI*3.4)*(1-0.2*t),cy=t=>0.25+t*3.2;
+    for(let i=0;i<=N;i++){const t=i/N*0.9,dx=(cx(t+0.003)-cx(t-0.003))/(cy(t+0.003)-cy(t-0.003)),nl=Math.hypot(1,dx),w=0.04+0.2*Math.pow(Math.sin(Math.PI*Math.min(1,t*1.1+0.05)),0.7),c=[cx(t),cy(t)],nn=[1/nl,-dx/nl];
+      Lf.push([c[0]+nn[0]*w,c[1]+nn[1]*w]);Rt.push([c[0]-nn[0]*w,c[1]-nn[1]*w]);ch.push({c,n:nn,tg:[dx/nl,1/nl]})}
+    const o=[Lf,Rt,[Lf[0],Rt[0]]];for(let i=6;i<N-4;i+=4){const q=ch[i];o.push([Lf[i],[q.c[0]-q.tg[0]*0.13,q.c[1]-q.tg[1]*0.13],Rt[i]])}
+    const h=ch[N],pt=(a,b)=>[h.c[0]+h.n[0]*a+h.tg[0]*b,h.c[1]+h.n[1]*a+h.tg[1]*b];
+    o.push([Lf[N],pt(0.34,0.12),pt(0.22,0.5),pt(0,0.8),pt(-0.22,0.5),pt(-0.34,0.12),Rt[N]],[pt(0.2,0.45),pt(0.42,0.75),pt(0.36,1.05)],[pt(-0.2,0.45),pt(-0.42,0.75),pt(-0.36,1.05)],[pt(0,0.5),pt(0,0.78)]);return o};
+  const firebird=()=>{const o=[circ(0,3.7,0.26,20),[[0,3.96],[0,4.4]],[[0.12,3.93],[0.34,4.25]],[[-0.12,3.93],[-0.34,4.25]],[[-0.07,3.5],[0,3.18],[0.07,3.5]],[[0,3.44],[0.36,3],[0.26,2.2],[0,1.75],[-0.26,2.2],[-0.36,3],[0,3.44]]];
+    for(let j=0;j<6;j++){const ang=(34-j*13)*Math.PI/180,L=0.68-0.02*j,sy=3.02-j*0.1,p1=[],p2=[];for(let f=0;f<=10;f++){const t=f/10,a=ang-0.35*t*t,x=0.34+L*t*Math.cos(a),y=sy+L*t*Math.sin(a),wd=0.1*Math.sin(Math.PI*t)**0.8+0.01;p1.push([x+wd*Math.sin(a),y-wd*Math.cos(a)]);p2.push([x-wd*Math.sin(a),y+wd*Math.cos(a)])}
+      const lf=p1.concat(p2.reverse());o.push(lf,mir(lf))}
+    for(const[dx,ph]of[[-0.5,0.2],[0,0],[0.5,-0.2]]){const c=[];for(let i=0;i<=30;i++){const t=i/30;c.push([dx*t+0.18*Math.sin(t*9+ph*5)*(0.4+t),1.75-t*1.55])}o.push(c);const e=c[c.length-1];o.push(circ(e[0],e[1]-0.1,0.1,10))}return o};
+  const stag=()=>{const face=[[0,0.3],[0.38,1.2],[0.46,2],[0.3,2.5],[0,2.62]],o=[face.concat(mir(face).reverse()),[[0.44,1.95],[0.95,2.32],[0.34,2.45]],[[-0.44,1.95],[-0.95,2.32],[-0.34,2.45]],[[0,0.62],[0.1,0.82],[-0.1,0.82],[0,0.62]],[[0,2.62],[0,2.1]]];
+    for(const s of[1,-1])o.push([[s*0.12,1.78],[s*0.28,1.9],[s*0.12,2]]);
+    for(const sg of[1,-1]){const bm=[[0.2,2.6],[0.45,2.95],[0.62,3.45],[0.58,4],[0.42,4.35]].map(p=>[sg*p[0],p[1]]);o.push(bm,[bm[1],[sg*0.9,3.2],[sg*0.98,3.6]],[bm[2],[sg*0.95,3.9],[sg*0.9,4.25]],[bm[3],[sg*0.78,4.35]],[bm[1],[sg*0.35,3.2]])}
+    o.push(circ(0,3.45,0.26,20));for(let i=0;i<8;i++){const a=i*Math.PI/4;o.push([[0.34*Math.cos(a),3.45+0.34*Math.sin(a)],[0.46*Math.cos(a),3.45+0.46*Math.sin(a)]])}return o};
+  const sunRing=()=>{const o=[circ(0,2.5,0.94,48),circ(0,2.5,0.7,48)],z=[],st=[];for(let i=0;i<=40;i++){const r=i%2?0.94:0.7,a=i*TW/40;z.push([r*Math.cos(a),2.5+r*Math.sin(a)])}
+    for(let i=0;i<=8;i++){const a=(i*3%8)*TW/8+Math.PI/8;st.push([0.6*Math.cos(a),2.5+0.6*Math.sin(a)])}o.push(z,st,circ(0,2.5,0.14,12),circ(0,2.5,0.38,16),[[-0.16,3.45],[0,3.82],[0.16,3.45]],[[0,3.82],[0,4.2]]);
+    for(let k=0;k<4;k++){const hw=0.9-k*0.2,y=1.45-k*0.32;o.push([[-hw,y],[hw,y],[hw,y-0.3],[-hw,y-0.3],[-hw,y]])}o.push([[-0.9,0.17],[0.9,0.17]]);return o};
+  return[serpent,firebird,stag,sunRing]}
+function spAtlas(){if(SP_ATLAS)return SP_ATLAS;const tw=128,th=256,c=document.createElement('canvas');c.width=tw*4;c.height=th;const g=c.getContext('2d');g.fillStyle='#000';g.fillRect(0,0,c.width,c.height);
+  spCreatures().forEach((fn,k)=>{const pl=fn(),X=x=>k*tw+tw/2+x*tw*0.46,Y=y=>th-(y/4.4)*th*0.98-2;
+    for(const[w,s]of[[7,'rgba(255,255,255,0.18)'],[3.5,'rgba(255,255,255,0.45)'],[1.6,'#fff']]){g.lineWidth=w;g.strokeStyle=s;g.lineJoin=g.lineCap='round';for(const L of pl){g.beginPath();L.forEach((p,i)=>i?g.lineTo(X(p[0]),Y(p[1])):g.moveTo(X(p[0]),Y(p[1])));g.stroke()}}});
+  const t=new THREE.CanvasTexture(c);t.minFilter=THREE.LinearMipmapLinearFilter;return SP_ATLAS=t}
+
+/* ---------- shoals: a flock of small bright solids. A free shoal wheels round its centre; a shoal-built shape keeps its
+   fish on the shape's lines, loosening and re-forming every 2 bars, puffing on the kick and scattering on the drop ---------- */
+const SPSHOAL_V=SPGL+`attribute vec4 fH,fD,fC,fK;uniform vec2 uFog;varying vec3 vCol;
+  void main(){vec3 h=fH.xyz;if(fC.w!=0.)h=fC.xyz+rotA(h-fC.xyz,vec3(0.,1.,0.),uT*fC.w);
+    float loose=(0.12+0.88*sst(sin(uBeat*0.3927+fH.w)*1.5-0.4))*(1.-0.8*uCalm),amp=fK.y;
+    vec3 wob=vec3(sin(uT*1.3+fH.w*7.),sin(uT*1.1+fH.w*5.)*0.6,cos(uT*1.2+fH.w*3.))*amp*loose;
+    vec3 c=h+wob+fD.xyz*amp*(0.25*uKick*(1.-uBrk)+1.6*uDrop)*(1.-uCalm*0.7);
+    vec3 p=rotA(position*fD.w,normalize(vec3(fH.w,1.,0.3)),uT*1.7+fH.w*9.);vec4 mv=viewMatrix*vec4(c+p,1.);gl_Position=projectionMatrix*mv;
+    vCol=mix(pal(fK.x,fK.z+c.y/140.),vec3(1.),0.2)*(1.-smoothstep(uFog.x,uFog.y,-mv.z))*0.9*uWorld;}`;
+function spShoals(){const A={fH:[],fD:[],fC:[],fK:[]};let n=0;
+  const api={fish(h,d,c,k){A.fH.push(...h);A.fD.push(...d);A.fC.push(...c);A.fK.push(...k);n++;return api},get n(){return n},
+    mesh(fog){if(!n)return null;const b=new THREE.OctahedronGeometry(1,0),g=new THREE.InstancedBufferGeometry();g.setAttribute('position',b.attributes.position);g.setAttribute('normal',b.attributes.normal);if(b.index)g.setIndex(b.index);
+      for(const k in A)g.setAttribute(k,new THREE.InstancedBufferAttribute(new Float32Array(A[k]),4));g.instanceCount=n;
+      const m=new THREE.Mesh(g,new THREE.ShaderMaterial({uniforms:Object.assign({},SPU,{uFog:{value:new THREE.Vector2(...(fog||[500,2600]))}}),vertexShader:SPSHOAL_V,fragmentShader:`varying vec3 vCol;void main(){gl_FragColor=vec4(vCol,1.);}`}));
+      m.frustumCulled=false;m.renderOrder=1;return m}};
+  return api}
+/* Prototype 62: Eric's rule from the round-1 mock-ups, ported from tools/spirit-proto/lib/clear.js. Built once per track:
+   - the keep-out: in every road sample's own frame (main road and every split route), the road's half width plus 6 m
+     each side, from 4 m under the road to 16 m over it (40 m over a jump, a drop and their landings, so a frame in the air
+     is clear too).
+   - the sight lines: from a chase camera (12 m behind a racer and 4.5 m up, on three lines across the road) every 16 m
+     round the lap, to the road's two edges and middle, 1 m up, every 20 m up to 300 m ahead. Kept as segments in a
+     coarse grid (the mock-ups marched them into 3 m cells; the segments themselves are exact and much quicker to build).
+   spClear(ctx) returns {ok(x,y,z,r), okPts(list,r), keep(x,y,z,r), sight(x,y,z,r), stats}. A piece is checked as balls
+   that hold it through its whole motion (a turning piece: one ball round its middle as big as its reach; a ring the road
+   runs through: balls all round the ring). A piece that fails is moved or left out. The test tools/tests/spirit-clear.js
+   samples every piece placed, through its motion, against the same two volumes rebuilt in the test. */
+const SPC_O={margin:6,below:4,above:16,jumpAbove:40,sight:300,camBack:12,camUp:4.5,camStep:16,tgtStep:20};
+function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2,drops=ctx.drops||[];
+  /* where frames leave the road: every jump (its gap and 80 m after), every drop and every spire's fall */
+  const air=new Uint8Array(N),mark=(u0,u1)=>{for(let u=u0;u<=u1;u+=ds){air[(((Math.round(u/ds))%N)+N)%N]=1}};
+  for(const j of jumps||[])mark(j.u0-30,j.u1+80);for(const d of drops)if(d.u0!=null)mark(d.u0-30,(d.u1!=null?d.u1:d.u0)+80);
+  for(const f of feats||[])if(f.kind==='drop'||f.kind==='sjump'||f.kind==='cjump')mark(f.u0-30,f.u1+80);
+  /* the samples: {p, r, up, t, hw, above}, in a 3D grid of CELL metres (grid keys wrap every 1024 cells, 20 km and more:
+     a far cell that shares a key only adds candidates, which the exact tests then turn away) */
+  const CELL=24,G=new Map(),key=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023),S=[];
+  const addS=(p,r,up,t,h,above)=>{const s={x:p.x,y:p.y,z:p.z,r,up,t,hw:h,ab:above};S.push(s);const k=key(Math.floor(p.x/CELL),Math.floor(p.y/CELL),Math.floor(p.z/CELL));let L=G.get(k);if(!L)G.set(k,L=[]);L.push(s)};
+  for(let i=0;i<N;i++){if(ctx.gap&&ctx.gap[i]&&!air[i])continue;addS(P[i],R[i],U[i],Tg[i],hw,air[i]?O.jumpAbove:O.above)}
+  const _p=new THREE.Vector3();
+  for(const S0 of splits)for(const B of S0.b)for(let k=0;k<=S0.n;k++){const i=(S0.i0+k)%N;_p.copy(P[i]).addScaledVector(R[i],B.c[k]).addScaledVector(U[i],B.h[k]);addS(_p,R[i],U[i],Tg[i],B.w[k],air[i]?O.jumpAbove:O.above)}
+  const reachH=Math.max(...S.map(s=>s.hw))+O.margin+ds;
+  /* is a ball (x,y,z, radius r) in the keep-out? */
+  const keep=(x,y,z,r)=>{const rr=reachH+r,ra=O.jumpAbove+r,c0=Math.floor((x-rr)/CELL),c1=Math.floor((x+rr)/CELL),d0=Math.floor((y-ra)/CELL),d1=Math.floor((y+ra)/CELL),e0=Math.floor((z-rr)/CELL),e1=Math.floor((z+rr)/CELL);
+    for(let a=c0;a<=c1;a++)for(let b=d0;b<=d1;b++)for(let c=e0;c<=e1;c++){const L=G.get(key(a,b,c));if(!L)continue;
+      for(const s of L){const dx=x-s.x,dy=y-s.y,dz=z-s.z;if(Math.abs(dx*s.t.x+dy*s.t.y+dz*s.t.z)>ds*0.75+r)continue;if(Math.abs(dx*s.r.x+dy*s.r.y+dz*s.r.z)>s.hw+O.margin+r)continue;
+        const h=dx*s.up.x+dy*s.up.y+dz*s.up.z;if(h>-O.below-r&&h<s.ab+r)return true}}return false};
+  /* the sight lines, as segments in a coarse grid (cells of SG metres; a segment goes in every cell its box touches) */
+  const SG=40,SL=[],SM=new Map(),skey=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023);
+  const step=Math.max(1,Math.round(O.camStep/ds)),tst=Math.max(1,Math.round(O.tgtStep/ds)),nT=Math.round(O.sight/O.tgtStep),back=Math.round(O.camBack/ds);
+  const ptAt=(i,l,h,o)=>{o.x=P[i].x+R[i].x*l+U[i].x*h;o.y=P[i].y+R[i].y*l+U[i].y*h;o.z=P[i].z+R[i].z*l+U[i].z*h;return o};
+  /* the quick test (for small balls, r up to 11 m): 20 m cells near any road sample (QN, every cell within 3 of one) and
+     cells a sight line passes (QS, a point every 10 m): a ball in a cell of neither, and with no sight cell next to it,
+     is clear without the exact tests (they are only needed near the road and near the bends' sight lines) */
+  const QC=20,qk=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023),QN=new Set(),QS=new Set();
+  for(let n=0;n<S.length;n+=3){const s=S[n],a=Math.floor(s.x/QC),b=Math.floor(s.y/QC),c=Math.floor(s.z/QC);for(let da=-3;da<=3;da++)for(let db=-3;db<=3;db++)for(let dc=-3;dc<=3;dc++)QN.add(qk(a+da,b+db,c+dc))}
+  const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0};let nIn=0;
+  for(let i=0;i<N;i+=step){if(ctx.gap&&ctx.gap[i])continue;const ic=(i-back+N)%N;
+    for(const cl of[-hw*0.6,0,hw*0.6]){ptAt(ic,cl,O.camUp+1,ca);
+      for(let k=1;k<=nT;k++){const it=(i+k*tst)%N;if(ctx.gap&&ctx.gap[it])continue;for(const tl of[-hw,0,hw]){ptAt(it,tl,1,tb);
+        /* a sight line that stays inside the keep-out all the way adds nothing (anything on it is already kept out): most
+           do, on any road that isn't bending hard, so they are left out (checked at six points, each in the box of a
+           road sample near where it should be) */
+        const span=back+k*tst;let inside=true;for(let f=1;f<=6&&inside;f++){const fr=f/7,x=ca.x+(tb.x-ca.x)*fr,y=ca.y+(tb.y-ca.y)*fr,z=ca.z+(tb.z-ca.z)*fr,m0=ic+Math.round(fr*span);let hit=false;
+          for(let dm=-3;dm<=3&&!hit;dm++){const m=((m0+dm)%N+N)%N,dx=x-P[m].x,dy=y-P[m].y,dz=z-P[m].z;if(Math.abs(dx*Tg[m].x+dy*Tg[m].y+dz*Tg[m].z)>ds*0.75)continue;if(Math.abs(dx*R[m].x+dy*R[m].y+dz*R[m].z)>hw+O.margin-0.5)continue;const h=dx*U[m].x+dy*U[m].y+dz*U[m].z;if(h>-O.below+0.5&&h<O.above-0.5)hit=true}
+          if(!hit)inside=false}
+        if(inside){nIn++;continue}
+        const sg=[ca.x,ca.y,ca.z,tb.x,tb.y,tb.z],n=SL.push(sg)-1;
+        const a0=Math.floor(Math.min(sg[0],sg[3])/SG),a1=Math.floor(Math.max(sg[0],sg[3])/SG),b0=Math.floor(Math.min(sg[1],sg[4])/SG),b1=Math.floor(Math.max(sg[1],sg[4])/SG),c0=Math.floor(Math.min(sg[2],sg[5])/SG),c1=Math.floor(Math.max(sg[2],sg[5])/SG);
+        /* long rays cross many cells: put them only in the cells the line passes near (every half cell along it) */
+        const len=Math.hypot(sg[3]-sg[0],sg[4]-sg[1],sg[5]-sg[2]),nn=Math.max(1,Math.ceil(len/(SG*0.5)));const seen=new Set();
+        if((a1-a0+1)*(b1-b0+1)*(c1-c0+1)<=8){for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++)seen.add(skey(a,b,c))}
+        else for(let q=0;q<=nn;q++){const f=q/nn,x=sg[0]+(sg[3]-sg[0])*f,y=sg[1]+(sg[4]-sg[1])*f,z=sg[2]+(sg[5]-sg[2])*f;for(const dx of[-1,0,1])for(const dz of[-1,0,1])seen.add(skey(Math.floor((x+dx*SG*0.3)/SG),Math.floor(y/SG),Math.floor((z+dz*SG*0.3)/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y+SG*0.3)/SG),Math.floor(z/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y-SG*0.3)/SG),Math.floor(z/SG)))}
+        for(let q=0,nq=Math.max(1,Math.ceil(len/10));q<=nq;q++){const f=q/nq;QS.add(qk(Math.floor((sg[0]+(sg[3]-sg[0])*f)/QC),Math.floor((sg[1]+(sg[4]-sg[1])*f)/QC),Math.floor((sg[2]+(sg[5]-sg[2])*f)/QC)))}
+        for(const kk of seen){let L=SM.get(kk);if(!L)SM.set(kk,L=[]);L.push(n)}}}}}
+  /* does a ball touch a sight line? (a little margin for the other camera views) */
+  const sight=(x,y,z,r)=>{r+=1.5;const a0=Math.floor((x-r)/SG),a1=Math.floor((x+r)/SG),b0=Math.floor((y-r)/SG),b1=Math.floor((y+r)/SG),c0=Math.floor((z-r)/SG),c1=Math.floor((z+r)/SG);
+    for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++){const L=SM.get(skey(a,b,c));if(!L)continue;
+      for(const n of L){const s=SL[n],ux=s[3]-s[0],uy=s[4]-s[1],uz=s[5]-s[2],l2=ux*ux+uy*uy+uz*uz,f=Math.max(0,Math.min(1,((x-s[0])*ux+(y-s[1])*uy+(z-s[2])*uz)/l2)),dx=s[0]+ux*f-x,dy=s[1]+uy*f-y,dz=s[2]+uz*f-z;
+        if(dx*dx+dy*dy+dz*dz<r*r)return true}}return false};
+  /* quick: is a ball far from every road sample (then it can't be in the way of anything) */
+  const far=(x,y,z,r)=>{const rr=r+reachH+O.jumpAbove+90,c0=Math.floor((x-rr)/CELL),c1=Math.floor((x+rr)/CELL),d0=Math.floor((y-rr)/CELL),d1=Math.floor((y+rr)/CELL),e0=Math.floor((z-rr)/CELL),e1=Math.floor((z+rr)/CELL);
+    if((c1-c0+1)*(d1-d0+1)*(e1-e0+1)>4000)return false;
+    for(let a=c0;a<=c1;a++)for(let b=d0;b<=d1;b++)for(let c=e0;c<=e1;c++)if(G.has(key(a,b,c)))return false;return true};
+  const stats={tried:0,placed:0,moved:0,dropped:0,cut:0};
+  const quick=(x,y,z)=>{const a=Math.floor(x/QC),b=Math.floor(y/QC),c=Math.floor(z/QC);if(QN.has(qk(a,b,c)))return false;for(let da=-1;da<=1;da++)for(let db=-1;db<=1;db++)for(let dc=-1;dc<=1;dc++)if(QS.has(qk(a+da,b+db,c+dc)))return false;return true};
+  const ok=(x,y,z,r)=>(r<=11&&quick(x,y,z))||(r>=30&&far(x,y,z,r))||(!keep(x,y,z,r)&&!sight(x,y,z,r));
+  const okPts=(L,r)=>L.every(p=>ok(p[0],p[1],p[2],p[3]!=null?p[3]:r));
+  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,stats,S,SL,O}}
+/* Prototype 62: the line drawings of tools/spirit-proto/lib (objects.js, objects2.js, pieces.js), rewritten as plain
+   segment lists ([[ax,ay,az],[bx,by,bz],pc] in the piece's own frame, metres) so a placer can drop them into a batch.
+   pc is where on the palette each segment sits (most go by height). Nothing here is random unless given r. */
+const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
+  const ring=(rad,n,plane='xz',y=0,a0=0)=>Array.from({length:n},(_,i)=>{const a=a0+i*TW/n,c=Math.cos(a)*rad,s=Math.sin(a)*rad;return plane==='xz'?V(c,y,s):plane==='xy'?V(c,s,y):V(y,c,s)});
+  const loop=(pts,pc=0,out=[])=>{for(let i=0;i<pts.length;i++)out.push([pts[i],pts[(i+1)%pts.length],pc]);return out};
+  const path=(pts,pc=0,out=[])=>{for(let i=0;i<pts.length-1;i++)out.push([pts[i],pts[i+1],pc]);return out};
+  /* the edges of a three.js solid, scaled */
+  const edges=(geo,s=1,off=[0,0,0])=>{const e=new THREE.EdgesGeometry(geo,1),p=e.attributes.position,o=[];for(let i=0;i<p.count;i+=2){const a=[p.getX(i)*s+off[0],p.getY(i)*s+off[1],p.getZ(i)*s+off[2]],b=[p.getX(i+1)*s+off[0],p.getY(i+1)*s+off[1],p.getZ(i+1)*s+off[2]];o.push([a,b,0.5+(a[1]+b[1])/(4*s)])}e.dispose();geo.dispose();return o};
+  const solid=(k,s,off)=>edges(k===0?new THREE.TetrahedronGeometry(1,0):k===1?new THREE.BoxGeometry(1.3,1.3,1.3):k===2?new THREE.OctahedronGeometry(1,0):k===3?new THREE.DodecahedronGeometry(1,0):new THREE.IcosahedronGeometry(1,0),s,off);
+  /* a ring with ticks across it every few degrees (so its turn can be seen), in the plane normal to z */
+  const tickRing=(rad,n,w,gap)=>{const o=[];for(let i=0;i<n;i++){const a=i*TW/n,b=(i+1-(gap&&i%4===3?0.6:0))*TW/n;o.push([V(Math.cos(a)*rad,Math.sin(a)*rad,0),V(Math.cos(b)*rad,Math.sin(b)*rad,0),i/n]);
+    if(i%3===0)o.push([V(Math.cos(a)*(rad-w),Math.sin(a)*(rad-w),0),V(Math.cos(a)*(rad+w),Math.sin(a)*(rad+w),0),i/n])}return o};
+  /* a torus knot (p,q) as nS strands round its line */
+  const knot=(p,q,R0,r0,n,nS,th)=>{const at=t=>{const c=Math.cos(q*t);return[(R0+r0*c)*Math.cos(p*t),r0*Math.sin(q*t),(R0+r0*c)*Math.sin(p*t)]},S=[];
+    for(let s=0;s<nS;s++){const pts=[];for(let i=0;i<=n;i++){const t=i/n*TW,a=at(t),b=at(t+0.01),tg=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],l=Math.hypot(...tg),u=[0,1,0],nx=[tg[1]*u[2]-tg[2]*u[1],tg[2]*u[0]-tg[0]*u[2],tg[0]*u[1]-tg[1]*u[0]],nl=Math.hypot(...nx)||1,
+      ang=s*TW/nS+t*3,ny=[(nx[1]*tg[2]-nx[2]*tg[1])/nl/l,(nx[2]*tg[0]-nx[0]*tg[2])/nl/l,(nx[0]*tg[1]-nx[1]*tg[0])/nl/l],c=Math.cos(ang)*th,sn=Math.sin(ang)*th;
+      pts.push([a[0]+nx[0]/nl*c+ny[0]*sn,a[1]+nx[1]/nl*c+ny[1]*sn,a[2]+nx[2]/nl*c+ny[2]*sn])}S.push(pts)}return S};
+  /* the flower of life (19 circles) and Metatron's lines, in the xy plane */
+  const flower=s=>{const o=[],rr=s/5,C=[[0,0]];for(let k=0;k<6;k++){const a=k*TW/6;C.push([Math.cos(a)*rr,Math.sin(a)*rr]);C.push([Math.cos(a)*rr*2,Math.sin(a)*rr*2]);C.push([Math.cos(a+TW/12)*rr*Math.sqrt(3),Math.sin(a+TW/12)*rr*Math.sqrt(3)])}
+    for(const[cx,cy]of C)loop(ring(rr,28,'xy').map(p=>V(p[0]+cx,p[1]+cy,0)),Math.hypot(cx,cy)/s,o);loop(ring(rr*3,64,'xy'),0.9,o);
+    const M=C.filter((c,i)=>i===0||i%3!==0).slice(0,13);for(let i=0;i<M.length;i++)for(let j=i+1;j<M.length;j+=2)o.push([V(M[i][0],M[i][1],0.3),V(M[j][0],M[j][1],0.3),0.6]);return o};
+  /* a head: rings of a head's profile (brow, nose, chin on +z) and meridians, two eye rings; height 1 */
+  const head=()=>{const o=[],nr=11,nm=12,prof=y=>{const t=y;return 0.36*Math.sqrt(Math.max(0,1-Math.pow((t-0.55)/0.52,2)))*(t<0.25?0.75+t:1)},face=(a,y)=>{const fz=Math.max(0,Math.cos(a));let f=0;
+      if(y>0.6&&y<0.72)f=0.06;else if(y>0.4&&y<0.6)f=0.11*Math.exp(-Math.pow((y-0.48)/0.05,2))*Math.pow(fz,6);else if(y<0.2&&y>0.05)f=0.05;return f*fz*fz};
+    const P=(a,y)=>{const r=prof(y)+face(a,y);return V(Math.sin(a)*r*0.9,y,Math.cos(a)*r)};
+    for(let k=1;k<nr;k++){const y=0.04+k/nr*0.98,pts=[];for(let i=0;i<32;i++)pts.push(P(i*TW/32,y));loop(pts,y,o)}
+    for(let m=0;m<nm;m++){const a=m*TW/nm,pts=[];for(let k=0;k<=20;k++)pts.push(P(a,0.04+k/20*0.98));path(pts,0.5,o)}
+    for(const sx of[-1,1])loop(ring(0.045,10,'xy').map(p=>V(p[0]+sx*0.12,p[1]+0.62,0.33)),1,o);return o};
+  /* a colossus from the waist up (the floor is at y = 0): rings of the torso, shoulders, arms hanging into the floor; its head
+     (a ring head with a face) separately, about the neck at headAt */
+  const colossus=H=>{const o=[],sides=10,R0=H*0.09,R1=H*0.16,top=H*0.5,rings=10;const rs=[];
+    for(let i=0;i<=rings;i++){const f=i/rings,y=f*top,r=(R0+(R1-R0)*Math.pow(f,1.4))*(1-0.15*Math.sin(f*Math.PI));const R=ring(r,sides,'xz',y,i*0.12);rs.push(R);loop(R,f*0.7,o)}
+    for(let s=0;s<sides;s++)for(let i=0;i<rings;i++)o.push([rs[i][s],rs[i+1][s],i/rings*0.7]);
+    for(const sx of[-1,1]){const sh=[sx*R1*1.05,top*0.94,0],el=[sx*R1*1.5,top*0.45,H*0.05],wr=[sx*R1*1.6,-H*0.05,H*0.02];path([sh,el,wr],0.5,o);path([[sh[0],sh[1],sh[2]+R0*0.4],[el[0],el[1],el[2]+R0*0.4],[wr[0],wr[1]+H*0.02,wr[2]+R0*0.4]],0.55,o)}
+    const hd=[],hR=H*0.075,hy=top+H*0.04;for(let k=0;k<5;k++){const y=hy+k/4*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/4));loop(ring(r,14,'xz',y-hy),0.8+k*0.05,hd)}
+    for(let s=0;s<14;s+=2){const a=s*TW/14,pts=[];for(let k=0;k<=8;k++){const y=k/8*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/8));pts.push(V(Math.cos(a)*r,y,Math.sin(a)*r))}path(pts,0.85,hd)}
+    loop(ring(hR*1.45,24,'xy').map(p=>V(p[0],p[1]+hR*1.1,-hR*0.3)),1,hd);for(const sx of[-1,1])loop(ring(hR*0.16,8,'xy').map(p=>V(p[0]+sx*hR*0.35,p[1]+hR*1.15,hR*0.85)),1,hd);
+    return{body:o,head:hd,neck:[0,hy,0]}};
+  /* a frame's outline (for ghost riders and echoes): a wedge with fins, about 4 m long, nose on +z */
+  const rider=()=>{const o=[],P=[V(0,0.3,2.2),V(0.9,0.2,-1.4),V(-0.9,0.2,-1.4),V(0,0.9,-1.2)];for(const[a,b]of[[0,1],[0,2],[1,2],[0,3],[1,3],[2,3]])o.push([P[a],P[b],0.6]);
+    for(const sx of[-1,1]){o.push([V(sx*0.9,0.2,-1.4),V(sx*1.5,0.1,-1.8),0.8],[V(sx*1.5,0.1,-1.8),V(sx*0.7,0.3,0),0.8],[V(sx*0.5,0.5,-1.3),V(sx*0.5,0.5,-2.6),0.3])}return o};
+  /* pieces of the other realms, each on a torn-off base: Prism's contour rock, an Urban block, a Reef coral head, a Forest
+     crown (a few metres to tens; r draws their shape) */
+  const realm=(kind,s,r)=>{const o=[];
+    if(kind===0){const n=7,rs=[];for(let k=0;k<=n;k++){const y=-0.3*s+k/n*1.2*s,w=s*0.55*(1-k/n)*(0.8+0.4*r());rs.push(ring(Math.max(w,0.4),9,'xz',y,r()).map(p=>V(p[0]*(0.8+0.4*r()),p[1],p[2]*(0.8+0.4*r()))))}
+      rs.forEach((R,k)=>loop(R,k/n,o));for(let i=0;i<9;i+=2)path(rs.map(R=>R[i]),0.5,o)}
+    else if(kind===1){const w=s*0.5,h=s*1.4;o.push(...edges(new THREE.BoxGeometry(w*2,h,w*2),1,[0,h/2-0.3*s,0]));for(let y=-0.3*s+3;y<h-0.3*s;y+=3)for(const[sx,sz]of[[1,0],[0,1],[-1,0],[0,-1]]){const a=V(sx?sx*w*1.01:-w,y,sz?sz*w*1.01:-w),b=V(sx?sx*w*1.01:w,y,sz?sz*w*1.01:w);o.push([a,b,(y+0.3*s)/h])}}
+    else if(kind===2){const br=(p,d,l,dp)=>{const q=V(p[0]+d[0]*l,p[1]+d[1]*l,p[2]+d[2]*l);o.push([p,q,dp/4]);if(dp<4)for(let k=0;k<2;k++){const nd=[d[0]+(r()-0.5)*1.2,d[1]+0.3,d[2]+(r()-0.5)*1.2],nl=Math.hypot(...nd);br(q,nd.map(x=>x/nl),l*0.7,dp+1)}};
+      for(let k=0;k<3;k++){const a=k*TW/3;br(V(0,-0.3*s,0),[Math.cos(a)*0.4,0.9,Math.sin(a)*0.4],s*0.45,0)}loop(ring(s*0.5,12,'xz',-0.3*s),0,o)}
+    else{path([V(0,-0.3*s,0),V(0,s*0.5,0)],0.2,o);for(let k=0;k<3;k++){const y=s*(0.45+k*0.25),rr=s*(0.6-k*0.15);loop(ring(rr,16,'xz',y),0.4+k*0.2,o)}for(let k=0;k<8;k++){const a=k*TW/8;o.push([V(Math.cos(a)*s*0.6,s*0.45,Math.sin(a)*s*0.6),V(0,s*1.2,0),0.9])}}
+    loop(ring(s*0.5,8,'xz',-0.3*s).map((p,i)=>V(p[0],p[1]-(i%2?s*0.15:0),p[2])),0.1,o);return o};
+  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm}})();
+/* Prototype 62: round 2's lattice (tools/spirit-proto/lib/realm.js, SPR.lattice), which Eric liked best ("looks good";
+   "the music response is good!"), kept as it was: a cubic grid of struts round the road, cleared 34 m round it and by the
+   rule, in three tiers (beams, the grid, the diagonal truss) that appear as a section strengthens. Sections (2 or 3 a
+   lap, 300 to 700 m strong) are four numbers each in a uniform; only the struts near a section are built, in chunks of
+   320 m of road, each culled by itself. The music (004r sets the uniforms): a pulse runs out along the struts on every
+   kick, the lattice is drawn in towards the road through a build, flares on the drop and dims in the breakdown.
+   The sound form (new, Eric 2026-11: "keep the shape but let colours pulse across it"), on top of that and subtle: the
+   music's spectrum in four bands, bass to treble, is laid up the lattice from its lowest struts to its highest, and each
+   moment of it travels outward from the road (uSF holds the last 12 moments, newest first, each 45 m further out), so
+   colour and a little brightness sweep through the geometry while the geometry stays put. With no music, a slow drift. */
+const SPLAT_V=SPGL+`attribute vec2 corner;attribute vec4 lA,lB,lN,lM;uniform vec4 uSec[6];uniform vec4 uSF[12];uniform float uL,uTight,uBase,uSwellT,uSwellL,uSFk;uniform vec2 uFog;uniform float uWidth,uMinPx,uMaxPx;
+  varying vec3 vCol;varying float vS;varying float vD;varying float vSt;
+  float secS(float u){float s=uBase;for(int i=0;i<6;i++){vec4 q=uSec[i];if(q.w<=0.)continue;float d=abs(u-q.x);d=min(d,uL-d);s=max(s,q.w*(1.-smoothstep(q.y,q.y+q.z,d)));}return s;}
+  void main(){float u=lA.w,tier=floor(lB.w/10.),pc=lB.w-tier*10.;float S=secS(u)*(1.-uSwellT*0.3*(0.5-0.5*sin(uT*0.55+u*0.0031)));
+    float vis=smoothstep(tier*0.22+0.02,tier*0.22+0.15,S);if(vis<0.004){gl_Position=vec4(0.,0.,-2.,1.);return;}
+    float gW=0.55+0.9*S,gK=vis*(0.1+0.75*S),pk=tier<0.5?1.15:tier<1.5?0.62:0.5;
+    vec4 a=viewMatrix*vec4(mix(lA.xyz,lN.xyz,uTight),1.),b=viewMatrix*vec4(mix(lB.xyz,lM.xyz,uTight),1.);float nz=-0.35;
+    if(a.z>nz&&b.z>nz){gl_Position=vec4(0.,0.,-2.,1.);return;}
+    if(a.z>nz)a=mix(a,b,(a.z-nz)/(a.z-b.z));if(b.z>nz)b=mix(b,a,(b.z-nz)/(b.z-a.z));
+    vec4 ca=projectionMatrix*a,cb=projectionMatrix*b;vec2 sa=ca.xy/ca.w*uRes*0.5,sb=cb.xy/cb.w*uRes*0.5;vec2 d=sb-sa;float l=length(d);d=l>1e-4?d/l:vec2(1.,0.);vec2 n=vec2(-d.y,d.x);
+    float e=corner.y;vec4 v=e<0.5?a:b;vec4 c=e<0.5?ca:cb;
+    float pk2=clamp(uRes.y/400.,0.35,2.5),px=clamp(uWidth*gW*uSwellL*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx*pk2,uMaxPx*uSwellL*pk2);
+    c.xy+=(n*corner.x+d*(e<0.5?-1.:1.))*px*0.5/uRes*2.*c.w;gl_Position=c;
+    vD=e<0.5?lN.w:lM.w;vS=corner.x;vSt=S;
+    float hb=clamp(pc,0.,0.999)*3.,fi=clamp(vD/45.,0.,10.99);int bi=int(hb),mi=int(fi);vec4 sv=mix(uSF[mi],uSF[mi+1],fract(fi));
+    float sf=bi==0?mix(sv.x,sv.y,fract(hb)):bi==1?mix(sv.y,sv.z,fract(hb)):mix(sv.z,sv.w,fract(hb));
+    float f=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);
+    vCol=pal(2.,pc+uSFk*0.2*(sf-0.35))*pk*gK*f*(1.+uSFk*0.28*(sf-0.3));}`;
+const SPLAT_F=`uniform vec4 uKA;uniform float uPV,uPK,uGainL,uSwellL,uWorld;varying vec3 vCol;varying float vS;varying float vD;varying float vSt;
+  void main(){float e=1.-abs(vS),a=smoothstep(0.,0.4,e);vec3 col=vCol*uGainL*(1.+(uSwellL-1.)*0.6)*a*(0.85+0.6*e*e);
+    float pu=0.;for(int i=0;i<4;i++){float k=uKA[i];float x=(vD-uPV*k)/16.;pu+=exp(-x*x)*exp(-k*1.4);}
+    col*=1.+uPK*pu*2.6;col+=vec3(0.5,0.45,0.6)*uPK*pu*0.25*vSt*a;gl_FragColor=vec4(col*uWorld,1.);}`;
+/* sections [{u, half, fade, peak}]; q detail: 2 every tier, 1 no diagonal truss and a wider grid, 0 the beams only */
+function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SPC_O;
+  const sp=[45,36,30][q],ext=240,clear=34,tight=0.26,chunk=320,y0=-150,y1=300;
+  const nS=q===0?1+(r()<0.5?1:0):2+(r()<0.5?1:0),secs=[];const u00=r()*L;
+  for(let k=0;k<nS;k++)secs.push({u:(u00+k*L/nS+(r()-0.5)*L/(nS*3)+L)%L,half:150+r()*200,fade:120+r()*80,peak:0.85+r()*0.15});
+  const chunks=new Map(),Lof=u=>{const c=Math.floor(((u%L)+L)%L/chunk);let C=chunks.get(c);if(!C)chunks.set(c,C={lA:[],lB:[],lN:[],lM:[],mn:[1e9,1e9,1e9],mx:[-1e9,-1e9,-1e9]});return C};
+  let segs=0,cut=0,nodesN=0;const tms={col:0,str:0};let t0=0;
+  for(const s of secs){const reach=s.half+s.fade+60,R=[];for(let du=-reach-60;du<=reach+60;du+=6){const u=((s.u+du)%L+L)%L,i=Math.floor(u/ds)%N;if(ctx.gap[i])continue;R.push({u:s.u+du,p:P[i],an0:P[i].clone().addScaledVector(U[i],6)})}
+    if(!R.length)continue;const mn=new V3(1e9,1e9,1e9),mx=new V3(-1e9,-1e9,-1e9);for(const q0 of R){mn.min(q0.p);mx.max(q0.p)}mn.x-=ext;mn.z-=ext;mx.x+=ext;mx.z+=ext;mn.y+=y0;mx.y+=y1;
+    /* the road points in a 2D grid, for the nearest one to each node */
+    const RG=new Map(),rk=(a,b)=>a*65536+b,RC=60;for(const q0 of R){const k=rk(Math.floor(q0.p.x/RC),Math.floor(q0.p.z/RC));let A=RG.get(k);if(!A)RG.set(k,A=[]);A.push(q0)}
+    const nearest=p=>{let b=null,d=1e18;const cx=Math.floor(p.x/RC),cz=Math.floor(p.z/RC);for(let a=-4;a<=4;a++)for(let c=-4;c<=4;c++){const A=RG.get(rk(cx+a,cz+c));if(A)for(const q0 of A){const dd=q0.p.distanceToSquared(p);if(dd<d){d=dd;b=q0}}}return{q:b,d:Math.sqrt(d)}};
+    const I0=Math.floor(mn.x/sp),I1=Math.ceil(mx.x/sp),J0=Math.floor(mn.y/sp),J1=Math.ceil(mx.y/sp),K0=Math.floor(mn.z/sp),K1=Math.ceil(mx.z/sp),H=mx.y-mn.y,node=new Map(),key=(i,j,k)=>((i-I0)*1024+(j-J0))*1024+(k-K0);
+    /* where a node is drawn to at full tightening (round 2: 26% of the way to 6 m over the road; here never more than 30 m,
+       so the far struts' sweep stays small enough to check) */
+    const anc=(p,a0)=>{const d=p.distanceTo(a0);return d>115?p.clone().lerp(a0,115/d):a0.clone()};
+    /* a node, and a strut every 5 m along it, at no, half and full tightening, each ball as big as the sweep between */
+    const qt=(x,y,z)=>clr.quick(x,y,z),okN=(p,an)=>{if(qt(p.x+(an.x-p.x)*tight/2,p.y+(an.y-p.y)*tight/2,p.z+(an.z-p.z)*tight/2))return true;for(const tg of[0,tight/2,tight]){const r0=1.2+p.distanceTo(an)*tight/4;if(!clr.ok(p.x+(an.x-p.x)*tg,p.y+(an.y-p.y)*tg,p.z+(an.z-p.z)*tg,r0))return false}return true};
+    /* (first the quick test at five points at half tightening: each covers 3.75 m of strut, 2.6 m round it and the 3.9 m it
+       can sweep either way, inside the quick test's 11 m) */
+    const okS=(a,b)=>{let qa=true;const h=tight/2;for(let q=0;q<=4&&qa;q++){const f=q/4;qa=qt(a.p.x+(b.p.x-a.p.x)*f+((a.an.x-a.p.x)+(b.an.x-a.an.x-b.p.x+a.p.x)*f)*h,a.p.y+(b.p.y-a.p.y)*f+((a.an.y-a.p.y)+(b.an.y-a.an.y-b.p.y+a.p.y)*f)*h,a.p.z+(b.p.z-a.p.z)*f+((a.an.z-a.p.z)+(b.an.z-a.an.z-b.p.z+a.p.z)*f)*h)}if(qa)return true;
+      const len=a.p.distanceTo(b.p),n=Math.max(2,Math.ceil(len/5)),sw=Math.max(a.p.distanceTo(a.an),b.p.distanceTo(b.an))*tight/4;
+      for(const tg of[0,tight/2,tight])for(let q=1;q<n;q++){const f=q/n,x=a.p.x+(b.p.x-a.p.x)*f,y=a.p.y+(b.p.y-a.p.y)*f,z=a.p.z+(b.p.z-a.p.z)*f,ax=a.an.x+(b.an.x-a.an.x)*f,ay=a.an.y+(b.an.y-a.an.y)*f,az=a.an.z+(b.an.z-a.an.z)*f;
+        if(!clr.ok(x+(ax-x)*tg,y+(ay-y)*tg,z+(az-z)*tg,2.6+sw))return false}return true};
+    t0=Date.now();
+    /* column by column: the road points within reach of it, then the nearest of them to each node up the column */
+    for(let i=I0;i<=I1;i++)for(let k=K0;k<=K1;k++){const x=i*sp,z=k*sp,cx=Math.floor(x/RC),cz=Math.floor(z/RC),C=[];for(let a=-4;a<=4;a++)for(let c=-4;c<=4;c++){const A=RG.get(rk(cx+a,cz+c));if(A)for(const q0 of A){const h2=(q0.p.x-x)**2+(q0.p.z-z)**2;if(h2<ext*ext)C.push(q0,h2)}}
+      if(!C.length)continue;for(let j=J0;j<=J1;j++){const y=j*sp;let b=null,d=1e18;for(let m=0;m<C.length;m+=2){const dd=C[m+1]+(C[m].p.y-y)**2;if(dd<d){d=dd;b=C[m]}}d=Math.sqrt(d);
+        if(!b||d<clear||d>ext||Math.abs(b.u-s.u)>reach)continue;const p=new V3(x,y,z),an=anc(p,b.an0);if(!okN(p,an)){cut++;continue}node.set(key(i,j,k),{p,d,u:b.u,an});nodesN++}}
+    const seg=(a,b,tier)=>{const mid=a.p.clone().lerp(b.p,0.5);if(!okS(a,b)){cut++;return}
+      const u=(a.u+b.u)/2,C=Lof(u),pc=Math.min(0.999,0.08+(mid.y-mn.y)/H*0.75+(((u%900)+900)%900)/900*0.15);
+      C.lA.push(a.p.x,a.p.y,a.p.z,((u%L)+L)%L);C.lB.push(b.p.x,b.p.y,b.p.z,tier*10+pc);C.lN.push(a.an.x,a.an.y,a.an.z,a.d);C.lM.push(b.an.x,b.an.y,b.an.z,b.d);
+      for(const p of[a.p,b.p]){C.mn[0]=Math.min(C.mn[0],p.x);C.mn[1]=Math.min(C.mn[1],p.y);C.mn[2]=Math.min(C.mn[2],p.z);C.mx[0]=Math.max(C.mx[0],p.x);C.mx[1]=Math.max(C.mx[1],p.y);C.mx[2]=Math.max(C.mx[2],p.z)}segs++};
+    tms.col+=Date.now()-t0;t0=Date.now();
+    const major=(x,y)=>((x%3)+3)%3===0&&((y%3)+3)%3===0;
+    for(const[kk,a]of node){const k=kk%1024+K0,j=Math.floor(kk/1024)%1024+J0,i=Math.floor(kk/1048576)+I0;
+      for(const[di,dj,dk]of[[1,0,0],[0,1,0],[0,0,1]]){const b=node.get(key(i+di,j+dj,k+dk));if(!b)continue;const beam=di?major(j,k):dj?major(i,k):major(i,j),dd=Math.max(a.d,b.d);
+        if(beam)seg(a,b,0);else if(q&&(dd<170||r()<0.3))seg(a,b,1)}
+      if(q===2&&((i+j+k)&1)===0&&a.d<130&&r()<0.7){const cc=new V3((i+0.5)*sp,(j+0.5)*sp,(k+0.5)*sp),nr=nearest(cc);
+        if(nr.q&&nr.d>=clear){const an=anc(cc,nr.q.an0);if(!okN(cc,an))continue;const c={p:cc,d:nr.d,u:nr.q.u,an};for(const dd of[[0,0,0],[1,1,0],[1,0,1],[0,1,1]]){const b=node.get(key(i+dd[0],j+dd[1],k+dd[2]));if(b)seg(c,b,2)}}}}}
+  tms.str=Date.now()-t0;
+  /* one material for every chunk; its uniforms are the lattice's controls (004r) */
+  const sec=secs.slice(0,6).map(s=>new THREE.Vector4(s.u,s.half,s.fade,s.peak));while(sec.length<6)sec.push(new THREE.Vector4(0,0,1,0));
+  const LU={uSec:{value:sec},uL:{value:L},uTight:{value:0},uBase:{value:0},uSwellT:{value:1},uSwellL:{value:1},uSFk:{value:0},uPV:{value:260},uPK:{value:0},uGainL:{value:1},uFog:{value:new THREE.Vector2(180,1500)},uWidth:{value:0.34},uMinPx:{value:1.2},uMaxPx:{value:6}};
+  const mat=new THREE.ShaderMaterial({uniforms:Object.assign({},SPU,LU),vertexShader:SPLAT_V,fragmentShader:SPLAT_F,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide});
+  const meshes=[];for(const[,C]of chunks){const n=C.lA.length/4;if(!n)continue;const g=new THREE.InstancedBufferGeometry();g.setAttribute('corner',new THREE.Float32BufferAttribute([-1,0,1,0,-1,1,1,1],2));g.setIndex([0,1,2,1,3,2]);
+    for(const k of['lA','lB','lN','lM'])g.setAttribute(k,new THREE.InstancedBufferAttribute(new Float32Array(C[k]),4));g.instanceCount=n;
+    const c=new V3((C.mn[0]+C.mx[0])/2,(C.mn[1]+C.mx[1])/2,(C.mn[2]+C.mx[2])/2);g.boundingSphere=new THREE.Sphere(c,Math.hypot(C.mx[0]-C.mn[0],C.mx[1]-C.mn[1],C.mx[2]-C.mn[2])/2+40);
+    const m=new THREE.Mesh(g,mat);m.frustumCulled=true;m.renderOrder=2;meshes.push(m)}
+  clr.stats.cut+=cut;return{meshes,mat,U:LU,secs,segs,nodes:nodesN,cut,tight,tms}}
+/* Prototype 62. All cosmetic: this reads the clock, the music and where the racers' frames are, and sets uniforms. It
+   never touches physics, the AI or results, and draws no number from any race's random stream (its few random choices
+   come from a hash of the race clock), so a race replays the same with the realm on (tools/tests/replay.js).
+   The music, in every mode: Generative and Pregen give the kick times (VFX.kt, the same queue the track lights use) and
+   the section (music.sec, or the Pregen loop's position, 48 bars: drop 16, B 16, breakdown 8, build 8); every mode,
+   Songs included, goes through the music volume (audio.musG), where an AnalyserNode reads the spectrum for the sound
+   form. Songs have no kick queue: their kicks are found in the bass band (an onset over the running level) and their
+   breakdowns and drops from the level over the last few seconds against the last half minute. With the music off, or
+   Lights on the beat off, the realm keeps a slow 140 bpm drift with no pulses.
+   No effect flashes more than three times a second: kicks closer than 0.34 s to the last one shown are not shown. */
+let SP_CALM=(()=>{const v=store.get('hoverline.calm');return v==null?null:v==='1'})();
+const spCalm=()=>SP_CALM==null?!g2('blur'):SP_CALM;
+const SPMUS={an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
+  /* the analyser on the music volume (made once, on the music's own context) */
+  analyser(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an&&this.src===g)return this.an;const a=c.createAnalyser();a.fftSize=512;a.smoothingTimeConstant=0.55;g.connect(a);
+      const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an=a;this.src=g;this.fd=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
+  /* the kick ages, bars and sections for this frame; now: the music's clock (s) */
+  read(dt,on){const c=music.ctx,now=c?c.currentTime:performance.now()/1000,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
+    /* the spectrum */
+    const a=playing?this.analyser():null;let got=false;
+    if(a){a.getByteFrequencyData(this.fd);const F=this.fd,n=F.length,hz=c.sampleRate/2/n,b=[[20,150],[150,600],[600,3000],[3000,12000]];let tot=0;
+      for(let k=0;k<4;k++){const i0=Math.max(0,Math.floor(b[k][0]/hz)),i1=Math.min(n-1,Math.ceil(b[k][1]/hz));let s=0;for(let i=i0;i<=i1;i++)s+=F[i];const v=s/((i1-i0+1)*255);tot+=v;
+        this.peak[k]=Math.max(v,this.peak[k]*Math.exp(-dt/6),0.08);this.band[k]=Math.min(1,v/this.peak[k])}
+      this.lvl=tot/4;got=this.lvl>0.01}
+    if(!got){const t=performance.now()/1000;for(let k=0;k<4;k++)this.band[k]=0.35+0.25*Math.sin(t*0.21+k*1.3)}
+    this.live=got;
+    /* the kicks: the engine's queue, or onsets in the bass for Songs */
+    const K=[];const vk=(typeof VFX!=='undefined'&&VFX.kt)||[];for(const k of vk)if(k>this.lastNow-0.05&&k<=now)K.push(k);
+    if(music.soOn&&got){const e=this.band[0]*this.peak[0],s=this.sk;s.avg+=(e-s.avg)*Math.min(1,dt*3);if(e>s.avg*1.3+0.03&&e>s.e&&now-s.t>0.28){K.push(now);s.t=now}s.e=e}
+    this.lastNow=now;
+    for(const k of K.sort((x,y)=>x-y))if(on&&k-this.last>=0.34){this.last=k;this.acc.unshift(k);if(this.acc.length>4)this.acc.length=4;
+      /* the beat follows the kicks */
+      const spb=60/this.bpm,bk=(k-this.anchor)/spb,er=bk-Math.round(bk);this.anchor+=er*spb*0.5;
+      if(music.soOn&&this.acc.length>1){const iv=this.acc[0]-this.acc[1];if(iv>0.3&&iv<0.9)this.bpm+=(60/iv-this.bpm)*0.1}}
+    if(!music.soOn&&music.bpm)this.bpm=music.bpm;if(!on||!playing)this.acc.length=0;
+    const spb=60/this.bpm,beat=(now-this.anchor)/spb;this.beat=beat;
+    /* the section */
+    let sec='',bi=0,bl=1;
+    if(playing&&music.pgOn&&music.pgS){const S0=music.pgS,P0=S0.P,p=S0.off+(now-S0.t);if(p<P0.loopS){sec='rise';bl=Math.max(1,Math.round(P0.loopS/P0.bd));bi=p/P0.bd}
+      else{const bar=((p-P0.loopS)%(P0.loopE-P0.loopS))/P0.bd;sec=bar<16?'drop':bar<32?'b':bar<40?'brk':'rise';bi=sec==='rise'?bar-40:bar%16;bl=sec==='rise'?8:16;if(sec==='drop'&&this.sec!=='drop')this.dropT=now-bar*P0.bd}}
+    else if(playing&&music.soOn&&got){this.slow+=(this.lvl-this.slow)*Math.min(1,dt/25);this.fast+=(this.lvl-this.fast)*Math.min(1,dt/1.2);
+      sec=this.fast<this.slow*0.62?'brk':'drop';if(sec==='drop'&&this.sec==='brk'&&this.fast>this.slow*0.9)this.dropT=now;else if(sec==='drop'&&this.sec==='brk')sec='brk'}
+    else if(playing&&music.sec){sec=music.sec[0];bi=music.sec[1]+((beat%4)+4)%4/4;bl=music.sec[2]||1;if(sec==='drop'&&this.sec!=='drop'&&music.sec[1]===0)this.dropT=now}
+    this.sec=sec;
+    const brkT=on&&sec==='brk'?1:0;this.brk+=(brkT-this.brk)*Math.min(1,dt*2.5);
+    this.build=on&&sec==='rise'?Math.min(1,bi/Math.max(1,bl)):0;
+    this.drop=on?Math.exp(-(now-this.dropT)/(spb*4)):0;
+    /* the shedding pyramids: shed after a drop, back in the breakdown; with no music, slowly to and fro */
+    const g0T=!playing?((performance.now()/1000)%36<18?1:0):(sec==='brk'||sec==='rise')?0:1;this.g0+=(g0T-this.g0)*Math.min(1,dt*0.5);
+    /* the sound form's moments: one every 1/15 s (1/5 s with Calm visuals), newest first */
+    this.histT+=dt;const step=spCalm()?0.2:1/15;if(this.histT>=step||!this.hist.length){this.histT=0;this.hist.unshift(this.band.slice());if(this.hist.length>12)this.hist.length=12}
+    else this.hist[0]=this.band.slice();
+    return this}};
+/* the realm's frame: sp is ctx.spirit (004m); t the race clock; anim Moving scenery */
+function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.t0)));sp.t0=t;
+  const on=g2('pulse'),calm=spCalm(),M=SPMUS.read(dt||1/60,on),U0=SPU;
+  if(anim){U0.uT.value=t;U0.uBeat.value=M.beat}
+  try{renderer.getDrawingBufferSize(_spV2);U0.uRes.value.copy(_spV2)}catch(e){}
+  const kA=U0.uKA.value,now=M.now;for(let k=0;k<4;k++)kA.setComponent(k,M.acc[k]!=null?Math.max(0,now-M.acc[k]):9);
+  U0.uKick.value=M.acc.length?Math.exp(-(now-M.acc[0])/(60/M.bpm)*5.5):0;U0.uDrop.value=M.drop;U0.uBuild.value=M.build;U0.uBrk.value=M.brk;U0.uBreath.value=anim?Math.sin(2*Math.PI*M.beat/8):0;U0.uCalm.value=calm?1:0;
+  U0.uWorld.value=(1-0.3*M.brk)*(1+0.12*M.drop*(calm?0.3:1));
+  for(let k=0;k<12;k++){const h=M.hist[Math.min(k,M.hist.length-1)]||[0,0,0,0];U0.uSF.value[k].set(h[0],h[1],h[2],h[3])}
+  /* the lattice: round 2's response, as Eric approved it (flare 1.6 on the drop; Calm keeps it under 0.5) */
+  const LU=sp.lat.U,flare=M.drop*(calm?0.45:1.6),tgt=M.build>0?sp.lat.tight*M.build*M.build*(3-2*M.build):0;M.tight=tgt<M.tight?M.tight+(tgt-M.tight)*0.35:tgt;
+  LU.uTight.value=anim?M.tight:0;LU.uPK.value=(1-0.7*M.brk)*(calm?0.4:1);LU.uGainL.value=(1+flare+0.35*M.build)*(1-0.75*M.brk);LU.uSwellL.value=1+(0.25*M.drop+0.08*U0.uKick.value*(1-M.brk))*(calm?0.3:1);
+  LU.uSwellT.value=calm||!anim?0:1;LU.uSFk.value=M.live?(calm?0.5:1):0.45;
+  /* groups: 0 the pyramids, 1.. the arches */
+  const G=U0.uG.value,setG=(g,v)=>G[g>>2].setComponent(g&3,v);setG(0,M.g0);
+  const mine=!!(T&&T.env&&T.env.spirit===sp),race=mine&&(S.state==='race'||S.state==='countdown'||S.state==='done'||S.state==='paused'),rs=race?racers.filter(r=>r.ship&&!r.isGhost&&!r.off&&r.utot!=null):[];
+  let lead=null,last=null;for(const r of rs){if(!lead||r.utot>lead.utot)lead=r;if(!last||r.utot<last.utot)last=r}
+  const L=sp.L,wu=d=>{d=((d%L)+L)%L;return d>L/2?d-L:d};
+  for(const a of sp.arches){let p=1;if(lead){const dl=wu(a.u-lead.u),dz=wu(a.u-last.u);p=dl>0?ssp((400-dl)/260):dz>-20?1:1-ssp((-dz-20)/60)}setG(a.g,p)}
+  /* the posed slots */
+  const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<24;s++)OP[s].w=0;
+  const lp=lead?sampleAt(lead.u,_spS):null;
+  /* each head: the nearest clear place, outward from its own, 12 m at a time; out at once, back in slowly; the place shown
+     is checked again, and the head is hidden for that frame if it is not clear */
+  sp.heads.forEach((h,k)=>{if(!lead)return;const f=sampleAt(lead.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
+    h.push=h.push||0;let want=-1;for(let tr=0;tr<8&&want<0;tr++){const q=at(h.d+tr*12);if(sp.clr.ok(q[0],y,q[1],r0))want=tr*12}
+    if(want<0){h.push=96;return}h.push=want>h.push?want:h.push+(want-h.push)*0.05;const q=at(h.d+h.push),by=y+Math.sin(t*0.7+k)*h.s*0.05;
+    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);_spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(lead.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
+  for(const c of sp.colossi){const s=c.slot,tx=lead?lead.ship.position:mine?camera.position:_spA.set(0,0,0),dx=tx.x-c.c[0],dz=tx.z-c.c[2];let yaw=Math.atan2(dx,dz)-c.yaw;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));yaw=Math.max(-1.2,Math.min(1.2,yaw));
+    c.y=c.y==null?yaw:c.y+(yaw-c.y)*Math.min(1,dt*0.8);OP[s].set(0,0,0,1);_spQ.setFromAxisAngle(_spUp,c.y);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}
+  /* rare ghost riders: now and then (one half minute of a race in five), a few neon riders fly beside the pack for 4 s */
+  if(sp.riders&&lead&&S.state==='race'){const slot=Math.floor(S.raceT/30);if(slot!==sp.rideSlot){sp.rideSlot=slot;if(spHash(slot*7919+sp.seed)<0.2&&S.raceT>8)sp.ride={t0:S.raceT,n:3+Math.floor(spHash(slot*31+5)*3)}}
+    const R0=sp.ride;if(R0&&S.raceT-R0.t0<4.5){const e=S.raceT-R0.t0,fade=Math.min(1,e*2,(4.5-e)*2);for(let k=0;k<Math.min(R0.n,sp.riders);k++){const sd=k%2?1:-1,f=sampleAt(lead.u-25+k*14,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,lat=W/2+SPC_O.margin+5+(k>>1)*5;
+      const x=f.p.x+sx/sl*sd*lat,y=f.p.y+3+k%3,z=f.p.z+sz/sl*sd*lat;if(!sp.clr.ok(x,y,z,3))continue;const fl=0.75+0.25*Math.sin(e*TAU*2+k);OP[7+k].set(x,y,z,fade*fl*0.8);
+      _spM.lookAt(_spA.set(0,0,0),_spB.copy(f.t),f.u);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[7+k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}}}
+  /* echoes of the leaders: on the two short stretches, three faint after-images of each of the first three racers; as one
+     leaves a stretch, the third joins the second, the second the first and the first the frame (0.12 s each) */
+  if(sp.echo&&race&&sp.echoes.length){const top=rs.slice().sort((a,b)=>b.utot-a.utot).slice(0,3),H=sp.hist||(sp.hist=new Map()),tt=S.raceT||t;
+    top.forEach((r,k)=>{let h=H.get(r);if(!h)H.set(r,h={p:[],ex:-9,in:false});h.p.unshift({t:tt,x:r.ship.position.x,y:r.ship.position.y,z:r.ship.position.z,q:r.ship.quaternion.clone()});if(h.p.length>40)h.p.length=40;
+      const inS=sp.echoes.some(e=>{const d=wu(r.u-e.u0);return d>=0&&d<=e.u1-e.u0});if(h.in&&!inS)h.ex=tt;h.in=inS;const e=tt-h.ex;if(!inS&&e>0.36)return;
+      const d1=e<0.24?0.13:Math.max(0,0.13-(e-0.24)/0.12*0.13),d2=e<0.12?0.26:e<0.24?0.26-(e-0.12)/0.12*0.13:d1,d3=e<0.12?0.39-e/0.12*0.13:d2,dl=inS?[0.13,0.26,0.39]:[d1,d2,d3];
+      for(let j=0;j<3;j++){const s=13+k*3+j;if(s>=24)break;const want=tt-dl[j];let pz=h.p[h.p.length-1];for(const p of h.p)if(p.t<=want){pz=p;break}
+        OP[s].set(pz.x,pz.y,pz.z,(inS?1:Math.max(0,1-e/0.36))*(0.9-j*0.2));_spQ.copy(pz.q).multiply(_spFlip);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}})}}
+const ssp=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
+const spHash=n=>{let h=(n|0)^0x9E3779B9;h=Math.imul(h^h>>>16,0x85EBCA6B);h=Math.imul(h^h>>>13,0xC2B2AE35);return((h^h>>>16)>>>0)/4294967296};
+const _spV2=new THREE.Vector2(),_spS={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},_spS2={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},
+  _spM=new THREE.Matrix4(),_spQ=new THREE.Quaternion(),_spA=new THREE.Vector3(),_spB=new THREE.Vector3(),_spUp=new THREE.Vector3(0,1,0),_spFlip=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI);
+/* Prototype 62: the Calm visuals chip on the Graphics page (dossier 71). Until it is pressed it follows Speed blur (on
+   while blur is off); once pressed it is the player's own choice, kept as hoverline.calm. */
+{const b=$('calmBtn'),sync=()=>{if(b)b.setAttribute('aria-pressed',String(spCalm()))};
+  if(b)b.onclick=()=>{SP_CALM=!spCalm();store.set('hoverline.calm',SP_CALM?'1':'0');sync();try{audio.blip(SP_CALM?880:440,0.06,0.05)}catch(e){}};
+  const g=$('gfxOpen');if(g)g.addEventListener('click',sync);sync()}
 /* ---------- maps ---------- */
 function mapper(c,pad){const b=T.bounds,w=c.width,h=c.height;const s=Math.min((w-2*pad)/(b.maxX-b.minX),(h-2*pad)/(b.maxZ-b.minZ));
   const ox=(w-(b.maxX-b.minX)*s)/2,oz=(h-(b.maxZ-b.minZ)*s)/2;return(x,z)=>[ox+(x-b.minX)*s,oz+(z-b.minZ)*s]}
@@ -7616,7 +8325,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   const hasMe=(o.field||[]).some(f=>f.me);(o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,(hasMe?f.me:i===0)?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:61,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:62,log:logShareable(L)});if(body.length>400000)return;
   if(bc&&navigator.sendBeacon&&navigator.sendBeacon(LB+'/log',new Blob([body],{type:'text/plain'})))return; /* a page being closed: a beacon still gets there */
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
@@ -8028,11 +8737,11 @@ const specCx=sp=>FKG.some(k=>sp.n[k]>0);
 /* Scenery: a letter after a dash (O ocean, F forest, N Stratos, once called Night sky, R reef; urban needs none), then optionally four digits for the
    dials (scenery amount, falls, geysers, tunnels), e.g. S1A2B3C-O or SX1A2B3C-U2102. Scenery doesn't change the road, so
    best laps, ghosts and the online board go by the code without it. */
-const parseBio=str=>{const m=/^([UOFNRP])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
+const parseBio=str=>{const m=/^([UOFNRPS])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
 /* Prototype 60: a track code's seed is six hex digits, or seven starting with 1 for codes made from Prototype 60 on (bit 24
    of the seed, TV1): only those may get the new road pieces (drops, speed jumps, long jumps, spires and spirals the other
    way), so every older code builds exactly the track it always did. */
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,8})?))?(?:-([UOFNRP](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,8})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
   return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x1FFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
 let seed=saved?saved.seed:TV1+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
@@ -8198,9 +8907,11 @@ $('raceBtn').onclick=startRace;$('againBtn').onclick=()=>{if(mp.on)mpAgain(false
 const rndSeed=()=>TV1+Math.floor(Math.random()*0xFFFFFF)+1;/* Prototype 60: new codes are version 1 (seven digits) */
 /* Scenery for new tracks: any of the ticked biomes (urban counts double); a track keeps its own until you change it. */
 /* the Reef joined the ticked settings once, for anyone who had every setting ticked before it existed */
-let bioOn=(()=>{let v=(store.get('hoverline.biomes')||'UOFNRP').replace(/[^UOFNRP]/g,'');if(v==='UOFN'&&!store.get('hoverline.bioR'))v+='R';store.set('hoverline.bioR','1');
+let bioOn=(()=>{let v=(store.get('hoverline.biomes')||'UOFNRPS').replace(/[^UOFNRPS]/g,'');if(v==='UOFN'&&!store.get('hoverline.bioR'))v+='R';store.set('hoverline.bioR','1');
   /* Prism (Prototype 51) joins once too, for anyone who has more than one setting ticked */
-  if(!store.get('hoverline.bioP')&&v.length>1&&!v.includes('P'))v+='P';store.set('hoverline.bioP','1');return v||'U'})();
+  if(!store.get('hoverline.bioP')&&v.length>1&&!v.includes('P'))v+='P';store.set('hoverline.bioP','1');
+  /* Prototype 62: and the Spirit realm, the same way */
+  if(!store.get('hoverline.bioS')&&v.length>1&&!v.includes('S'))v+='S';store.set('hoverline.bioS','1');return v||'U'})();
 const pickBio=()=>{const a=[...bioOn].flatMap(k=>k==='U'?['U','U']:[k]);return{k:a[Math.floor(Math.random()*a.length)]||'U',d:null}};
 /* Track types for New track (Prototype 31): any of the ticked widths, layouts and lengths, as with the scenery. Ticking a
    type makes a new track of it at once; unticking the type in use swaps to another ticked one; clicking the only one ticked
@@ -8230,7 +8941,7 @@ document.querySelectorAll('[data-tod]').forEach(b=>b.onclick=()=>{const k=b.data
   if(on&&todOn.length===1){if(tod===k)return}else todOn=on?todOn.filter(x=>x!==k):[...todOn,k];
   const nt=!on?k:tod===k?todOn[0]:tod;store.set('hoverline.tods',todOn.join(','));if(nt!==tod){tod=nt;store.set('hoverline.tod',tod);loadTrack(seed)}else todSync()});todSync();
 function bioSync(){document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>{const k=b.dataset.bio||b.dataset.mpbio;b.setAttribute('aria-pressed',String(bioOn.includes(k)));b.classList.toggle('cur',k===bio.k)})}
-document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>b.onclick=()=>{const k=b.dataset.bio||b.dataset.mpbio;let v=bioOn.includes(k)?bioOn.replace(k,''):bioOn+k;if(!v)v=k;bioOn='UOFNRP'.split('').filter(c=>v.includes(c)).join('');store.set('hoverline.biomes',bioOn);
+document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>b.onclick=()=>{const k=b.dataset.bio||b.dataset.mpbio;let v=bioOn.includes(k)?bioOn.replace(k,''):bioOn+k;if(!v)v=k;bioOn='UOFNRPS'.split('').filter(c=>v.includes(c)).join('');store.set('hoverline.biomes',bioOn);
   /* ticking a biome shows it on this road; unticking the one in use swaps to another ticked one */
   if(!bioOn.includes(bio.k)||(bioOn.includes(k)&&k!==bio.k))loadTrack(seed,null,null,null,undefined,{k:bioOn.includes(k)?k:pickBio().k,d:null});
   if(b.dataset.mpbio)mpPushInfo();bioSync()});
@@ -10083,7 +10794,7 @@ function mpView(){const inRoom=!!mp.sess;mpEl.mpOut.hidden=inRoom;mpEl.mpIn.hidd
 function mpTrackInfo(){return{seed,wk:wid,cx:cplx,lk:lenK,sp:spec?specStr(spec):null,bm:bioTok(),laps:mp.laps,fill:mp.fill,cls:mp.cls,ail:ailNow(),...(mp.split==='screen'?{split:1}:{})}}
 /* Public rooms (Prototype 38): Public room joins the first public room of this version that has space, or opens it if nobody
    is there (whoever is first is the host, and the next pilot takes over if they leave). Random codes never contain a 1. */
-const PUBV=61,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
+const PUBV=62,pubCode=k=>'P'+PUBV+'PUB'+k,PUBN=6;
 function mpConnect(code,host,pub){mp.pub=pub||0;
   audio.init();store.set('hoverline.name',mpEl.mpName.value.trim().slice(0,12));mpEl.mpErr.textContent='';
   const q=new URLSearchParams(location.search).get('mp'),carrier=q==='local'?'local':mpConn==='wifi'?'relay':mpConn==='lan'?'lan':'net';
@@ -11248,7 +11959,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
     /* atmosphere: a coloured haze */
     {const hz=g2('haze'),f=scene.fog,lk=(T&&T.look)||BIOMES.U;if(hz!==this.hz){this.hz=hz;if(hz){f.color.setHex(lk.haze);f.near=40;f.far=lk.k==='N'?1400:700;scene.background.setHex(lk.haze)}else{f.color.setHex(lk.bg);f.near=lk.fog[0];f.far=lk.fog[1];scene.background.setHex(lk.bg)}}}
     /* the beat on the track edges */
-    {const ct=music.ctx?music.ctx.currentTime:0;while(this.kick.length&&this.kick[0]<=ct){this.kick.shift();this.pulse=1}if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
+    {const ct=music.ctx?music.ctx.currentTime:0;while(this.kick.length&&this.kick[0]<=ct){(this.kt||(this.kt=[])).unshift(this.kick.shift());this.pulse=1}if(this.kt&&this.kt.length>8)this.kt.length=8;if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
       const m=T&&T.mats;if(m){const p=g2('pulse')?this.pulse:0;if(p>0.005||this.lp>0.005){m.edgeM.color.setScalar(1+0.9*p);m.rail.color.setRGB(1+0.4*p,0.69*(1+0.6*p),0.25*p);m.glass.opacity=0.10+0.14*p}this.lp=p}}
     if(T&&T.env){T.env.update(S.t,g2('anim'));if(T.env.cave)T.env.cave(camera);if(T.env.sky)T.env.sky.position.copy(camera.position);this.moteCol=T.look.mote}
     if(++this.tick%30===0)this.applyEnv()}};
@@ -11418,7 +12129,7 @@ const qkSave=()=>store.set('hoverline.quick',JSON.stringify({v:40,on:QK.on!==fal
 /* Prototype 61: bioP (Prism joining the ticked settings, written at every load since Prototype 51) and mtpl (the music's
    memory of recent templates) were missing from this list, so since Prototype 51 no browser counted as fresh and the
    quick races never started by themselves. tools/tests/first-flight.js now loads a fresh page and checks they do. */
-const QK_AUTO=['def39','ultra32','ultra34','ultra35','bioR','bioP','code','mhist','mtpl','padkind','autoUltra','quick','orient'],QK_SOFT=['style','res','low','fcap','mmode'];
+const QK_AUTO=['def39','ultra32','ultra34','ultra35','bioR','bioP','bioS','code','mhist','mtpl','padkind','autoUltra','quick','orient'],QK_SOFT=['style','res','low','fcap','mmode'];
 function qkFresh(){try{const ls=localStorage,soft=ls.getItem('hoverline.autoUltra')==='soft';
     for(let i=0;i<ls.length;i++){const k=ls.key(i);if(!k||!k.startsWith('hoverline.'))continue;const s=k.slice(10);
       if(QK_AUTO.includes(s)||s==='cam'&&ls.getItem(k)==='1'||soft&&QK_SOFT.includes(s))continue;return false}}catch(e){}return true}
