@@ -1,4 +1,4 @@
-//# track/004-track.js: track building from a code: seed, width, complexity, length, biome; the road, walls, features (spires, splits, jumps, tunnels), scenery and sampleAt
+//# track/004-track.js: the track's settings (lengths, biome looks by night and day, scenery dials) and buildTrack, which builds a track from its code in three steps (004a-004k)
 /* ---------- track ---------- */
 let T=null;
 /* Multiplayer state (the room, its session and the network ids of the ships); see the multiplayer section. */

@@ -38,6 +38,7 @@
      prism (T.prism), inside(x,y,z) (the haze turns dark where it's true), clock (uniforms set to the time each frame),
      info (more for bmInfo), geyName (bmInfo's word for a geyser), gCol (geyser particle colours), plainFx (unlit falls
      and geysers), jelSoft (see-through jellyfish), bubbles (geysers rise as bubbles) */
+/* the builders by biome letter: a new biome is a new file with its builder and a line here */
 const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryStratos,R:sceneryReef,P:sceneryPrism};
 function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
   const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall0,nGey0,nTun]=dial,nFall=RES.low?0:nFall0,nGey=RES.low?0:nGey0,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
@@ -60,6 +61,7 @@ function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,spli
   const solid=[],free=(x,z,rad)=>solid.every(o=>(o.x-x)**2+(o.z-z)**2>(o.r+rad)**2),claim=(x,z,rad)=>solid.push({x,z,r:rad});
   /* a point d metres out to one side of sample i */
   const side=(i,sd,d)=>{const t=Tg[i],l=Math.hypot(t.x,t.z)||1;return[P[i].x-t.z/l*sd*d,P[i].z+t.x/l*sd*d]};
+  /* (made for every biome, as before the split, so three.js makes its objects in the same order whatever the biome) */
   const winTex=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d'),wr=rng((seed^0x3131)>>>0);g.fillStyle='#07090d';g.fillRect(0,0,128,128);
     for(let y=6;y<128;y+=12)for(let x=6;x<128;x+=10){const v=wr();if(v<0.42){g.fillStyle=v<0.05?'#c98a00':v<0.1?'#2bb8c4':v<0.2?'#26354a':'#141c28';g.fillRect(x,y,6,7)}}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t})();
   const lightTex=(()=>{const c=document.createElement('canvas');c.width=16;c.height=64;const g=c.getContext('2d');g.fillStyle='#05070a';g.fillRect(0,0,16,64);g.fillStyle='#ffe2a0';g.fillRect(2,0,12,10);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t})();
