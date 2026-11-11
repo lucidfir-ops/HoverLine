@@ -34,23 +34,23 @@
     return list;
   }
   const half = 4.5, amt = (lo, hi) => (t) => t < half ? lo : hi, lvl = (t) => (t < half ? 'subtle' : 'STRONG');
-  CL['01-breathe-some'] = { dur: 9, fps: 16, beatOffset: dropAt(3.2),
+  CL['01-breathe-some'] = { dur: 8, fps: 16, beatOffset: dropAt(3.2),
     setup() { const L = breathScene('goldViolet'); // only the gyroscope, the dodecahedron, two small ones and the huge one breathe
       [4, 5, 7, 10, 11].forEach((i) => SPFX.breathe(L[i], amt(0.04, 0.14))) },
     caption: cap('2', 'Breathing: only some objects', (t) => lvl(t) + ' · gold + violet') };
-  CL['02-breathe-all'] = { dur: 9, fps: 16, beatOffset: dropAt(3.2),
+  CL['02-breathe-all'] = { dur: 8, fps: 16, beatOffset: dropAt(3.2),
     setup() { const L = breathScene('cyanMagenta'); const road = ST.place(O.roadLines(THREE, { pal: 'amber', u0: ST.u0 - 40, u1: ST.u0 + 900, width: 0.28 }), 0, 0, 0); road.group.position.set(0, 0, 0); road.group.quaternion.identity();
       L.forEach((o, i) => SPFX.breathe(o, amt(0.035, 0.12), { kick: i % 2 ? 0.2 : 0.5 })); SPFX.breathe(road, amt(0.04, 0.14), { scale: false, swell: 8 });
       // the sky breathes too: the planes of light move in and out
       const g = L[1], base = g.group.position.clone(); const up0 = g.update; g.update = (t, bt) => { up0(t, bt); const A = amt(0.04, 0.14)(t); g.group.scale.set(1, 1 + A * 3 * bt.breath, 1) } },
     caption: cap('2', 'Breathing: everything (objects, road edges, sky)', (t) => lvl(t) + ' · cyan + magenta, road edges amber') };
-  CL['03-breathe-screen'] = { dur: 9, fps: 16, beatOffset: dropAt(3.2),
+  CL['03-breathe-screen'] = { dur: 8, fps: 16, beatOffset: dropAt(3.2),
     setup() { breathScene('jade') },
     update(t, bt) { const A = t < half ? 1 : 3.2; ST.fx.br = A * 0.012 * (bt.breath * 0.8 + 0.3 * bt.k + 0.6 * bt.drop); ST.fx.dr = A * 0.35 },
     caption: cap('63 + 64', 'Screen breathing and drifting (edges only, centre still)', (t) => lvl(t) + ' · jade + turquoise + gold') };
 
   /* ===== 3 / 28: stacks that unstack and re-stack ===== */
-  CL['04-stacks'] = { dur: 9, fps: 16, beatOffset: dropAt(5.5),
+  CL['04-stacks'] = { dur: 8, fps: 16, beatOffset: dropAt(5.5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 30); fog(350, 4000); const A = 'jade', B = 'emberWhite', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.stacks(THREE, { pal: A, size: 16, tiers: 5, stacks: 2, carve: true, seed: 3 }), u + 150, -52, -4, { level: true }));
@@ -63,7 +63,7 @@
     caption: cap('3 / 28', 'Stacks that unstack: tiers slide out, turn, swap; a top tier flies to the other stack every 2 bars', palCap('jade', 'emberWhite', 4.5)) };
 
   /* ===== 24 shatter and reform ===== */
-  CL['05-shatter'] = { dur: 9, fps: 16, beatOffset: dropAt(2.4),
+  CL['05-shatter'] = { dur: 8, fps: 16, beatOffset: dropAt(2.4),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 35); fog(350, 4200); const A = 'emberWhite', B = 'cyanMagenta', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.shatter(THREE, { pal: A, size: 15, depth: 1, trigger: 'drop', seed: 2, fly: 0.8 }), u + 200, -42, 24));
@@ -76,7 +76,7 @@
     caption: cap('24', 'Shatter and reform: medium and huge burst on the drop; small ones every 2 bars', palCap('emberWhite', 'cyanMagenta', 6.2)) };
 
   /* ===== 25 merge and become ===== */
-  CL['06-merge'] = { dur: 9, fps: 16, beatOffset: dropAt(4),
+  CL['06-merge'] = { dur: 8, fps: 16, beatOffset: dropAt(4),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 25); fog(350, 4200); const A = 'goldViolet', B = 'jade', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.merge(THREE, { pal: A, size: 12, n: 150, period: 4, shard: 0.13 }), u + 170, 0, 30));
@@ -87,7 +87,7 @@
     caption: cap('25', 'Merge and become: an icosahedron and a torus trade pieces into a knot, then split', palCap('goldViolet', 'jade', 4.6)) };
 
   /* ===== 26 unfolding solids ===== */
-  CL['07-unfold'] = { dur: 9, fps: 16, beatOffset: dropAt(4),
+  CL['07-unfold'] = { dur: 8, fps: 16, beatOffset: dropAt(4),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 22); fog(350, 4200); const A = 'cyanMagenta', B = 'emberWhite', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.unfoldCube(THREE, { pal: A, size: 12 }), u + 230, -26, 16));
@@ -100,7 +100,7 @@
     caption: cap('26', 'Unfolding solids: a cube opens to its cross, a dodecahedron opens like a flower', palCap('cyanMagenta', 'emberWhite', 4.6)) };
 
   /* ===== 27 gyroscopes ===== */
-  CL['08-gyro'] = { dur: 9, fps: 16, beatOffset: dropAt(4.5),
+  CL['08-gyro'] = { dur: 8, fps: 16, beatOffset: dropAt(4.5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 60); fog(350, 4200); const A = 'goldViolet', B = 'iceViolet', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.gyro(THREE, { pal: A, size: 26, rings: 5, tick: true }), u + 200, -46, 26));
@@ -112,7 +112,7 @@
     caption: cap('27', 'Gyroscopes: small by the road, medium beside it, one the road runs through, one far off', palCap('goldViolet', 'iceViolet', 4.6)) };
 
   /* ===== 29 knots that untie ===== */
-  CL['09-knots'] = { dur: 9, fps: 16, beatOffset: dropAt(4.5),
+  CL['09-knots'] = { dur: 8, fps: 16, beatOffset: dropAt(4.5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 25); fog(350, 4200); const A = 'jade', B = 'goldViolet', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.knot(THREE, { pal: A, size: 22, bars: 2 }), u + 160, -40, 30));
@@ -123,7 +123,7 @@
     caption: cap('29', 'Knots that untie: a trefoil loosens to a loop and ties again as another knot', palCap('jade', 'goldViolet', 4.6)) };
 
   /* ===== 30 shoals of shapes ===== */
-  CL['10-shoals'] = { dur: 9, fps: 16, beatOffset: dropAt(4.5),
+  CL['10-shoals'] = { dur: 8, fps: 16, beatOffset: dropAt(4.5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 45); fog(350, 4200); const A = 'cyanMagenta', B = 'emberWhite', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.shoal(THREE, { pal: A, n: 180, size: 0.9, radius: 34, speed: 0.6, flat: 0.5 }), u + 200, 0, 22));
@@ -134,7 +134,7 @@
     caption: cap('30', 'Shoals of shapes: they wheel round the road, bunch on the kick, scatter on the drop', palCap('cyanMagenta', 'emberWhite', 4.6)) };
 
   /* ===== 31 the colossus ===== */
-  CL['11-colossus'] = { dur: 9, fps: 16, beatOffset: dropAt(5),
+  CL['11-colossus'] = { dur: 8, fps: 16, beatOffset: dropAt(5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 110); fog(500, 6000); const A = 'iceViolet', B = 'goldViolet', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       const lead = () => ST.at(ST.lead(this.t || 0), 0, 2).p;
@@ -145,7 +145,7 @@
     caption: cap('31', 'The colossus: a lattice presence far off the road; its ring head follows the leader', palCap('iceViolet', 'goldViolet', 4.6)) };
 
   /* ===== 32 arches that assemble ===== */
-  CL['12-arches'] = { dur: 10, fps: 16, beatOffset: dropAt(5),
+  CL['12-arches'] = { dur: 8, fps: 16, beatOffset: dropAt(5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 70); fog(400, 5000); const A = 'goldViolet', B = 'jade', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       const w = W();
@@ -157,7 +157,7 @@
     caption: cap('32', 'Arches that assemble before the leader and burst after the last racer (small, medium, huge)', palCap('goldViolet', 'jade', 5.5)) };
 
   /* ===== 33 pieces of the other realms ===== */
-  CL['13-other-realms'] = { dur: 9, fps: 16, beatOffset: dropAt(5),
+  CL['13-other-realms'] = { dur: 8, fps: 16, beatOffset: dropAt(5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 40); fog(350, 4500); const u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.realm(THREE, { kind: 'prism', size: 24 }), u + 230, -48, 10));
@@ -172,7 +172,7 @@
     caption: cap('33', 'Pieces of the other realms: Prism rock, an Urban block, Reef coral, a Forest crown', (t) => t < 4.6 ? 'in their own colours (then all in the realm\'s gold + violet)' : 'all in the realm\'s gold + violet') };
 
   /* ===== 14 sacred geometry ===== */
-  CL['14-sacred-geometry'] = { dur: 10, fps: 16, beatOffset: dropAt(5.5),
+  CL['14-sacred-geometry'] = { dur: 8, fps: 16, beatOffset: dropAt(5.5),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 22); fog(350, 4500); const A = 'goldViolet', B = 'cyanMagenta', u = ST.u0, L = [];
       L.push(...Object.values(sky('iceViolet')).filter(Boolean));
       L.push(ST.place(O.platonic(THREE, { pal: A, size: 3.2 }), u + 130, -34, 18));
@@ -210,7 +210,7 @@
     caption: cap('54 + 66', 'Crossing: lattice hall to the chrysanthemum through a portal; kaleidoscope for 0.45 s', (t) => t < 4 ? 'room A: lattice, cyan + magenta' : 'room B: chrysanthemum, ember + white') };
 
   /* ===== 58: the music moves the world ===== */
-  CL['19-music'] = { dur: 10, fps: 16, beatOffset: dropAt(5.0),
+  CL['19-music'] = { dur: 8, fps: 16, beatOffset: dropAt(5.0),
     setup() { ST.init({ seed: 1234 }); ST.pack(null, 30); fog(350, 4500); const u = ST.u0, P = 'goldViolet';
       sky('iceViolet');
       ST.place(O.shatter(THREE, { pal: P, size: 15, depth: 1, trigger: 'drop' }), u + 160, -40, 24);

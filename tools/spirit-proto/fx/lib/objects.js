@@ -56,7 +56,7 @@
     const k = kit(THREE, o), ST = SPFX.stage, T = ST.T, W = ST.c.W, L = SPFX.Lines(), u0 = o.u0, u1 = o.u1, step = 4;
     const lanes = o.lanes || [-1, 1];
     for (let u = u0; u < u1; u += step) { const a = ST.c.sampleAt(u), b = ST.c.sampleAt(u + step);
-      for (const f of lanes) { const pa = a.p.clone().addScaledVector(a.r, f * (W / 2 - 0.4)).addScaledVector(a.u, 0.12), pb = b.p.clone().addScaledVector(b.r, f * (W / 2 - 0.4)).addScaledVector(b.u, 0.12);
+      for (const f of lanes) { const pa = a.p.clone().addScaledVector(a.r, f * (W / 2 - 1.0)).addScaledVector(a.u, 0.45), pb = b.p.clone().addScaledVector(b.r, f * (W / 2 - 1.0)).addScaledVector(b.u, 0.45);
         L.seg(pa, pb, (Math.abs(f) > 0.9 ? 0.05 : 0.6 + f * 0.2) + u * 0.0006, Math.abs(f) > 0.9 ? 1.2 : 0.6) } }
     const lm = k.lm({ width: o.width || 0.32, minPx: 1.5, maxPx: 9 }); const grp = new THREE.Group(); grp.add(L.mesh(lm));
     return { group: grp, k, update() {} };
@@ -133,7 +133,7 @@
      o.geo (a Three geometry), o.size, o.depth (subdivision: pieces = faces x 4^depth), o.fly (metres out),
      o.trigger 'drop' (bursts on the music's drop) or 'cycle' (every o.period bars). */
   O.shatter = function (THREE, o = {}) {
-    const k = kit(THREE, o), s = o.size || 10, rnd = SPFX.rng(o.seed || 7), geo = (o.geo || ((r) => new THREE.IcosahedronGeometry(r, 1)))(s);
+    const k = kit(THREE, o), s = o.size || 10, rnd = SPFX.rng(o.seed || 7), geo = (o.geo || ((r) => new THREE.IcosahedronGeometry(r, 0)))(s);
     const tris = faceShards(THREE, geo, o.depth == null ? 1 : o.depth), L = SPFX.Lines(), C = SPFX.Cores(), th = s * (o.thick || 0.06);
     for (const [a, b, c] of tris) { const cen = a.clone().add(b).add(c).divideScalar(3), n = new THREE.Vector3().crossVectors(b.clone().sub(a), c.clone().sub(a)).normalize();
       if (n.dot(cen) < 0) n.negate();
@@ -141,7 +141,7 @@
       const dir = n.clone().multiplyScalar(s * (o.fly || 1.4) * (0.6 + 0.8 * rnd())).add(new THREE.Vector3(rnd() - 0.5, rnd() - 0.5, rnd() - 0.5).multiplyScalar(s * 0.5));
       const pi = { home: cen.toArray(), dir: dir.toArray(), axis: [rnd() - 0.5, rnd() - 0.5, rnd() - 0.5], r: rnd() };
       const pc = 0.05 + (cen.y / s * 0.5 + 0.5) * 0.9;
-      L.poly([la, lb, lc], true, pc, 1, pi); L.poly([la.clone().add(d), lb.clone().add(d), lc.clone().add(d)], true, pc, 0.35, pi);
+      L.poly([la, lb, lc], true, pc, 0.75, pi); L.poly([la.clone().add(d), lb.clone().add(d), lc.clone().add(d)], true, pc, 0.12, pi);
       const tg = new THREE.BufferGeometry().setFromPoints([la, lb, lc, la.clone().add(d), lc.clone().add(d), lb.clone().add(d)]); C.add(tg, null, pc, pi) }
     const lm = k.lm({ pieces: true, width: s * (o.lw || 0.012), maxPx: o.maxPx || 5, stag: 0.5, spin: o.spin || 1.6 }), cm = k.cm({ pieces: true, ca: 0, core: '#07060c', side: THREE.DoubleSide }); SPFX.linkPieces(lm, cm);
     const grp = new THREE.Group(), inner = new THREE.Group(); inner.add(C.mesh(cm), L.mesh(lm)); grp.add(inner);
@@ -153,7 +153,7 @@
       update(t, bt) { let e;
         if (o.trigger === 'drop') { const x = bt.tDrop; e = x < 0.25 ? ease(x / 0.25) : x < 2.2 ? 1 : x < 4.0 ? 1 - easeIO((x - 2.2) / 1.8) : 0; if (bt.t < 0) e = 0 }
         else { const ph = ((bt.b + (o.phase || 0) * per) % per) / per; e = ph < 0.08 ? ease(ph / 0.08) : ph < 0.45 ? 1 : ph < 0.75 ? 1 - easeIO((ph - 0.45) / 0.3) : 0 }
-        lm.uniforms.uExplode.value = e; lm.uniforms.uGain.value = 1 + 0.4 * bt.k + 0.6 * e;
+        lm.uniforms.uExplode.value = e; lm.uniforms.uGain.value = 0.7 + 0.3 * bt.k + 0.6 * e;
         inner.rotation.set(t * 0.07, t * 0.11, 0); hm.material.uniforms.uGain.value = 0.3 + 1.6 * e + 0.4 * bt.k; hm.rotation.set(t * 0.9, t * 0.6, 0) } };
   };
   /* merge and become: shards (small tetrahedra) that sit on shape A (left) and shape B (right), then all fly to shape C
@@ -169,12 +169,12 @@
       const pi = { home: h.toArray(), target: tg.toArray(), dir: [0, 0, 0], axis: [rnd() - 0.5, rnd() - 0.5, rnd() - 0.5], r: rnd() };
       const m = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(rnd() * 6, rnd() * 6, rnd() * 6)).scale(new THREE.Vector3(1, 1, 1).multiplyScalar(0.7 + rnd() * 0.6));
       L.edges(tet, pc, 1, pi, m); C.add(tet, m, pc, pi) });
-    const lm = k.lm({ pieces: true, width: s * 0.008, maxPx: 4, stag: 0.7, spin: 2 }), cm = k.cm({ pieces: true, ca: 0, core: '#08060e' }); SPFX.linkPieces(lm, cm);
+    const lm = k.lm({ pieces: true, width: s * 0.006, minPx: 1.4, maxPx: 3, stag: 0.7, spin: 2, gain: 0.7 }), cm = k.cm({ pieces: true, ca: 0, core: '#08060e' }); SPFX.linkPieces(lm, cm);
     const grp = new THREE.Group(), inner = new THREE.Group(); inner.add(C.mesh(cm), L.mesh(lm)); grp.add(inner);
     const per = (o.period || 4) * 4;
     return { group: grp, k, mats: [lm], pieces: n,
       update(t, bt) { const ph = (bt.b % per) / per; const m = ph < 0.15 ? 0 : ph < 0.45 ? easeIO((ph - 0.15) / 0.3) : ph < 0.7 ? 1 : ph < 0.95 ? 1 - easeIO((ph - 0.7) / 0.25) : 0;
-        lm.uniforms.uMorph.value = m; lm.uniforms.uGain.value = 1 + 0.5 * bt.k; inner.rotation.y = t * 0.15 } };
+        lm.uniforms.uMorph.value = m; lm.uniforms.uGain.value = 0.65 + 0.35 * bt.k; inner.rotation.y = t * 0.15 } };
   };
 
   /* ---------- 26 unfolding solids: faces hinged on their edges ---------- */

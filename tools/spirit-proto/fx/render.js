@@ -54,7 +54,8 @@ const keepFrames = args.includes('--frames');
     const fin = ['-y', '-loglevel', 'error', '-framerate', String(info.fps), '-i', path.join(dir, '%04d.png')];
     if (info.audio) execFileSync('ffmpeg', [...fin, '-i', wav, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '20', '-preset', 'slow', '-c:a', 'aac', '-b:a', '96k', '-shortest', '-movflags', '+faststart', mp4]);
     else execFileSync('ffmpeg', [...fin, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '20', '-preset', 'slow', '-movflags', '+faststart', mp4]);
-    execFileSync('ffmpeg', [...fin, '-vf', 'split[a][b];[a]palettegen=max_colors=128:stats_mode=full[p];[b][p]paletteuse=dither=bayer:bayer_scale=4', gif]);
+    // GIF: 12 fps, 64 colours, as wide as fits under 4 MB (560, then 480, then 400 px)
+    for (const gw of [560, 480, 400]) { execFileSync('ffmpeg', [...fin, '-vf', `fps=12,scale=${gw}:-2:flags=lanczos,split[a][b];[a]palettegen=max_colors=64:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle`, gif]); if (fs.statSync(gif).size < 4.0 * 1048576) break }
     if (!keepFrames) fs.rmSync(dir, { recursive: true, force: true });
     const sz = (f) => (fs.statSync(f).size / 1048576).toFixed(2);
     console.log(name, n, 'frames', Date.now() - t0, 'ms', 'gif', sz(gif), 'MB', 'mp4', sz(mp4), 'MB', JSON.stringify(info.cost), info.info ? JSON.stringify(info.info) : '');
