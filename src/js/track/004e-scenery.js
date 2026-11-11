@@ -38,7 +38,7 @@
      prism (T.prism), inside(x,y,z) (the haze turns dark where it's true), clock (uniforms set to the time each frame),
      info (more for bmInfo), geyName (bmInfo's word for a geyser), gCol (geyser particle colours), plainFx (unlit falls
      and geysers), jelSoft (see-through jellyfish), bubbles (geysers rise as bubbles) */
-const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryAll,N:sceneryAll,R:sceneryAll,P:sceneryAll};
+const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryAll,R:sceneryAll,P:sceneryAll};
 function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
   const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall0,nGey0,nTun]=dial,nFall=RES.low?0:nFall0,nGey=RES.low?0:nGey0,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
   const er=rng((seed^0xE7A1)>>>0),cxT=(minX+maxX)/2,czT=(minZ+maxZ)/2;
@@ -248,63 +248,40 @@ function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   return{LK,bk,dial:ctx.dial,floorY,water:ctx.water,tun,prism:ctx.prism,env,bmInfo}}
 /* the biomes not yet split out (Prototype 61, while the split is under way) */
 function sceneryAll(ctx){const bk=ctx.bk;
-  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,LK,day,dens,nFall,nGey,er,lam,IM,lines,lnA,lnBio,near,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,jel,kelp,fish,schools,floorY}=ctx;
-  if(bk==='F'){
-const gm=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),lam(0x0a130c,0x020604));gm.rotation.x=-Math.PI/2;gm.position.set(cxT,floorY-0.3,czT);group.add(gm);const grid=new THREE.GridHelper(6000,120,0x1f5a32,0x0e2a17);grid.position.y=floorY;group.add(grid)
-  }else if(bk==='R'){
+  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,LK,day,dens,nFall,nGey,er,lam,IM,lines,lnA,lnBio,near,free,claim,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,jel,kelp,fish,schools,floorY}=ctx;
+  if(bk==='R'){
 const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c0a06):lam(0x071216,0x010405));sb.rotation.x=-Math.PI/2;sb.position.set(cxT,floorY-0.2,czT);group.add(sb);
     /* by day the surface is overhead, bright where the sun comes through */
     if(day){const sf=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),new THREE.MeshBasicMaterial({color:0xaef0fa,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));sf.rotation.x=-Math.PI/2;sf.position.set(cxT,maxY+170,czT);group.add(sf)}
   }
-  if(bk==='F'){
-  pylons(()=>floorY);
-  }else if(bk==='R'){
+  if(bk==='R'){
   pylons(()=>floorY);
   }
-  if(bk==='F'){
-  spireFrames([0x1c140e,0x070403]);
-  }else if(bk==='N'){
+  if(bk==='N'){
   spireFrames(null,f=>f.bot-90);
   }else if(bk==='R'){
   spireFrames();
   }else if(bk==='P'){
   spireFrames();
   }
-  /* forest trees: a tall square trunk with neon bands and a canopy of huge cubes, always well above any road under it */
-  const trunks=[],plinths=[],bands=[],canopy=[];
-  const tree=(x,z,tw,top)=>{const ry=er()*1.6;trunks.push({x,y:(floorY+top)/2,z,sx:tw,sy:top-floorY,sz:tw,ry});plinths.push({x,y:floorY+10,z,sx:tw*1.8,sy:20,sz:tw*1.8,ry});
-    for(let y=floorY+45;y<top-30;y+=45)bands.push({x,y,z,sx:tw+0.7,sy:0.7,sz:tw+0.7,ry});
-    const n=4+Math.floor(er()*4),cr=tw*1.4+26;for(let k=0;k<n;k++){const sz=44+er()*66,a=er()*TAU,rr=k?er()*cr:0;canopy.push({x:x+Math.cos(a)*rr,y:top-12+er()*46,z:z+Math.sin(a)*rr,sx:sz,sy:sz*(0.55+er()*0.3),sz,ry:er()*1.6})}};
-  const treeTop=(x,z,reach)=>{const h=near(x,z,reach+120);return Math.max(floorY+300+er()*230,(h?h.hi:minY)+125)};
-  if(bk==='F'){
-  helixMiddles(({cx0,cz0,rt,rc,top})=>{tree(cx0,cz0,Math.min(44,rt*0.5,rc/1.3),Math.max(top+170,floorY+320));});
-  }else if(bk==='N'){
+  if(bk==='N'){
   helixMiddles();
   }else if(bk==='R'){
   helixMiddles(({cx0,cz0,rt,top})=>{const h=top+50-floorY;return{x:cx0,y:floorY+h/2,z:cz0,sx:rt*0.6,sy:h,sz:rt*0.6,ry:er()*3,c:day?0x5a5646:0x101a1e}});
   }else if(bk==='P'){
   helixMiddles();
   }
-  if(bk==='F'){
-  falls();
-  }else if(bk==='N'){
+  if(bk==='N'){
   falls({hang:true});
   }else if(bk==='R'){
   falls();
   }
-  if(bk==='F'){
-  geysers({ventC:0x1c2a1e});
-  }else if(bk==='N'){
+  if(bk==='N'){
   geysers({hang:true,vent:(x,z,base)=>({x,y:base-3,z,sx:28,sy:6,sz:28,ry:er()*3,c:0x101218})});
   }else if(bk==='R'){
   geysers();
   }
-  if(bk==='F'){
-  const step=[230,165,120,85][dens]/ds;let sd=1;
-    for(let i=Math.floor(er()*step);i<N;i+=Math.max(6,Math.round(step*(0.7+er()*0.6)))){if(spl[i])continue;sd=er()<0.75?-sd:sd;const tw=16+er()*18,d=W/2+28+tw*0.71+er()*70,[x,z]=side(i,sd,d);
-      if(near(x,z,W/2+24+tw*0.71)||!free(x,z,tw*0.8+26))continue;tree(x,z,tw,treeTop(x,z,tw*1.4+86));claim(x,z,tw*0.8)}
-    const far=[12,26,42,64][dens];for(let a=0,n=0;a<900&&n<far;a++){const x=minX-500+er()*(maxX-minX+1000),z=minZ-500+er()*(maxZ-minZ+1000),tw=20+er()*26;if(near(x,z,W/2+90+tw)||!free(x,z,tw+40))continue;tree(x,z,tw,treeTop(x,z,tw*1.4+86));claim(x,z,tw);n++}
-  }else if(bk==='N'){
+  if(bk==='N'){
   const slabs=[];
   /* Stratos: floating slabs so speed reads (the stars all the way round are drawn with the sky, below) */
     const nS=[10,22,36,56][dens];for(let t=0;t<1500&&slabs.length<nS;t++){const x=minX-500+er()*(maxX-minX+1000),z=minZ-500+er()*(maxZ-minZ+1000),w=6+er()*18,dd=6+er()*18,h=40+er()*150,y=minY-260+er()*(maxY-minY+420),R0=Math.hypot(w,dd)/2;
@@ -338,9 +315,7 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
     if(day){const nL=[8,14,20,28][dens];for(let k=0;k<nL;k++){const x=minX-300+er()*(maxX-minX+600),z=minZ-300+er()*(maxZ-minZ+600),top=maxY+170,L=top-floorY;rays.push({x,y:top-L/2,z,sx:6+er()*12,sy:L,sz:2+er()*3,ry:er()*3,c:0xffffff})}
       IM(new THREE.MeshBasicMaterial({color:0xd8fbff,transparent:true,opacity:0.07,blending:THREE.AdditiveBlending,depthWrite:false}),rays)}
   }
-  if(bk==='F'){
-  if(day)daySky();
-  }else if(bk==='N'){
+  if(bk==='N'){
   if(day)daySky({below:true});else starSky();
   }else if(bk==='R'){
   const sc=document.createElement('canvas');sc.width=1024;sc.height=512;const g=sc.getContext('2d'),gr=g.createLinearGradient(0,0,0,512),rr=rng((seed^0x5EA)>>>0);
@@ -352,12 +327,7 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
   }else if(bk==='P'){
   if(day)daySky();else starSky();
   }
-  if(bk==='F'){
-  if(trunks.length){IM(lam(0x1c140e,0x070403),trunks);IM(lam(0x16110c,0x050302),plinths);IM(new THREE.MeshBasicMaterial({color:0x46ff8c}),bands);IM(lam(0x12401f,0x04160a),canopy);lines(canopy,new THREE.LineBasicMaterial({color:0x2fd06a}));lines(trunks,new THREE.LineBasicMaterial({color:0x46ff8c}))}
-  }
-  if(bk==='F'){
-  buildTunnels({grounded:true,shell:()=>({sideW:6,roof:8}),TC:[0x22180f,0x070402,0x46ff8c]});
-  }else if(bk==='N'){
+  if(bk==='N'){
   buildTunnels({TC:[0x0c0e16,0x020308,0x3ff0ff]});
   }else if(bk==='R'){
   buildTunnels({TC:[0x0f2a33,0x03121a,0x3ff0ff]});
