@@ -1200,30 +1200,28 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
       const gl=new Float32Array(SV.length);for(let k=0;k<SV.length;k+=3)glowAt(SV[k],SV[k+1],SV[k+2],gl,k);g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,rockMat(true));group.add(m);PR.meshes.push(m)}
     /* cave mouths: where the road goes into the mountain (or comes out), the mountain arches over it (the lift above) and a
        short ragged tunnel runs through to the cavern, which opens out round you as you come through */
-    let nMouth=0;if(mode==='mix'){const inMat=rockMat(true),ri=Math.max(21,(W/2+5)/0.88),cy=0.42*ri,nr=36,
-      jag=(a,k)=>1+0.16*Math.abs(Math.sin(a*5.3+k*1.7))+0.1*Math.abs(Math.sin(a*11.1+k*0.9)),
-      /* Prototype 60: the tunnel's upper half is tall enough to clear the road's space (26 m) over the whole road and 2.5 m
-         beyond its edges; it came down to 25.7 m there, so strips of its roof along both sides were left out, slots to the
-         sky over the road at the ways in (Eric's photos of NXL1FDB51-...-P3443) */
-      rt=Math.max(0.9,(28.6-cy)/(ri*Math.sqrt(Math.max(0.05,1-((W/2+2.5)/ri)**2)))),
-      fr=i=>{i=((i%N)+N)%N;const t=Tg[i],l=Math.hypot(t.x,t.z)||1;return{p:P[i],fx:t.x/l,fz:t.z/l}},
-      mesh=(pos,ind,mat,inside)=>{for(let k=0;k<pos.length;k+=3)pos[k+1]=Math.min(pos[k+1],surfH(pos[k],pos[k+2])-(inside?1.5:0.5));const keep=[];for(let k=0;k<ind.length;k+=3){const a=ind[k]*3,b=ind[k+1]*3,c=ind[k+2]*3;if(clearTri(pos[a],pos[a+1],pos[a+2],pos[b],pos[b+1],pos[b+2],pos[c],pos[c+1],pos[c+2]))keep.push(ind[k],ind[k+1],ind[k+2])}unshard(keep);
-        const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(keep);g.computeVertexNormals();const gl=new Float32Array(pos.length);if(inside)for(let k=0;k<pos.length;k+=3)glowAt(pos[k],pos[k+1],pos[k+2],gl,k);
-        g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,mat);group.add(m);PR.meshes.push(m)};
+    /* Prototype 61: the ways in and out are a gate now, not a ragged tunnel pressed under the mountain's surface. Four goes
+       at the natural look left jagged slabs every time (W1AAE848-P): the mountain lifted over the road, the cavern's roof,
+       the tunnel and the hole for the road all met there, each clipped against the others. The gate is one smooth
+       thick-walled arch along the road, from 18 m outside the rock to 34 m inside the cavern: its inner face lies just
+       inside the space the rock is kept out of (so no rock can show through it), its outer face is wide and tall enough to
+       take in the lifted rock and the hole's edges, and it is closed at both ends. Nothing clips it, so it has no shards. */
+    let nMouth=0;if(mode==='mix'){const gIn=[],gOut=[],gP=[],
+      prof=(hw,bot,spr,apx)=>{const q=[];for(let k=0;k<=3;k++)q.push([-hw,bot+(spr-bot)*k/3]);for(let k=1;k<16;k++){const a=Math.PI*k/16;q.push([-hw*Math.cos(a),spr+(apx-spr)*Math.sin(a)])}
+        for(let k=3;k>=0;k--)q.push([hw,bot+(spr-bot)*k/3]);for(let k=1;k<4;k++)q.push([hw-2*hw*k/4,bot]);return q},
+      pI=prof(W/2+1.3,-1.3,13,24.6),pO=prof(W/2+12,-9,13,38),nr=pI.length;
       const mouth=(i0,dir)=>{let s0=Math.round(8/ds);for(let s=s0;s<Math.round(240/ds);s++){const q=P[((i0-s*dir)%N+N)%N];if(bil(Mh,q.x,q.z)>q.y+28)s0=s;else if(s>s0+Math.round(12/ds))break}
-        /* (Prototype 54/55: the rock face that stood round the hole is gone: the mountain itself now closes round the road's
-           way in, and the face's rim hung in the air outside and stood as flat walls inside the cavern) */
-        const iF=i0-(s0+Math.round(4/ds))*dir;
-        const tp=[],ti=[],L=s0+Math.round(32/ds),st=Math.max(1,Math.round(4/ds)),rows=[];for(let s=0;s<=L;s+=st)rows.push(s);
-        rows.forEach((s,j)=>{const Fs=fr(iF+s*dir),open=s>L-Math.round(12/ds)?1+(s-(L-Math.round(12/ds)))*ds*0.05:1;
-          for(let a=0;a<nr;a++){const an=a/nr*TAU,R0=ri*jag(an,j*0.7)*open;const sv=Math.sin(an);tp.push(Fs.p.x-Fs.fz*Math.cos(an)*R0,Fs.p.y+cy+sv*R0*(sv>0?rt:0.9),Fs.p.z+Fs.fx*Math.cos(an)*R0)}});
-        for(let j=0;j<rows.length-1;j++)for(let a=0;a<nr;a++){const A=j*nr+a,B=j*nr+(a+1)%nr,C=A+nr,D=B+nr;ti.push(A,B,C,B,D,C)}
-        mesh(tp,ti,inMat,true);
-        /* (Prototype 54: no face on the cavern side any more: the cavern now closes round the way in by itself, and that face
-           left dark shards on its walls) */
+        const pad=Math.round(18/ds),iF=i0-(s0+pad)*dir,L=s0+pad+Math.round(34/ds),st=Math.max(1,Math.round(4/ds)),rows=[];for(let s=0;s<L;s+=st)rows.push(s);rows.push(L);
+        const v0=gP.length/3,nR=rows.length,isIn=rows.map(s=>!!ins[((iF+s*dir)%N+N)%N]);
+        for(const pr of[pI,pO])for(const s of rows){const i=((iF+s*dir)%N+N)%N,p=P[i],r=R[i],u=U[i];for(const[x,y]of pr)gP.push(p.x+r.x*x+u.x*y,p.y+r.y*x+u.y*y,p.z+r.z*x+u.z*y)}
+        const at=(o,j,a)=>v0+(o*nR+j)*nr+a%nr,quad=(I,A,B,C,D)=>I.push(A,B,C,B,D,C);
+        for(let j=0;j<nR-1;j++)for(let a=0;a<nr;a++){quad(gIn,at(0,j,a),at(0,j,a+1),at(0,j+1,a),at(0,j+1,a+1));quad(isIn[j]&&isIn[j+1]?gIn:gOut,at(1,j,a),at(1,j,a+1),at(1,j+1,a),at(1,j+1,a+1))}
+        for(let a=0;a<nr;a++){quad(gOut,at(0,0,a),at(0,0,a+1),at(1,0,a),at(1,0,a+1));quad(gIn,at(0,nR-1,a),at(0,nR-1,a+1),at(1,nR-1,a),at(1,nR-1,a+1))}
         nMouth++};
       for(const c of (()=>{const L=[];for(let i=0;i<N;){if(!ins[i]){i++;continue}let n=0;while(i+n<N&&ins[i+n])n++;L.push([i,n]);i+=n}return L})()){
-        if(!ins[(c[0]-1+N)%N])mouth(c[0],1);const e=(c[0]+c[1])%N;if(!ins[e])mouth(e,-1)}}
+        if(!ins[(c[0]-1+N)%N])mouth(c[0],1);const e=(c[0]+c[1])%N;if(!ins[e])mouth(e,-1)}
+      PR.gates=[];for(const[I,mat,glow]of[[gIn,skirtIn,true],[gOut,skirtOut,false]]){if(!I.length)continue;const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(gP,3));g.setIndex(I);g.computeVertexNormals();
+        const gl=new Float32Array(gP.length);if(glow)for(let k=0;k<gP.length;k+=3)glowAt(gP[k],gP[k+1],gP[k+2],gl,k);g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,mat);group.add(m);PR.gates.push(m)}}
     /* columns under the road, down to the mountainside or the cavern floor */
     if(pylB)pylB(PR.ground,3.4,lam(0x4a4558,0x0c0a12),60);
     const caves=[];for(let i=0;i<N;){if(!ins[i]){i++;continue}let n=0;while(i+n<N&&ins[i+n])n++;caves.push({i0:i,n});i+=n}
