@@ -7019,8 +7019,8 @@ function fire(r,slot){
   else if(w==='swarm'){const tg=[];for(const o of racers){const d=wrapU(o.u-r.u);if(o!==r&&live(o)&&d>2&&d<320)tg.push([d,o])}tg.sort((a,b)=>a[0]-b[0]);
     for(let k=0;k<4;k++){const m=shotMesh('missile',true);scene.add(m);shots.push({type:'missile',mini:true,u:r.u+3,lat:clampLat(r.u+3,r.lat+(k-1.5)*1.2,0.6),v:Math.max(r.v,70)+90+k*8,owner:r,life:3.5,target:tg.length?tg[k%tg.length][1]:null,mesh:m})}
     if(near&&!fx)audio.blip(880,0.25,0.12,'sawtooth',300)}
-  else if(w==='quake'){const m=shotMesh('quake'),g=(Math.random()*2-1)*(W/2-4.5);scene.add(m);shots.push({type:'quake',u:r.u+4,lat:0,gap:g,vl:g,v:Math.max(r.v,60)+75,owner:r,life:3.6,hits:new Set(),mesh:m});if(near){if(!fx)audio.boom(r===player?0.45:0.25);S.shake=Math.max(S.shake,r===player?0.3:0.1)}}
-  else if(w==='bouncer'){const m=shotMesh('bounce');scene.add(m);shots.push({type:'bounce',u:r.u+3,lat:r.lat,v:Math.max(r.v,60)+90,vl:(r.lat>0?-1:1)*(14+Math.random()*8),owner:r,life:6,mesh:m});if(near&&!fx)audio.blip(330,0.2,0.14,'square',660)}
+  else if(w==='quake'){const m=shotMesh('quake'),g=(rand(r)*2-1)*(W/2-4.5);scene.add(m);shots.push({type:'quake',u:r.u+4,lat:0,gap:g,vl:g,v:Math.max(r.v,60)+75,owner:r,life:3.6,hits:new Set(),mesh:m});if(near){if(!fx)audio.boom(r===player?0.45:0.25);S.shake=Math.max(S.shake,r===player?0.3:0.1)}}
+  else if(w==='bouncer'){const m=shotMesh('bounce');scene.add(m);shots.push({type:'bounce',u:r.u+3,lat:r.lat,v:Math.max(r.v,60)+90,vl:(r.lat>0?-1:1)*(14+rand(r)*8),owner:r,life:6,mesh:m});if(near&&!fx)audio.blip(330,0.2,0.14,'square',660)}
   else if(w==='hunter'){const t=leaderFor(r),m=shotMesh('hunter');scene.add(m);const wait=!!t&&t.utot<r.utot;shots.push({type:'hunter',u:r.u+3,lat:r.lat,v:wait?Math.max(30,r.v-40):Math.max(r.v,70)+140,owner:r,life:14,target:t,mesh:m,wait});
     if(near&&!fx)audio.blip(240,0.6,0.16,'sawtooth',900);}
   else if(w==='phase'){r.phase=1.5;if(near&&!fx)audio.blip(1300,0.35,0.1,'sine',260)}
@@ -7187,7 +7187,7 @@ function aiWants(r,w){
   if(w==='mines'){for(const o of racers){const d=wrapU(r.u-o.u);if(o!==r&&live(o)&&d>8&&d<90)return true}return false}
   if(w==='shock'){for(const o of racers)if(o!==r&&live(o)&&Math.abs(wrapU(o.u-r.u))<22)return true;return false}
   if(w==='turbo')return Math.abs(T.Cs[idxAt(r.u+60)])<0.003;
-  if(w==='barrier'){if(threatsTo(r).some(h=>h.t<0.6&&!h.safe))return true;return r.hp<r.d.hp*0.35&&Math.random()<0.1}
+  if(w==='barrier'){if(threatsTo(r).some(h=>h.t<0.6&&!h.safe))return true;return r.hp<r.d.hp*0.35&&rand(r)<0.1}
   if(w==='phase')return threatsTo(r).some(h=>h.t<0.35&&!h.safe&&h.k!=='mine');
   /* Prototype 60: the Reflector's shell is up 0.75 s, so the AI fires it when a shot it can turn round is within half a second
      (Phase gets 0.35 s of a 1.5 s cover). A lone cannon bolt (8 damage) isn't worth it; two or more, or anything bigger, is.
@@ -7196,7 +7196,7 @@ function aiWants(r,w){
   const ahead=range=>racers.filter(o=>o!==r&&live(o)&&(d=>d>2&&d<range)(wrapU(o.u-r.u)));
   if(w==='rockets'){const t=targetAhead(r,150);return!!t&&Math.abs(t.lat-r.lat)<3.5}
   if(w==='swarm')return ahead(280).length>=2||!!targetAhead(r,150);
-  if(w==='quake')return ahead(260).length>=2||(!!targetAhead(r,120)&&Math.random()<0.3);
+  if(w==='quake')return ahead(260).length>=2||(!!targetAhead(r,120)&&rand(r)<0.3);
   if(w==='bouncer'){const t=targetAhead(r,180);return!!t&&Math.abs(t.lat-r.lat)<6}
   if(w==='hunter'){const t=leaderFor(r);return!!t&&wrapU(t.u-r.u)>120&&t.utot>r.utot}
   if(w==='emp')return ahead(400).length>=2;
@@ -7270,11 +7270,11 @@ const ailOf=()=>{const L=AIL[S.ail]||AIL.normal,wk=T&&T.wk;if(ailC&&ailC.L===L&&
 const ailPace=()=>ailOf().pace;
 const ailM=r=>{const L=ailOf();if(!L.sb||!r.isAI)return 1;const g=bandRef()-r.utot;return g>0?1-0.45*clamp(g/400,0,1):1};
 function aiHands(r,o,dt){if(!hands(r)||r.wreck>0){r.hs=o.steer;r.hn=0;r.hT=0;return o}
-  const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();
+  const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=rand(r);while(!v)v=rand(r);
   r.hs=(r.hs??o.steer)+(o.steer-(r.hs??o.steer))*Math.min(1,dt/(P.tau*L.tau));
   r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk*(aiSmoked(r)?SMOKE_AI.wander:1)/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
   /* (P58) a spell with the nose forgotten (Easy) */
-  if(L.nose>0){r.nfT=(r.nfT||0)-dt;if(r.nfT<=0){r.nfT=2+Math.random()*3;r.nf=Math.random()<L.nose*mk}if(r.nf&&!r.air)o.pitch=0}
+  if(L.nose>0){r.nfT=(r.nfT||0)-dt;if(r.nfT<=0){r.nfT=2+rand(r)*3;r.nf=rand(r)<L.nose*mk}if(r.nf&&!r.air)o.pitch=0}
   o.steer=clamp(r.hs+r.hn,-1,1);
   /* a person can't hold the brake with the stick over without drifting: outside its own drifts the AI taps instead */
   if(!r.aiDm&&o.brake>0.05&&Math.abs(o.steer)>DR.thr){r.hT=(r.hT||0)+dt;const k=r.hT%(HANDS.tap+HANDS.gap);o.brake=k<HANDS.tap?1:0}else r.hT=0;
@@ -7341,10 +7341,10 @@ function aiStripBoost(r,uu){
 /* Prototype 60: an AI pilot in smoke (r.ink > 0, the view-loss effect the cloud gives for 2.4 s after the last puff) flies
    erratically: it loses its line (the target jumps across the road every half second), its steering swings hard (and its
    hands' wander is tripled, 054), it taps the brake and it leaves the boost alone. All of it is drawn from the race clock
-   and the pilot's own bias, not Math.random, so a race with the same hits repeats. */
+   and the pilot's own bias, not Math.random, so a race with the same hits repeats (Prototype 61: by the race clock, S.raceT, not the page's, S.t, so it repeats on a page that has been open a while too). */
 const SMOKE_AI={win:0.5,line:0.36,swing:1.1,tapWin:0.32,tapP:0.4,tapOn:0.16,wander:3};
 const aiSmoked=r=>r.ink>0&&r.isAI&&r!==player;/* a person is never flown by this: they just lose their view */
-const smokeH=(r,k,w)=>rng((Math.imul(Math.floor(S.t/w)+1,2654435761)^Math.imul((r.bias*1e4)|0,40503)^k)>>>0)();
+const smokeH=(r,k,w)=>rng((Math.imul(Math.floor(S.raceT/w)+1,2654435761)^Math.imul((r.bias*1e4)|0,40503)^k)>>>0)();
 function aiInput(r,dt){
   const none={steer:0,brake:0,pitch:0,fire:[false,false],hold:[false,false]};if(r.wreck>0)return none;
   const look=Math.max(22,r.v*0.75),F=aiF(r);
@@ -7355,10 +7355,10 @@ function aiInput(r,dt){
   /* splits: choose a route before the fork, line up on its half of the road, then follow its line */
   let bnd=null,ybA=null,rBrk=0,rUp=0,lane=false;const SPin=T.splits.find(S=>uu>=S.u0&&uu<=S.u1);for(const SP of SPin?[SPin]:T.splits){const d=modU(SP.u0-uu);if(d<260||(uu>=SP.u0&&uu<=SP.u1)){if(r.brPick?.SP!==SP){const needs=r.hp<r.d.hp*0.7||r.ammo<r.d.ammo*0.45,heavy=(r.d.mass||1)>=1.2||(r.build&&r.build.stats.handling<=2),nimble=(r.build&&r.build.stats.handling>=4)||(r.d.size||1)<0.8;
       {const p0=clamp(0.5+(needs?0.3:0)+(heavy?0.2:0)-(nimble?0.35:0),0.1,0.9),alt=B=>SP.b.indexOf(B);let b;
-       if(SP.kind==='pit')b=Math.random()<(r.hp<r.d.hp*0.55||(r.ammo<r.d.ammo*0.25&&r.hp<r.d.hp*0.85)?0.85:0.06)?SP.longB:1-SP.longB;
-       else if(SP.kind==='cut')b=Math.random()<0.2?SP.longB:1-SP.longB;
+       if(SP.kind==='pit')b=rand(r)<(r.hp<r.d.hp*0.55||(r.ammo<r.d.ammo*0.25&&r.hp<r.d.hp*0.85)?0.85:0.06)?SP.longB:1-SP.longB;
+       else if(SP.kind==='cut')b=rand(r)<0.2?SP.longB:1-SP.longB;
        else if(SP.kind==='stack'||SP.kind==='catch')b=SP.lowB||0;/* Prototype 60: the jump picks the road (below) */
-       else{const long=Math.random()<(r.sty&&r.sty.longP!=null?0.3*p0+0.7*r.sty.longP:p0);b=alt(SP.b.find(B=>B.long===long))}
+       else{const long=rand(r)<(r.sty&&r.sty.longP!=null?0.3*p0+0.7*r.sty.longP:p0);b=alt(SP.b.find(B=>B.long===long))}
        r.brPick={SP,b,long:SP.b[b].long}}}
     const want=SP.kind==='stack'&&r.stkS===SP?r.stkB:r.brPick.b,B0=SP.b[want];
     if(uu<SP.u0||uu>SP.u1){target=B0.c[0]+clamp(r.bias,-1,1)*Math.min(W/16,Math.max(0,B0.w[0]-1.8));lane=SP.kind!=='split'&&modU(SP.u0-uu)<220;if(B0.cut){ybA=0;if(modU(SP.u0-uu)<Math.max(40,r.v*0.5))rUp=1;if(modU(SP.u0-uu)<Math.max(50,r.v*0.6)&&r.v>r.d.vmax*0.7)rBrk=0.6}}
@@ -7371,28 +7371,28 @@ function aiInput(r,dt){
   const Lv=ailOf(),hn=hands(r);
   for(const z of T.zones){const ahead=modU(z.u0-uu),inside=uu>=z.u0&&uu<=z.u1;if(lane||(!inside&&ahead>80))continue;
     /* (P58) a strip ridden past (Easy): decided once a lap for each strip */
-    if(Lv.strip>0&&hn){if(!r.zs||r.zs.size>300)r.zs=new Map();const key=z.u0+'|'+r.done;let sk=r.zs.get(key);if(sk==null){sk=Math.random()<Lv.strip*ailM(r);r.zs.set(key,sk)}if(sk)continue}
+    if(Lv.strip>0&&hn){if(!r.zs||r.zs.size>300)r.zs=new Map();const key=z.u0+'|'+r.done;let sk=r.zs.get(key);if(sk==null){sk=rand(r)<Lv.strip*ailM(r);r.zs.set(key,sk)}if(sk)continue}
     if(z.kind==='hp'||r.ammo<r.d.ammo*0.6){if(z.laneF){if(surf(uu,r.lat,r).sp&&SF.b===T.splits[T.spl[idxAt(z.u0)]-1]?.longB)target=z.laneF(Math.max(uu+look*0.5,z.u0));continue}const side=z.side||(r.lat>=0?1:-1);target=z.lane!=null?z.lane:side*(z.edge+W/2-0.55)/2}}
   for(const s of shots){if(s.type!=='mine')continue;const d=wrapU(s.u-r.u);if(d>0&&d<45&&Math.abs(s.lat-target)<2.4)target+=s.lat>target?-4:4}
   for(const s of shots){if(s.type!=='quake'||s.owner===r||s.hits.has(r))continue;const d=wrapU(r.u-s.u);if(d>0&&d<(s.v-r.v)*2.2*(0.5+0.5*r.skill))target=s.gap}
   for(const o of racers){if(o===r||o.isGhost||F.sh&&o.d&&(o.d.mass||1)<(r.d.mass||1))continue;const d=wrapU(o.u-r.u);if(d>0&&d<14*Math.max(1,F.av)&&Math.abs(o.lat-target)<2.2*F.av&&o.v<r.v)target+=o.lat>r.lat?-3:3}
   if(aiSmoked(r))target+=(smokeH(r,1,SMOKE_AI.win)*2-1)*W*SMOKE_AI.line;/* (P60) smoke: the line is lost */
   target=bnd?clamp(target,bnd[0]+1.6,bnd[1]-1.6):surf(uu,r.lat,r).sp?clamp(target,SF.lo+1.6,SF.hi-1.6):clamp(target,-W/2+1.6,W/2-1.6);
-  if(r.isAI&&!(r.autoT>0)&&!hands(r)){if(r.lapT>0)r.lapT-=dt;else if(Math.random()<dt*AI_LAPSE*(r.mk||1)*(0.35+Math.min(1.6,Math.abs(c)*220))){r.lapT=0.35+Math.random()*0.65;r.lapK=Math.random()<0.55?0:1;r.lapS=0.4+Math.random()*0.45;r.lapD=-Math.sign(c)||1}
+  if(r.isAI&&!(r.autoT>0)&&!hands(r)){if(r.lapT>0)r.lapT-=dt;else if(rand(r)<dt*AI_LAPSE*(r.mk||1)*(0.35+Math.min(1.6,Math.abs(c)*220))){r.lapT=0.35+rand(r)*0.65;r.lapK=rand(r)<0.55?0:1;r.lapS=0.4+rand(r)*0.45;r.lapD=-Math.sign(c)||1}
     if(r.lapT>0&&r.lapK===1)target=clamp(target-r.lapD*W*0.32*r.lapS,-W/2+0.6,W/2-0.6)}
   const desired=ybA!=null?ybA-Math.atan2(target-r.lat,20):-Math.atan2(target-r.lat,look);
   let C=T.Cs[idxAt(r.u)];if(r.brS&&r.brS.kind==='cut'&&r.br===r.brS.longB&&T.spl[idxAt(r.u)]){const y1=surf(uu+4,r.lat,r).yb,y0=surf(uu-4,r.lat,r).yb,g=surf(uu,r.lat,r).g;C=(T.K[idxAt(r.u)]+(y1-y0)/8)*g}
   const turn=(1.85-0.55*(r.v/VMAX))*r.d.turn*trimTurn(r);
-  let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(aiSmoked(r))steer+=(Math.sin(S.t*9+r.bias*3)+0.5*Math.sin(S.t*5.3+r.bias*7))*SMOKE_AI.swing;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
+  let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(aiSmoked(r))steer+=(Math.sin(S.raceT*9+r.bias*3)+0.5*Math.sin(S.raceT*5.3+r.bias*7))*SMOKE_AI.swing;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
   // brake when the corner needs more turn than the ship has
-  const smkTap=aiSmoked(r)&&smokeH(r,2,SMOKE_AI.tapWin)<SMOKE_AI.tapP&&S.t%SMOKE_AI.tapWin<SMOKE_AI.tapOn?1:0;/* (P60) smoke: brake taps */
+  const smkTap=aiSmoked(r)&&smokeH(r,2,SMOKE_AI.tapWin)<SMOKE_AI.tapP&&S.raceT%SMOKE_AI.tapWin<SMOKE_AI.tapOn?1:0;/* (P60) smoke: brake taps */
   const brake=Math.max(rBrk,smkTap,Math.abs(steer)>F.bk?clamp((Math.abs(steer)-F.bk)*1.6,0,1):0);
   const fireW=[false,false],holdW=[false,false];/* passive slots (scoops) never fire */
   if((r.isAI||BOT&&r===player)&&r.finishT==null)for(let k=0;k<2;k++){const w=r.weapons[k];if(!canFire(r,k)||r.isAI&&(S.car||QK.live)&&S.aiF<1&&(S.raceT/5+r.skill*37)%1>S.aiF)continue;
     if(w==='cannon'){holdW[k]=aiWants(r,w);continue}
     /* (P58) Phase, Barrier and Decoy (P60: now the Reflector; Flares fire themselves): Hard watches for its moment every frame; Easy misses some */
     const dfn=hn&&(w==='phase'||w==='barrier'||w==='reflector');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
-    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+Math.random()*0.3:0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
+    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+rand(r)*0.3:0.45+rand(r)*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&rand(r)<Lv.react*ailM(r)))fireW[k]=true}
   const kn=Math.max(T.Kn[idxAt(r.u+r.v*0.2)],T.Kn[idxAt(r.u+r.v*0.4)]),kc=T.Kn[idxAt(r.u+r.v*0.35)];
   const slA=T.Tg[idxAt(r.u+12)].y,pitch=rUp?1:r.air&&r.air!==true?F.ja:r.air===true||kc<-0.0011?-1:brake>0.05?0.7:Math.abs(T.Cs[idxAt(r.u+look*0.6)])>0.009?0.5*(r.sty?r.sty.up:1):slA>0.03?clamp(slA/0.08,0,1)*(r.sty?clamp(r.sty.up,0.4,1.2):1):slA<-0.03&&r.d.aero>0?-clamp(-slA*F.dv/0.08,0,1)*(r.sty?clamp(r.sty.dive,0.4,1.2):1):0;
   /* Held boost costs shield, so the AI saves it for straights while its shield is healthy; on a green strip the strip pays
@@ -7400,7 +7400,7 @@ function aiInput(r,dt){
   /* Prototype 60: before a speed jump the AI decides once a lap whether to go for the upper road (more often when the
      bonus is up there) and, if so, holds boost from 1 km out while its shield allows; it can still come up short */
   let sjB=false;if(r.isAI&&r.finishT==null&&!r.air){for(const j of T.jumps){if(!j.stk)continue;const d=modU(j.u0-uu);if(d>1000)continue;
-    const key=j.u0+'|'+r.done;if(r.sjK!==key){r.sjK=key;r.sjGo=Math.random()<(j.stk.bonus==='up'?0.85:0.45)}if(r.sjGo&&r.hp>r.d.hp*0.15)sjB=true;break}}
+    const key=j.u0+'|'+r.done;if(r.sjK!==key){r.sjK=key;r.sjGo=rand(r)<(j.stk.bonus==='up'?0.85:0.45)}if(r.sjGo&&r.hp>r.d.hp*0.15)sjB=true;break}}
   /* going for it, it races at a person's top speed (no AI pace factor) on the run-up */
   r.sjRun=sjB;
   /* Prototype 60: on a strip it boosts at every level (the levels' mistakes decide whether it takes a strip, not whether it
@@ -7446,6 +7446,7 @@ function logFrame(raw){ulCheck(raw);const L=LOG.cur;if(!L||S.state!=='race'||!(r
 const r1=x=>Math.round(x*10)/10,r2=x=>Math.round(x*100)/100;
 function logStart(){if(!LOG.on){LOG.cur=null;return}const fc={};for(const f of T.feats)fc[f.kind]=(fc[f.kind]||0)+1;
   LOG.cur={v:2,game:'Hoverline '+($('title').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:QK.live?'quick':SPL.race?'split':S.car?'career':S.train?'training':S.trial?'trial':mp.on?'room':'race',quick:QK.live?qkTag():undefined,cls:S.cls,clsName:clsName(S.cls),ail:S.ail,
+    rn:RACE.n,/* Prototype 61: this race's number; the track code and this replay the race (?racen=, RACE.force) */
     track:{code:codeStr(),name:T.D.name,complex:!!T.cx,len:Math.round(T.L),laps:LAPS,feats:fc,splits:T.splits.length,fig8:!!T.fig8,marks:(T.marks||[]).length},
     ship:{frame:build.frame,stats:{...build.stats},weapons:[...build.weapons]},
     input:{dev:lastDev,pads:(()=>{try{return[...(navigator.getGamepads?navigator.getGamepads():[])].filter(Boolean).map(p=>String(p.id||'').slice(0,48))}catch(e){return[]}})(),pad:lastDev==='pad'?PAD.kind:null,padId:lastDev==='pad'?String(PAD.id||'').slice(0,64):null,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode,or:TS.race||orNow(),orSet:orPick||undefined,mods:TL.last?TL.last.mode:null},
@@ -7926,8 +7927,23 @@ function getBest(){const v=parseFloat(store.get(bestKey())||'');return isFinite(
 /* sp: undefined keeps the current editor counts, null drops them (back to generated tracks), an object sets them. */
 function loadTrack(s,wk,cx,lk,sp,bm){seed=(s&0x1FFFFFF)||1;if(wk)wid=wk;if(sp!==undefined)spec=sp;if(spec)cplx=specCx(spec);else if(cx!=null)cplx=cx;if(lk)lenK=lk;if(bm!==undefined)bio=bm||{k:'U',d:null};if(!(spec&&(spec.train||spec.quick)))store.set('hoverline.code',codeStr());buildTrack(seed,wid,cplx,lenK,spec,bio);bioSync();setField(false);music.fromTrack(seed);miniBase=null;$('seedIn').value=codeStr();resetGrid();updateMenuBest();drawPreview();S.fly=0;camInit=false;
   poolSync();todSync()}
-function freshRacer(r,u,utot,lat){r.stat={wrecks:0,dmg:0,given:0,boostT:0};Object.assign(r,{u,utot,lat,yaw:0,v:0,steerS:0,brk:0,boost:0,stun:0,spin:0,hp:r.d.hp,ammo:0,cd:[0,0],aiT:[0.5+Math.random(),0.5+Math.random()],
-  wreck:0,dive:0,draft:0,inv:0,barrier:0,charging:null,pitch:0,air:false,h:HOVER,hb:HOVER,vh:0,respawnU:null,laps:[],lapStart:0,done:0,finishT:null,scrape:0,selfBoost:false,drift:0,driftK:0,bPrev:false,dN:0,dB:0,dB0:0,dC:0,bHeld:false,tapT:0,biteT:0,dX:0,dAng:0,dVa:null,dFl:0,bRest:false,tapLog:null,mk:0.4+Math.random()*1.2,lapT:0,bias:(Math.random()-.5)*2,aiDm:0,jOut:false,spinD:0,rollA:0,hopY:0});if(r===player)finCam.t0=null}
+/* Prototype 61: a race can be replayed. Everything in a race that Math.random used to decide (an AI pilot's mistakes, lane and
+   module choices, the start-line spread of its habits, a Quake's gap, a Bouncer's sideways speed) is drawn from a stream of
+   the race's own: one for each racer, made at the start from the track's seed and the race's number (RACE.n, new for every
+   race, written in the race log as `rn`), so the same two numbers give the same race and the order the racers are updated
+   in can't move anyone else's numbers. Looks and sounds (particles, shake, flicker) keep to Math.random, so drawing them
+   never moves the race. `?racen=N` in the address, or RACE.force, makes the next race number N (to replay a logged race). */
+const RACE={n:0,force:(()=>{const v=+QS.get('racen');return v>0?v>>>0:null})()};
+const raceMix=(...a)=>{let h=0x5EED1E55;for(const x of a)h=(rng((h+Math.imul(x|0,0x9E3779B1))>>>0)()*4294967296)>>>0;return h};
+function raceNew(){RACE.n=RACE.force!=null?RACE.force:1+Math.floor(Math.random()*0xFFFFFF);RACE.force=null;return RACE.n}
+const raceId=r=>{let i=roster.indexOf(r);if(i<0){i=extras.indexOf(r);i=i<0?200+racers.indexOf(r):100+i}return i};
+const rand=r=>(r.R||(r.R=rng(raceMix(seed,RACE.n,raceId(r)))))();
+/* the rest of a racer's state a race leaves behind and the next one would carry (the AI's hands, a route or a strip or a jump
+   already decided for the lap, the drift and boost bookkeeping, smoke, EMP and the like): a race's start gets none of it, so a
+   restart on the same track is the race a fresh page gives, and a race number replays the race. */
+const RACER_STALE=['hs','hn','hT','nfT','nf','zs','sjK','sjGo','sjRun','brPick','br','brS','stkS','stkB','lapK','lapS','lapD','climb','slopeG','trimB','trimP','trimUp','emp','od','autoT','ink','phase','refl','stunAt','hpDip','chgKind','chgEnd','bT','bV0','bSt','bTurn','bPk','bDr','tapA','bK','dT','dBl','dFade','dN0','dKn','dKs','dKx','dS','dEnd','wallT','_df','_dfp','_dfv'];
+function freshRacer(r,u,utot,lat){for(const k of RACER_STALE)delete r[k];r.R=rng(raceMix(seed,RACE.n,raceId(r)));r.stat={wrecks:0,dmg:0,given:0,boostT:0};Object.assign(r,{u,utot,lat,yaw:0,v:0,steerS:0,brk:0,boost:0,stun:0,spin:0,hp:r.d.hp,ammo:0,cd:[0,0],aiT:[0.5+rand(r),0.5+rand(r)],
+  wreck:0,dive:0,draft:0,inv:0,barrier:0,charging:null,pitch:0,air:false,h:HOVER,hb:HOVER,vh:0,respawnU:null,laps:[],lapStart:0,done:0,finishT:null,scrape:0,selfBoost:false,drift:0,driftK:0,bPrev:false,dN:0,dB:0,dB0:0,dC:0,bHeld:false,tapT:0,biteT:0,dX:0,dAng:0,dVa:null,dFl:0,bRest:false,tapLog:null,mk:0.4+rand(r)*1.2,lapT:0,bias:(rand(r)-.5)*2,aiDm:0,jOut:false,spinD:0,rollA:0,hopY:0});if(r===player)finCam.t0=null}
 function resetGrid(){clearShots();
   /* the player starts 5th of 8 (in a time trial too); the pilots racing take the other places in roster order, those
      sitting out go behind, unseen */
@@ -7953,7 +7969,7 @@ async function startRace(){if(!S.car&&!S.train&&!QK.live&&!mp.on&&!SPL.race)LAPS
   if(coarse){goFull();if(!QK.live&&!SPL.race&&!(await tiltCheck()))return}
   hidePages();['results','pause','mus','set','ctl','gfxm'].forEach(i=>$(i).hidden=true);
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;
-  const gh=setField(!QK.live);if(QK.live)qkField();if(SPL.race)splField();resetGrid();setHud(true);camInit=false;if(SPL.race)splViews();
+  raceNew();const gh=setField(!QK.live);if(QK.live)qkField();if(SPL.race)splField();resetGrid();setHud(true);camInit=false;if(SPL.race)splViews();
   {const t=S.car?CAR_T[S.car.i>>2]:QK.live?CAR_T[0]:null,cw=t&&(QK.live?CAR_W0:carW());S.cls=t?t.k:S.train?1:clsOf(clsFree).f;S.aiK=t?t.ai:1;S.ail=QK.live?'normal':ailNow();S.aiF=t?(QK.live&&QK.lvl<2?0:t.f):1;if(!S.trial&&!S.train&&!mp.on&&!QK.live)store.set('hoverline.lastmode',t?'career':'race');{const D0=DIFF[T.wk]||T.D,e=t&&t.e;T.D=e?{...D0,dmg:D0.dmg*e.dmg,band:[D0.band[0]*(e.dn||1),D0.band[1]*e.up],assist:D0.assist*(e.as||1)}:D0}
     if(cw)for(const r of racers)if(r.isAI&&r.weapons){const o=[];for(const x of r.weapons)o.push(cw.includes(x)?x:CAR_W0.find(y=>!o.includes(y)&&!r.weapons.includes(y)));r.weapons=o;r.scoop=null}}
   if(S.train)setTimeout(()=>note('Training · '+trDrill(TRN.d).n+' · '+(TRN.cube?'Training cube':'your frame')+' · '+LAPS+' laps'+(gh&&gh.best?' · your best run is the ghost':''),2600),900);
@@ -10599,7 +10615,7 @@ function mpStart(pl,field){chirpStop();mp.bg=false;
       else{const p=prof[k]||{},pt=(p.lv&&parseLiv(p.lv))||PAINTS[pts[k]]||PAINTS[0];r.name=(p.n||'Pilot').slice(0,12);r.css=pt.css;setShip(r,{stats:p.st||defaultBuild().stats,weapons:p.w||['missile','cannon'],frame:FRAMES[p.fr]?p.fr:'blade'},pt);r.isAI=false;r.remote=k;r.proxy=true}}
     r.key=k;r.off=false;r.left=false;r.net=null;mp.byKey.set(k,r);racers.push(r)}
   for(const r of free){r.off=true;r.ship.visible=false;r.shadow.visible=false}
-  clearShots();
+  clearShots();raceNew();
   racers.forEach((r,k)=>{const row=Math.floor(k/2),col=k%2;freshRacer(r,T.L-14-row*11,-14-row*11,col?W*0.21:-W*0.21);if(r.proxy)r.u=r.utot;r.ship.visible=true});
   S.raceT=-3;S.shake=0;S.aiK=1;mp.cls=clsOf(pl.cls).k;S.cls=clsOf(pl.cls).f;S.ail=AIL[pl.ail]?pl.ail:'normal';lowWarn=false;
   ['menu','results','pause','mp','lab','set','ctl','gfxm','lbv','opts','mus','ed'].forEach(i=>$(i).hidden=true);setFrom=null;ctlFrom=null;optsFrom=null;rebind.on=false;if(guide.on){guide.from=null;closeGuide()}

@@ -22,12 +22,12 @@ const { launch, open, ok, done, wait } = require('./lib.js');
     // smoke: a person is never flown by this, an AI is; the draw repeats and moves on
     const a = H.racers.find(x => x.isAI && x !== H.player); a.ink = 2;
     out.aiSmoked = H.aiSmoked(a); H.player.ink = 2; out.playerSmoked = H.aiSmoked(H.player); H.player.ink = 0;
-    const t0 = H.S.t; H.S.t = 10.1; const h1 = H.smokeH(a, 1, 0.5), h2 = H.smokeH(a, 1, 0.5); H.S.t = 10.7; const h3 = H.smokeH(a, 1, 0.5); H.S.t = t0;
+    const t0 = H.S.raceT; H.S.raceT = 10.1; const h1 = H.smokeH(a, 1, 0.5), h2 = H.smokeH(a, 1, 0.5); H.S.raceT = 10.7; const h3 = H.smokeH(a, 1, 0.5); H.S.raceT = t0;
     out.repeat = h1 === h2; out.moves = h1 !== h3; out.inRange = h1 >= 0 && h1 < 1;
     // the steer wanders further in smoke: spread of aiInput's steer over two seconds, with and without
-    const spread = (ink) => { const st = []; for (let k = 0; k < 120; k++) { H.S.t = 30 + k / 60; a.ink = ink; a.u = 100; a.lat = 0; a.v = 50; a.yaw = 0; st.push(H.aiInput(a, 1 / 60).steer) }
+    const spread = (ink) => { const st = []; for (let k = 0; k < 120; k++) { H.S.raceT = 30 + k / 60; a.ink = ink; a.u = 100; a.lat = 0; a.v = 50; a.yaw = 0; st.push(H.aiInput(a, 1 / 60).steer) }
       const m = st.reduce((x, y) => x + y, 0) / st.length; return Math.sqrt(st.reduce((x, y) => x + (y - m) * (y - m), 0) / st.length) };
-    out.spreadClear = spread(0); out.spreadSmoke = spread(2.4); H.S.t = t0;
+    out.spreadClear = spread(0); out.spreadSmoke = spread(2.4); H.S.raceT = t0;
     a.ink = 2.4; a.lat = 0; a.u = 100; a.v = 60; out.boostInSmoke = H.aiInput(a, 1 / 60).boost; a.ink = 0;
     return out;
   });

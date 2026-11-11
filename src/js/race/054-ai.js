@@ -8,7 +8,7 @@ function aiWants(r,w){
   if(w==='mines'){for(const o of racers){const d=wrapU(r.u-o.u);if(o!==r&&live(o)&&d>8&&d<90)return true}return false}
   if(w==='shock'){for(const o of racers)if(o!==r&&live(o)&&Math.abs(wrapU(o.u-r.u))<22)return true;return false}
   if(w==='turbo')return Math.abs(T.Cs[idxAt(r.u+60)])<0.003;
-  if(w==='barrier'){if(threatsTo(r).some(h=>h.t<0.6&&!h.safe))return true;return r.hp<r.d.hp*0.35&&Math.random()<0.1}
+  if(w==='barrier'){if(threatsTo(r).some(h=>h.t<0.6&&!h.safe))return true;return r.hp<r.d.hp*0.35&&rand(r)<0.1}
   if(w==='phase')return threatsTo(r).some(h=>h.t<0.35&&!h.safe&&h.k!=='mine');
   /* Prototype 60: the Reflector's shell is up 0.75 s, so the AI fires it when a shot it can turn round is within half a second
      (Phase gets 0.35 s of a 1.5 s cover). A lone cannon bolt (8 damage) isn't worth it; two or more, or anything bigger, is.
@@ -17,7 +17,7 @@ function aiWants(r,w){
   const ahead=range=>racers.filter(o=>o!==r&&live(o)&&(d=>d>2&&d<range)(wrapU(o.u-r.u)));
   if(w==='rockets'){const t=targetAhead(r,150);return!!t&&Math.abs(t.lat-r.lat)<3.5}
   if(w==='swarm')return ahead(280).length>=2||!!targetAhead(r,150);
-  if(w==='quake')return ahead(260).length>=2||(!!targetAhead(r,120)&&Math.random()<0.3);
+  if(w==='quake')return ahead(260).length>=2||(!!targetAhead(r,120)&&rand(r)<0.3);
   if(w==='bouncer'){const t=targetAhead(r,180);return!!t&&Math.abs(t.lat-r.lat)<6}
   if(w==='hunter'){const t=leaderFor(r);return!!t&&wrapU(t.u-r.u)>120&&t.utot>r.utot}
   if(w==='emp')return ahead(400).length>=2;
@@ -91,11 +91,11 @@ const ailOf=()=>{const L=AIL[S.ail]||AIL.normal,wk=T&&T.wk;if(ailC&&ailC.L===L&&
 const ailPace=()=>ailOf().pace;
 const ailM=r=>{const L=ailOf();if(!L.sb||!r.isAI)return 1;const g=bandRef()-r.utot;return g>0?1-0.45*clamp(g/400,0,1):1};
 function aiHands(r,o,dt){if(!hands(r)||r.wreck>0){r.hs=o.steer;r.hn=0;r.hT=0;return o}
-  const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();
+  const P=HANDS[T.wk]||HANDS.S,L=ailOf(),mk=ailM(r);let u=0,v=0;while(!u)u=rand(r);while(!v)v=rand(r);
   r.hs=(r.hs??o.steer)+(o.steer-(r.hs??o.steer))*Math.min(1,dt/(P.tau*L.tau));
   r.hn=(r.hn||0)-(r.hn||0)*dt/HANDS.mem+P.sigma*L.sig*mk*(aiSmoked(r)?SMOKE_AI.wander:1)/Math.max(0.5,r.d.turn)*Math.sqrt(dt)*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
   /* (P58) a spell with the nose forgotten (Easy) */
-  if(L.nose>0){r.nfT=(r.nfT||0)-dt;if(r.nfT<=0){r.nfT=2+Math.random()*3;r.nf=Math.random()<L.nose*mk}if(r.nf&&!r.air)o.pitch=0}
+  if(L.nose>0){r.nfT=(r.nfT||0)-dt;if(r.nfT<=0){r.nfT=2+rand(r)*3;r.nf=rand(r)<L.nose*mk}if(r.nf&&!r.air)o.pitch=0}
   o.steer=clamp(r.hs+r.hn,-1,1);
   /* a person can't hold the brake with the stick over without drifting: outside its own drifts the AI taps instead */
   if(!r.aiDm&&o.brake>0.05&&Math.abs(o.steer)>DR.thr){r.hT=(r.hT||0)+dt;const k=r.hT%(HANDS.tap+HANDS.gap);o.brake=k<HANDS.tap?1:0}else r.hT=0;
