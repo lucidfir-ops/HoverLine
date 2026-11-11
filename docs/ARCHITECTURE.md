@@ -16,7 +16,7 @@ src/page.html            the markup: title, menus, HUD, dialogs; include markers
 src/css/hoverline.css    all styles
 src/vendor/              ggwave (pairing by sound, MIT) and jsQR (QR reading, Apache-2.0), kept as text until needed
 src/assets/              base64 sound recordings built into the page (SL.SMP, SL.EXT, SL.EXT2, SL.VOX, SL.SFX, CVOX)
-src/js/ORDER             the order the 98 script parts are joined in
+src/js/ORDER             the order the script parts are joined in
 src/js/<area>/NNN-*.js   the game script, one part per subject (first line of each says what it holds)
 tools/assemble.py        joins src/ into the page body; tools/build.py builds index.html and dist/ from it
 ```
@@ -31,7 +31,7 @@ and functions (hoisted) from anywhere. Nothing is imported or exported.
 | Folder | Size | What it holds |
 | --- | --- | --- |
 | `core/` | 19 KB | Boot: `$`, `store` (localStorage wrapper, keys `hoverline.*`), `rng`, query flags; the three.js renderer, camera, graphics presets, sky and light. |
-| `track/` | 134 KB | `loadTrack(seed, width, complexity, lock, speed, biome)` builds a circuit from its code: centreline `T.P`, frames (`R`, `U`), features `T.feats` (spires, splits, jumps, loops, tunnels; since Prototype 60 on version-1 codes, seven hex digits from 1, also drops, speed jumps, long jumps, rising spires and down spirals: new jumps carry `kind`, `lipH` and `slope`, a speed jump's two roads are a split of kind `stack`, a long jump's landing one of kind `catch`), walls, scenery per biome (U O F N R P; Prism is one block before the moving parts: its fields, caverns, mouths, lakes, rivers and columns, with `T.prism` giving `h`/`f`/`c`/`ground(x,z)`, `inside(x,y,z)`, `ins[]` and `meshes`), signs; `sampleAt(u)`. Minimap and 3D preview. |
+| `track/` | 225 KB | `loadTrack(seed, width, complexity, lock, speed, biome)` builds a circuit from its code; `buildTrack` (`004-track.js`, with the biome looks and dials) does it in three steps (Prototype 61). **The road**, everything races depend on: `004a-road-shape.js` (`roadShape`: centreline `T.P`, frames `R`/`U`, features `T.feats`, splits, pit lanes, cuts and the new jumps' routes; `trackFaults`), `004b-road-features.js` (`addFeatures`: spires, jumps, loops, twists, helices; since Prototype 60 on version-1 codes, seven hex digits from 1, also drops, speed jumps, long jumps, rising spires and down spirals: new jumps carry `kind`, `lipH` and `slope`, a speed jump's two roads are a split of kind `stack`, a long jump's landing one of kind `catch`), `004c-road-build.js` (`roadBuild`: the road as drawn, walls, catch fences, pads, strips, signs, trim marks, gantries) and `004d-road-query.js` (`sampleAt(u)`, `surf`). **The scenery**: `004e-scenery.js` (`buildScenery`: the context a biome's builder gets, the parts biomes share, the table `SCENERY` of builders by letter, and the moving parts), then one builder per biome: `004f` Urban, `004g` Ocean, `004h` Forest, `004i` Stratos, `004j` Reef, `004k` Prism (its fields, caverns, lakes, rivers, columns, with `T.prism` giving `h`/`f`/`c`/`ground(x,z)`, `inside(x,y,z)`, `ins[]` and `meshes`) and `004l` Prism's joins (skirts, river banks, cave-mouth gates). `005`/`006`: minimap and 3D preview. `tools/tests/scene-hash.js` guards it all: any change in what is built fails it. |
 | `ships/` | 50 KB | `FRAMES` (8 frames and their stats), `WDEF` (the modules: weapons and abilities), builds, paint. The models are `007-ship-models.js` (since Prototype 51): `shipKit` (shared helpers), one builder per frame in `SHIPB`, and `shipCtl(ud, brake, steer, ammo)`, which moves the rudders and flaps, lights the brake light and dims the ammo bars each frame. |
 | `audio/` | 6 KB | Sound effects and the announcer. |
 | `music/` | 162 KB | Music data and generators. **`018-templates.js` is the current tune source**: every new tune is a template plus a seed, code `S` + 10 hex digits; the templates themselves are the table `TPL` in `032-template-table.js` (one per line). `019`–`022` drum languages, harmony, generators, melodies. `023`–`026` likes, track plays, tabla bols. `009`–`015` are the older generator (T codes, Prototypes 21 to 42), still used for old codes and the ambient menu. `028`–`031` the four synth engines. |
@@ -44,6 +44,26 @@ and functions (hoisted) from anywhere. Nothing is imported or exported.
 | `ui/` | 152 KB | Track editor, Controls, Set orientation, Settings, nose guide, menu pages, career, training, tutorial, ship lab, quick races, HUD and the screens. |
 | `net/` | 140 KB | Multiplayer: MQTT over public brokers plus WebRTC (`073`), the local Wi-Fi host, sessions and lobby, same-room pairing (codes, QR, sound), the in-game leaderboard, remote ships. |
 | `loop/` | 51 KB | The main loop (each frame: input, physics, camera, HUD, music hooks) and graphics options at run time. |
+
+## Adding a biome (since Prototype 61)
+
+A biome's scenery is one builder, in a file of its own, and touches nothing of the road or of any other biome.
+
+1. Its look by night and by day: a line each in `BIOMES` and `BIOMES_DAY`, and its default dials in `bioDefaults`
+   (`track/004-track.js`); its letter in `parseCode`'s pattern (`race/060-race-flow.js`) and wherever the menus list biomes.
+2. A new part `track/004m-biome-<name>.js` (listed in `src/js/ORDER` after the other biomes) with
+   `function scenery<Name>(ctx){...}`, and a line in `SCENERY` (`004e-scenery.js`).
+3. The builder gets the context `ctx`, described at the top of `004e-scenery.js`: the road (read only), the group to add to,
+   the setting and dials, the scenery's random numbers `er`, building blocks (`IM`, `lines`, `lam`), the road-space tests
+   (`near`, `free`/`claim`, `roadSpace(flag)` with `inRoad` and `clearTri`) and the shared parts (`pylons`, `spireFrames`,
+   `helixMiddles`, `falls`, `geysers`, `daySky`/`starSky`/`dome`, `buildTunnels`), each called if the biome has it. It leaves
+   what moves (`fallsL`, `geys`, `jel`...) in `ctx` for the shared moving parts, and may set `ctx.water`, `ctx.prism`,
+   `ctx.inside`, `ctx.clock`, `ctx.info` and the other fields listed there.
+4. Keep everything clear of the road: `near(x,z,R)` for things beside it, `roadSpace().clearTri` for anything that could
+   reach over or under it.
+5. Draw from `er` freely in a new biome. In an existing one, a change that adds draws moves every later number of that
+   track's scenery (so its trees or islands stand elsewhere): fine for a deliberate change, never for a refactor. Run
+   `tools/tests/scene-hash.js` before and after any refactor of `track/`; it must pass without regenerating its hashes.
 
 ## A frame of the game
 
