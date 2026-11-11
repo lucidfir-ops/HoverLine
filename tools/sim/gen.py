@@ -11,6 +11,11 @@ def rep2(alts):
         if js.count(a)==1: return rep(a,b)
     raise AssertionError(alts[0][0][:80])
 rep("loadTrack(seed);\ntuneUI();buildSummary();\nrequestAnimationFrame(frame);","globalThis.__hl={racers,S,startRace,step,loadTrack,getT:()=>T,ranking,shots,player,physics,aiInput,fire,leaderFor,parseCode,roster,ROSTER,FRAMES,setShip,getW:()=>W,VMAX,surf,wrapU,code:()=>{try{return roadStr()}catch(e){return null}}};")
+# Prototype 61: the game draws a race's numbers from RACE.n (new for every race; the track seed and RACE.n give the whole race).
+# Here RACE.n comes from the track seed and how many races this process has run on it, so two runs of the same command race
+# the same races without seedrand.js, and a baseline and a variant run with the same offsets get the same numbers too.
+rep("RACE.n=RACE.force!=null?RACE.force:1+Math.floor(Math.random()*0xFFFFFF);","RACE.n=RACE.force!=null?RACE.force:(()=>{const q=(globalThis.__rc=globalThis.__rc||{});q[seed]=(q[seed]||0)+1;return 1+(raceMix(seed,q[seed])%0xFFFFFF)})();")
+js=js.replace("globalThis.__hl={racers,","globalThis.__hl={RACE,rand,racers,",1)
 rep("const i=(r===player&&player.finishT==null&&!auto)?(player.autoT>0?apInput(r,inp,sdt):inp):aiInput(r,sdt);physics(r,i,sdt)","let i=aiInput(r,sdt);if(globalThis.__pin)i=globalThis.__pin(r,i,sdt);if(r===player&&globalThis.__forcePitch!=null)i.pitch=globalThis.__forcePitch;physics(r,i,sdt)")
 js=js.replace("if(into>0.02){","if(into>0.02){(globalThis.__wall=globalThis.__wall||{})[r.name]=(globalThis.__wall[r.name]||0)+1;globalThis.__wallAt&&globalThis.__wallAt(r,into);",1)
 rep("if(r.h<=HOVER&&!r.offT){const imp=-r.vh;r.air=false;","if(r.h<=HOVER&&!r.offT){const imp=-r.vh;(globalThis.__hop=globalThis.__hop||{})[r.name]=(globalThis.__hop[r.name]||0)+1;r.air=false;")

@@ -39,6 +39,12 @@ sounds and is written), and the current plan in `docs/PLAN-*.md` (newest number)
 - All things in moderation, including moderation: new track features are rare, not on every track.
 - Ideas for a new biome get a dossier first (themes, references, looks, mechanics to choose from), never a build,
   until Eric has picked from it.
+- Track codes are versioned (Eric, 2026-11-11): when a change alters how tracks are built, give new codes a new
+  version (as Prototype 60 did: seven hex digits starting with 1) so older codes, ghosts, bests and the board keep
+  working. That costs one check per feature and breaks nothing. But don't go further than that to protect old codes:
+  if keeping an old code path alive would mean carrying a second copy of real logic, or blocks a fix, drop it, raise
+  `BOARD_ERA` and say so in the changelog ("always not an issue to start again"). Scenery-only fixes (Prism, Urban)
+  apply to every code, old and new.
 - Never delete or overwrite older feedback or exports; additive only.
 - Keep a record of which feedback and logs have been processed in the plan's "Feedback processed" section.
 

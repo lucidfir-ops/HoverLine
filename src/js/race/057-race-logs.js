@@ -24,6 +24,7 @@ function logFrame(raw){ulCheck(raw);const L=LOG.cur;if(!L||S.state!=='race'||!(r
 const r1=x=>Math.round(x*10)/10,r2=x=>Math.round(x*100)/100;
 function logStart(){if(!LOG.on){LOG.cur=null;return}const fc={};for(const f of T.feats)fc[f.kind]=(fc[f.kind]||0)+1;
   LOG.cur={v:2,game:'Hoverline '+($('title').querySelector('.sub')||{}).textContent,id:Date.now().toString(36),when:new Date().toISOString(),mode:QK.live?'quick':SPL.race?'split':S.car?'career':S.train?'training':S.trial?'trial':mp.on?'room':'race',quick:QK.live?qkTag():undefined,cls:S.cls,clsName:clsName(S.cls),ail:S.ail,
+    rn:RACE.n,/* Prototype 61: this race's number; the track code and this replay the race (?racen=, RACE.force) */
     track:{code:codeStr(),name:T.D.name,complex:!!T.cx,len:Math.round(T.L),laps:LAPS,feats:fc,splits:T.splits.length,fig8:!!T.fig8,marks:(T.marks||[]).length},
     ship:{frame:build.frame,stats:{...build.stats},weapons:[...build.weapons]},
     input:{dev:lastDev,pads:(()=>{try{return[...(navigator.getGamepads?navigator.getGamepads():[])].filter(Boolean).map(p=>String(p.id||'').slice(0,48))}catch(e){return[]}})(),pad:lastDev==='pad'?PAD.kind:null,padId:lastDev==='pad'?String(PAD.id||'').slice(0,64):null,touch:coarse,tilt:tilt.enabled&&tilt.ok,tiltPitch:tilt.pitchMode,steer:typeof steerMode!=='undefined'?steerMode:null,pitchSlider:typeof pitchSlider!=='undefined'?pitchSlider:null,padInvert:bind.padInvert,cam:camMode,or:TS.race||orNow(),orSet:orPick||undefined,mods:TL.last?TL.last.mode:null},
