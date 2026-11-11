@@ -125,14 +125,14 @@ $('btnChip').onclick=()=>{const m=tilt.enabled?[...STEER_MODES,'tilt']:STEER_MOD
 const syncModChip=()=>{const el=$('modChip');el.textContent=MODS_LABEL[modsMode];el.setAttribute('aria-pressed',String(modsMode!=='auto'))};syncModChip();
 $('modChip').onclick=()=>{modsMode=MODS[(MODS.indexOf(modsMode)+1)%MODS.length];tsSave();syncModChip()};
 function applyTouchUI(){
-  $('tiltChip').hidden=!coarse;$('flipChip').hidden=!coarse;$('pitchChip').hidden=!coarse;$('btnChip').hidden=!coarse;$('psChip').hidden=!coarse;$('modChip').hidden=!coarse;$('slots').hidden=coarse;
+  $('tiltChip').hidden=!coarse;$('flipChip').hidden=!coarse;$('pitchChip').hidden=!coarse;$('btnChip').hidden=!coarse;$('psChip').hidden=!coarse;$('modChip').hidden=!coarse;$('slots').hidden=touchUI();
   $('touchChip').setAttribute('aria-pressed',String(coarse));
   /* the title's own-tab button (Prototype 42): only once this framed page has been found to get no motion readings, with
      tilt in the setup */
   /* Prototype 48: no Open with tilt on the title (Eric didn't want a second tab); the card on a tilt race still offers it */
   $('ownTab').hidden=true;syncFs();
   ctrlHelpUI();
-  if(S.state==='race'||S.state==='countdown'||S.state==='paused')$('touch').hidden=!coarse;
+  if(S.state==='race'||S.state==='countdown'||S.state==='paused')$('touch').hidden=!touchUI();
   if(!$('touch').hidden)touchLayout()}
 function ctrlHelpUI(){const P=a=>padName(PAD_DEF[a]);
   $('ctrlHelp').innerHTML=coarse

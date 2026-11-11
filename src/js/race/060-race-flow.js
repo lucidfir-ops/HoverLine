@@ -75,7 +75,7 @@ function updateMenuBest(){const b=getBest(),c=clsSfx()?' at '+clsOf(clsCtx()).n:
    to on Android) and lays the controls out for the screen; going down lets the menus follow the device again. */
 function setHud(on){$('lapBox').classList.remove('final');['hudL','hudR','pauseBtn'].forEach(i=>$(i).hidden=!on);
   if(on){TS.race=orPick&&orCan()&&coarse&&document.fullscreenElement?orPick[0]:orNow();tsUse(TS.race)}else if(TS.race){TS.race=null;tsUse(orNow())}
-  $('touch').hidden=!(on&&coarse);if(on&&coarse)touchLayout();orSync()}
+  $('touch').hidden=!(on&&touchUI());if(on&&touchUI())touchLayout();orSync()}
 function note(text,ms=2200){const n=$('note');n.textContent=text;n.hidden=false;clearTimeout(note.t);note.t=setTimeout(()=>n.hidden=true,ms)}
 
 /* Prototype 60: the laps pick on the track page (1 to 10, default 3, hoverline.laps). It is the lap count of Race only: Career, Training,

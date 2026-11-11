@@ -7,7 +7,7 @@ const THREE = fs.readFileSync(require('path').join(__dirname, '..', '..', 'vendo
 const PAGE = process.env.PAGE || require('path').join(__dirname, '..', '..', 'index.html');
 const ORIGIN = 'http://127.0.0.1:8099';
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const HOOK = 'requestAnimationFrame(frame);window.__hl={S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,RACE,rand,canFire,pacifist,tiltCentre,phaseLook,shots,fire,updateShots,WDEF,wrapU,live,aiWants,AIL,ailOf,mpFlags,flareCostOf,REFLECT_T,FLARE_K,FLARE_UNIT,reflectLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},step,codeStr,specStr,rndSeed,onUpper,openEd,closeEd,ed,surf,FK,FMAX,idxAt,modU,aiInput,aiStripBoost,AI_STRIP,aiSmoked,smokeH,SMOKE_AI,get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,NAV,SPL,splOpen,splGo,splLayoutFor,PADC,roster,ranking,toMenu,get LAPS(){return LAPS},mpTrackInfo,AIL,lbv};' +
+const HOOK = 'requestAnimationFrame(frame);window.__hl={S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,RACE,rand,canFire,pacifist,tiltCentre,phaseLook,shots,fire,updateShots,WDEF,wrapU,live,aiWants,AIL,ailOf,mpFlags,flareCostOf,REFLECT_T,FLARE_K,FLARE_UNIT,reflectLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},step,codeStr,specStr,rndSeed,onUpper,openEd,closeEd,ed,surf,FK,FMAX,idxAt,modU,aiInput,aiStripBoost,AI_STRIP,aiSmoked,smokeH,SMOKE_AI,get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,navBack,NAV,SPL,splOpen,splGo,splLayoutFor,PADC,roster,ranking,toMenu,get LAPS(){return LAPS},mpTrackInfo,AIL,lbv,get build(){return build},get lastDev(){return lastDev},touchUI,tut,carExists,qkReplay,qkFinish,get car(){return car}};' +
   'window.__nb={Chirp,ChirpIO,chirp,LAN,lan,lanUse,audio,PDG,priestDraw,qrDraw,jsqrLib};\n})();';
 const cache = {};
 function html(file) {
@@ -25,7 +25,8 @@ function launch(extra = []) {
   return chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader', '--disable-renderer-backgrounding', '--disable-background-timer-throttling', '--autoplay-policy=no-user-gesture-required', ...extra] });
 }
 // a page of its own (own context, own saves). o: vp, touch, ua, init (a function run before the page's scripts),
-// storage ({key: value} set before load), query (added to quick=0&share=0&lb=dead), file (another page), framed
+// storage ({key: value} set before load), quick (no quick=0: a fresh page launches into First flight, the quick races),
+// query (added to quick=0&share=0&lb=dead), file (another page), framed
 // (load the game inside a frame on another origin, as itch does), perms, before (called with the page before goto),
 // render (draw the scene; off by default)
 async function open(b, label, o = {}) {
@@ -33,8 +34,6 @@ async function open(b, label, o = {}) {
   const ctx = await b.newContext({ viewport: vp, hasTouch: !!o.touch, isMobile: !!o.touch && vp.width < 1000, deviceScaleFactor: o.dpr || 1, userAgent: o.ua || undefined });
   if (o.perms) await ctx.grantPermissions(o.perms, { origin: ORIGIN });
   if (o.init) await ctx.addInitScript(o.init, o.initArg);
-  // P60: a fresh page offers First flight at launch; tests that are not about it start with it seen (o.fresh keeps it)
-  if (!o.fresh) await ctx.addInitScript(() => { try { if (!localStorage.getItem('hoverline.tut')) localStorage.setItem('hoverline.tut', '1') } catch (e) {} });
   if (o.storage) await ctx.addInitScript((st) => { try { for (const [k, v] of Object.entries(st)) localStorage.setItem(k, v) } catch (e) {} }, o.storage);
   const p = await ctx.newPage(); p.label = label; p.ctx = ctx; p.errs = [];
   p.on('pageerror', (e) => { p.errs.push(e.message); console.log(label, 'PAGEERROR', e.message) });

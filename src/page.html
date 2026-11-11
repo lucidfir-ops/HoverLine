@@ -59,15 +59,27 @@
       <button class="btn mode" id="raceMode">Race<small>Any track · 7 AI pilots</small></button>
       <button class="btn mode" id="mpBtn">Multiplayer<small>Up to 8 pilots · online or in one room</small></button>
       <button class="btn mode" id="trialBtn">Time trial<small>Alone with the ghost of your best run</small></button>
-      <button class="btn mode" id="trainBtn">Training<small>Short tracks that repeat one thing · hills, corners, jumps</small></button>
+      <button class="btn mode" id="trainBtn">Training<small>Nose guide, control tutorial, First flight, practice tracks</small></button>
       <button class="btn mode" id="labBtn">Frame lab<small id="buildSum"></small></button>
     </div>
     <div class="row"><button class="btn" id="playBack" data-back>Back</button></div>
   </div>
 </div>
-<div id="train" class="overlay" hidden>
+<div id="trmenu" class="overlay" hidden>
   <div class="card">
     <div class="logo">TRAI<b>NING</b></div>
+    <div class="modes">
+      <button class="btn mode" id="guideBtn">Nose guide<small>When to lift or drop the nose</small></button>
+      <button class="btn mode" id="tutBtn">Control tutorial<small>The controls in six quick steps</small></button>
+      <button class="btn mode" id="ffBtn">First flight<small>The five short races that open the game, in the Blade</small></button>
+      <button class="btn mode" id="pracBtn">Practice tracks<small>Short tracks that repeat one thing · hills, corners, jumps</small></button>
+    </div>
+    <div class="row"><button class="btn" id="trmBack" data-back>Back</button></div>
+  </div>
+</div>
+<div id="train" class="overlay" hidden>
+  <div class="card">
+    <div class="logo">PRACTICE <b>TRACKS</b></div>
     <div class="sub">Short tracks that repeat one thing, lap after lap · times stay off the boards</div>
     <div class="row" id="trDrills" role="group" aria-label="Drill"></div>
     <p id="trDesc"></p>
@@ -136,17 +148,9 @@
     <div class="row"><button class="btn go" id="carAskYes">Yes · race</button><button class="btn" id="carAskNo" data-back>No</button></div>
   </div>
 </div>
-<div id="ffAsk" class="overlay" hidden>
-  <div class="card">
-    <div class="logo">FIRST <b>FLIGHT</b></div>
-    <p class="ask">New here? First flight is a short guided start: pick a frame, then six quick steps on the controls. About a minute.</p>
-    <p class="ask ffDim">Skip it and you can replay it any time from Options › Tutorial.</p>
-    <div class="row"><button class="btn go" id="ffYes">Start First flight</button><button class="btn" id="ffNo" data-back>Skip</button></div>
-  </div>
-</div>
 <div id="tutAsk" class="overlay" hidden>
   <div class="card">
-    <div class="logo">FIRST <b>FLIGHT</b></div>
+    <div class="logo">GUID<b>ANCE</b></div>
     <p class="ask">Do you require guidance?</p>
     <p id="tutAskP">Six quick steps on the controls before your first race, about half a minute.</p>
     <div class="row"><button class="btn go" id="tutYes">Yes</button><button class="btn" id="tutNo" data-back>Skip · straight to the races</button></div>
@@ -162,8 +166,6 @@
     <div class="modes">
       <button class="btn mode" id="setBtn">Settings<small>Performance, sound, music, race data</small></button>
       <button class="btn mode" id="ctlBtn">Controls<small>Touch, tilt, keys, pad, camera</small></button>
-      <button class="btn mode" id="guideBtn">Nose guide<small>When to lift or drop the nose</small></button>
-      <button class="btn mode" id="tutBtn">Tutorial<small>First flight: pick a frame, then the controls in six quick steps</small></button>
     </div>
     <div class="row"><button class="btn go" id="optDone" data-back>Done</button></div>
   </div>
@@ -484,13 +486,14 @@
     <button class="btn go" id="qkGo">Tap to race</button>
     <div class="qkDots" id="qkTapDots"></div>
   </div>
-  <button class="chip" id="qkTapMenu" data-back hidden>Menu</button>
+  <button class="chip" id="qkTapMenu" data-back hidden>Skip</button>
 </div>
 <div id="qkEnd" class="overlay pop" hidden>
   <div class="card">
     <div class="qkDots" id="qkEndDots"></div>
     <div class="big" id="qkEndPos">1st</div>
     <div id="qkEndMsg" hidden>You're ready</div>
+    <p id="qkEndSub" hidden>First flight done. Next, your career: choose a frame, then a minute on the controls.</p>
     <div class="row qkBtns"><button class="btn go" id="qkNext">Next race</button><button class="btn" id="qkAgain">Rematch</button><button class="btn" id="qkMenu" data-back>Main menu</button><button class="btn" id="qrView" hidden>Better view</button></div>
     <div class="row"><button class="chip" id="qkOnEnd" aria-pressed="true">Start with a quick race</button></div>
   </div>

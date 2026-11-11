@@ -41,7 +41,7 @@ and functions (hoisted) from anywhere. Nothing is imported or exported.
 | `input/` | 30 KB | Keyboard, touch slider, tilt, gamepads; menu navigation with a pad. |
 | `weapons/` | 34 KB | Firing modules, projectiles, mines, EMP; effects (debris, sparks, smoke, fireworks). |
 | `race/` | 95 KB | The AI (`054`: its modules, lapses and, since Prototype 50, the person's hands every AI pilot steers through), each frame's AI style and the AI's line (`055`), the race state `S`, race logs, `physics()` (the per-step racer update: steering, handling, drift, walls, speed) and collisions (`058`), ghosts, and the race flow (`startRace`, countdown, laps, results). |
-| `ui/` | 152 KB | Track editor, Controls, Set orientation, Settings, nose guide, menu pages, career, training, tutorial, ship lab, quick races, HUD and the screens. |
+| `ui/` | 152 KB | Track editor, Controls, Set orientation, Settings, nose guide, menu pages, career, Training (its page of four and the practice tracks), the control tutorial, ship lab, quick races (First flight), HUD and the screens. |
 | `net/` | 140 KB | Multiplayer: MQTT over public brokers plus WebRTC (`073`), the local Wi-Fi host, sessions and lobby, same-room pairing (codes, QR, sound), the in-game leaderboard, remote ships. |
 | `loop/` | 51 KB | The main loop (each frame: input, physics, camera, HUD, music hooks) and graphics options at run time. |
 

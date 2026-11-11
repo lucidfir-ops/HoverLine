@@ -62,7 +62,7 @@ function readInput(np){navWatch();
     if(B('w1').pressed)hold[0]=true;if(B('w2').pressed)hold[1]=true}
     const prev=padPrev[p.index]||[];const tg=performance.now()-PZ.touch<300,edge=i=>!tg&&b(i).pressed&&!prev[i],E=a=>edge(bind.pad[a]);
     if(tg&&p.buttons.some((x,i)=>x.pressed&&!prev[i])){PZ.gc[p.id]=(PZ.gc[p.id]||0)+1;if(PZ.gc[p.id]>=2){PZ.ghosts.add(p.id);if(LOG.cur)logEv('ghostpad',{id:String(p.id||'').slice(0,48)})}}
-    if(!tg&&(p.buttons.some((x,i)=>x.pressed&&!prev[i])||Math.abs(ax)>0.5||Math.abs(ay)>0.5)){padSeen(p);setDev('pad')}
+    if(!tg&&!touchesDown&&(p.buttons.some((x,i)=>x.pressed&&!prev[i])||Math.abs(ax)>0.5||Math.abs(ay)>0.5)){padSeen(p);setDev('pad')}
     if(rebind.on&&rebind.dev==='pad'){const i=p.buttons.findIndex((x,i)=>x.pressed&&!prev[i]);if(i>=0)rebindPad(i);padPrev[p.index]=p.buttons.map(x=>x.pressed);continue}
     if(SPL.open&&splPadLobby(p,prev)){padPrev[p.index]=p.buttons.map(x=>x.pressed);continue}
     if(!np&&E('view')&&(S.state==='race'||S.state==='countdown'||S.state==='done'))setCam(camMode+1,true);

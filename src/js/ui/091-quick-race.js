@@ -8,7 +8,10 @@
    where the sensor reaches the page (Prototype 48; tablets use the slider only). Quick
    races stay off the boards, best laps, ghosts, the career and the profile, and don't touch hoverline.code or lastmode;
    their logs say mode 'quick' and the step. Everything here runs only while QK.live: with it off the game is as before.
-   Who gets it: anyone with "Start with a quick race" on (hoverline.quick), and a browser with nothing saved (qkFresh). */
+   Who gets it: anyone with "Start with a quick race" on (hoverline.quick), and a browser with nothing saved (qkFresh).
+   Prototype 61: these five races are First flight (Eric's name). A new player's browser launches straight into them in
+   the Blade; finishing race 5 offers Start new career (frame select, control tutorial, career page); Skip anywhere before
+   then turns them off and says that Training › First flight replays them (QK.rep: a replay, which never starts by itself). */
 const QK_N=5,QK_T=[null,
  {"seed":10096641,"bio":["U",[2,1,0,1]],"segs":[[95.515],[50.633,145.0,60.0],[30.0],[-50.77,150.0,60.0],[30.0],[107.246,140.0,60.0],[68.715],[100.749,140.0,60.0],[111.303],[-53.422,150.0,60.0],[57.79],[111.58,138.0,60.0],[203.171],[93.983,145.0,60.0],[35.515]],"y":[],"pads":[[868.9,0,3,34],[1971.8,[-4,0,4],3,34]],"am":[],"hp":null,"split":0,"lean":255.8},
  {"seed":10100738,"bio":["U",[3,0,1,0]],"segs":[[188.386],[-89.25,140.0,60.0],[30.0],[-59.825,150.0,60.0],[30.0],[32.732,170.0,60.0],[30.0],[-115.837,140.0,60.0],[51.331],[-29.775,280.0,70.0],[133.265],[-98.045,140.0,60.0],[118.386]],"y":[],"pads":[[1984.8,0,2,36]],"am":[[50,170,0],[1553.4,1666.7,"L"]],"hp":null,"split":0},
@@ -17,7 +20,7 @@ const QK_N=5,QK_T=[null,
  {"seed":10113029,"bio":["U",[3,2,0,0]],"segs":[[113.831],[-90.157,140.0,60.0],[309.86],[-101.708,140.0,60.0],[30.0],[23.468,160.0,60.0],[30.0],[-106.564,140.0,60.0],[310.565],[-85.039,140.0,60.0],[93.831]],"y":[[394.1,704.0,-30],[1518.4,1829.0,30]],"pads":[[1012.5,0,2,36]],"am":[[50,170,0],[1080.2,1198.0,"R"]],"hp":[1882.5,2162.5],"split":0}];
 const QK=(()=>{let o=null;try{o=JSON.parse(store.get('hoverline.quick')||'null')}catch(e){}o=o&&typeof o==='object'?o:null;const arr=a=>Array.isArray(a)?a.slice(0,QK_N).map(x=>x|0):[];
   return{live:false,on:o?o.on!==false:null,next:o?clamp((o.next|0)||1,1,QK_N+1):1,rot:o?clamp(o.rot|0,0,QK_N-1):0,best:o?arr(o.best):[],tries:o?arr(o.tries):[],runs:o?o.runs|0:0,
-    cur:1,lvl:1,post:false,home:null,own:null,pend:null,tips:[],tip:null,tipT:0,slot:0,holdK:-1,place:0,hold:null,hud:0}})();
+    cur:1,lvl:1,post:false,rep:false,home:null,own:null,pend:null,tips:[],tip:null,tipT:0,slot:0,holdK:-1,place:0,hold:null,hud:0}})();
 const qkSave=()=>store.set('hoverline.quick',JSON.stringify({v:40,on:QK.on!==false,next:QK.next,rot:QK.rot,best:QK.best,tries:QK.tries,runs:QK.runs}));
 /* "Nothing saved": no hoverline.* key except the ones the game writes by itself on a first visit, before anyone touches
    anything: def39, ultra32, ultra34, ultra35 and bioR (one-off moves of old settings), cam while it is the default view,
@@ -25,7 +28,10 @@ const qkSave=()=>store.set('hoverline.quick',JSON.stringify({v:40,on:QK.on!==fal
    and quick itself; and, where the software-drawing check picked Ultra low on its own (autoUltra 'soft'), the style, res,
    low, fcap and mmode it wrote. Anything else (a volume, a control or music setting, a log, a best lap, a ghost, a career,
    the tutorial seen, a name) means someone has played here. Storage that can't be read counts as nothing saved. */
-const QK_AUTO=['def39','ultra32','ultra34','ultra35','bioR','code','mhist','padkind','autoUltra','quick','orient'],QK_SOFT=['style','res','low','fcap','mmode'];
+/* Prototype 61: bioP (Prism joining the ticked settings, written at every load since Prototype 51) and mtpl (the music's
+   memory of recent templates) were missing from this list, so since Prototype 51 no browser counted as fresh and the
+   quick races never started by themselves. tools/tests/first-flight.js now loads a fresh page and checks they do. */
+const QK_AUTO=['def39','ultra32','ultra34','ultra35','bioR','bioP','code','mhist','mtpl','padkind','autoUltra','quick','orient'],QK_SOFT=['style','res','low','fcap','mmode'];
 function qkFresh(){try{const ls=localStorage,soft=ls.getItem('hoverline.autoUltra')==='soft';
     for(let i=0;i<ls.length;i++){const k=ls.key(i);if(!k||!k.startsWith('hoverline.'))continue;const s=k.slice(10);
       if(QK_AUTO.includes(s)||s==='cam'&&ls.getItem(k)==='1'||soft&&QK_SOFT.includes(s))continue;return false}}catch(e){}return true}

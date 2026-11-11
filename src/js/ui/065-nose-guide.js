@@ -119,6 +119,6 @@ function gColours(c,w,h){const S=Math.max(36,Math.min(80,w*0.1)),y=h*0.5,cols=[[
   for(const[x,t1,t2,o,a]of cols){gShipSide(c,x,y,a,S,o);gLabel(c,x,y+S*0.25+28,t1,o.shell==='red'?GC.red:o.shell?GC.grey:GC.green,'center');gLabel(c,x,y+S*0.25+46,t2,GC.dim,'center')}
   const mk=[['dive','green V · nose down'],['grip','grey Λ · nose up']],yy=h*0.18;mk.forEach(([m,txt],i)=>{const x=w*(0.3+0.4*i),col=GMARK[m][0];c.strokeStyle=col;c.fillStyle=col;c.lineWidth=5;c.beginPath();
     if(m==='dive'){c.moveTo(x-18,yy-8);c.lineTo(x,yy+8);c.lineTo(x+18,yy-8);c.stroke()}else if(m==='grip'){c.moveTo(x-18,yy+8);c.lineTo(x,yy-8);c.lineTo(x+18,yy+8);c.stroke()}else{c.fillRect(x-18,yy-9,36,6);c.fillRect(x-18,yy+3,36,6)}gLabel(c,x,yy+30,txt,GC.dim,'center')})}
-$('guideBtn').onclick=()=>openGuide('opts');$('guideDone').onclick=closeGuide;
+$('guideBtn').onclick=()=>openGuide('trmenu');/* Prototype 61: under Training, not Options */$('guideDone').onclick=closeGuide;
 $('guideNext').onclick=()=>guideShow(guide.i+1);$('guidePrev').onclick=()=>guideShow(guide.i-1);
 $('ctlBtn').onclick=()=>openCtl('opts');$('setBtn').onclick=()=>openSet('opts');$('musDone').onclick=closeMus;$('setDone').onclick=closeSet;$('ctlDone').onclick=closeCtl;

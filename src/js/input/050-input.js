@@ -35,7 +35,20 @@ const keyIs=(a,code)=>bind.key[a].includes(code);
 const keyHeld=a=>bind.key[a].some(c=>keys[c]);
 /* The last thing used decides which button names the HUD shows. */
 let lastDev=coarse?'touch':'key';
-const setDev=d=>{if(lastDev!==d){lastDev=d;hudT=0;if(S.state==='lab')try{labSlotTags()}catch(e){}}};
+const setDev=d=>{if(lastDev!==d){lastDev=d;hudT=0;if(S.state==='lab')try{labSlotTags()}catch(e){}try{touchSync()}catch(e){}}};
+/* Prototype 61: the touch controls follow the device in use. A Steam Deck has a touch screen and a pad, so touch being
+   on (coarse) only means they may show: they do while the last input was a touch, hide after a pad press or a key, and
+   come back with the next touch, in races, the quick races and the control tutorial. (Split screen keeps its own rule:
+   there the touch controls belong to whoever plays on this device.) */
+const touchUI=()=>coarse&&lastDev==='touch';
+/* only keys the game uses count as playing on the keys (a phone's volume or media keys must not hide its controls), and
+   a pad counts only while no finger is on the screen (some phones report the touch screen as a pad: PZ in race-flow) */
+const keyPlay=c=>/^(Arrow|Key[WASD]$|Enter$|NumpadEnter$|Space$|Escape$|Tab$)/.test(c)||ACTS.some(([a])=>keyIs(a,c));
+let touchesDown=0;for(const ev of['touchstart','touchend','touchcancel'])addEventListener(ev,e=>{touchesDown=e.touches?e.touches.length:0},{capture:true,passive:true});
+function touchSync(){const on=touchUI(),T0=$('touch');if(!T0||SPL&&SPL.race)return;$('slots').hidden=on;if(QK.live)qkClasses();
+  if(tut.on){T0.hidden=!on;if(!tut.fin)tutText()}
+  else if(!$('hudL').hidden&&(S.state==='race'||S.state==='countdown'||S.state==='paused'||S.state==='done'))T0.hidden=!on;
+  if(!T0.hidden)touchLayout();if(!$('qkTap').hidden)qkGoLabel()}
 const actLabel=a=>lastDev==='pad'?padName(bind.pad[a]):keyName(bind.key[a][0]);
 /* the pad last pressed names the buttons: a new kind of pad redraws every label that shows them */
 function padSeen(p){if(p.id===PAD.id)return;PAD.id=p.id;const k=padKindOf(p.id);if(k===PAD.kind)return;PAD.kind=k;store.set('hoverline.padkind',k);hudT=0;padLabels()}
@@ -44,7 +57,7 @@ const tilt={ok:false,ang:0,neutral:0,pa:0,np:0,at:0,n:0,blocked:false,msg:'',ena
   pitchMode:+(store.get('hoverline.tpitch')||0)}; // 0 tilt pitch on, 1 on and inverted, 2 off
 let padPrev=[];const fireQ=[false,false];
 addEventListener('keydown',e=>{if(rebind.on){rebindKey(e);return}if(e.code.startsWith('Arrow')||e.code==='Escape')setDev('key');if(navKey(e))return;if(e.repeat&&!e.code.startsWith('Arrow')){e.preventDefault();return}keys[e.code]=true;
-  const inField=e.target.tagName==='INPUT'||e.target.tagName==='BUTTON';if(!inField)setDev('key');
+  const inField=e.target.tagName==='INPUT'||e.target.tagName==='BUTTON';if(!inField&&keyPlay(e.code))setDev('key');
   if(e.code==='Escape'&&!$('ed').hidden){closeEd(false);e.preventDefault();return}
   if(guide.on&&(e.code==='ArrowRight'||e.code==='ArrowLeft')){guideShow(guide.i+(e.code==='ArrowRight'?1:-1));e.preventDefault();return}
   if(keyIs('pause',e.code)&&!(inField&&e.code!=='Escape')){if(guide.on){closeGuide();e.preventDefault();return}if(!$('ctl').hidden)closeCtl();else if(S.state==='lab')closeLab();else togglePause('key '+e.code);e.preventDefault()}

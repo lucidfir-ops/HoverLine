@@ -430,7 +430,7 @@ body:has(.overlay:not([hidden])) :is(.hud,#pauseBtn){visibility:hidden}
 .overlay.pop{justify-content:center;align-items:center;background:rgba(6,8,12,.74)}
 .overlay.pop .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;box-sizing:border-box;width:min(460px,100%)}
 p.ask{margin:0;font:600 clamp(17px,3vmin,21px)/1.35 var(--display)}
-#ffAsk p{margin:0;line-height:1.45}#ffAsk .ffDim{color:var(--dim);font-size:14px}#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
+#tutAsk p{margin:0}#tutAskP{color:var(--dim);font-size:14px;line-height:1.45}
 #carAskN{font-size:clamp(30px,7vmin,48px)}#bview .big{font-size:clamp(26px,6vmin,40px)}#bview p.ask{font:500 14px/1.45 var(--display);color:var(--dim);margin:8px 0}#bview p.ask b{color:var(--ink,#fff)}#carAsk p.ask{font:500 14px/1.45 var(--display);color:var(--dim)}
 .carRule{font-size:13px;color:var(--ink);line-height:1.35}
 #carSub b{color:var(--ink)}
@@ -473,6 +473,7 @@ p.ask{margin:0;font:600 clamp(17px,3vmin,21px)/1.35 var(--display)}
 #qkEnd .card{align-items:center;text-align:center;gap:14px;width:min(440px,100%)}
 #qkEnd .big small{display:block;margin:6px 0 0}
 #qkEndMsg{font:700 clamp(30px,7vmin,46px)/1.05 var(--display);font-style:italic;margin:2px 0}
+#qkEndSub{margin:0;color:var(--dim);font-size:14px;line-height:1.45;max-width:340px}
 #qkEnd .row{justify-content:center}
 #qkEnd .qkBtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(340px,100%)}#qkEnd .qkBtns .btn{min-height:48px}#qkEnd .qkBtns .go{grid-column:1/-1;font-size:20px}#qkEnd .qkBtns.ready #qkMenu,#qrView{grid-column:1/-1}
 body:has(.overlay:not([hidden])) #qkTip{visibility:hidden}
