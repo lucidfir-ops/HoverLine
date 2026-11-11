@@ -42,11 +42,11 @@ function buildTrack(seed,wk,cx,lk,sp,bm){
   if(T)disposeGroup(T.group);
   const rd=roadShape(seed,wk,cx,lk,sp);Object.assign(rd,roadBuild(rd));
   const{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,group,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,minY}=rd;let{minX,maxX,minZ,maxZ}=rd;
-  const{LK,bk,dial,floorY,water,tun,PR,env,bmInfo}=buildScenery(rd,bm);
+  const{LK,bk,dial,floorY,water,tun,prism,env,bmInfo}=buildScenery(rd,bm);
   headL.visible=!!cx;hemi.color.setHex(LK.hemi?LK.hemi[0]:0x9fb4d0);hemi.groundColor.setHex(LK.hemi?LK.hemi[1]:0x15120c);hemi.intensity=LK.hemi?LK.hemi[2]:0.85;sun.color.setHex(LK.sun?LK.sun[0]:0xfff1d6);sun.intensity=LK.sun?LK.sun[1]:0.7;
   for(const S0 of splits)for(const q of S0.pts){minX=Math.min(minX,q.x);maxX=Math.max(maxX,q.x);minZ=Math.min(minZ,q.z);maxZ=Math.max(maxZ,q.z)}
   /* Prototype 60: which new jump's gap each sample is in (its index + 1), for drawing a frame over it level (placeShip) */
   const jg=new Uint16Array(N);jumps.forEach((j,n)=>{if(j.kind)for(let k=Math.ceil(j.u0/ds);k<=Math.floor(j.u1/ds);k++)jg[k%N]=n+1});
-  T={jg,env,tun,prism:bk==='P'?PR:null,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY}};
+  T={jg,env,tun,prism,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY}};
   try{VFX.hz=null}catch(e){}
 }

@@ -59,12 +59,12 @@ const HASH = (job) => {
     for (const S of T.splits) { json({ ...S, b: 0, pts: S.pts.length, adj: 0 }); arr(S.adj); for (const B of S.b) for (const k of Object.keys(B).sort()) arr(B[k]) }
     json([T.bounds, T.stats, T.floorY, T.fig8, T.theme, T.dropped, T.bm, T.wk, T.cx, T.lk]) });
   // the scene, object by object
-  let nObj = 0, nVert = 0;
-  cut('scene', () => { T.group.traverse((o) => { nObj++; str(o.type); str(o.visible + '/' + o.renderOrder + '/' + o.frustumCulled + '/' + o.children.length); arr(o.matrix.elements);
+  let nObj = 0, nVert = 0; const each = [];
+  cut('scene', () => { T.group.traverse((o) => { nObj++; if (job.dump) each.push(o.type + ' ' + (o.material && o.material.type) + ' ' + x.toString(16)); str(o.type); str(o.visible + '/' + o.renderOrder + '/' + o.frustumCulled + '/' + o.children.length); arr(o.matrix.elements);
     const g = o.geometry; if (g) { str(g.type); if (g.parameters) json(g.parameters); for (const k of Object.keys(g.attributes).sort()) { str(k); arr(g.attributes[k].array) } arr(g.index && g.index.array); if (g.attributes.position) nVert += g.attributes.position.count }
     if (o.isInstancedMesh) { u32(o.count); arr(o.instanceMatrix.array); arr(o.instanceColor && o.instanceColor.array) }
     if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(mat) }) });
-  part.n = nObj + '/' + nVert;
+  part.n = nObj + '/' + nVert; if (job.dump) return each;
   cut('env', () => { const e = T.env; for (const k of ['fallItems', 'lavaItems', 'capItems', 'jelItems', 'kelpItems', 'fishItems', 'schools', 'mantas']) json(e[k]);
     json(e.gItems.map((o) => ({ ...o, g: [o.g.x, o.g.z, o.g.base, o.g.h, o.g.per, o.g.ph, o.g.lava] }))); json([e.k, e.floorY, e.capY, !!e.cave, !!e.sky]) });
   part.info = T.bmInfo;
@@ -79,6 +79,8 @@ const HASH = (job) => {
   for (let q = 1; q <= 5; q++) jobs.push({ key: 'quick' + q, quick: q, tod: 'night' });
   for (const [d, bio] of [['J', 'U'], ['S', 'P'], ['R', 'O']]) jobs.push({ key: 'train' + d + '-' + bio, train: d, bio, tod: 'day' });
   const b = await launch(); const p = await open(b, 'scene-hash', { file: tmp });
+  // DUMP=code@tod (e.g. WX630A48@night): print the running hash after each object of that build, to find the first that differs
+  if (process.env.DUMP) { const [code, tod] = process.env.DUMP.split('@'); console.log((await p.evaluate(HASH, { code, tod: tod || 'night', dump: 1 })).join('\n')); fs.unlinkSync(tmp); await b.close(); return }
   const got = {}, t0 = Date.now();
   for (const j of jobs) got[j.key] = await p.evaluate(HASH, j);
   // and the same again for a few, so a flaky hash (a texture drawn before its font loaded, say) shows as such
