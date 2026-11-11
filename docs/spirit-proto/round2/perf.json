@@ -433,10 +433,10 @@
  },
  "02-all-slow": {
   "frames": 210,
-  "avgCalls": 537,
-  "maxCalls": 545,
-  "avgTris": 273447,
-  "maxTris": 303186,
+  "avgCalls": 533,
+  "maxCalls": 541,
+  "avgTris": 272921,
+  "maxTris": 302658,
   "parts": {
    "stars": {
     "prims": 1600,
@@ -881,10 +881,10 @@
  },
  "03-all-wide": {
   "frames": 180,
-  "avgCalls": 398,
-  "maxCalls": 552,
-  "avgTris": 270282,
-  "maxTris": 303154,
+  "avgCalls": 543,
+  "maxCalls": 550,
+  "avgTris": 303065,
+  "maxTris": 305218,
   "parts": {
    "stars": {
     "prims": 1600,
@@ -1178,7 +1178,7 @@
    "lattice struts cut (rule A)": 15,
    "room nodes cut (rule A)": 2,
    "room struts cut (rule A)": 5,
-   "head pushed out (frames)": 384
+   "head pushed out (frames)": 73
   },
   "extra": {
    "gateBad": {
@@ -1402,18 +1402,18 @@
   "extra": null
  },
  "10-colossi": {
-  "frames": 135,
-  "avgCalls": 160,
-  "maxCalls": 171,
-  "avgTris": 92333,
-  "maxTris": 92836,
+  "frames": 120,
+  "avgCalls": 190,
+  "maxCalls": 194,
+  "avgTris": 92383,
+  "maxTris": 92530,
   "parts": {
    "stars": {
     "prims": 1600,
     "calls": 1
    },
    "floating solids": {
-    "prims": 2136,
+    "prims": 748,
     "calls": 2
    },
    "colossi": {
@@ -1423,8 +1423,8 @@
   },
   "spc": {
    "sky solids": {
-    "tried": 200,
-    "placed": 200,
+    "tried": 70,
+    "placed": 70,
     "moved": 0,
     "dropped": 0,
     "pts": 0
@@ -1434,7 +1434,7 @@
     "placed": 3,
     "moved": 0,
     "dropped": 0,
-    "pts": 89693
+    "pts": 89692
    }
   },
   "notes": {},

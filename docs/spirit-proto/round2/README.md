@@ -36,8 +36,9 @@ Every placer asks it: a piece is checked point by point along its lines and over
 animation (and pieces in flight, like an arch's blocks, at every stage of their flight). If it is in the way it is moved
 (up to 8 to 16 tries) or left out. Moving things are checked each frame (the heads are pushed outward while they would be
 in the way). Arches and pyramid crowns fly in and out along paths that never cross the road. In the everything clips:
-of about 560 pieces tried, 18 were left out (a gyroscope gate, a stepped stack, a shoal arch and two sacred-geometry
-pieces could find no clear place on the spiral's curves) and about 160 lattice nodes and struts were cut. The road runs
+of 528 pieces tried, 14 were left out (5 floating solids, 2 carved blocks, a pyramid pair, 2 stepped stacks, the
+gyroscope gate, the shoal arch and 2 sacred-geometry pieces found no clear place on the spiral's curves), 155 lattice
+nodes and struts were cut, and the near heads were pushed outward on 295 frames. The road runs
 through a ring (a gyroscope, an arch, a block ring) only where the ring is clear of the keep-out and the camera's view
 of the road passes through its opening, which on this track means the straighter parts.
 
@@ -58,7 +59,7 @@ triangles. Measured per frame in these clips (`perf.json` has every clip and eve
 
 | Scene | Draw calls | Triangles | Notes |
 | --- | --- | --- | --- |
-| Everything at once (01, 02) | 537 average, 551 most | 280,000 average, 305,000 most | So the realm adds about 370 draws and 200,000 triangles. Too many draws for a mid-range phone at 60 fps; triangles are fine (they are mostly 2-triangle line quads). |
+| Everything at once (01 to 03) | 533 to 543 average, 550 most | 273,000 to 303,000 average, 305,000 most | So the realm adds about 370 draws and 200,000 triangles. Too many draws for a mid-range phone at 60 fps; triangles are fine (they are mostly 2-triangle line quads). |
 | Lattice in sections | 7 to 10 (one per 320 m of road) | 46,000 to 74,000 | The biggest triangle cost; far chunks are culled. Struts are only in the sections. |
 | Music clip (05) | 235 | 150,000 | |
 | Portal view (06, 07) | the scene again: up to 208 | up to 144,000 | A second render at half resolution (a quarter of the pixels), only while the ring is in view. It could skip the small things (a layer mask) to halve the draws. |
@@ -92,8 +93,8 @@ harness and encoder). Clips: `tools/spirit-proto/round2/clips.js`, rendered with
 - At race speed the everything clip is a blur of pieces; the half-speed and wide clips show it better.
 - The portal's picture has no bloom of its own (it is drawn at half resolution and then bloomed with the scene), so it
   looks a little softer than the world around it until you are through.
-- Where a lattice section is strong and the camera looks along it, the lines pile up into a white glow; the sections
-  in the everything clips were turned down for that.
+- Where a lattice section is strong and the camera looks along it, the lines pile up into a white glow, most of all on
+  the drop's flare (02, middle). The sections were turned down for it, but not enough there.
 - The lattice's fade is easier to see from the high camera (11) than from the chase camera.
 
 ## Questions for Eric
