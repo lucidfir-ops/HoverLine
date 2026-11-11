@@ -6,6 +6,7 @@
 // A refactor must leave every hash as it was: any change in what is built, or in the order random numbers are drawn,
 // shows up here. scene-hash.json was made from the build before the Prototype 61 split of 004-track.js.
 //       node tools/tests/scene-hash.js            MAKE=1 node tools/tests/scene-hash.js  (writes the hashes)
+//       ADD=1 node tools/tests/scene-hash.js   (adds the hashes of builds the file lacks, leaving every other as it is)
 const fs = require('fs'), path = require('path'), os = require('os');
 const { launch, open, ok, done } = require('./lib.js');
 const HF = path.join(__dirname, 'scene-hash.json');
@@ -20,7 +21,9 @@ const spec = (k, n) => { const c = Array(15).fill(0); c[KINDS[k]] = n; return '1
 const MORE = ['W2B4C6D', 'S5A5A5A-O', 'N3C3C3C-F', 'WQ777777-N', 'SL0ABCDE-R', 'N0FEDCB-P', 'SX1A2B3C4-U3434', 'NX1B2C3D-F3444',
   'WXL1C4D5E-O3444', 'SX1D00D1E-R3444', 'NXL1E0E0F-N3444', 'WX1F1F1F-U0000', 'SXL1A0B0C4-' + spec('drop', 2) + '-U', 'NXL1C0D0E5-' + spec('sjump', 1) + '-P',
   'WXL10F1F25-' + spec('cjump', 1) + '-R', 'SXL1A0B0C6-' + spec('vspire', 1) + '-F', 'WXL10F1F26-' + spec('dhelix', 1) + '-O'];
-const CODES = [...ERIC, ...MORE];
+// Prototype 62: Spirit realm codes (S), their hashes added with ADD=1 (which writes only the builds the file lacks)
+const SPIRIT = ['W1234567-S', 'NX1ABCDEF-S', 'SL1C0FFEE-S', 'NXL1C0D0E5-' + spec('sjump', 1) + '-S', 'WXL10F1F26-' + spec('dhelix', 1) + '-S', 'NXQ5102B5-33224444222-S'];
+const CODES = [...ERIC, ...MORE, ...SPIRIT];
 const LOW = ['NX130F38-P', 'NXL2CF89D-23224444222-O', 'NXL4ADBF6-F', 'NXLC4B123-N', 'SXFAB551-R', 'WX630A48'];
 
 // the page with a hook of this test's own (tod, RES, the First flight and drill tracks are not in lib.js's hook)
@@ -89,6 +92,8 @@ const HASH = (job) => {
   fs.unlinkSync(tmp);
   const flaky = Object.keys(again).filter((k) => JSON.stringify(again[k]) !== JSON.stringify(got[k]));
   ok(!flaky.length, `a second build of ${Object.keys(again).length} codes hashes the same as the first` + (flaky.length ? ' · differ: ' + flaky.join(' ') : ''));
+  if (process.env.ADD) { const have = JSON.parse(fs.readFileSync(HF, 'utf8')), add = Object.keys(got).filter((k) => !have[k]); for (const k of add) have[k] = got[k];
+    fs.writeFileSync(HF, JSON.stringify(have, null, 0).replace(/},"/g, '},\n"') + '\n'); console.log('added', add.length, 'builds:', add.join(' ')); await b.close(); return done() }
   if (process.env.MAKE) { fs.writeFileSync(HF, JSON.stringify(got, null, 0).replace(/},"/g, '},\n"') + '\n'); console.log('wrote', HF, Object.keys(got).length, 'builds in', secs, 's'); await b.close(); return done() }
   const want = JSON.parse(fs.readFileSync(HF, 'utf8')); let same = 0; const diff = [];
   for (const k of Object.keys(want)) { const a = got[k], w = want[k]; const bad = Object.keys(w).filter((q) => w[q] !== (a && a[q])); if (bad.length) diff.push(k + ':' + bad.join('/')); else same++ }
