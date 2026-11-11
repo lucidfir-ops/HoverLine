@@ -37,6 +37,12 @@ SPR.put = function (name, obj, cand, o = {}) {
   const ok = SPC.fit(name, obj, (g, k) => { const c = cand(k, r); SPR.pose(g, c.u, c.lat, c.h, c) }, { times, tries: o.tries || 14, step: o.step, pad: o.pad });
   if (ok) SPR.add(obj, o.cost || name); return ok ? obj : null };
 
+// hide the game's supports under the road (Prism's spire pylons): any road mesh that reaches more than 5 m under the road
+SPR.hideSupports = function () { const C = window.__cv, v = new V3(); let n = 0;
+  for (const g of SW.roadObjs || []) g.traverse((m) => { if (!m.isMesh || !m.geometry || !m.geometry.attributes.position) return; const P = m.geometry.attributes.position; m.updateMatrixWorld(true);
+    for (let k = 0; k < 40; k++) { const i = Math.floor(k / 39 * (P.count - 1)); v.fromBufferAttribute(P, i).applyMatrix4(m.matrixWorld); const s = SPC.inKeep ? nearestSample(v) : null; if (s && v.clone().sub(s.p).dot(s.up) < -5) { m.visible = false; n++; break } } });
+  return n };
+function nearestSample(p) { let b = null, d = 1e18; for (let i = 0; i < SPC.samples.length; i += 3) { const s = SPC.samples[i], dd = s.p.distanceToSquared(p); if (dd < d) { d = dd; b = s } } return b }
 // ---------------------------------------------------------------- the beat
 /* One beat object for every piece (SPFX's fields and SW's): t, spb, b (beats), step, ph, k (kick, decays), bar, bb,
    bars, dropN, drop (decays over a bar after a drop starts), tDrop, toDrop, build (0..1 through a build), brk (1 in a

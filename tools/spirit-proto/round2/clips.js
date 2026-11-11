@@ -13,7 +13,7 @@ const ECHO = [
 const UE = 4000;
 // the simulated clock for clips without the real tune: 2 bars of build, then the drop (140 bpm)
 const SIM = { bpm: 140, secs: [[0, 'rise', 2], [2, 'drop', 8], [10, 'b', 8]] };
-const ALL = { u0: 2900, u1: 5480, sections: [{ u: 3250, half: 220, fade: 220, peak: 0.6 }, { u: 4350, half: 160, fade: 200, peak: 1 }, { u: 5150, half: 260, fade: 220, peak: 0.9 }],
+const ALL = { u0: 2900, u1: 5480, latGain: 0.75, sections: [{ u: 3250, half: 220, fade: 220, peak: 0.55 }, { u: 4350, half: 160, fade: 200, peak: 0.8 }, { u: 5150, half: 240, fade: 220, peak: 0.75 }],
   room: { u0: 4960, len: 360 }, gate: [3880, 3900, 3920, 3940, 3960, 3980, 4000, 4020, 4860, 4880, 4900, 4920, 4940], arches: [[5380, 5400, 5420, 5440, 5460, 5360, 5340], [4870, 4890, 4910, 4930, 4950, 4850, 4830, 4810], [3900, 3920, 3940, 3960, 3980, 4000, 4020, 4040, 5470, 5490]], rings: [3060, 3460, 4250, 4540, 4880], spiral: [2550, 3720],
   pairs: [{ u: 3300, side: 1, d: 150, du: 160 }, { u: 4420, side: -1, d: 120, du: 150 }, { u: 5150, side: 1, d: 140, du: 150 }], bigZig: [{ u: 4700, side: 0, y: 210, half: 140, n: 8, sh: 18, inv: true }] };
 const allCap = (what) => `SPR.cap = () => '<b style="color:#ffb000">B</b> Everything at once · ${what}<br><span style="color:#b8bfcc">lattice in sections, stacks, pyramids, rings, gyroscopes, knots, unfolding solids, shoals, colossi, arches, sacred geometry, carved blocks, stepped sky, other realms, a room, the serpent, heads · simulated 140 bpm</span>'; SPR.meter = true;`;
@@ -24,9 +24,9 @@ module.exports = {
     setup: new Function('a', `SPR.useClock(a.sim); SPR.everything(a.all); SW.pack(a.pack, { u: a.u }); SW.camO = { mode: 'chase', d: 12, h: 4.5, l: 16, lu: 2, fov: 78 }; ${allCap('chase camera at race speed (150 m/s)')}`) },
   '02-all-slow': { title: 'B: everything at once, half speed', code: SPIRE, secs: 14, range: [2400, 5543], arg: { u: 4380, pack: PACK, all: ALL, sim: SIM },
     setup: new Function('a', `SPR.useClock(a.sim); SPR.everything(a.all); SW.pack(a.pack, { u: a.u, speed: 0.5 }); SW.camO = { mode: 'chase', d: 12, h: 4.8, l: 16, lu: 3, fov: 80 }; ${allCap('chase camera at half speed (75 m/s)')}`) },
-  '03-all-wide': { title: 'B: everything at once, wide', code: SPIRE, secs: 12, range: [2400, 5543], arg: { u: 2980, pack: PACK, all: ALL, sim: SIM },
+  '03-all-wide': { title: 'B: everything at once, wide', code: SPIRE, secs: 12, range: [2400, 5543], arg: { u: 4250, pack: PACK, all: Object.assign({}, ALL, { latGain: 0.45 }), sim: SIM },
     setup: new Function('a', `SPR.useClock(a.sim); SPR.everything(a.all); SW.pack(a.pack, { u: a.u, speed: 0.6 });
-      SW.camF = (t) => { const r = SW.P[SW.camI].r; return { mode: 'rail', u: r.u - 90 + t * 20, side: 150, up: 95, look: 260, ls: 0, lu: 20, fov: 66, worldUp: true } }; ${allCap('wide, from a crane outside the spiral (90 m/s)')}`) },
+      SW.camF = (t) => { const r = SW.P[SW.camI].r; return { mode: 'rail', u: r.u - 200 + t * 30, side: -330, up: 240, look: 220, ls: 0, lu: 0, fov: 58, worldUp: true } }; ${allCap('wide, from a crane beside the run after the dive (90 m/s)')}`) },
   // ---------------------------------------------------------------- A: rule A shown (gate and room on a bend)
   '04-gate-and-room': { title: 'A: a gyroscope gate and the lattice hall round a bend', code: TRACK, secs: 10, range: [3200, 5160], arg: { u: 3480, pack: PACK, sim: SIM },
     setup: new Function('a', `SPR.useClock(a.sim); SW.stars({ u0: 3300, u1: 4800, n: 1400 }); SW.solids({ u0: 3300, u1: 4900, n: 160, side0: 40, side1: 420, up0: -120, up1: 260, clear: 30, s0: 4, s1: 24, name: 'floating solids' });
@@ -72,8 +72,8 @@ module.exports = {
   '09-shoal-forms': { title: 'C: things made of shoals', code: TRACK, secs: 10, range: [3200, 5160], arg: { u: 3480, pack: PACK, sim: SIM },
     setup: new Function('a', `SPR.useClock(a.sim); SW.stars({ u0: 3300, u1: 4800, n: 1400 });
       SPR.lattice({ u0: 3300, u1: 4600, sections: [{ u: 3900, half: 400, fade: 200, peak: 0.35 }] });
-      const span = 2 * (13 + SPC.o.margin) * 2.1, rise = SPC.o.above * 2.5;
-      SPR.put('arch of shoals', SPR.shoalForm(SPR.shape.arch(span, rise, 17, 5), { n: 1000, fish: 0.9, amp: 5, pal: 'jade' }), (k) => ({ u: 3820 + k * 12, lat: 0, h: 0 }), { tries: 10, nt: 3 });
+      const span = 2 * (13 + SPC.o.margin) * 2.2, rise = SPC.o.above * 3;
+      SPR.put('arch of shoals', SPR.shoalForm(SPR.shape.arch(span, rise, 17, 5), { n: 1100, fish: 1, amp: 3.5, pal: 'jade' }), (k) => ({ u: 3780 + k * 12, lat: 0, h: 0 }), { tries: 10, nt: 3 }) || (SPR.extra = { archBad: SPC.lastBad, span, rise });
       SPR.put('pyramid of shoals', SPR.shoalForm(SPR.shape.pyramid(80, 6), { n: 1300, fish: 1.5, amp: 10, pal: 'goldViolet' }), (k) => ({ u: 3700 + k * 15, lat: 120 + k * 8, h: -40, level: true }), { nt: 3 });
       SPR.put('ring of shoals', SPR.shoalForm(SPR.shape.ring(30, 5), { n: 800, fish: 1.1, amp: 8, pal: 'cyanMagenta' }), (k) => ({ u: 3640 + k * 15, lat: -75 - k * 6, h: 36, yaw: 0.9 }), { nt: 3 });
       const ghost = SPR.colossus({ size: 900 }), segs = SPR.segsOf(ghost.group).filter(([p, q]) => p.y > 0 && q.y > 0);
@@ -81,12 +81,14 @@ module.exports = {
       SW.pack(a.pack, { u: a.u, speed: 0.4 }); SW.camO = { mode: 'chase', d: 13, h: 5.5, l: 16, lu: 8, fov: 82 };
       ${cap('<b style="color:#ffb000">C</b> Shoals as a material: an arch over the road, a pyramid, a ring and a colossus, each a flock holding the shape<br><span style="color:#b8bfcc">a puff on every kick; every 2 bars they loosen, wheel and re-form; they scatter on the drop · 60 m/s · simulated 140 bpm</span>')} SPR.meter = true;`) },
   // ---------------------------------------------------------------- E: colossi
-  '10-colossi': { title: 'E: colossi sunk to the waist', code: TRACK, secs: 9, range: [3200, 5160], arg: { u: 3450, pack: PACK, sim: SIM },
-    setup: new Function('a', `SPR.useClock(a.sim); SW.stars({ u0: 3300, u1: 4800, n: 1600 }); SW.solids({ u0: 3300, u1: 5000, n: 200, side0: 0, side1: 700, up0: 80, up1: 560, clear: 60, s0: 14, s1: 60, seed: 77, spin: 0.12, name: 'sky solids' });
-      const lead = () => SPR.leadPos(); const put = (H, d, lat, pal) => SPR.placeFloor('colossi', SPR.colossus({ size: H, target: lead, pal }), a.u + d, lat, -260);
-      put(1600, 900, -2000, 'iceViolet'); put(1300, 1400, 1800, 'goldViolet'); put(1900, 2600, -600, 'cyanMagenta');
-      SW.pack(a.pack, { u: a.u, speed: 0.75 }); SW.camO = { mode: 'chase', d: 13, h: 5, l: 16, lu: 22, fov: 84 };
-      ${cap('<b style="color:#ffb000">E</b> Colossi, 1.3 to 1.9 km tall, sunk to the waist in the void’s floor; their heads follow the leader<br><span style="color:#b8bfcc">the floor is a faint plane of light; ripples spread from each waist · 112 m/s</span>')}`) },
+  '10-colossi': { title: 'E: colossi sunk to the waist', code: TRACK, secs: 8, range: [3200, 5160], arg: { u: 3450, pack: PACK, sim: SIM },
+    setup: new Function('a', `SPR.useClock(a.sim); SW.stars({ u0: 3300, u1: 4800, n: 1600 }); SW.solids({ u0: 3300, u1: 5000, n: 70, side0: 60, side1: 700, up0: 120, up1: 560, clear: 60, s0: 14, s1: 50, seed: 77, spin: 0.12, name: 'sky solids' });
+      const lead = () => SPR.leadPos(), f0 = SW.fr(a.u), t0 = f0.t.clone().setY(0).normalize(), r0 = new THREE.Vector3().crossVectors(t0, new THREE.Vector3(0, 1, 0));
+      // ahead along the straight's heading, so they stay in view; each checked with rule A
+      const put = (H, D, lat, pal) => { const c = SPR.colossus({ size: H, target: lead, pal }); if (SPC.fit('colossi', c, (g, k) => { g.position.copy(f0.p).addScaledVector(t0, D + k * 150).addScaledVector(r0, lat * (1 + 0.15 * k)); g.position.y = -260; g.lookAt(f0.p.x, -260, f0.p.z) }, { tries: 6, step: 12, times: [null] })) SPR.add(c, 'colossi') };
+      put(1600, 1700, -1100, 'iceViolet'); put(1300, 2100, 1200, 'goldViolet'); put(1900, 3300, 150, 'cyanMagenta');
+      SW.pack(a.pack, { u: a.u, speed: 0.6 }); SW.camO = { mode: 'chase', d: 13, h: 5, l: 16, lu: 11, fov: 84 };
+      ${cap('<b style="color:#ffb000">E</b> Colossi, 1.3 to 1.9 km tall, sunk to the waist in the void’s floor; their heads follow the leader<br><span style="color:#b8bfcc">the floor is a faint plane of light; ripples spread from each waist · 90 m/s</span>')}`) },
   // ---------------------------------------------------------------- D: the lattice in sections
   '11-lattice-sections': { title: 'D: the lattice strengthening and fading in sections', code: TRACK, secs: 12, range: [2900, 5160], arg: { u: 3300, pack: PACK },
     setup: new Function('a', `SPR.useClock({ bpm: 140, secs: [[0, 'b', 99]] }); SW.stars({ u0: 3000, u1: 5100, n: 1600 });

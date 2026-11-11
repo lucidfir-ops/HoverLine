@@ -44,7 +44,7 @@ async function prep(p, c, dir) {
   if (c.music) { mus = await tune(p, c.music, path.join(dir, 'tune.wav')); console.log('tune', JSON.stringify(mus)) }
   const info = await p.evaluate(([code, pal, w, h, rng, sight]) => { const c = window.__cv, q = c.parseCode(code);
     c.loadTrack(q.seed, q.wk, q.cx, q.lk, q.sp || null, q.bm); const v = SW.voidify({ pal }); SW.size(w, h); SPR.init({ w, h });
-    const t0 = performance.now(); const s = SPC.init(Object.assign({ range: rng }, sight || {})); v.spc = s; return v }, [c.code, c.pal || 'prism', W, H, c.range || null, c.sight || null]);
+    const t0 = performance.now(); const s = SPC.init(Object.assign({ range: rng }, sight || {})); v.spc = s; v.supportsHidden = SPR.hideSupports(); return v }, [c.code, c.pal || 'prism', W, H, c.range || null, c.sight || null]);
   await p.evaluate(() => { SW.camReset(); SW.slow = 1; SW.slowFn = null; SW.ringKick = SW.ringStep = SW.tierStep = SW.carvedStep = false; SW.pyrDrive = null; SW.beatAmt = 0.5; SW.h.U.uGain.value = 1; SW.preRender = null; SW.preDraw = null; SW.camF = null; SW.fx = 0.2; SW.vMul = 1; SW.cap = null; SW.far = 9000 });
   if (mus) await p.evaluate((o) => { SPR.useClock({ tl: window.__tune.tl, offset: window.__tune.a0 + (o.lead || 0) }); SPR.tune = window.__tune }, c.music);
   await p.evaluate(c.setup, c.arg || null);
