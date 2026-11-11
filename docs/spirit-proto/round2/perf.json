@@ -1,0 +1,882 @@
+{
+ "01-all-chase": {
+  "frames": 210,
+  "avgCalls": 537,
+  "maxCalls": 551,
+  "avgTris": 279892,
+  "maxTris": 305488,
+  "parts": {
+   "stars": {
+    "prims": 1600,
+    "calls": 1
+   },
+   "lattice (sections)": {
+    "prims": 73950,
+    "calls": 10
+   },
+   "room: lattice hall": {
+    "prims": 16932,
+    "calls": 3
+   },
+   "room bodies": {
+    "prims": 728,
+    "calls": 12
+   },
+   "floating solids": {
+    "prims": 4696,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 192,
+    "calls": 1
+   },
+   "block rings": {
+    "prims": 936,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   },
+   "stepped sky": {
+    "prims": 1296,
+    "calls": 1
+   },
+   "serpent body": {
+    "prims": 800,
+    "calls": 1
+   },
+   "serpent fins": {
+    "prims": 1200,
+    "calls": 1
+   },
+   "serpent head": {
+    "prims": 388,
+    "calls": 11
+   },
+   "heads": {
+    "prims": 9888,
+    "calls": 20
+   },
+   "stacks": {
+    "prims": 8172,
+    "calls": 60
+   },
+   "stacks (huge)": {
+    "prims": 5376,
+    "calls": 72
+   },
+   "gyroscopes": {
+    "prims": 11360,
+    "calls": 44
+   },
+   "gyroscopes (huge)": {
+    "prims": 3776,
+    "calls": 14
+   },
+   "knots": {
+    "prims": 3360,
+    "calls": 2
+   },
+   "knots (huge)": {
+    "prims": 2800,
+    "calls": 1
+   },
+   "unfolding solids": {
+    "prims": 990,
+    "calls": 68
+   },
+   "shoals": {
+    "prims": 8960,
+    "calls": 4
+   },
+   "colossi": {
+    "prims": 12168,
+    "calls": 14
+   },
+   "shoal colossus": {
+    "prims": 26400,
+    "calls": 1
+   },
+   "arches (assemble ahead of the leader)": {
+    "prims": 1952,
+    "calls": 4
+   },
+   "pyramid of shoals": {
+    "prims": 12000,
+    "calls": 1
+   },
+   "sacred geometry": {
+    "prims": 3980,
+    "calls": 26
+   },
+   "sacred geometry (huge)": {
+    "prims": 188,
+    "calls": 6
+   },
+   "other realms": {
+    "prims": 5406,
+    "calls": 7
+   },
+   "breathing road edges": {
+    "prims": 2680,
+    "calls": 1
+   }
+  },
+  "spc": {
+   "room bodies": {
+    "tried": 6,
+    "placed": 6,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 5040
+   },
+   "floating solids": {
+    "tried": 225,
+    "placed": 220,
+    "moved": 0,
+    "dropped": 5,
+    "pts": 0
+   },
+   "sky solids": {
+    "tried": 220,
+    "placed": 220,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 0
+   },
+   "carved blocks": {
+    "tried": 18,
+    "placed": 16,
+    "moved": 0,
+    "dropped": 2,
+    "pts": 0
+   },
+   "pyramids": {
+    "tried": 5,
+    "placed": 4,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "stepped sky (big)": {
+    "tried": 1,
+    "placed": 0,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "stepped sky": {
+    "tried": 17,
+    "placed": 16,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "stacks": {
+    "tried": 3,
+    "placed": 3,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 75104
+   },
+   "stacks (huge)": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 70992
+   },
+   "gyroscopes": {
+    "tried": 4,
+    "placed": 4,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 147216
+   },
+   "gyroscopes (huge)": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 33708
+   },
+   "gyroscope gate (road through it)": {
+    "tried": 1,
+    "placed": 0,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "knots": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 26880
+   },
+   "knots (huge)": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 24000
+   },
+   "unfolding solids": {
+    "tried": 4,
+    "placed": 4,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 16448
+   },
+   "shoals": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 109824
+   },
+   "colossi": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 51411
+   },
+   "shoal colossus": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 184778
+   },
+   "arches (assemble ahead of the leader)": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 23240
+   },
+   "arch of shoals": {
+    "tried": 1,
+    "placed": 0,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "pyramid of shoals": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 744
+   },
+   "sacred geometry": {
+    "tried": 4,
+    "placed": 2,
+    "moved": 1,
+    "dropped": 2,
+    "pts": 24570
+   },
+   "sacred geometry (huge)": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 16596
+   },
+   "other realms": {
+    "tried": 4,
+    "placed": 4,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 59304
+   }
+  },
+  "notes": {
+   "lattice nodes cut (rule A)": 140,
+   "lattice struts cut (rule A)": 15,
+   "room nodes cut (rule A)": 2,
+   "room struts cut (rule A)": 5,
+   "head pushed out (frames)": 295
+  },
+  "extra": {
+   "gateBad": {
+    "why": "sight",
+    "p": [
+     389,
+     5,
+     -509
+    ],
+    "r": 0.5,
+    "t": 0.05,
+    "u": null
+   },
+   "archShoalBad": {
+    "why": "sight",
+    "p": [
+     377,
+     -1,
+     -517
+    ],
+    "r": 9.8,
+    "t": 0.05,
+    "u": null
+   }
+  }
+ },
+ "05-music": {
+  "frames": 300,
+  "avgCalls": 235,
+  "maxCalls": 247,
+  "avgTris": 150539,
+  "maxTris": 171616,
+  "parts": {
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "lattice (sections)": {
+    "prims": 64402,
+    "calls": 7
+   },
+   "gyroscope gate": {
+    "prims": 3456,
+    "calls": 8
+   },
+   "block rings": {
+    "prims": 576,
+    "calls": 1
+   },
+   "carved blocks": {
+    "prims": 144,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   },
+   "stacks": {
+    "prims": 5448,
+    "calls": 40
+   },
+   "shoal ring": {
+    "prims": 8400,
+    "calls": 1
+   },
+   "colossi": {
+    "prims": 6084,
+    "calls": 7
+   }
+  },
+  "spc": {
+   "gyroscope gate": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 54000
+   },
+   "scatter": {
+    "tried": 12,
+    "placed": 12,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 0
+   },
+   "pyramids": {
+    "tried": 4,
+    "placed": 4,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 0
+   },
+   "stacks": {
+    "tried": 3,
+    "placed": 2,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 50496
+   },
+   "shoal ring": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 1728
+   }
+  },
+  "notes": {
+   "lattice nodes cut (rule A)": 109,
+   "lattice struts cut (rule A)": 42,
+   "pyramid arcs raised": 1
+  },
+  "extra": null,
+  "tune": {
+   "sr": 32000,
+   "a0": 61.1109090909091,
+   "code": "S5800016053",
+   "bpm": 165,
+   "bd": 1.4545454545454546,
+   "loopS": 5.838181818181818,
+   "loopE": 75.65636363636364,
+   "kicks": 64,
+   "how": "bar by bar",
+   "nb": 53,
+   "secs": [
+    "rise",
+    "drop",
+    "b",
+    "brk"
+   ]
+  }
+ },
+ "02-all-slow": {
+  "frames": 210,
+  "avgCalls": 537,
+  "maxCalls": 545,
+  "avgTris": 273447,
+  "maxTris": 303186,
+  "parts": {
+   "stars": {
+    "prims": 1600,
+    "calls": 1
+   },
+   "lattice (sections)": {
+    "prims": 73950,
+    "calls": 10
+   },
+   "room: lattice hall": {
+    "prims": 16932,
+    "calls": 3
+   },
+   "room bodies": {
+    "prims": 728,
+    "calls": 12
+   },
+   "floating solids": {
+    "prims": 4696,
+    "calls": 4
+   },
+   "carved blocks": {
+    "prims": 192,
+    "calls": 1
+   },
+   "block rings": {
+    "prims": 936,
+    "calls": 1
+   },
+   "breaking pyramids": {
+    "prims": 9456,
+    "calls": 1
+   },
+   "stepped sky": {
+    "prims": 1296,
+    "calls": 1
+   },
+   "serpent body": {
+    "prims": 800,
+    "calls": 1
+   },
+   "serpent fins": {
+    "prims": 1200,
+    "calls": 1
+   },
+   "serpent head": {
+    "prims": 388,
+    "calls": 11
+   },
+   "heads": {
+    "prims": 9888,
+    "calls": 20
+   },
+   "stacks": {
+    "prims": 8172,
+    "calls": 60
+   },
+   "stacks (huge)": {
+    "prims": 5376,
+    "calls": 72
+   },
+   "gyroscopes": {
+    "prims": 11360,
+    "calls": 44
+   },
+   "gyroscopes (huge)": {
+    "prims": 3776,
+    "calls": 14
+   },
+   "knots": {
+    "prims": 3360,
+    "calls": 2
+   },
+   "knots (huge)": {
+    "prims": 2800,
+    "calls": 1
+   },
+   "unfolding solids": {
+    "prims": 990,
+    "calls": 68
+   },
+   "shoals": {
+    "prims": 8960,
+    "calls": 4
+   },
+   "colossi": {
+    "prims": 12168,
+    "calls": 14
+   },
+   "shoal colossus": {
+    "prims": 26400,
+    "calls": 1
+   },
+   "arches (assemble ahead of the leader)": {
+    "prims": 1952,
+    "calls": 4
+   },
+   "pyramid of shoals": {
+    "prims": 12000,
+    "calls": 1
+   },
+   "sacred geometry": {
+    "prims": 3980,
+    "calls": 26
+   },
+   "sacred geometry (huge)": {
+    "prims": 188,
+    "calls": 6
+   },
+   "other realms": {
+    "prims": 5406,
+    "calls": 7
+   },
+   "breathing road edges": {
+    "prims": 2680,
+    "calls": 1
+   }
+  },
+  "spc": {
+   "room bodies": {
+    "tried": 6,
+    "placed": 6,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 5040
+   },
+   "floating solids": {
+    "tried": 225,
+    "placed": 220,
+    "moved": 0,
+    "dropped": 5,
+    "pts": 0
+   },
+   "sky solids": {
+    "tried": 220,
+    "placed": 220,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 0
+   },
+   "carved blocks": {
+    "tried": 18,
+    "placed": 16,
+    "moved": 0,
+    "dropped": 2,
+    "pts": 0
+   },
+   "pyramids": {
+    "tried": 5,
+    "placed": 4,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "stepped sky (big)": {
+    "tried": 1,
+    "placed": 0,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "stepped sky": {
+    "tried": 17,
+    "placed": 16,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "stacks": {
+    "tried": 3,
+    "placed": 3,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 75104
+   },
+   "stacks (huge)": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 70992
+   },
+   "gyroscopes": {
+    "tried": 4,
+    "placed": 4,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 147216
+   },
+   "gyroscopes (huge)": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 33708
+   },
+   "gyroscope gate (road through it)": {
+    "tried": 1,
+    "placed": 0,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "knots": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 26880
+   },
+   "knots (huge)": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 24000
+   },
+   "unfolding solids": {
+    "tried": 4,
+    "placed": 4,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 16448
+   },
+   "shoals": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 109824
+   },
+   "colossi": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 51411
+   },
+   "shoal colossus": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 184778
+   },
+   "arches (assemble ahead of the leader)": {
+    "tried": 2,
+    "placed": 2,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 23240
+   },
+   "arch of shoals": {
+    "tried": 1,
+    "placed": 0,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "pyramid of shoals": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 1,
+    "dropped": 0,
+    "pts": 744
+   },
+   "sacred geometry": {
+    "tried": 4,
+    "placed": 2,
+    "moved": 1,
+    "dropped": 2,
+    "pts": 24570
+   },
+   "sacred geometry (huge)": {
+    "tried": 1,
+    "placed": 1,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 16596
+   },
+   "other realms": {
+    "tried": 4,
+    "placed": 4,
+    "moved": 0,
+    "dropped": 0,
+    "pts": 59304
+   }
+  },
+  "notes": {
+   "lattice nodes cut (rule A)": 140,
+   "lattice struts cut (rule A)": 15,
+   "room nodes cut (rule A)": 2,
+   "room struts cut (rule A)": 5,
+   "head pushed out (frames)": 65
+  },
+  "extra": {
+   "gateBad": {
+    "why": "sight",
+    "p": [
+     389,
+     5,
+     -509
+    ],
+    "r": 0.5,
+    "t": 0.05,
+    "u": null
+   },
+   "archShoalBad": {
+    "why": "sight",
+    "p": [
+     377,
+     -1,
+     -517
+    ],
+    "r": 9.8,
+    "t": 0.05,
+    "u": null
+   }
+  }
+ },
+ "06-portal-full": {
+  "frames": 90,
+  "avgCalls": 161,
+  "maxCalls": 207,
+  "avgTris": 110699,
+  "maxTris": 145008,
+  "parts": {
+   "portal": {
+    "prims": 4624,
+    "calls": 8
+   },
+   "portal ramp and catch road": {
+    "prims": 19340,
+    "calls": 20
+   },
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 1708,
+    "calls": 2
+   },
+   "lattice (sections)": {
+    "prims": 45724,
+    "calls": 5
+   },
+   "carved blocks": {
+    "prims": 96,
+    "calls": 1
+   }
+  },
+  "spc": {
+   "floating solids": {
+    "tried": 170,
+    "placed": 169,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "scatter": {
+    "tried": 29,
+    "placed": 26,
+    "moved": 0,
+    "dropped": 3,
+    "pts": 0
+   }
+  },
+  "notes": {
+   "lattice nodes cut (rule A)": 100,
+   "lattice struts cut (rule A)": 45
+  },
+  "extra": {
+   "portalView": {
+    "renders": 41,
+    "frames": 90,
+    "calls": 208,
+    "tris": 143654
+   }
+  }
+ },
+ "07-portal-half": {
+  "frames": 135,
+  "avgCalls": 168,
+  "maxCalls": 207,
+  "avgTris": 126790,
+  "maxTris": 145008,
+  "parts": {
+   "portal": {
+    "prims": 4624,
+    "calls": 8
+   },
+   "portal ramp and catch road": {
+    "prims": 19340,
+    "calls": 20
+   },
+   "stars": {
+    "prims": 1400,
+    "calls": 1
+   },
+   "floating solids": {
+    "prims": 1708,
+    "calls": 2
+   },
+   "lattice (sections)": {
+    "prims": 45724,
+    "calls": 5
+   },
+   "carved blocks": {
+    "prims": 96,
+    "calls": 1
+   }
+  },
+  "spc": {
+   "floating solids": {
+    "tried": 170,
+    "placed": 169,
+    "moved": 0,
+    "dropped": 1,
+    "pts": 0
+   },
+   "scatter": {
+    "tried": 29,
+    "placed": 26,
+    "moved": 0,
+    "dropped": 3,
+    "pts": 0
+   }
+  },
+  "notes": {
+   "lattice nodes cut (rule A)": 100,
+   "lattice struts cut (rule A)": 45
+  },
+  "extra": {
+   "portalView": {
+    "renders": 83,
+    "frames": 135,
+    "calls": 208,
+    "tris": 143654
+   }
+  }
+ }
+}

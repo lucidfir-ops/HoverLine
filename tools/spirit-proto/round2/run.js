@@ -56,6 +56,9 @@ async function frame(p, dt) { return p.evaluate((dt) => { const r = SW.frame(dt,
 (async () => {
   const [cmd, a, b2, c2] = process.argv.slice(2);
   if (cmd === 'list') { for (const [k, c] of Object.entries(CLIPS)) console.log(k.padEnd(24), c.title); return }
+  if (cmd === 'encode') { for (const name of a.split(',')) { const c = CLIPS[name], dir = path.join(TMP, name), out = b2 || OUT;
+      const sz = L.encode(dir, path.join(out, c.file || name), c.fps || 15, Object.assign({ wav: c.music ? path.join(dir, 'tune.wav') : null }, c.enc || {}));
+      console.log(name, 'gif ' + (sz.gif / 1e6).toFixed(2) + ' MB', 'mp4 ' + (sz.mp4 / 1e6).toFixed(2) + ' MB') } return }
   const b = await L.launch();
   try {
     if (cmd === 'still') {
@@ -80,6 +83,10 @@ async function frame(p, dt) { return p.evaluate((dt) => { const r = SW.frame(dt,
         console.log(name, n + ' frames', ((Date.now() - t0) / 1000).toFixed(0) + 's', 'gif ' + (sz.gif / 1e6).toFixed(2) + ' MB', 'mp4 ' + (sz.mp4 / 1e6).toFixed(2) + ' MB', 'calls ' + perf.avgCalls + '/' + maxC, 'tris ' + perf.avgTris + '/' + maxT, p.errs.length ? 'ERRORS ' + p.errs.length : '');
         execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', path.join(dir, 'f%04d.png'), '-vf', `select='not(mod(n\\,${Math.max(1, Math.floor(n / 16))}))',scale=320:-2,tile=4x4`, '-frames:v', '1', path.join(TMP, name + '-sheet.png')]);
         await p.context().close() }
+    } else if (cmd === 'encode') { // re-encode kept frames: encode <name,...> [outDir]
+      for (const name of a.split(',')) { const c = CLIPS[name], dir = path.join(TMP, name), out = b2 || OUT;
+        const sz = L.encode(dir, path.join(out, c.file || name), c.fps || 15, Object.assign({ wav: c.music ? path.join(dir, 'tune.wav') : null }, c.enc || {}));
+        console.log(name, 'gif ' + (sz.gif / 1e6).toFixed(2) + ' MB', 'mp4 ' + (sz.mp4 / 1e6).toFixed(2) + ' MB') }
     } else console.log('usage: see the top of run.js');
   } finally { await b.close() }
 })().catch((e) => { console.error(e); process.exit(1) });

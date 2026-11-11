@@ -179,6 +179,10 @@ SPR.colossus = function (o = {}) {
       const sp = (t * 0.08) % 1; rip.scale.setScalar(1 + sp * 0.55 + 0.04 * bt.k); ripM.uniforms.uGain.value = (1 - sp) * (0.8 + 0.6 * bt.k) + 0.2 } };
 };
 
+// place a colossus (or anything huge on the floor) d metres along from u, lat metres to the side, checked with rule A
+SPR.placeFloor = function (name, obj, u, lat, floor) { const f = fr(u), t = f.t.clone().setY(0).normalize(), r = new V3(0, 1, 0).cross(t).negate();
+  const ok = SPC.fit(name, obj, (g, kk) => { const a = kk * 0.35 * (kk % 2 ? 1 : -1), dir = r.clone().applyAxisAngle(new V3(0, 1, 0), a); g.position.copy(f.p).addScaledVector(dir, lat * (1 + kk * 0.1)); g.position.y = floor; g.lookAt(f.p.x, floor, f.p.z) }, { tries: 8, step: 12, times: [null] });
+  if (ok) SPR.add(obj, name); return ok };
 // ---------------------------------------------------------------- C: shoals as a material
 const SHOAL_SH = {
   vhead: `attribute vec3 iA;attribute vec3 iB;attribute vec4 iR;uniform float uTime,uLoose,uSlide,uAmp,uFish,uSwirl;uniform vec3 uCen;
@@ -274,10 +278,10 @@ SPR.roomLattice = function (o = {}) {
   // a gate frame at each end: a bright square round the open tube
   const E = SPFX.Lines(); for (const k of [0, nz]) { const f = F[k], q = (x, y) => f.p.clone().addScaledVector(f.r, x).addScaledVector(f.u, y), x = clx + 1, y0 = cyb - 1, y1 = cyt + 1;
     E.poly([q(-x, y0), q(x, y0), q(x, y1), q(-x, y1)], true, 0.95, 1.6); E.poly([q(-x - 3, y0 - 3), q(x + 3, y0 - 3), q(x + 3, y1 + 3), q(-x - 3, y1 + 3)], true, 0.7, 0.9) }
-  const lmB = SPFX.lineMat({ pal, width: 0.36, minPx: 1.6, maxPx: 5 }), lmG = SPFX.lineMat({ pal, width: 0.2, minPx: 1.2, maxPx: 3, gain: 0.7 }), lmE = SPFX.lineMat({ pal, width: 0.5, minPx: 2, maxPx: 7 });
+  const fog = o.fog || [140, 900], lmB = SPFX.lineMat({ pal, width: 0.36, minPx: 1.6, maxPx: 5, fog }), lmG = SPFX.lineMat({ pal, width: 0.2, minPx: 1.2, maxPx: 3, gain: 0.6, fog }), lmE = SPFX.lineMat({ pal, width: 0.5, minPx: 2, maxPx: 7, fog });
   const grp = new THREE.Group(); grp.add(L.mesh(lmB), G.mesh(lmG), E.mesh(lmE));
   // light running along the hall: a band that travels with the race (u), in the beams' shader via a moving palette
-  const obj = { group: grp, nseg, F, update(t, bt) { bt = bt || SPC.fakeBeat(t); lmB.uniforms.uGain.value = 0.9 + 0.4 * bt.k + 0.6 * bt.drop; lmB.uniforms.uShift.value = -t * 0.12; lmG.uniforms.uGain.value = 0.55 + 0.2 * bt.k; lmE.uniforms.uGain.value = 1.2 + 0.6 * bt.k } };
+  const obj = { group: grp, nseg, F, update(t, bt) { bt = bt || SPC.fakeBeat(t); lmB.uniforms.uGain.value = 0.75 + 0.3 * bt.k + 0.25 * bt.drop; lmB.uniforms.uShift.value = -t * 0.12; lmG.uniforms.uGain.value = 0.42 + 0.15 * bt.k; lmE.uniforms.uGain.value = 1.2 + 0.6 * bt.k } };
   SPR.add(obj, 'room: lattice hall');
   // lattice bodies hanging in the hall, each placed with rule A
   const shapes = [(r) => new THREE.IcosahedronGeometry(r, 0), (r) => new THREE.OctahedronGeometry(r), (r) => new THREE.DodecahedronGeometry(r), (r) => new THREE.BoxGeometry(r * 1.3, r * 1.3, r * 1.3)];

@@ -46,9 +46,9 @@ async function openPage(b, w, h, o = {}) {
 function encode(dir, out, fps, o = {}) {
   const pat = path.join(dir, 'f%04d.png'), mp4 = out + '.mp4', gif = out + '.gif';
   const fin = ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', pat];
-  const v = ['-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', String(o.crf || 23), '-preset', 'slow', '-movflags', '+faststart'];
+  const v = ['-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', String(o.crf || 32), '-preset', 'slow', '-movflags', '+faststart'];
   execFileSync('ffmpeg', o.wav ? [...fin, '-i', o.wav, ...v, '-c:a', 'aac', '-b:a', '128k', '-shortest', mp4] : [...fin, ...v, mp4]);
-  const tries = o.gifTries || [[480, 12, 128], [448, 11, 112], [400, 10, 96], [360, 10, 80], [320, 10, 64]];
+  const tries = o.gifTries || [[480, 12, 128], [400, 10, 96], [360, 10, 64], [320, 8, 48], [288, 8, 40], [256, 7, 32]];
   for (const [gw, gf, nc] of tries) {
     execFileSync('ffmpeg', [...fin, '-vf', `fps=${gf},scale=${gw}:-2:flags=lanczos,split[a][b];[a]palettegen=max_colors=${nc}:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3:diff_mode=rectangle`, gif]);
     if (fs.statSync(gif).size < (o.gifMax || 3.0e6)) break }

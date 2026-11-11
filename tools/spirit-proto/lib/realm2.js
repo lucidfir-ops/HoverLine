@@ -39,12 +39,12 @@ function mergeShip(ship) { ship.updateMatrixWorld(true); const inv = new M4().co
     for (let i = 0; i < g.attributes.position.count; i++) { v.fromBufferAttribute(g.attributes.position, i).applyMatrix4(m); P.push(v.x, v.y, v.z); v.fromBufferAttribute(g.attributes.normal, i).applyMatrix3(nm).normalize(); N.push(v.x, v.y, v.z) } });
   const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); geo.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3)); return geo }
 SPR.echoes = function (o = {}) {
-  const C0 = SW.h.C, W = C0.W, lags = o.lags || [0.1, 0.2, 0.3], alpha = o.alpha || [0.2, 0.14, 0.09], tau = o.tau || 0.12, out = [], K = lags.length;
+  const C0 = SW.h.C, W = C0.W, lags = o.lags || [0.1, 0.2, 0.3], alpha = o.alpha || [0.34, 0.24, 0.16], tau = o.tau || 0.12, out = [], K = lags.length;
   // the marked stretch: the walls' tops glow violet along it, and a seam of light crosses the road at each end
   const L = SPFX.Lines(), pal = SPFX.newPal('iceViolet');
   for (let u = o.u0; u < o.u1; u += 4) { const a = fr(u), b = fr(u + 4); for (const s of [-1, 1]) L.seg(a.p.clone().addScaledVector(a.r, s * (W / 2 + 0.15)).addScaledVector(a.u, 1.45), b.p.clone().addScaledVector(b.r, s * (W / 2 + 0.15)).addScaledVector(b.u, 1.45), 0.75, 1.1) }
   for (const u of [o.u0, o.u1]) { const a = fr(u); for (let k = 0; k < 3; k++) L.seg(a.p.clone().addScaledVector(a.r, -W / 2).addScaledVector(a.u, 0.06).addScaledVector(a.t, k * 1.2), a.p.clone().addScaledVector(a.r, W / 2).addScaledVector(a.u, 0.06).addScaledVector(a.t, k * 1.2), 0.85, 1 - k * 0.3) }
-  const mk = L.mesh(SPFX.lineMat({ pal, width: 0.22, minPx: 1.5, maxPx: 6 })); SW.track('echo marks', mk);
+  const mk = L.mesh(SPFX.lineMat({ pal, width: 0.4, minPx: 2.2, maxPx: 8, gain: 1.8 })); SW.track('echo marks', mk);
   const byType = new Map(); let draws = 0;
   SW.P.forEach((P, i) => { if (i === SW.camI && !o.withCam || (P.q.du ?? 0) < (o.minLead ?? 20)) return;
     const f = P.r.build ? P.r.build.frame : P.q.f; let T = byType.get(f); const col = SW.palCol(i * 47 + 20).lerp(new THREE.Color(1, 1, 1), 0.25);
@@ -81,7 +81,7 @@ const PV_V = `varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*m
 SPR.portalView = function (o = {}) {
   const J = SW.jump, C0 = SW.h.C, ren = C0.renderer, WUP = new V3(0, 1, 0), sc = o.scale || 0.5;
   const sz = ren.getDrawingBufferSize(new THREE.Vector2()), rt = new THREE.WebGLRenderTarget(Math.round(sz.x * sc), Math.round(sz.y * sc), { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter });
-  const disc = J.ringE.disc; disc.material = new THREE.ShaderMaterial({ vertexShader: PV_V, fragmentShader: PV_F, uniforms: { uTex: { value: rt.texture }, uRes: { value: sz.clone() }, uT: { value: 0 }, uOn: { value: 1 } }, side: THREE.DoubleSide });
+  const disc = J.ringE.disc; disc.material = new THREE.ShaderMaterial({ vertexShader: PV_V, fragmentShader: PV_F, uniforms: { uTex: { value: rt.texture }, uRes: { value: sz.clone() }, uT: { value: 0 }, uOn: { value: 1 }, uSpin: { value: 0 } }, side: THREE.DoubleSide });
   if (J.ringX.disc) J.ringX.disc.visible = false; SW.noFlash = true;
   const cE = J.ringE.position.clone(), cX = J.ringX.position.clone(), rH = new V3().crossVectors(J.h, WUP).normalize();
   const ME = new M4().makeBasis(J.r0, WUP, J.f0).setPosition(cE), MX = new M4().makeBasis(rH, WUP, J.h).setPosition(cX), Mrel = new M4().multiplyMatrices(MX, new M4().copy(ME).invert()), Minv = new M4().copy(Mrel).invert();

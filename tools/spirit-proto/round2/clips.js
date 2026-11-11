@@ -8,8 +8,8 @@ const SPREAD = [
   { f: 'dart', du: 330, lat: 1.5 }, { f: 'blade', du: 300, lat: -4 }, { f: 'skiff', du: 268, lat: 5 }, { f: 'hauler', du: 236, lat: -6 },
   { f: 'mono', du: 160, lat: 1 }, { f: 'orb', du: 100, lat: 7 }, { f: 'roller', du: 50, lat: -4.5 }, { f: 'tether', du: 0, lat: 2 }];
 const ECHO = [
-  { f: 'dart', du: 92, lat: 3, weave: 6 }, { f: 'blade', du: 78, lat: -5, weave: 6.5 }, { f: 'skiff', du: 64, lat: 6, weave: 5.5 }, { f: 'hauler', du: 52, lat: -2, weave: 7 },
-  { f: 'mono', du: 40, lat: 2, weave: 6 }, { f: 'orb', du: 14, lat: 7.5, weave: 2 }, { f: 'roller', du: 7, lat: -6, weave: 3 }, { f: 'tether', du: 0, lat: 0, weave: 1 }];
+  { f: 'dart', du: 52, lat: 3, weave: 6 }, { f: 'blade', du: 44, lat: -6, weave: 6.5 }, { f: 'skiff', du: 37, lat: 7, weave: 5.5 }, { f: 'hauler', du: 30, lat: -3, weave: 7 },
+  { f: 'mono', du: 23, lat: 3, weave: 6 }, { f: 'orb', du: 8, lat: 9, weave: 1 }, { f: 'roller', du: 5, lat: -9, weave: 1 }, { f: 'tether', du: 0, lat: 0, weave: 1 }];
 const UE = 4000;
 // the simulated clock for clips without the real tune: 2 bars of build, then the drop (140 bpm)
 const SIM = { bpm: 140, secs: [[0, 'rise', 2], [2, 'drop', 8], [10, 'b', 8]] };
@@ -49,7 +49,7 @@ module.exports = {
       SW.anim.push((t, dt, b) => { SW.h.U.uGain.value = b ? (1 - 0.7 * b.brk) * (1 + 0.4 * b.drop) : 1 });
       for (const [u, s] of [[3600, 1], [3980, -1], [4400, 1]]) SPR.put('stacks', SPFX.obj.stacks(THREE, { pal: 'jade', size: 13, tiers: 5, stacks: 2, carve: true, seed: u }), (k) => ({ u: u + k * 10, lat: s * (55 + k * 5), h: -4, level: true }));
       SPR.put('shoal ring', SPR.shoalForm(SPR.shape.ring(26, 4), { n: 700, fish: 1, amp: 7, pal: 'emberWhite' }), (k) => ({ u: 3850 + k * 15, lat: -70 - k * 5, h: 34 }), { nt: 3 });
-      const col = SPR.colossus({ size: 1400, target: () => SPR.leadPos(), pal: 'iceViolet' }); const f = SW.fr(4100); col.group.position.copy(f.p).addScaledVector(f.r, 1900); col.group.position.y = -260; SPR.add(col, 'colossi');
+      SPR.placeFloor('colossi', SPR.colossus({ size: 1400, target: () => SPR.leadPos(), pal: 'iceViolet' }), 4100, 1900, -260);
       SW.pack(a.pack, { u: a.u, speed: 0.47 }); SW.camO = { mode: 'chase', d: 16, h: 7, l: 18, lu: 6, fov: 82 };
       SPR.meter = true; SPR.meterNote = (b) => 'tune ' + SPR.tune.code + ' · ' + Math.round(b.bpm) + ' bpm';
       SPR.cap = () => '<b style="color:#ffb000">F</b> The world on the game’s own music (sound in the MP4)<br><span style="color:#b8bfcc">the tune rendered by the game’s Pregen; the lattice: a pulse along the struts on every kick, drawn in through the build, a flare on the drop, dim in the breakdown</span>';`) },
@@ -63,28 +63,27 @@ module.exports = {
       ${cap('<b style="color:#ffb000">H</b> The portal shows the road you come out on (and the racers already there)')} const cp0 = SPR.cap; SPR.cap = (t) => cp0(t) + '<br><span style="color:#b8bfcc">' + (a.slow < 1 ? 'half speed' : 'full speed') + ' · the view is a second render of the scene at half resolution, only while the portal is in view</span>';`) },
   // ---------------------------------------------------------------- G: echoes, redone
   '08-echoes': { title: 'G: echoes on a marked stretch, collapsing in a cascade', code: TRACK, secs: 9, range: [3200, 5160], arg: { u: 3500, pack: ECHO, sim: SIM },
-    setup: new Function('a', `SPR.useClock(a.sim); SW.base({ u0: a.u - 100, u1: a.u + 1000, rings: false, carvedN: 6, density: 0.6, lattice: false });
+    setup: new Function('a', `SPR.useClock(a.sim); SW.base({ u0: a.u - 100, u1: a.u + 1000, rings: false, pyr: false, carvedN: 6, density: 0.6, lattice: false });
       SPR.lattice({ u0: a.u - 200, u1: a.u + 1000, sections: [{ u: a.u + 400, half: 300, fade: 200, peak: 0.45 }] });
       SW.pack(a.pack, { u: a.u }); SPR.echoes({ u0: 3640, u1: 3760 }); SPR.echoes2 = SPR.echoes({ u0: 3920, u1: 4040 }); SW.slow = 0.5;
-      SW.camO = { mode: 'chase', d: 12, h: 5, l: 16, lu: 1, fov: 78 };
+      SW.camO = { mode: 'chase', d: 10, h: 4.4, l: 16, lu: 1, fov: 74 };
       ${cap('<b style="color:#ffb000">G</b> Echoes: only on the violet-edged stretches; three faint after-images of each leader, and as it leaves, 3 joins 2, 2 joins 1, 1 joins the frame<br><span style="color:#b8bfcc">half speed · one merged mesh per frame type, all three after-images in one draw</span>')}`) },
   // ---------------------------------------------------------------- C: shoals as a material
   '09-shoal-forms': { title: 'C: things made of shoals', code: TRACK, secs: 10, range: [3200, 5160], arg: { u: 3480, pack: PACK, sim: SIM },
     setup: new Function('a', `SPR.useClock(a.sim); SW.stars({ u0: 3300, u1: 4800, n: 1400 });
       SPR.lattice({ u0: 3300, u1: 4600, sections: [{ u: 3900, half: 400, fade: 200, peak: 0.35 }] });
-      const span = 2 * (13 + SPC.o.margin) * 1.75, rise = SPC.o.above * 2;
+      const span = 2 * (13 + SPC.o.margin) * 2.1, rise = SPC.o.above * 2.5;
       SPR.put('arch of shoals', SPR.shoalForm(SPR.shape.arch(span, rise, 17, 5), { n: 1000, fish: 0.9, amp: 5, pal: 'jade' }), (k) => ({ u: 3820 + k * 12, lat: 0, h: 0 }), { tries: 10, nt: 3 });
       SPR.put('pyramid of shoals', SPR.shoalForm(SPR.shape.pyramid(80, 6), { n: 1300, fish: 1.5, amp: 10, pal: 'goldViolet' }), (k) => ({ u: 3700 + k * 15, lat: 120 + k * 8, h: -40, level: true }), { nt: 3 });
       SPR.put('ring of shoals', SPR.shoalForm(SPR.shape.ring(30, 5), { n: 800, fish: 1.1, amp: 8, pal: 'cyanMagenta' }), (k) => ({ u: 3640 + k * 15, lat: -75 - k * 6, h: 36, yaw: 0.9 }), { nt: 3 });
       const ghost = SPR.colossus({ size: 900 }), segs = SPR.segsOf(ghost.group).filter(([p, q]) => p.y > 0 && q.y > 0);
-      const sc = SPR.shoalForm(segs, { n: 2600, fish: 5, amp: 45, pal: 'emberWhite', slideM: 30, slide: 0.05, swirl: 1 }); const f = SW.fr(4300); sc.group.position.copy(f.p).addScaledVector(f.r, -1300); sc.group.position.y = -200; sc.group.lookAt(f.p.x, -200, f.p.z); SPR.add(sc, 'colossus of shoals');
+      const sc = SPR.shoalForm(segs, { n: 2600, fish: 5, amp: 45, pal: 'emberWhite', slideM: 30, slide: 0.05, swirl: 1 }); SPR.placeFloor('colossus of shoals', sc, 4300, -1300, -200);
       SW.pack(a.pack, { u: a.u, speed: 0.4 }); SW.camO = { mode: 'chase', d: 13, h: 5.5, l: 16, lu: 8, fov: 82 };
       ${cap('<b style="color:#ffb000">C</b> Shoals as a material: an arch over the road, a pyramid, a ring and a colossus, each a flock holding the shape<br><span style="color:#b8bfcc">a puff on every kick; every 2 bars they loosen, wheel and re-form; they scatter on the drop · 60 m/s · simulated 140 bpm</span>')} SPR.meter = true;`) },
   // ---------------------------------------------------------------- E: colossi
   '10-colossi': { title: 'E: colossi sunk to the waist', code: TRACK, secs: 9, range: [3200, 5160], arg: { u: 3450, pack: PACK, sim: SIM },
     setup: new Function('a', `SPR.useClock(a.sim); SW.stars({ u0: 3300, u1: 4800, n: 1600 }); SW.solids({ u0: 3300, u1: 5000, n: 200, side0: 0, side1: 700, up0: 80, up1: 560, clear: 60, s0: 14, s1: 60, seed: 77, spin: 0.12, name: 'sky solids' });
-      const lead = () => SPR.leadPos(); const put = (H, d, lat, pal) => { const c = SPR.colossus({ size: H, target: lead, pal }); const f = SW.fr(a.u + d), t = f.t.clone().setY(0).normalize(), r = new THREE.Vector3(0, 1, 0).cross(t).negate();
-        c.group.position.copy(f.p).addScaledVector(r, lat); c.group.position.y = -260; c.group.lookAt(f.p.x, -260, f.p.z); SPR.add(c, 'colossi') };
+      const lead = () => SPR.leadPos(); const put = (H, d, lat, pal) => SPR.placeFloor('colossi', SPR.colossus({ size: H, target: lead, pal }), a.u + d, lat, -260);
       put(1600, 900, -2000, 'iceViolet'); put(1300, 1400, 1800, 'goldViolet'); put(1900, 2600, -600, 'cyanMagenta');
       SW.pack(a.pack, { u: a.u, speed: 0.75 }); SW.camO = { mode: 'chase', d: 13, h: 5, l: 16, lu: 22, fov: 84 };
       ${cap('<b style="color:#ffb000">E</b> Colossi, 1.3 to 1.9 km tall, sunk to the waist in the void’s floor; their heads follow the leader<br><span style="color:#b8bfcc">the floor is a faint plane of light; ripples spread from each waist · 112 m/s</span>')}`) },
