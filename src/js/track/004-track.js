@@ -1016,7 +1016,8 @@ void main(){vec2 q=vW.xz+vec2(uT*(uW>0.5?3.0:1.2),uT*0.7);float n=vn(q/16.0)*0.6
       if(fok&&fallsL.length<nFall*2+2&&roof-p.lv>60){
         fallsL.push({x:fx,z:fz,top:bil(Ch,fx,fz)-2,bot:p.lv,w:fw,dir:pr()*TAU,lava:p.lava,n:Math.round(clamp((roof-p.lv)*0.9,110,240))});
         for(const q of[0.2,0.5,0.8])em.push({x:fx,y:p.lv+(roof-p.lv)*q,z:fz,r:110,c:p.lava?[0.6,0.2,0.03]:[0.08,0.2,0.36]})}
-      if(p.lava&&geys.length<nGey+2&&pr()<0.7)geys.push({x:p.x,z:p.z,base:p.lv,h:Math.min(110,roof-p.lv-20),per:6+pr()*5,ph:pr()*12,lava:1})}
+      /* Prototype 61: a cavern geyser stays under the mountain's outside too (the roof field can stand above it near the cavern's edge, and the jet came out through the slope: Eric saw one on W1AAE848-P) */
+      if(p.lava&&geys.length<nGey+2&&pr()<0.7){const gh=Math.min(110,roof-p.lv-20,bil(Mh,p.x,p.z)-p.lv-14);if(gh>=25)geys.push({x:p.x,z:p.z,base:p.lv,h:gh,per:6+pr()*5,ph:pr()*12,lava:1})}}
     beds();
     /* lakes in the valleys under the road outside, of lava or of water, where it stands highest above the ground; a rim is
        raised round each (never into the road) so the lake never shows an edge */
@@ -1180,6 +1181,16 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
       const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(ind);g.computeVertexNormals();const gl=new Float32Array(pos.length);if(q.inside)for(let k=0;k<pos.length;k+=3)glowAt(pos[k],pos[k+1],pos[k+2],gl,k);
       g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,q.inside?skirtIn:skirtOut);group.add(m);PR.skirts.push(m)};
     const skirtIn=rockMat(true),skirtOut=rockMat(false);for(const q of skirts)skirt(q);
+    /* Prototype 61: the rivers under the road get the lakes' fix: their sheet lay about 5 m over its bed with its edges in
+       the air (Eric, after Prototype 60: "it might need to be applied to the rivers below the tracks as well"). A bank of
+       rock now hangs from each edge, 10 m out and 18 m down into the floor, and across both ends */
+    for(const pts of rivers){const pos=[],ind=[],n=pts.length;if(n<2)continue;
+      pts.forEach((q,j)=>{for(const sd of[-1,1])pos.push(q.x+sd*q.rx*q.w,q.y+0.05,q.z+sd*q.rz*q.w,q.x+sd*q.rx*(q.w+10),q.y-18,q.z+sd*q.rz*(q.w+10));
+        if(j){const a=(j-1)*4,b=j*4;ind.push(a,b,a+1,a+1,b,b+1,a+2,b+2,a+3,a+3,b+2,b+3)}});
+      for(const[j,e]of[[0,-1],[n-1,1]]){const q=pts[j],o=pts[j-e]||q,dx=q.x-o.x,dz=q.z-o.z,l=Math.hypot(dx,dz)||1,b=pos.length/3;
+        for(const sd of[-1,1])pos.push(q.x+sd*q.rx*q.w,q.y+0.05,q.z+sd*q.rz*q.w,q.x+sd*q.rx*(q.w+10)+dx/l*10,q.y-18,q.z+sd*q.rz*(q.w+10)+dz/l*10);ind.push(b,b+2,b+1,b+1,b+2,b+3)}
+      const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(ind);g.computeVertexNormals();const gl=new Float32Array(pos.length);for(let k=0;k<pos.length;k+=3)glowAt(pos[k],pos[k+1],pos[k+2],gl,k);
+      g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,skirtIn);group.add(m);PR.skirts.push(m)}
     /* (P54) the caverns' roof and floor meet the outside of the mountain round their edge (they were left at height 0 there,
        which tore holes round the ways in) */
     for(let k=0;k<NV;k++)if(!(Wz[k]>0)){Fh[k]=Mh[k];Ch[k]=Mh[k]}
