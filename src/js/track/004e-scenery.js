@@ -38,7 +38,7 @@
      prism (T.prism), inside(x,y,z) (the haze turns dark where it's true), clock (uniforms set to the time each frame),
      info (more for bmInfo), geyName (bmInfo's word for a geyser), gCol (geyser particle colours), plainFx (unlit falls
      and geysers), jelSoft (see-through jellyfish), bubbles (geysers rise as bubbles) */
-const SCENERY={U:sceneryUrban,O:sceneryAll,F:sceneryAll,N:sceneryAll,R:sceneryAll,P:sceneryAll};
+const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryAll,N:sceneryAll,R:sceneryAll,P:sceneryAll};
 function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
   const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall0,nGey0,nTun]=dial,nFall=RES.low?0:nFall0,nGey=RES.low?0:nGey0,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
   const er=rng((seed^0xE7A1)>>>0),cxT=(minX+maxX)/2,czT=(minZ+maxZ)/2;
@@ -248,29 +248,20 @@ function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   return{LK,bk,dial:ctx.dial,floorY,water:ctx.water,tun,prism:ctx.prism,env,bmInfo}}
 /* the biomes not yet split out (Prototype 61, while the split is under way) */
 function sceneryAll(ctx){const bk=ctx.bk;
-  if(bk==='O'){
-  ctx.floorY=ctx.minY-24;
-  }
-  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,LK,day,dens,nFall,nGey,er,lam,IM,lines,lnA,lnBio,near,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,floorY}=ctx;
-  if(bk==='O'){
-  const water=new THREE.Mesh(new THREE.PlaneGeometry(16000,16000),day?lam(0x0f4f78,0x052036):Object.assign(lam(0x04121e,0x010710),{transparent:true,opacity:0.6}));water.rotation.x=-Math.PI/2;water.position.set(cxT,floorY,czT);group.add(water);ctx.water=water;
-  }else if(bk==='F'){
+  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,LK,day,dens,nFall,nGey,er,lam,IM,lines,lnA,lnBio,near,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,jel,kelp,fish,schools,floorY}=ctx;
+  if(bk==='F'){
 const gm=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),lam(0x0a130c,0x020604));gm.rotation.x=-Math.PI/2;gm.position.set(cxT,floorY-0.3,czT);group.add(gm);const grid=new THREE.GridHelper(6000,120,0x1f5a32,0x0e2a17);grid.position.y=floorY;group.add(grid)
   }else if(bk==='R'){
 const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c0a06):lam(0x071216,0x010405));sb.rotation.x=-Math.PI/2;sb.position.set(cxT,floorY-0.2,czT);group.add(sb);
     /* by day the surface is overhead, bright where the sun comes through */
     if(day){const sf=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),new THREE.MeshBasicMaterial({color:0xaef0fa,transparent:true,opacity:0.55,side:THREE.DoubleSide,depthWrite:false}));sf.rotation.x=-Math.PI/2;sf.position.set(cxT,maxY+170,czT);group.add(sf)}
   }
-  if(bk==='O'){
-  pylons(()=>floorY,null,lam(0x18232c));
-  }else if(bk==='F'){
+  if(bk==='F'){
   pylons(()=>floorY);
   }else if(bk==='R'){
   pylons(()=>floorY);
   }
-  if(bk==='O'){
-  spireFrames([0xd9dde2,0x1a2026]);
-  }else if(bk==='F'){
+  if(bk==='F'){
   spireFrames([0x1c140e,0x070403]);
   }else if(bk==='N'){
   spireFrames(null,f=>f.bot-90);
@@ -285,10 +276,7 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
     for(let y=floorY+45;y<top-30;y+=45)bands.push({x,y,z,sx:tw+0.7,sy:0.7,sz:tw+0.7,ry});
     const n=4+Math.floor(er()*4),cr=tw*1.4+26;for(let k=0;k<n;k++){const sz=44+er()*66,a=er()*TAU,rr=k?er()*cr:0;canopy.push({x:x+Math.cos(a)*rr,y:top-12+er()*46,z:z+Math.sin(a)*rr,sx:sz,sy:sz*(0.55+er()*0.3),sz,ry:er()*1.6})}};
   const treeTop=(x,z,reach)=>{const h=near(x,z,reach+120);return Math.max(floorY+300+er()*230,(h?h.hi:minY)+125)};
-  if(bk==='O'){
-  helixMiddles(({cx0,cz0,rt,top})=>{const g=new THREE.CylinderGeometry(rt*0.85,rt*0.95,5,24),m=new THREE.Mesh(g,lam(0xd6c28a,0x1a160c));m.position.set(cx0,floorY+2.5,cz0);group.add(m);
-      return{x:cx0,y:floorY+5+(top+40-floorY)/2,z:cz0,sx:10,sy:top+40-floorY,sz:10,c:0xe4e0d6}});
-  }else if(bk==='F'){
+  if(bk==='F'){
   helixMiddles(({cx0,cz0,rt,rc,top})=>{tree(cx0,cz0,Math.min(44,rt*0.5,rc/1.3),Math.max(top+170,floorY+320));});
   }else if(bk==='N'){
   helixMiddles();
@@ -297,41 +285,21 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
   }else if(bk==='P'){
   helixMiddles();
   }
-  if(bk==='O'){
-  falls({poolC:0xe8f8ff});
-  }else if(bk==='F'){
+  if(bk==='F'){
   falls();
   }else if(bk==='N'){
   falls({hang:true});
   }else if(bk==='R'){
   falls();
   }
-  if(bk==='O'){
-  geysers({vent:(x,z)=>({x,y:floorY+0.1,z,sx:18,sy:0.2,sz:18,ry:er()*3,c:0xe8f8ff}),ventE:0x5a6a70,flat:true});
-  }else if(bk==='F'){
+  if(bk==='F'){
   geysers({ventC:0x1c2a1e});
   }else if(bk==='N'){
   geysers({hang:true,vent:(x,z,base)=>({x,y:base-3,z,sx:28,sy:6,sz:28,ry:er()*3,c:0x101218})});
   }else if(bk==='R'){
   geysers();
   }
-  if(bk==='O'){
-  const isl=[],shoal=[],lights=[],lamps=[];
-  const nI=[3,6,10,16][dens];
-    for(let t=0;t<900&&shoal.length<nI;t++){const x=minX-450+er()*(maxX-minX+900),z=minZ-450+er()*(maxZ-minZ+900),w=50+er()*170,d=w*(0.5+er()*0.6),ry=er()*3,R0=Math.hypot(w,d)/2;if(!free(x,z,R0+30))continue;
-      isl.push({x,y:floorY+1.6,z,sx:w,sy:3.2,sz:d,ry,c:0xd6c28a});if(w>80)isl.push({x:x+(er()-.5)*w*0.2,y:floorY+4.4,z:z+(er()-.5)*d*0.2,sx:w*0.55,sy:2.6,sz:d*0.5,ry,c:0xc8b27a});if(w>150)isl.push({x,y:floorY+6.8,z,sx:w*0.22,sy:2.4,sz:d*0.2,ry,c:0xbfa66c});
-      shoal.push({x,y:floorY+0.06,z,sx:w+36,sy:0.12,sz:d+36,ry,c:day?0x1d8fa0:0x0a5560});
-      if(w>130&&er()<0.6){const lx=x+(er()-.5)*w*0.3,lz=z+(er()-.5)*d*0.3;if(!near(lx,lz,W/2+40)){lights.push({x:lx,y:floorY+23,z:lz,sx:6,sy:40,sz:6,c:0xe4e0d6});lamps.push({x:lx,y:floorY+44.5,z:lz,sx:7,sy:3,sz:7,c:0xffb000})}}
-      claim(x,z,R0)}
-    IM(lam(0xffffff,0x1a160c),isl);IM(new THREE.MeshBasicMaterial({color:0xffffff}),shoal);IM(lam(0xffffff,0x202020),lights);IM(new THREE.MeshBasicMaterial({color:0xffffff}),lamps);lines(lights,lnA);
-    /* whitecaps: short white bars that swell and fade, all lined up with the wind */
-    const nC=[800,1300,1800,2300][dens],wa=er()*TAU;for(let t=0;t<nC*3&&caps.length<nC;t++){const x=minX-800+er()*(maxX-minX+1600),z=minZ-800+er()*(maxZ-minZ+1600);if(!free(x,z,6))continue;caps.push({x,z,sx:5+er()*12,sz:0.9+er()*1.2,ry:wa+(er()-.5)*0.5,ph:er()*10,per:3+er()*3.5})}
-    /* at night, things that glow under the sea: jellyfish that drift and pulse, and a few manta rays gliding in slow circles */
-    if(!day){const nJ=[6,10,14,20][dens];for(let t=0;t<900&&jel.length<nJ*6;t++){const x=minX-300+er()*(maxX-minX+600),z=minZ-300+er()*(maxZ-minZ+600);if(near(x,z,W/2+30)||!free(x,z,8))continue;
-        const y=floorY-2-er()*4,c=[0xff5ad8,0x5ff0ff,0xb98cff][Math.floor(er()*3)],sz=4+er()*4,ph=er()*TAU,w=0.5+er()*0.5;
-        jel.push({x,y,z,sx:sz,sy:sz*0.55,sz:sz,ry:er()*3,c,ph,w,dx:0,dz:0});for(let k=0;k<4;k++){const a=k*TAU/4+0.4;jel.push({x,y:y-sz*0.9,z,sx:0.25,sy:sz*1.3,sz:0.25,ry:0,c,ph,w,dx:Math.cos(a)*sz*0.3,dz:Math.sin(a)*sz*0.3,tent:1})}jel.push({x,y:y+sz*0.05,z,sx:sz*0.45,sy:sz*0.35,sz:sz*0.45,ry:0,c:0xffffff,ph,w,dx:0,dz:0})}
-      for(let k=0;k<[1,2,3,4][dens];k++){const cx=minX+er()*(maxX-minX),cz=minZ+er()*(maxZ-minZ),R0=60+er()*120;mantas.push({cx,cz,R:R0,y:floorY-3-er()*3,ph:er()*TAU,w:(0.05+er()*0.05)*(er()<0.5?-1:1),s:10+er()*8})}}
-  }else if(bk==='F'){
+  if(bk==='F'){
   const step=[230,165,120,85][dens]/ds;let sd=1;
     for(let i=Math.floor(er()*step);i<N;i+=Math.max(6,Math.round(step*(0.7+er()*0.6)))){if(spl[i])continue;sd=er()<0.75?-sd:sd;const tw=16+er()*18,d=W/2+28+tw*0.71+er()*70,[x,z]=side(i,sd,d);
       if(near(x,z,W/2+24+tw*0.71)||!free(x,z,tw*0.8+26))continue;tree(x,z,tw,treeTop(x,z,tw*1.4+86));claim(x,z,tw*0.8)}
@@ -370,9 +338,7 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
     if(day){const nL=[8,14,20,28][dens];for(let k=0;k<nL;k++){const x=minX-300+er()*(maxX-minX+600),z=minZ-300+er()*(maxZ-minZ+600),top=maxY+170,L=top-floorY;rays.push({x,y:top-L/2,z,sx:6+er()*12,sy:L,sz:2+er()*3,ry:er()*3,c:0xffffff})}
       IM(new THREE.MeshBasicMaterial({color:0xd8fbff,transparent:true,opacity:0.07,blending:THREE.AdditiveBlending,depthWrite:false}),rays)}
   }
-  if(bk==='O'){
-  if(day)daySky();else starSky({sea:true});
-  }else if(bk==='F'){
+  if(bk==='F'){
   if(day)daySky();
   }else if(bk==='N'){
   if(day)daySky({below:true});else starSky();
@@ -389,9 +355,7 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
   if(bk==='F'){
   if(trunks.length){IM(lam(0x1c140e,0x070403),trunks);IM(lam(0x16110c,0x050302),plinths);IM(new THREE.MeshBasicMaterial({color:0x46ff8c}),bands);IM(lam(0x12401f,0x04160a),canopy);lines(canopy,new THREE.LineBasicMaterial({color:0x2fd06a}));lines(trunks,new THREE.LineBasicMaterial({color:0x46ff8c}))}
   }
-  if(bk==='O'){
-  buildTunnels({TC:[0xd9dde2,0x1a2026,0x9fe8ff]});
-  }else if(bk==='F'){
+  if(bk==='F'){
   buildTunnels({grounded:true,shell:()=>({sideW:6,roof:8}),TC:[0x22180f,0x070402,0x46ff8c]});
   }else if(bk==='N'){
   buildTunnels({TC:[0x0c0e16,0x020308,0x3ff0ff]});
@@ -746,9 +710,7 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
   ctx.prism=PR;ctx.inside=PR.inside;ctx.plainFx=true;ctx.gCol=[0xb8b0cc,0x9a8cb8,0xd8d0e8];
   ctx.info.push(PR.mode?{out:'all outside',in:'all inside the mountain',mix:'in and out of the mountain'}[PR.mode]:'',PR.caves&&PR.mode==='mix'?pl(PR.caves,'cavern'):'',PR.lakes&&PR.lakes.length?pl(PR.lakes.length,'lake'):'',PR.rivers?pl(PR.rivers,'river'):'',PR.cal?pl(PR.cal,'caldera'):'');
   }
-  if(bk==='O'){
-  ctx.gCol=[0xffffff,0xd8f4ff,0x9fdcff];
-  }else if(bk==='N'){
+  if(bk==='N'){
   ctx.gCol=[0xffffff,0x9ff6ff,0x3ff0ff];
   }else if(bk==='R'){
   ctx.gCol=[0xffffff,0x9ff6ff,0x3ff0ff];ctx.geyName='bubble vent';ctx.jelSoft=day;ctx.bubbles=true;
