@@ -60,7 +60,7 @@ LOG.share=store.get('hoverline.share')!=='0';
 function logShareable(L){const o=JSON.parse(JSON.stringify(L)),map=new Map();let k=0;
   const hasMe=(o.field||[]).some(f=>f.me);(o.field||[]).forEach((f,i)=>{if(!f.ai&&!f.ghost&&!map.has(f.name))map.set(f.name,(hasMe?f.me:i===0)?'You':'Pilot '+(++k))});
   const nm=n=>map.has(n)?map.get(n):n;for(const f of o.field||[])f.name=nm(f.name);if(o.result)for(const f of o.result.field||[])f.name=nm(f.name);for(const e of o.ev||[])if(e.to)e.to=nm(e.to);return o}
-function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:60,log:logShareable(L)});if(body.length>400000)return;
+function logShare(L,bc){if(!LOG.share||!LB||QS.get('share')==='0')return;try{const body=JSON.stringify({v:61,log:logShareable(L)});if(body.length>400000)return;
   if(bc&&navigator.sendBeacon&&navigator.sendBeacon(LB+'/log',new Blob([body],{type:'text/plain'})))return; /* a page being closed: a beacon still gets there */
   fetch(LB+'/log',{method:'POST',headers:{'Content-Type':'application/json'},body}).then(r=>{LOG.sent=(LOG.sent||0)+(r.ok?1:0)}).catch(()=>{})}catch(e){}}
 function logIndex(){try{return JSON.parse(store.get('hoverline.logs')||'[]')}catch(e){return[]}}
