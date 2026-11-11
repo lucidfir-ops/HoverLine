@@ -25,12 +25,13 @@ async function open(browser, o = {}) {
   const p = await ctx.newPage(); p.errs = [];
   p.on('pageerror', (e) => p.errs.push(String(e.stack || e.message || e).slice(0, 500)));
   p.on('console', (m) => { if (o.verbose) console.log('  [page]', m.text().slice(0, 200)) });
-  p.reqs404 = [];
+  p.reqs404 = []; p.fetched = {};
   await p.route('**/*', (r) => {
     const u = r.request().url();
     if (u.startsWith(ORIGIN + '/samples/')) {
       if (!o.samples) { p.reqs404.push(u); return r.fulfill({ status: 404, body: '' }) }
-      const f = path.join(ROOT, 'samples', decodeURIComponent(u.slice((ORIGIN + '/samples/').length).split('?')[0]));
+      const rel = decodeURIComponent(u.slice((ORIGIN + '/samples/').length).split('?')[0]); p.fetched[rel] = (p.fetched[rel] || 0) + 1;
+      const f = path.join(ROOT, 'samples', rel);
       if (f.startsWith(path.join(ROOT, 'samples')) && fs.existsSync(f)) return r.fulfill({ contentType: MIME[path.extname(f)] || 'application/octet-stream', body: fs.readFileSync(f) });
       return r.fulfill({ status: 404, body: '' });
     }
