@@ -10,6 +10,7 @@ js/track/004e-scenery.js
 js/track/004f-biome-urban.js
 js/track/004g-biome-ocean.js
 js/track/004h-biome-forest.js
+js/track/004i-biome-stratos.js
 js/track/005-maps.js
 js/track/006-track-preview.js
 js/ships/007-ship-models.js

@@ -38,7 +38,7 @@
      prism (T.prism), inside(x,y,z) (the haze turns dark where it's true), clock (uniforms set to the time each frame),
      info (more for bmInfo), geyName (bmInfo's word for a geyser), gCol (geyser particle colours), plainFx (unlit falls
      and geysers), jelSoft (see-through jellyfish), bubbles (geysers rise as bubbles) */
-const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryAll,R:sceneryAll,P:sceneryAll};
+const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryStratos,R:sceneryAll,P:sceneryAll};
 function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
   const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall0,nGey0,nTun]=dial,nFall=RES.low?0:nFall0,nGey=RES.low?0:nGey0,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
   const er=rng((seed^0xE7A1)>>>0),cxT=(minX+maxX)/2,czT=(minZ+maxZ)/2;
@@ -248,7 +248,7 @@ function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   return{LK,bk,dial:ctx.dial,floorY,water:ctx.water,tun,prism:ctx.prism,env,bmInfo}}
 /* the biomes not yet split out (Prototype 61, while the split is under way) */
 function sceneryAll(ctx){const bk=ctx.bk;
-  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,LK,day,dens,nFall,nGey,er,lam,IM,lines,lnA,lnBio,near,free,claim,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,jel,kelp,fish,schools,floorY}=ctx;
+  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,LK,day,dens,nFall,nGey,er,lam,IM,lines,lnBio,near,free,claim,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,jel,kelp,fish,schools,floorY}=ctx;
   if(bk==='R'){
 const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c0a06):lam(0x071216,0x010405));sb.rotation.x=-Math.PI/2;sb.position.set(cxT,floorY-0.2,czT);group.add(sb);
     /* by day the surface is overhead, bright where the sun comes through */
@@ -257,37 +257,23 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
   if(bk==='R'){
   pylons(()=>floorY);
   }
-  if(bk==='N'){
-  spireFrames(null,f=>f.bot-90);
-  }else if(bk==='R'){
+  if(bk==='R'){
   spireFrames();
   }else if(bk==='P'){
   spireFrames();
   }
-  if(bk==='N'){
-  helixMiddles();
-  }else if(bk==='R'){
+  if(bk==='R'){
   helixMiddles(({cx0,cz0,rt,top})=>{const h=top+50-floorY;return{x:cx0,y:floorY+h/2,z:cz0,sx:rt*0.6,sy:h,sz:rt*0.6,ry:er()*3,c:day?0x5a5646:0x101a1e}});
   }else if(bk==='P'){
   helixMiddles();
   }
-  if(bk==='N'){
-  falls({hang:true});
-  }else if(bk==='R'){
+  if(bk==='R'){
   falls();
   }
-  if(bk==='N'){
-  geysers({hang:true,vent:(x,z,base)=>({x,y:base-3,z,sx:28,sy:6,sz:28,ry:er()*3,c:0x101218})});
-  }else if(bk==='R'){
+  if(bk==='R'){
   geysers();
   }
-  if(bk==='N'){
-  const slabs=[];
-  /* Stratos: floating slabs so speed reads (the stars all the way round are drawn with the sky, below) */
-    const nS=[10,22,36,56][dens];for(let t=0;t<1500&&slabs.length<nS;t++){const x=minX-500+er()*(maxX-minX+1000),z=minZ-500+er()*(maxZ-minZ+1000),w=6+er()*18,dd=6+er()*18,h=40+er()*150,y=minY-260+er()*(maxY-minY+420),R0=Math.hypot(w,dd)/2;
-      const nr=near(x,z,R0+W/2+60);if(nr&&nr.hi>y-h/2-45&&nr.lo<y+h/2+45)continue;if(!free(x,z,R0+10))continue;slabs.push({x,y,z,sx:w,sy:h,sz:dd,ry:er()*3,c:0xffffff});claim(x,z,R0)}
-    IM(day?lam(0x3a4352,0x0a0d12):lam(0x0b0d14,0x020306),slabs);lines(slabs.filter((o,k)=>k%3===0),lnA);lines(slabs.filter((o,k)=>k%3===1),new THREE.LineBasicMaterial({color:0x3ff0ff}));lines(slabs.filter((o,k)=>k%3===2),new THREE.LineBasicMaterial({color:0xb05cff}))
-  }else if(bk==='R'){
+  if(bk==='R'){
   /* the reef (Prototype 31): rocks and coral on the sea bed, kelp that sways, shoals of fish swimming
        round, and jellyfish at every depth. By day the water is sunlit, with shafts of light from the surface; at night
        only the creatures and the coral glow. Nothing comes near the road. */
@@ -315,9 +301,7 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
     if(day){const nL=[8,14,20,28][dens];for(let k=0;k<nL;k++){const x=minX-300+er()*(maxX-minX+600),z=minZ-300+er()*(maxZ-minZ+600),top=maxY+170,L=top-floorY;rays.push({x,y:top-L/2,z,sx:6+er()*12,sy:L,sz:2+er()*3,ry:er()*3,c:0xffffff})}
       IM(new THREE.MeshBasicMaterial({color:0xd8fbff,transparent:true,opacity:0.07,blending:THREE.AdditiveBlending,depthWrite:false}),rays)}
   }
-  if(bk==='N'){
-  if(day)daySky({below:true});else starSky();
-  }else if(bk==='R'){
+  if(bk==='R'){
   const sc=document.createElement('canvas');sc.width=1024;sc.height=512;const g=sc.getContext('2d'),gr=g.createLinearGradient(0,0,0,512),rr=rng((seed^0x5EA)>>>0);
     for(const[f,c]of day?[[0,'#d4fbff'],[0.18,'#86dcee'],[0.42,'#33a4c4'],[0.5,'#1f86a6'],[0.62,'#145e7e'],[1,'#062238']]:[[0,'#0e3a4e'],[0.3,'#062330'],[0.5,'#01101a'],[1,'#000306']])gr.addColorStop(f,c);
     g.fillStyle=gr;g.fillRect(0,0,1024,512);
@@ -327,9 +311,7 @@ const sb=new THREE.Mesh(new THREE.PlaneGeometry(9000,9000),day?lam(0x8c8066,0x0c
   }else if(bk==='P'){
   if(day)daySky();else starSky();
   }
-  if(bk==='N'){
-  buildTunnels({TC:[0x0c0e16,0x020308,0x3ff0ff]});
-  }else if(bk==='R'){
+  if(bk==='R'){
   buildTunnels({TC:[0x0f2a33,0x03121a,0x3ff0ff]});
   }
   if(bk==='P'){
@@ -680,8 +662,6 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
   ctx.prism=PR;ctx.inside=PR.inside;ctx.plainFx=true;ctx.gCol=[0xb8b0cc,0x9a8cb8,0xd8d0e8];
   ctx.info.push(PR.mode?{out:'all outside',in:'all inside the mountain',mix:'in and out of the mountain'}[PR.mode]:'',PR.caves&&PR.mode==='mix'?pl(PR.caves,'cavern'):'',PR.lakes&&PR.lakes.length?pl(PR.lakes.length,'lake'):'',PR.rivers?pl(PR.rivers,'river'):'',PR.cal?pl(PR.cal,'caldera'):'');
   }
-  if(bk==='N'){
-  ctx.gCol=[0xffffff,0x9ff6ff,0x3ff0ff];
-  }else if(bk==='R'){
+  if(bk==='R'){
   ctx.gCol=[0xffffff,0x9ff6ff,0x3ff0ff];ctx.geyName='bubble vent';ctx.jelSoft=day;ctx.bubbles=true;
   }}
