@@ -11,7 +11,7 @@ the biome. Music stays random. Picks from the dossier: 2, 3, 6 (drawing on 7, 8,
 | # | Task | Agent (model, effort) | Status |
 | --- | --- | --- | --- |
 | A | World and set-pieces: void overview, bestiary blocks, stepped sky, palettes, chasing heads, portals 49 to 56, hyperspace tunnel with pads, serpent under a spiral, ghost riders, echoes (57), music-reactive world (58). Clips in docs/spirit-proto/world/ | designer (Opus, high) | running |
-| B | Objects and effects: breathing variants (2, 63, 64), stacking (3, 28), DMT rooms (6 from 7, 8, 9) and a crossing, sacred geometry (14), all of 24 to 33 in several sizes, beat-driven. Clips in docs/spirit-proto/fx/ | designer (Opus, high) | running |
+| B | Objects and effects: breathing variants (2, 63, 64), stacking (3, 28), DMT rooms (6 from 7, 8, 9) and a crossing, sacred geometry (14), all of 24 to 33 in several sizes, beat-driven. Clips in docs/spirit-proto/fx/ | designer (Opus, high) | merged |
 
 Why designer for both: creative work that renders in the engine but adds nothing to the shipped game yet. Split by
 subject so the two can run at once without touching the same files.
