@@ -5,6 +5,21 @@ const fs = require('fs'), path = require('path'), { execFileSync } = require('ch
 const { openPage, launch } = require('./page.js');
 const LIB = ['lib/neon.js', 'lib/stage.js', 'lib/objects.js', 'lib/objects2.js', 'lib/rooms.js', 'clips.js'].map((f) => path.join(__dirname, f));
 const W = 640, H = 360;
+// the click track (16-bit mono WAV): a kick on every beat, a hat off the beat, a rising sweep over the 2 bars before
+// each drop and a low boom on it; off = the beat clock's time at the clip's start
+function clickTrack(dur, off) {
+  const sr = 22050, n = Math.ceil(dur * sr), spb = 60 / 140, ph8 = spb * 32, buf = Buffer.alloc(44 + n * 2);
+  let seed = 1; const noise = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x3fffffff - 1 };
+  for (let i = 0; i < n; i++) { const t = i / sr + off, tb = t % spb, t8 = t % ph8, toff = (t + spb / 2) % spb;
+    let v = 0.6 * Math.sin(2 * Math.PI * (45 * tb + 90 * (1 - Math.exp(-tb * 28)) / 28)) * Math.exp(-tb * 9);
+    v += 0.08 * noise() * Math.exp(-toff * 60);
+    if (t8 > ph8 - spb * 8) { const f = (t8 - (ph8 - spb * 8)) / (spb * 8); v += 0.07 * f * noise() * (0.5 + 0.5 * Math.sin(2 * Math.PI * (2 + 14 * f) * t)) }
+    if (t8 < spb * 3) v += 0.35 * Math.exp(-t8 * 1.8) * Math.sin(2 * Math.PI * 50 * t8);
+    buf.writeInt16LE(Math.max(-32767, Math.min(32767, Math.round(v * 26000))), 44 + i * 2) }
+  buf.write('RIFF', 0); buf.writeUInt32LE(36 + n * 2, 4); buf.write('WAVEfmt ', 8); buf.writeUInt32LE(16, 16); buf.writeUInt16LE(1, 20); buf.writeUInt16LE(1, 22);
+  buf.writeUInt32LE(sr, 24); buf.writeUInt32LE(sr * 2, 28); buf.writeUInt16LE(2, 32); buf.writeUInt16LE(16, 34); buf.write('data', 36); buf.writeUInt32LE(n * 2, 40);
+  return buf;
+}
 const args = process.argv.slice(2), out = args[0], names = (args[1] || 'all').split(',');
 const still = args.includes('--still') ? +args[args.indexOf('--still') + 1] : null;
 const keepFrames = args.includes('--frames');
@@ -35,13 +50,9 @@ const keepFrames = args.includes('--frames');
     if (still != null) { fs.copyFileSync(path.join(dir, String(still).padStart(4, '0') + '.png'), path.join(out, name + '-' + still + '.png')); fs.rmSync(dir, { recursive: true, force: true }); console.log(name, 'still', Date.now() - t0, 'ms'); continue }
     const mp4 = path.join(out, name + '.mp4'), gif = path.join(out, name + '.gif');
     // the click track: a kick on every beat, a soft riser in the two bars before each drop and a crash on it
-    const spb = 60 / 140, off = info.t0 + info.beatOffset, bars8 = spb * 32;
-    const tb = `mod(t+${off},${spb})`, tl = `mod(t+${off},${bars8})`;
-    const aexpr = `0.55*sin(2*PI*(45*${tb}+90*(1-exp(-${tb}*28))/28))*exp(-${tb}*9)` +
-      `+0.10*gt(${tl},${bars8 - spb * 8})*((${tl}-${bars8 - spb * 8})/${spb * 8})*sin(2*PI*(300+900*((${tl}-${bars8 - spb * 8})/${spb * 8}))*t)*sin(2*PI*7*t)` +
-      `+0.25*lt(${tl},${spb * 2})*exp(-${tl}*2.5)*sin(2*PI*55*t)`;
+    const wav = path.join(dir, 'click.wav'); fs.writeFileSync(wav, clickTrack(n / info.fps, info.t0 + info.beatOffset));
     const fin = ['-y', '-loglevel', 'error', '-framerate', String(info.fps), '-i', path.join(dir, '%04d.png')];
-    if (info.audio) execFileSync('ffmpeg', [...fin, '-f', 'lavfi', '-i', `aevalsrc=${aexpr}:s=44100:d=${n / info.fps}`, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '20', '-preset', 'slow', '-c:a', 'aac', '-b:a', '96k', '-shortest', '-movflags', '+faststart', mp4]);
+    if (info.audio) execFileSync('ffmpeg', [...fin, '-i', wav, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '20', '-preset', 'slow', '-c:a', 'aac', '-b:a', '96k', '-shortest', '-movflags', '+faststart', mp4]);
     else execFileSync('ffmpeg', [...fin, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '20', '-preset', 'slow', '-movflags', '+faststart', mp4]);
     execFileSync('ffmpeg', [...fin, '-vf', 'split[a][b];[a]palettegen=max_colors=128:stats_mode=full[p];[b][p]paletteuse=dither=bayer:bayer_scale=4', gif]);
     if (!keepFrames) fs.rmSync(dir, { recursive: true, force: true });

@@ -115,7 +115,7 @@
     el.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;pointer-events:none;font:600 11px/1.25 "DejaVu Sans Mono",monospace;color:#f2efe6;z-index:99';
     el.innerHTML = '<div id="fxc" style="position:absolute;left:8px;top:6px;text-shadow:0 0 3px #000,0 0 6px #000"></div>' +
       '<div id="fxb" style="position:absolute;left:8px;bottom:7px;display:flex;gap:3px;align-items:center"></div>' +
-      '<div id="fxd" style="position:absolute;left:0;right:0;top:40%;text-align:center;font-size:28px;letter-spacing:6px;color:#ffb000;opacity:0;text-shadow:0 0 10px #ffb000"></div>';
+      '<div id="fxd" style="position:absolute;left:8px;bottom:22px;font-size:15px;font-weight:700;letter-spacing:3px;color:#111;background:#ffb000;padding:1px 6px;border-radius:3px;opacity:0">DROP</div>';
     document.body.append(el); return el;
   };
   ST.drawOverlay = function (cap, bt, show) {
@@ -128,14 +128,14 @@
     for (let i = 0; i < 8; i++) h += `<span style="width:5px;height:${i === bt.bars ? 9 : 5}px;background:${i === bt.bars ? '#3ff0ff' : 'rgba(63,240,255,.35)'}"></span>`;
     h += `<span style="margin-left:6px;color:#8b93a2">140 bpm · bar ${bt.bars + 1}/8${bt.toDrop < 3.5 ? ' · drop in ' + Math.ceil(bt.toDrop / bt.spb) : ''}</span>`;
     B.innerHTML = h;
-    const D = document.getElementById('fxd'); D.textContent = 'DROP'; D.style.opacity = bt.tDrop < 0.9 && bt.dropN >= 0 && bt.t >= 0 ? Math.max(0, 1 - bt.tDrop / 0.9) : 0;
+    const D = document.getElementById('fxd'); D.style.opacity = bt.tDrop < 1.7 && bt.dropN >= 1 ? Math.min(1, 1.6 - bt.tDrop) : 0;
   };
 
   // ---------- one frame ----------
   ST.frame = function (t, dt, clip) {
     const c = ST.c, bt = ST.beat(t + (clip.beatOffset || 0)); ST.bt = bt;
     SPFX.G.uTime.value = t; SPFX.G.uRes.value.set(ST.w, ST.h);
-    if (ST.list) for (const { r, q } of ST.list) { r.u = ST.lead(t) + q.du + (q.wob ? Math.sin(t * 0.7 + q.du) * q.wob : 0); r.utot = r.u; r.lat = q.lat + Math.sin(t * 0.6 + q.du * 0.3) * 0.8; r.steerS = Math.cos(t * 0.6 + q.du * 0.3) * 0.25; c.placeShip(r, c.S.t) }
+    if (ST.list) for (const { r, q } of ST.list) { r.u = ST.lead(t) + q.du + (q.wob ? Math.sin(t * 0.7 + q.du) * q.wob : 0); r.utot = r.u; r.lat = q.lat + Math.sin(t * 0.6 + q.du * 0.3) * 0.8; r.steerS = Math.cos(t * 0.6 + q.du * 0.3) * 0.25; Object.assign(r, { charging: null, od: 0, emp: 0, barrier: 0, spinD: 0, inv: 0, phase: 0 }); c.placeShip(r, c.S.t); const ud = r.ship.userData; if (ud.shield) ud.shield.visible = false }
     c.S.t += dt; c.VFX.update(dt); c.scene.background.set(0x000000); if (c.scene.fog) { c.scene.fog.color.set(0x000000); c.scene.fog.near = 400; c.scene.fog.far = 2600 }
     if (clip.update) clip.update(t, bt, dt);
     for (const o of ST.objs) if (o.update) o.update(t, bt, dt);
