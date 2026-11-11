@@ -598,7 +598,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="sub">Prototype 60</div>
     <div class="row"><button class="btn go" id="playBtn">Race</button><button class="btn" id="optBtn">Options</button><button class="btn" id="lbBtn">Leaderboard</button><button class="btn" id="rotBtn" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="fsBtn" data-icon="fullscreen" hidden>Full screen</button></div>
     <a class="btn go" id="ownTab" target="_blank" rel="noopener" hidden>Open with tilt</a>
-    <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip" id="radioBack" hidden>Back to radio</button><button class="chip mmode" aria-label="Music mode">Generative</button><button class="heart" id="likeTune" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button></div>
+    <div class="player" role="group" aria-label="Music"><div class="row"><button class="chip listen" aria-pressed="false" title="What the menus play: the race music (the radio of tunes) or the quiet Ambient. Tap to switch.">Menu music: Race</button><button class="chip" id="nextTune" data-icon="next" aria-label="Next tune">Next</button><button class="chip" id="radioBack" hidden>Back to radio</button><button class="chip mmode" aria-label="Music mode">Generative</button><button class="heart" id="likeTune" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button></div>
       <div class="t best tinfo" id="titleTune"></div></div>
   </div>
 </div>
@@ -957,7 +957,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div id="musMain">
     <div class="sub">The genres, how the race music behaves, and your library of kept tunes · every tune has a code you can share</div>
     <div class="row" role="group" aria-label="Music mode"><span class="sub">Mode</span><button class="chip" data-mm="gen" aria-pressed="false">Generative</button><button class="chip" data-mm="pre" aria-pressed="false">Pregen</button><button class="chip" data-mm="songs" aria-pressed="false">Songs</button></div>
-    <div class="row" role="group" aria-label="Music"><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false">▶ Race music</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
+    <div class="row" role="group" aria-label="Music"><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false" title="What the menus play: the race music (the radio of tunes) or the quiet Ambient. Tap to switch.">Menu music: Race</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
     <div class="sub">Genres</div><div class="row" role="group" aria-label="Genres" id="genreRow"></div>
     <p class="small">Each tune is a template from one genre, or a fusion of two (one genre's rhythm, another's melody or colour). A tune plays only when its genres are on. In a room everyone hears the same tunes, so there all genres play.</p>
     <div class="row"><button class="heart" id="likeTune2" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune2" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
@@ -3405,7 +3405,11 @@ const audio={ctx:null,on:store.get('hoverline.sound')!=='0',
     const o1=c.createOscillator(),o2=c.createOscillator();o1.type='sawtooth';o2.type='square';const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=400;const g=c.createGain();g.gain.value=0.05;
     o1.connect(f);o2.connect(f);f.connect(g);g.connect(this.master);o1.start();o2.start();Object.assign(this,{o1,o2,f,eg:g});
     const nb=c.createBuffer(1,c.sampleRate*0.6,c.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;this.noise=nb;setTimeout(()=>{this.voice('');this.loadFx()},0)}catch(e){this.ctx=null}},
-  engine(v,boost){if(!this.ctx)return;const t=this.ctx.currentTime,fr=38+v*0.85;this.o1.frequency.setTargetAtTime(fr,t,0.05);this.o2.frequency.setTargetAtTime(fr*0.502,t,0.05);this.f.frequency.setTargetAtTime(260+v*11+boost*900,t,0.08)},
+  /* Prototype 61: the engine hum is for flying only. It fades to nothing (not a cut) in every menu, the frame select, the
+     Frame lab, the pause and the results; `fly` comes from the loop (race, countdown, tutorial). */
+  /* its level while flying: 0.05 alone, 0.028 under the music (it was set in music.ensure, which fought the fade) */
+  engLvl(){return typeof music!=='undefined'&&music.style!=='off'?0.028:0.05},
+  engine(v,boost,fly=true){if(!this.ctx)return;const t=this.ctx.currentTime,fr=38+v*0.85;this.eg.gain.setTargetAtTime(fly&&this.on?this.engLvl():0,t,fly?0.12:0.15);this.o1.frequency.setTargetAtTime(fr,t,0.05);this.o2.frequency.setTargetAtTime(fr*0.502,t,0.05);this.f.frequency.setTargetAtTime(260+v*11+boost*900,t,0.08)},
   /* announcer lines, decoded on first use */
   voice(k){if(!this.ctx||!this.on||!annOn)return false;if(!this.vb){this.vb={};music.decodeVox.call(music,this.ctx,x=>x[0]==='v').then(v=>{this.vb=v});return false}
     const b=this.vb['v_'+k];if(!b)return false;const s=this.ctx.createBufferSource(),g=this.ctx.createGain();s.buffer=b;g.gain.value=0.9;s.connect(g);g.connect(this.master);s.start();return true},
@@ -5211,7 +5215,9 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   /* attach a library entry (in its own key) to a fresh state */
   withLib(st,r){if(r()<0.3){st.lib=pickLib(r,libSide(st),libFk(st),!!st.mx);if(st.lib){st.bp=0;const b=bpOf(st);if(b)st.key=b.tonic}}return this.withX(st,r)},
   withX(st,r){st.kx2=(r()<0.45?1+Math.floor(r()*3):0)|(r()<0.45?1+Math.floor(r()*7):0)<<2|(r()<0.5?1+Math.floor(r()*3):0)<<5|(r()<0.5?128:0);return st},
-  fromTrack(seed){if(!this.pinned){this.tSeed=seed;this.rSeq=0;this.rPrevF=null;this.rRot=null;this.raceHome=null;this.tRotHome();const st={...this.raceHome,mut:[...this.raceHome.mut]};this.setState(st);return}this.tSeed=seed;if(this.pinned)return;let room=false;try{room=!!mp.on}catch(e){}
+  fromTrack(seed){if(!this.pinned){this.tSeed=seed;this.rSeq=0;this.rPrevF=null;this.rRot=null;this.raceHome=null;this.tRotHome();/* Prototype 61: picking a track in a menu (Career, Play, a new seed) only readies that track's race tune; the music already
+       playing in the menu carries on. cueRace takes raceHome when the race starts. */
+      if(this.st&&this.timer&&(this.mood==='menu'||this.mood==='listen')){this.pgWant();return}const st={...this.raceHome,mut:[...this.raceHome.mut]};this.setState(st);return}this.tSeed=seed;if(this.pinned)return;let room=false;try{room=!!mp.on}catch(e){}
     this.setState(mFresh(i=>{const r=rng((((seed^0x5EED)>>>0)+Math.imul(i,0x9E3779B1)>>>0)||1);return this.withLib(this.randomState(r,this.kind(r,room)),r)},room?1:12))},
   newTune(){const wasH=this.raceHome&&this.st&&codeOf(this.st)===codeOf(this.raceHome);const pc=this.code(),pl=this.played();if(this.T&&pl!=null&&pl<20)MLIKE.add(this.T.id,-1);this.pinned=false;this.setState(this.freshTune());this.mlog('tune',{why:'next',code:this.code(),tpl:this.T?this.T.id:undefined,prev:pc||undefined,played:pl});let room=false;try{room=!!mp.on}catch(e){}if(wasH&&!room&&this.mood!=='race'&&this.mood!=='count')this.raceHome={...this.st,mut:[...this.st.mut]}},
   freshTune(){if(this.libMode==='lib'){const s=this.tLibPick(this.st?codeOf(this.st):null);if(s)return s}return this.tFresh(()=>this.tRandom(rng((Math.random()*4294967296)>>>0),this.T?this.T.f:null),12);return mFresh(()=>{const r=rng((Math.random()*4294967296)>>>0);return this.withLib(this.randomState(r,this.kind(r)),r)},12)},
@@ -5515,7 +5521,7 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
       for(const p of[0,3,7])brass(root+p,t+5*b*1.2,1.3,0.028);timp(t,0.3);timp(t+5*b*1.2,0.4)}},
   crashTo(t,v){const c=this.ctx,n=this.nz(t,1.8),f=c.createBiquadFilter();f.type='highpass';f.frequency.value=4200;const g=c.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.001,t+1.7);n.connect(f);f.connect(g);g.connect(this.fan)},
   /* ---- transport & race hooks ---- */
-  ensure(){if(!audio.ctx)return;this.init();if(this.style!=='off'&&this.modeEff()==='songs'&&!this.soOn)this.soStart();if(audio.eg)audio.eg.gain.value=this.style==='off'?0.05:0.028;if(this.style==='off'){this.stop();return}
+  ensure(){if(!audio.ctx)return;this.init();if(this.style!=='off'&&this.modeEff()==='songs'&&!this.soOn)this.soStart();if(this.style==='off'){this.stop();return}
     if(!this.st)this.newTune();if(!this.timer){this.nextT=this.ctx.currentTime+0.08;this.pos=Math.ceil(this.pos/16)*16;this.timer=setInterval(()=>this.tick(),25)}},
   stop(){clearInterval(this.timer);this.timer=null;if(this.pgOn)this.pgStop();this.soStop()},
   /* Steady: the hook is stated, varied gently and brought back; no echoes of the old themes, and your driving only
@@ -8161,10 +8167,12 @@ $('libUndoB').onclick=()=>{if(!libU)return;music.restore(libU.k,libU.i);note(lib
 for(const id of['radioBack','radioBack2','radioBack3']){const b=$(id);if(b)b.onclick=()=>{audio.init();music.toRadio();music.ensure();syncMusic();tuneUI();note('Back to the radio',1400)}}
 /* Menu music: the ambient theme by default; the Race music button plays the race arrangement in the menu instead
    (for this visit only, so the game always opens on the ambient theme). */
-let menuListen=false;
+/* Prototype 61: a fresh browser's menus play the race music (the radio of tunes); Ambient is the other choice, remembered
+   in hoverline.menumus ('race' | 'ambient'). A player who had music settings saved before this keeps the old ambient menu. */
+let menuListen=(()=>{const v=store.get('hoverline.menumus');return v?v==='race':!store.get('hoverline.music')})();
 function menuMusic(){music.sense({steer:0,brake:0,boost:0,rank:0.5,speed:0});if(menuListen)music.listen();else{music.toAmbient();music.setMood('menu')}}
-{const lcs=document.querySelectorAll('.listen'),sy=()=>lcs.forEach(lc=>{lc.setAttribute('aria-pressed',String(menuListen));lc.textContent=(menuListen?'❚❚':'▶')+' Race music'});sy();
-  lcs.forEach(lc=>lc.onclick=()=>{audio.init();if(music.style==='off'){music.setStyle('dnb');syncMusic()}music.ensure();menuListen=!menuListen;sy();if(S.state==='menu')menuMusic()})}
+{const lcs=document.querySelectorAll('.listen'),sy=()=>lcs.forEach(lc=>{lc.setAttribute('aria-pressed',String(menuListen));lc.textContent='Menu music: '+(menuListen?'Race':'Ambient')});sy();
+  lcs.forEach(lc=>lc.onclick=()=>{audio.init();if(music.style==='off'){music.setStyle('dnb');syncMusic()}music.ensure();menuListen=!menuListen;store.set('hoverline.menumus',menuListen?'race':'ambient');sy();if(S.state==='menu')menuMusic()})}
 {const sc=$('shufChip'),sy=()=>sc.setAttribute('aria-pressed',String(music.shuffle));sy();sc.onclick=()=>{music.shuffle=!music.shuffle;store.set('hoverline.shuffle',music.shuffle?'1':'0');sy();
     if(music.shuffle&&music.ctx){music.pinned=false;music.nextShuffle=music.ctx.currentTime+150}note(music.shuffle?'Shuffle · a new tune takes over at each breakdown in a race, and every couple of minutes in the menu':'Shuffle off · one tune per race, and the menu keeps this tune',2400)}}
 {const lc=$('liteChip'),sy=()=>lc.setAttribute('aria-pressed',String(music.lite));sy();lc.onclick=()=>{music.lite=!music.lite;store.set('hoverline.alite',music.lite?'1':'0');sy();
@@ -8181,7 +8189,7 @@ document.querySelectorAll('.mmode').forEach(b=>b.onclick=()=>{audio.init();const
 function songsUI(){perfSongs();$('songNote').textContent=SONGS.ok?'Recorded tracks for the Songs music mode (the music button on the title screen and in Settings): a new one starts at each GO. All are CC0 (public domain).':'Recorded tracks for the Songs music mode, all CC0 (public domain). They come as files with the itch.io zip and the Wi-Fi host pack; in this copy Songs plays the generative music.';
   const el=$('songList');el.textContent='';SONGS.list.forEach((x,i)=>{if(i)el.append(document.createElement('br'));const a=document.createElement('a');a.style.color='inherit';a.href=x.u;a.target='_blank';a.rel='noopener';a.textContent=x.t+' · '+x.a;el.append(a,' ('+x.al+', '+x.l+')')})}
 songsUI();mmSync();
-const wake=()=>{audio.init();if(!music.timer&&music.style!=='off'){music.ensure();music.setMood(S.state==='menu'?'menu':S.state==='countdown'?'count':'race')}};
+const wake=()=>{audio.init();if(!music.timer&&music.style!=='off'){music.ensure();if(S.state==='menu')menuMusic();else music.setMood(S.state==='countdown'?'count':'race')}};
 addEventListener('pointerdown',wake,true);addEventListener('keydown',wake,true);
 /* Only the visible tab makes sound: hiding the page (switching tabs, opening the full-screen tilt tab, locking the phone)
    suspends all audio and pauses a race; coming back resumes the sound. */
@@ -10955,7 +10963,7 @@ function step(dt){
     if(!racers.some(r=>r.remote&&!r.left&&r.finishT==null)){mp.bg=false;mp.go=null;clearShots()}else mpTick()}
   if(mp.on&&mp.sess&&(S.state==='race'||S.state==='done'||S.state==='countdown'||S.state==='mpwait'||S.state==='paused'))mpTick();
   S.shake=Math.max(0,S.shake-dt*2.5);
-  {const ear=SPL.race?splLead():player;audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:ear.v,ear.boost)}
+  {const ear=SPL.race?splLead():player;audio.engine(S.state==='menu'?20:S.state==='countdown'?40+Math.sin(S.t*9)*10:ear.v,ear.boost,S.state==='race'||S.state==='countdown'||S.state==='tut')}
   {const ck=player.charging||(S.t-(player.chgEnd??-9)<0.3?player.chgKind:null);audio.charge(S.state==='race'&&player.wreck<=0?ck:null,ck==='hp'?player.hp/player.d.hp:player.ammo/player.d.ammo)}
   for(const r of racers){placeShip(r,S.t);if(r.isGhost||RES.low)r.shadow.visible=false}
   trimStep(dt);inkStep(dt);drFxStep(dt);empFxStep(dt);

@@ -1,7 +1,7 @@
 //# music/engine/041-transport.js: music: transport, scheduling 0.3 s ahead, race hooks (GO, finish, pause)
 //# A fragment of the `music` object literal (it opens in music/engine/*-music-object.js): methods only, not a stand-alone script.
   /* ---- transport & race hooks ---- */
-  ensure(){if(!audio.ctx)return;this.init();if(this.style!=='off'&&this.modeEff()==='songs'&&!this.soOn)this.soStart();if(audio.eg)audio.eg.gain.value=this.style==='off'?0.05:0.028;if(this.style==='off'){this.stop();return}
+  ensure(){if(!audio.ctx)return;this.init();if(this.style!=='off'&&this.modeEff()==='songs'&&!this.soOn)this.soStart();if(this.style==='off'){this.stop();return}
     if(!this.st)this.newTune();if(!this.timer){this.nextT=this.ctx.currentTime+0.08;this.pos=Math.ceil(this.pos/16)*16;this.timer=setInterval(()=>this.tick(),25)}},
   stop(){clearInterval(this.timer);this.timer=null;if(this.pgOn)this.pgStop();this.soStop()},
   /* Steady: the hook is stated, varied gently and brought back; no echoes of the old themes, and your driving only
