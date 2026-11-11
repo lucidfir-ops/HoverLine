@@ -39,7 +39,7 @@
      info (more for bmInfo), geyName (bmInfo's word for a geyser), gCol (geyser particle colours), plainFx (unlit falls
      and geysers), jelSoft (see-through jellyfish), bubbles (geysers rise as bubbles) */
 /* the builders by biome letter: a new biome is a new file with its builder and a line here */
-const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryStratos,R:sceneryReef,P:sceneryPrism};
+const SCENERY={U:sceneryUrban,O:sceneryOcean,F:sceneryForest,N:sceneryStratos,R:sceneryReef,P:sceneryPrism,S:scenerySpirit};
 function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,splits,spl,Kn,group,strip,add,dark,mag,ctop,basis,signI,gantI,minY,minX,maxX,minZ,maxZ,maxY}=rd;
   const bk=bm&&BIOMES[bm.k]?bm.k:'U',dial=bm&&bm.d?bm.d.slice():bioDefaults(seed,bk),[dens0,nFall0,nGey0,nTun]=dial,nFall=RES.low?0:nFall0,nGey=RES.low?0:nGey0,dens=RES.low?Math.min(1,dens0):dens0,LK=lookOf(bk),day=!!LK.day;
   const er=rng((seed^0xE7A1)>>>0),cxT=(minX+maxX)/2,czT=(minZ+maxZ)/2;
@@ -230,7 +230,8 @@ function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   /* in Prism's caverns the haze turns dark (by day too), and back again outside */
   if(ctx.inside){env.ik=0;env.fb=new THREE.Color();const dk=new THREE.Color(0x06040b);env.cave=(cam)=>{const c=cam.position,tg=ctx.inside(c.x,c.y,c.z)?1:0;if(env.ik<0.002&&!tg){env.fb.copy(scene.fog.color);env.ik=0;return}
     if(env.ik<0.002)env.fb.copy(scene.fog.color);env.ik+=(tg-env.ik)*0.08;if(!tg&&env.ik<0.002)env.ik=0;scene.fog.color.copy(env.fb).lerp(dk,env.ik);scene.background.copy(scene.fog.color)}}
-  env.update=(t,anim)=>{if(anim){for(const u of ctx.clock)u.value=t}if(!anim&&env.last>=0)return;env.last=t;env.n++;const M4=_em,Q=_eq,Sv=_es,Pv=_ep;
+  /* Prototype 62: a biome's own moving parts (the Spirit realm's, 004r) */
+  env.spirit=ctx.spirit||null;env.update=(t,anim)=>{if(ctx.tick)ctx.tick(t,anim);if(anim){for(const u of ctx.clock)u.value=t}if(!anim&&env.last>=0)return;env.last=t;env.n++;const M4=_em,Q=_eq,Sv=_es,Pv=_ep;
     const fl=(m,items)=>{if(!m)return;items.forEach((o,k)=>{const y=o.top-((anim?t*o.spd:0)+o.ph)%o.H;Pv.set(o.x,y,o.z);Q.identity();Sv.set(o.sz,o.sz*1.4,o.sz);M4.compose(Pv,Q,Sv);m.setMatrixAt(k,M4)});m.instanceMatrix.needsUpdate=true};
     fl(env.falls,env.fallItems);fl(env.lava,env.lavaItems);
     if(env.gey){env.gItems.forEach((o,k)=>{const g=o.g,fT=2*o.v0/24;let s=((t+g.ph)%g.per)-o.tau;if(!anim)s=fT*(0.2+0.6*((k*0.618)%1));Q.identity();

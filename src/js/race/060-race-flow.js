@@ -13,11 +13,11 @@ const specCx=sp=>FKG.some(k=>sp.n[k]>0);
 /* Scenery: a letter after a dash (O ocean, F forest, N Stratos, once called Night sky, R reef; urban needs none), then optionally four digits for the
    dials (scenery amount, falls, geysers, tunnels), e.g. S1A2B3C-O or SX1A2B3C-U2102. Scenery doesn't change the road, so
    best laps, ghosts and the online board go by the code without it. */
-const parseBio=str=>{const m=/^([UOFNRP])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
+const parseBio=str=>{const m=/^([UOFNRPS])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
 /* Prototype 60: a track code's seed is six hex digits, or seven starting with 1 for codes made from Prototype 60 on (bit 24
    of the seed, TV1): only those may get the new road pieces (drops, speed jumps, long jumps, spires and spirals the other
    way), so every older code builds exactly the track it always did. */
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,8})?))?(?:-([UOFNRP](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,8})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
   return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x1FFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
 let seed=saved?saved.seed:TV1+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
@@ -184,9 +184,11 @@ $('raceBtn').onclick=startRace;$('againBtn').onclick=()=>{if(mp.on)mpAgain(false
 const rndSeed=()=>TV1+Math.floor(Math.random()*0xFFFFFF)+1;/* Prototype 60: new codes are version 1 (seven digits) */
 /* Scenery for new tracks: any of the ticked biomes (urban counts double); a track keeps its own until you change it. */
 /* the Reef joined the ticked settings once, for anyone who had every setting ticked before it existed */
-let bioOn=(()=>{let v=(store.get('hoverline.biomes')||'UOFNRP').replace(/[^UOFNRP]/g,'');if(v==='UOFN'&&!store.get('hoverline.bioR'))v+='R';store.set('hoverline.bioR','1');
+let bioOn=(()=>{let v=(store.get('hoverline.biomes')||'UOFNRPS').replace(/[^UOFNRPS]/g,'');if(v==='UOFN'&&!store.get('hoverline.bioR'))v+='R';store.set('hoverline.bioR','1');
   /* Prism (Prototype 51) joins once too, for anyone who has more than one setting ticked */
-  if(!store.get('hoverline.bioP')&&v.length>1&&!v.includes('P'))v+='P';store.set('hoverline.bioP','1');return v||'U'})();
+  if(!store.get('hoverline.bioP')&&v.length>1&&!v.includes('P'))v+='P';store.set('hoverline.bioP','1');
+  /* Prototype 62: and the Spirit realm, the same way */
+  if(!store.get('hoverline.bioS')&&v.length>1&&!v.includes('S'))v+='S';store.set('hoverline.bioS','1');return v||'U'})();
 const pickBio=()=>{const a=[...bioOn].flatMap(k=>k==='U'?['U','U']:[k]);return{k:a[Math.floor(Math.random()*a.length)]||'U',d:null}};
 /* Track types for New track (Prototype 31): any of the ticked widths, layouts and lengths, as with the scenery. Ticking a
    type makes a new track of it at once; unticking the type in use swaps to another ticked one; clicking the only one ticked
@@ -216,7 +218,7 @@ document.querySelectorAll('[data-tod]').forEach(b=>b.onclick=()=>{const k=b.data
   if(on&&todOn.length===1){if(tod===k)return}else todOn=on?todOn.filter(x=>x!==k):[...todOn,k];
   const nt=!on?k:tod===k?todOn[0]:tod;store.set('hoverline.tods',todOn.join(','));if(nt!==tod){tod=nt;store.set('hoverline.tod',tod);loadTrack(seed)}else todSync()});todSync();
 function bioSync(){document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>{const k=b.dataset.bio||b.dataset.mpbio;b.setAttribute('aria-pressed',String(bioOn.includes(k)));b.classList.toggle('cur',k===bio.k)})}
-document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>b.onclick=()=>{const k=b.dataset.bio||b.dataset.mpbio;let v=bioOn.includes(k)?bioOn.replace(k,''):bioOn+k;if(!v)v=k;bioOn='UOFNRP'.split('').filter(c=>v.includes(c)).join('');store.set('hoverline.biomes',bioOn);
+document.querySelectorAll('[data-bio],[data-mpbio]').forEach(b=>b.onclick=()=>{const k=b.dataset.bio||b.dataset.mpbio;let v=bioOn.includes(k)?bioOn.replace(k,''):bioOn+k;if(!v)v=k;bioOn='UOFNRPS'.split('').filter(c=>v.includes(c)).join('');store.set('hoverline.biomes',bioOn);
   /* ticking a biome shows it on this road; unticking the one in use swaps to another ticked one */
   if(!bioOn.includes(bio.k)||(bioOn.includes(k)&&k!==bio.k))loadTrack(seed,null,null,null,undefined,{k:bioOn.includes(k)?k:pickBio().k,d:null});
   if(b.dataset.mpbio)mpPushInfo();bioSync()});

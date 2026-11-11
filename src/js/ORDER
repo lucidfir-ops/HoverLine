@@ -14,6 +14,12 @@ js/track/004i-biome-stratos.js
 js/track/004j-biome-reef.js
 js/track/004k-biome-prism.js
 js/track/004l-biome-prism-edges.js
+js/track/004m-biome-spirit.js
+js/track/004n-spirit-neon.js
+js/track/004o-spirit-clear.js
+js/track/004p-spirit-shapes.js
+js/track/004q-spirit-lattice.js
+js/track/004r-spirit-live.js
 js/track/005-maps.js
 js/track/006-track-preview.js
 js/ships/007-ship-models.js
