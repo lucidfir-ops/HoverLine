@@ -45,8 +45,23 @@ function getBest(){const v=parseFloat(store.get(bestKey())||'');return isFinite(
 /* sp: undefined keeps the current editor counts, null drops them (back to generated tracks), an object sets them. */
 function loadTrack(s,wk,cx,lk,sp,bm){seed=(s&0x1FFFFFF)||1;if(wk)wid=wk;if(sp!==undefined)spec=sp;if(spec)cplx=specCx(spec);else if(cx!=null)cplx=cx;if(lk)lenK=lk;if(bm!==undefined)bio=bm||{k:'U',d:null};if(!(spec&&(spec.train||spec.quick)))store.set('hoverline.code',codeStr());buildTrack(seed,wid,cplx,lenK,spec,bio);bioSync();setField(false);music.fromTrack(seed);miniBase=null;$('seedIn').value=codeStr();resetGrid();updateMenuBest();drawPreview();S.fly=0;camInit=false;
   poolSync();todSync()}
-function freshRacer(r,u,utot,lat){r.stat={wrecks:0,dmg:0,given:0,boostT:0};Object.assign(r,{u,utot,lat,yaw:0,v:0,steerS:0,brk:0,boost:0,stun:0,spin:0,hp:r.d.hp,ammo:0,cd:[0,0],aiT:[0.5+Math.random(),0.5+Math.random()],
-  wreck:0,dive:0,draft:0,inv:0,barrier:0,charging:null,pitch:0,air:false,h:HOVER,hb:HOVER,vh:0,respawnU:null,laps:[],lapStart:0,done:0,finishT:null,scrape:0,selfBoost:false,drift:0,driftK:0,bPrev:false,dN:0,dB:0,dB0:0,dC:0,bHeld:false,tapT:0,biteT:0,dX:0,dAng:0,dVa:null,dFl:0,bRest:false,tapLog:null,mk:0.4+Math.random()*1.2,lapT:0,bias:(Math.random()-.5)*2,aiDm:0,jOut:false,spinD:0,rollA:0,hopY:0});if(r===player)finCam.t0=null}
+/* Prototype 61: a race can be replayed. Everything in a race that Math.random used to decide (an AI pilot's mistakes, lane and
+   module choices, the start-line spread of its habits, a Quake's gap, a Bouncer's sideways speed) is drawn from a stream of
+   the race's own: one for each racer, made at the start from the track's seed and the race's number (RACE.n, new for every
+   race, written in the race log as `rn`), so the same two numbers give the same race and the order the racers are updated
+   in can't move anyone else's numbers. Looks and sounds (particles, shake, flicker) keep to Math.random, so drawing them
+   never moves the race. `?racen=N` in the address, or RACE.force, makes the next race number N (to replay a logged race). */
+const RACE={n:0,force:(()=>{const v=+QS.get('racen');return v>0?v>>>0:null})()};
+const raceMix=(...a)=>{let h=0x5EED1E55;for(const x of a)h=(rng((h+Math.imul(x|0,0x9E3779B1))>>>0)()*4294967296)>>>0;return h};
+function raceNew(){RACE.n=RACE.force!=null?RACE.force:1+Math.floor(Math.random()*0xFFFFFF);RACE.force=null;return RACE.n}
+const raceId=r=>{let i=roster.indexOf(r);if(i<0){i=extras.indexOf(r);i=i<0?200+racers.indexOf(r):100+i}return i};
+const rand=r=>(r.R||(r.R=rng(raceMix(seed,RACE.n,raceId(r)))))();
+/* the rest of a racer's state a race leaves behind and the next one would carry (the AI's hands, a route or a strip or a jump
+   already decided for the lap, the drift and boost bookkeeping, smoke, EMP and the like): a race's start gets none of it, so a
+   restart on the same track is the race a fresh page gives, and a race number replays the race. */
+const RACER_STALE=['hs','hn','hT','nfT','nf','zs','sjK','sjGo','sjRun','brPick','br','brS','stkS','stkB','lapK','lapS','lapD','climb','slopeG','trimB','trimP','trimUp','emp','od','autoT','ink','phase','refl','stunAt','hpDip','chgKind','chgEnd','bT','bV0','bSt','bTurn','bPk','bDr','tapA','bK','dT','dBl','dFade','dN0','dKn','dKs','dKx','dS','dEnd','wallT','_df','_dfp','_dfv'];
+function freshRacer(r,u,utot,lat){for(const k of RACER_STALE)delete r[k];r.R=rng(raceMix(seed,RACE.n,raceId(r)));r.stat={wrecks:0,dmg:0,given:0,boostT:0};Object.assign(r,{u,utot,lat,yaw:0,v:0,steerS:0,brk:0,boost:0,stun:0,spin:0,hp:r.d.hp,ammo:0,cd:[0,0],aiT:[0.5+rand(r),0.5+rand(r)],
+  wreck:0,dive:0,draft:0,inv:0,barrier:0,charging:null,pitch:0,air:false,h:HOVER,hb:HOVER,vh:0,respawnU:null,laps:[],lapStart:0,done:0,finishT:null,scrape:0,selfBoost:false,drift:0,driftK:0,bPrev:false,dN:0,dB:0,dB0:0,dC:0,bHeld:false,tapT:0,biteT:0,dX:0,dAng:0,dVa:null,dFl:0,bRest:false,tapLog:null,mk:0.4+rand(r)*1.2,lapT:0,bias:(rand(r)-.5)*2,aiDm:0,jOut:false,spinD:0,rollA:0,hopY:0});if(r===player)finCam.t0=null}
 function resetGrid(){clearShots();
   /* the player starts 5th of 8 (in a time trial too); the pilots racing take the other places in roster order, those
      sitting out go behind, unseen */
@@ -72,7 +87,7 @@ async function startRace(){if(!S.car&&!S.train&&!QK.live&&!mp.on&&!SPL.race)LAPS
   if(coarse){goFull();if(!QK.live&&!SPL.race&&!(await tiltCheck()))return}
   hidePages();['results','pause','mus','set','ctl','gfxm'].forEach(i=>$(i).hidden=true);
   music.ensure();music.cueRace();music.setMood('count');lastRank=-1;
-  const gh=setField(!QK.live);if(QK.live)qkField();if(SPL.race)splField();resetGrid();setHud(true);camInit=false;if(SPL.race)splViews();
+  raceNew();const gh=setField(!QK.live);if(QK.live)qkField();if(SPL.race)splField();resetGrid();setHud(true);camInit=false;if(SPL.race)splViews();
   {const t=S.car?CAR_T[S.car.i>>2]:QK.live?CAR_T[0]:null,cw=t&&(QK.live?CAR_W0:carW());S.cls=t?t.k:S.train?1:clsOf(clsFree).f;S.aiK=t?t.ai:1;S.ail=QK.live?'normal':ailNow();S.aiF=t?(QK.live&&QK.lvl<2?0:t.f):1;if(!S.trial&&!S.train&&!mp.on&&!QK.live)store.set('hoverline.lastmode',t?'career':'race');{const D0=DIFF[T.wk]||T.D,e=t&&t.e;T.D=e?{...D0,dmg:D0.dmg*e.dmg,band:[D0.band[0]*(e.dn||1),D0.band[1]*e.up],assist:D0.assist*(e.as||1)}:D0}
     if(cw)for(const r of racers)if(r.isAI&&r.weapons){const o=[];for(const x of r.weapons)o.push(cw.includes(x)?x:CAR_W0.find(y=>!o.includes(y)&&!r.weapons.includes(y)));r.weapons=o;r.scoop=null}}
   if(S.train)setTimeout(()=>note('Training · '+trDrill(TRN.d).n+' · '+(TRN.cube?'Training cube':'your frame')+' · '+LAPS+' laps'+(gh&&gh.best?' · your best run is the ghost':''),2600),900);
