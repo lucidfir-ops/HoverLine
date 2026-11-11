@@ -11340,7 +11340,7 @@ function qkRace(n){qkFlush('next');qkSet(n);qkLoad(n);QK.tries[n-1]=(QK.tries[n-
 /* after startRace: a missile's worth of ammo from race 2, the quiet HUD, the prompts for this step */
 function qkGoRace(){qkB('qkRun',true);qkClasses();if(QK.lvl>=2)player.ammo=Math.min(player.d.ammo,WDEF.missile.cost+1);QK.slot=0;QK.holdK=-1;
   QK.tips=QK.post?[]:qkTips(QK.cur);QK.tip=null}
-const qkTag=()=>({step:QK.cur,of:QK_N,lvl:QK.lvl,ladder:!QK.post,try:QK.tries[QK.cur-1]||1,run:QK.runs+1});
+const qkTag=()=>({step:QK.cur,of:QK_N,lvl:QK.lvl,ladder:!QK.post,try:QK.tries[QK.cur-1]||1,run:QK.runs+1,...(QK.rep?{rep:1}:{})});/* rep: a replay from Training (Prototype 61) */
 function qkFinish(){S.state='done';setTimeout(()=>logEnd('finish'),1600);
   const place=rankOf(player)+1,c=$('count');c.hidden=false;c.classList.add('go');c.textContent=place===1?'WIN':ord(place);
   if(place===1)setTimeout(()=>audio.voice('win'),300);else if(place<=3)setTimeout(()=>audio.voice('podium'),300);setTimeout(()=>{if(S.state==='done')c.hidden=true},1600);
