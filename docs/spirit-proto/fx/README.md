@@ -73,7 +73,7 @@ add a few maths per pixel to the existing composite pass, no new pass.
 
 ## How it is built (for lifting into the game)
 
-The code is in `tools/spirit-proto/fx/` (see its README). `lib/neon.js` has the line material (screen-facing quads,
+The code is in `tools/spirit-proto/fx/` (see its README). `../lib/neon.js` (the shared library, tools/spirit-proto/lib/) has the line material (screen-facing quads,
 width in metres clamped to 1.9 to 7 pixels, palette of four colours as uniforms, fade to black), the dark core with
 contour bands (as Prism's rock), the piece system for 24, 25 and 32 (each piece's home, target and burst direction are
 vertex attributes; two uniforms move them all), and the beat clock. Each object is `SPFX.obj.<name>(THREE, opts)`

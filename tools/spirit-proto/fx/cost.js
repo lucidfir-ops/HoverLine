@@ -2,7 +2,7 @@
 // (a neon line segment is 2 triangles; an instanced mesh counts once per draw but its triangles per instance)
 const path = require('path');
 const { openPage, launch } = require('./page.js');
-const LIB = ['lib/neon.js', 'lib/stage.js', 'lib/objects.js', 'lib/objects2.js', 'lib/rooms.js', 'clips.js'].map((f) => path.join(__dirname, f));
+const LIB = ['../lib/neon.js', '../lib/stage.js', '../lib/objects.js', '../lib/objects2.js', '../lib/rooms.js', 'clips.js'].map((f) => path.join(__dirname, f));
 (async () => {
   const b = await launch(); const p = await openPage(b, 640, 360, LIB);
   const r = await p.evaluate(() => { const SP = window.SPFX, O = SP.obj, R = SP.room, ST = SP.stage; ST.size(640, 360); ST.init({ seed: 1234 });
