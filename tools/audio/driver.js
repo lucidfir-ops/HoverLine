@@ -97,6 +97,25 @@ function driverMain() {
     await settle(); const r = await M.pgMake(st);
     return { code: E('codeOf')(st), secs: Math.round(r.buf.length / r.sr), how: r.how, perr: perr.length, perrs: perr.slice(0, 2) };
   };
+  /* Audio for the before/after check (tools/audio/render-compare.js): the same tune rendered to samples and reduced to a
+     hash (FNV-1a over the bits of each channel) with its level, so two builds can be compared without moving audio around.
+     Pregen is the shipping path; renderGen plays the live engine on a fake clock into a real offline context. */
+  const digest = (buf) => { const out = { ch: [], rms: 0, peak: 0, sr: buf.sampleRate, secs: +(buf.length / buf.sampleRate).toFixed(2) }; let e = 0, n = 0;
+    for (let c = 0; c < buf.numberOfChannels; c++) { const x = buf.getChannelData(c), u = new Uint32Array(x.buffer, x.byteOffset, x.length); let h = 0x811C9DC5; for (let i = 0; i < u.length; i++) { h = Math.imul(h ^ u[i], 0x01000193) >>> 0; const a = Math.abs(x[i]); if (a > out.peak) out.peak = a; e += x[i] * x[i]; n++ } out.ch.push(h.toString(16)) }
+    out.rms = +(10 * Math.log10(e / n + 1e-12)).toFixed(2); out.peak = +out.peak.toFixed(4); return out };
+  D.pregenHash = async (st, o = {}) => {
+    const P = E('parseTune'); if (typeof st === 'string') st = P(st);
+    seedRandom(o.rs || 1); M.ctx = null; M.timer = null; M.init(new OfflineAudioContext(2, 4410, SR)); M.lite = !!o.lite; await settle();
+    return digest((await M.pgMake(st)).buf);
+  };
+  D.renderGen = async (st, o = {}) => {
+    stubOn = false; const pr = await prelude(st, { kind: 'render', ...o }); st = pr.st; const bars = o.bars || 24, secs = Math.ceil(bars * 4 * 60 / 120) + 12;
+    const oc = new OfflineAudioContext(2, SR * secs, SR); M.ctx = null; M.timer = null; M.init(oc); M.setState(st); await settle(); M.cueRace(); await settle();
+    fakeT = 0; M.ctx = mkCtx(oc); M.timer = -1; M.nextT = 0.08; M.pos = 0; M.live = { steer: 0, brake: 0, boost: 0, rank: 0.4, speed: 0.8 };
+    M.setMood('count'); const goT = M.countIn(2.999); let goNow = false, bar0 = -1, nBars = 0, step = 0;
+    while (nBars < bars && step < 8000) { fakeT += 0.1; step++; if (!goNow && fakeT >= goT) { goNow = true; M.setMood('race') } try { M.tick() } catch (e) {} const bn = Math.floor(M.pos / 16); if (bar0 < 0) bar0 = bn; nBars = bn - bar0; if (step % 50 === 0) await tick(0) }
+    M.ctx = oc; const buf = await oc.startRendering(); stubOn = true; return digest(buf);
+  };
   /* the older generator's choice tables, enumerated: build() is cheap (microseconds), so every kit, instrument,
      percussion, texture and accent choice the codes can make is built for every flavour and every kx and kx2 value
      (kx and kx2 hold the draws of Prototypes 34 and 38) with a few values of the fields that feed the hashed choices
