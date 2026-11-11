@@ -25,7 +25,6 @@ const bioTok=()=>bio.k+(bio.d?bio.d.join(''):'');
 const bioStr=()=>bio.k==='U'&&!bio.d?'':'-'+bioTok();
 const roadStr=()=>spec&&spec.quick?'Q'+spec.quick+'-W':spec&&spec.train?'T-'+trDrill(spec.train).n.toUpperCase().replace(/[^A-Z]/g,'')+'-'+wid:wid+(cplx?'X':'')+(lenK!=='M'?lenK:'')+seed.toString(16).toUpperCase().padStart(6,'0')+(spec?'-'+specStr(spec):'');
 const codeStr=()=>roadStr()+(spec&&spec.quick?'':bioStr());
-const seedStr=()=>codeStr();
 /* Speed classes (Prototype 47): Glide 70%, Surge 80%, Rush 90% and Redline, full speed and the default. The class scales
    top speed (S.cls), and with it the AI's and the jumps' gravity, as the career always has. Race and Time trial share one
    pick on the track page; in a room the host picks and everyone races at it. Career tiers keep their names and show their

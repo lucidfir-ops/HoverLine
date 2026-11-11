@@ -7,11 +7,7 @@ const debrisGeo=[new THREE.BoxGeometry(0.34,0.07,0.5),new THREE.TetrahedronGeome
 const sparkGeo=new THREE.BoxGeometry(0.05,0.05,0.8),sparkMat=new THREE.MeshBasicMaterial({color:0xffd27a,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false});
 const puffGeo2=new THREE.IcosahedronGeometry(0.6,0),puffMat=new THREE.MeshBasicMaterial({color:0x1c1d22,transparent:true,opacity:.55,depthWrite:false});
 const fireMat=new THREE.MeshBasicMaterial({color:0xff8a1f,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false});
-const starGeo=new THREE.OctahedronGeometry(0.75,0),confGeo=new THREE.PlaneGeometry(0.22,0.13);
-const FW_COL=[0xffb000,0x3ff0ff,0xff4a3d,0x46ff8c,0xbe5aff,0xff5fa8,0xffffff,0x6f9bff];
-const fwMats=FW_COL.map(c=>new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));
-const confMats=FW_COL.map(c=>new THREE.MeshBasicMaterial({color:c,side:THREE.DoubleSide}));
-const fxV=new THREE.Vector3(),fxQ=new THREE.Quaternion(),rnd=(a,b)=>a+Math.random()*(b-a);
+const fxV=new THREE.Vector3(),rnd=(a,b)=>a+Math.random()*(b-a);
 function rdir(o){o.set(Math.random()*2-1,Math.random()*2-1,Math.random()*2-1);if(o.lengthSq()<1e-4)o.set(0,1,0);return o.normalize()}
 function fxAdd(m,o){if(fx.length>=FX_MAX){const old=fx.shift();scene.remove(old.m)}m.position.copy(o.p);scene.add(m);
   fx.push(Object.assign({m,t:0,g:22,drag:0,sv:m.scale.clone(),grow:0,av:new THREE.Vector3(rnd(-9,9),rnd(-9,9),rnd(-9,9))},o,{v:o.v.clone()}));}

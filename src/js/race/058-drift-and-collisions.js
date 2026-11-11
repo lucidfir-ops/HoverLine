@@ -233,7 +233,7 @@ function physics(r,inp,dt){
     if(a>0){const vl=-r.v*Math.sin(r.yaw-yb0),d=vl<0?r.lat-lo0:hi0-r.lat,tt=Math.abs(vl)>0.5?Math.max(0,d)/Math.abs(vl):9;
       if(tt<LANE_T)r.yaw-=(r.yaw-yb0)*a*(1-tt/LANE_T)*dt}}
   const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g*(r.air&&r.air.kind?jArc(r.air,uPrev):1);r.yaw-=T.K[idxAt(r.u+du/2)]*du;r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
-  const uu=modU(r.u),sf=surf(uu,r.lat,r),kvB=sf.kv,slB=sf.sl,ybB=sf.yb,loB=sf.lo,hiB=sf.hi;
+  const uu=modU(r.u),sf=surf(uu,r.lat,r),kvB=sf.kv,ybB=sf.yb,loB=sf.lo,hiB=sf.hi;
   // jumps: leave the lip on a ballistic arc, land past the gap; too slow and you fall in
   /* Height above the road. The hover hold (gE) is stronger nose-down and weaker nose-up. Over a crest the road falls away at
      v²·|curvature|; if that beats the hold, the ship lifts off (losing thrust and half its steering) until it settles again. */

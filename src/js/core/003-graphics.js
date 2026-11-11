@@ -111,7 +111,7 @@ const markTex=kind=>makeTex((g,w,h)=>{g.lineJoin='miter';g.lineCap='butt';
   if(kind==='level'){g.fillStyle='rgba(255,176,0,.92)';g.fillRect(6,h*0.12,w-12,h*0.26);g.fillRect(6,h*0.62,w-12,h*0.26);return}
   g.strokeStyle=kind==='dive'?'rgba(70,255,140,.92)':'rgba(205,214,224,.92)';g.lineWidth=h*0.26;g.beginPath();
   if(kind==='dive'){g.moveTo(14,h*0.1);g.lineTo(w/2,h*0.86);g.lineTo(w-14,h*0.1)}else{g.moveTo(14,h*0.9);g.lineTo(w/2,h*0.14);g.lineTo(w-14,h*0.9)}g.stroke()},256,128);
-const diveTex=markTex('dive'),levelTex=markTex('level'),gripTex=markTex('grip');
+const diveTex=markTex('dive'),gripTex=markTex('grip');
 const jumpTex=makeTex((g,w,h)=>{g.fillStyle='rgba(205,214,224,.12)';g.fillRect(0,0,w,h);g.strokeStyle='#cdd6e0';g.lineWidth=10;
   for(let k=0;k<3;k++){const y=h*0.2+k*h*0.27;g.beginPath();g.moveTo(12,y+30);g.lineTo(w/2,y);g.lineTo(w-12,y+30);g.stroke()}},128,256);
 const checkTex=makeTex((g,w,h)=>{for(let x=0;x<16;x++)for(let y=0;y<3;y++){g.fillStyle=(x+y)%2?'#f2efe6':'#111';g.fillRect(x*10,y*10,10,10)}},160,30);
