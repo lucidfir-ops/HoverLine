@@ -31,7 +31,7 @@ const qkSave=()=>store.set('hoverline.quick',JSON.stringify({v:40,on:QK.on!==fal
 /* Prototype 61: bioP (Prism joining the ticked settings, written at every load since Prototype 51) and mtpl (the music's
    memory of recent templates) were missing from this list, so since Prototype 51 no browser counted as fresh and the
    quick races never started by themselves. tools/tests/first-flight.js now loads a fresh page and checks they do. */
-const QK_AUTO=['def39','ultra32','ultra34','ultra35','bioR','bioP','code','mhist','mtpl','padkind','autoUltra','quick','orient'],QK_SOFT=['style','res','low','fcap','mmode'];
+const QK_AUTO=['def39','ultra32','ultra34','ultra35','bioR','bioP','bioS','code','mhist','mtpl','padkind','autoUltra','quick','orient'],QK_SOFT=['style','res','low','fcap','mmode'];
 function qkFresh(){try{const ls=localStorage,soft=ls.getItem('hoverline.autoUltra')==='soft';
     for(let i=0;i<ls.length;i++){const k=ls.key(i);if(!k||!k.startsWith('hoverline.'))continue;const s=k.slice(10);
       if(QK_AUTO.includes(s)||s==='cam'&&ls.getItem(k)==='1'||soft&&QK_SOFT.includes(s))continue;return false}}catch(e){}return true}
