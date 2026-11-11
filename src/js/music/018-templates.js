@@ -14,8 +14,6 @@
 const SCX={minor:[0,2,3,5,7,8,10],harm:[0,2,3,5,7,8,11],dorian:[0,2,3,5,7,9,10],phryg:[0,1,3,5,7,8,10],phrdom:[0,1,4,5,7,8,10],major:[0,2,4,5,7,9,11],mixo:[0,2,4,5,7,9,10],
   yu:[0,3,5,7,10],gong:[0,2,4,7,9],bhairav:[0,1,4,5,7,8,11]};
 const SCXH={minor:'harm',harm:'harm',dorian:'dorian',phryg:'phryg',phrdom:'phrdom',major:'major',mixo:'mixo',yu:'minor',gong:'major',bhairav:'bhairav'};
-const TPL_FAM={phonk:'wave / drift phonk',glitch:'glitch-hop / neuro-funk',techno:'techno / industrial',house:'house / bass house',dub:'dubstep / tearout',euro:'eurobeat',dnb:'drum & bass',
-  jungle:'jungle / breakcore',trance:'trance',psy:'psytrance',hardcore:'happy hardcore',metal:'metal',world:'world'};
 /* the genres the player can switch off (Settings, Music); a template plays only when all its genres are on */
 const GENRES=[['phonk','Phonk'],['glitch','Glitch-hop'],['techno','Techno'],['house','House'],['dub','Dubstep'],['trance','Trance'],['psy','Psytrance'],['euro','Eurobeat'],
   ['dnb','Drum & bass'],['jungle','Jungle & breakcore'],['hardcore','Happy hardcore'],['metal','Metal'],['world','World']].filter(g=>g[0]!=='dub');

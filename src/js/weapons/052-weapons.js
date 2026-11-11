@@ -15,7 +15,6 @@ const rtrailMat=new THREE.MeshBasicMaterial({color:0xff8a1f,transparent:true,opa
 const htrailMat=new THREE.MeshBasicMaterial({color:0x3f8cff,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide});
 const orbGeo=new THREE.SphereGeometry(0.6,14,10),orbMat=new THREE.MeshBasicMaterial({color:0x9fe04a}),orbWire=new THREE.MeshBasicMaterial({color:0xe8ffd0,wireframe:true});
 const quakeGeo=new THREE.PlaneGeometry(1,1);
-const puffGeo=new THREE.SphereGeometry(1,10,8);
 /* One mesh per shot type, shared by local and network-spawned shots. */
 const SMOKE_BOX=new THREE.BoxGeometry(1,1,1),_sm4=new THREE.Matrix4(),_sq=new THREE.Quaternion(),_se=new THREE.Euler(),_sp=new THREE.Vector3(),_ss=new THREE.Vector3();
 /* the smoke cloud billows out and up as it tumbles, and shrinks away at the end */

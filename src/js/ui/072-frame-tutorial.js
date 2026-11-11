@@ -62,7 +62,7 @@ function tutFxDo(){const F=tut.fx,fr=F&&F.fr;if(!F)return'';if(F.do)return F.do;
 function tutFxEnd(){const F=tut.fx;if(!F)return;for(const o of F.objs)labScene.remove(o);for(const p of F.pcs)labScene.remove(p.m);for(const b of F.booms){labScene.remove(b.m);b.m.material.dispose()}
   if(F.ghost)disposeObj(F.ghost);S.cls=F.cls;tut.fx=null;tut.vfx=null;if(tut.ship)tut.ship.visible=true;if(tut.g)tut.g.rotation.x=0;$('tutFx').hidden=true}
 const tutBar=(l,v,max,col)=>`<span class="tm"><em>${l}</em><i><b style="width:${clamp(v/max*100,0,100).toFixed(1)}%;background:${col}"></b></i><em>${Math.round(v)}</em></span>`;
-function tutFx(dt,inp,rt){const F=tut.fx;if(!F)return;const sh=tut.ship,fr=F.fr,P=tut.p,ud=sh.userData,ph0=F.ph,vs=v=>30*v/110;F.t+=rt;
+function tutFx(dt,inp,rt){const F=tut.fx;if(!F)return;const sh=tut.ship,fr=F.fr,P=tut.p,ud=sh.userData,vs=v=>30*v/110;F.t+=rt;
   let hud=null,spinV=null;
   if(fr==='tether'){const r=F.r,b=F.b;
     if(F.ph<2){const i=tutIn({steer:0,brake:0,pitch:0},{boost:true});tutRun(r,i,dt,true);tutRun(b,i,dt,true);P.boost=1;if(F.ph===0&&F.t>0.05){F.ph=1;audio.sfx('boost')}

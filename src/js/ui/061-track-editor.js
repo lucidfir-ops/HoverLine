@@ -28,7 +28,7 @@ function edUI(){const sp=ed.sp,box=$('edFeats');
     for(const row of sb.children){const di=+row.dataset.di,v=ed.bm.d[di],mx=BDIAL[di][2],c=row.querySelector('.ec');c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=mx}}
   const fit=$('edFit'),want=FK.reduce((a,k)=>a+sp.n[k],0);
   if(ed.dirty){fit.className='';fit.textContent='Building…';return}
-  const dr=T.sp?Object.entries(T.dropped||{}):[],lost=dr.reduce((a,[,n])=>a+n,0),got=T.feats.length;
+  const dr=T.sp?Object.entries(T.dropped||{}):[],lost=dr.reduce((a,[,n])=>a+n,0);
   if(!T.sp){fit.className='';fit.textContent='This is a generated track. Change any count to make your own.';return}
   if(lost){fit.className='warn';fit.textContent=`Room for ${want-lost} of ${want} on a ${T.LN.name.toLowerCase()} track: left out ${dr.map(([k,n])=>n+' '+FLBL[k][0].toLowerCase().replace(/s$/,n>1?'s':'')).join(', ')}.${ed.lk!=='L'?' A longer track has more room.':''}`}
   else{fit.className='';fit.textContent=want?`All ${want} feature${want>1?'s':''} fitted · track code ${codeStr()}`:`A flat circuit with no features · track code ${codeStr()}`}}
@@ -115,7 +115,6 @@ document.addEventListener('visibilitychange',()=>{const c=audio.ctx;
   if(document.hidden){clearTimeout(PZ.vis);PZ.vis=setTimeout(()=>{if(document.hidden&&(S.state==='race'||S.state==='countdown')&&!(mp.on&&mp.auto))togglePause('hidden')},250);if(c&&c.state==='running')c.suspend()}
   else{clearTimeout(PZ.vis);if(c&&c.state==='suspended')c.resume()}});
 let framed=false;try{framed=window.top!==window.self}catch(e){framed=true}
-const onItch=/itch\.(zone|io)$/.test(location.hostname);
 /* Prototype 42: the game's own tab, for a framed page that gets no motion readings. ?tilt=1 sets tilt there (below). */
 const canOwnTab=/^https?:$/.test(location.protocol);
 function ownTabUrl(){try{const u=new URL(location.href);u.searchParams.set('tilt','1');return u.href}catch(e){return location.href}}

@@ -4,7 +4,6 @@
    on the first tap. Controls has four quick setups and the individual options, with a sketch of the layout; it opens
    from the menu, the pause menu and the multiplayer lobby, so the layout can be changed mid-race. */
 const canFull=!!document.documentElement.requestFullscreen;
-function ownTabLabel(){return'Open with tilt'}
 /* Prototype 40: full screen without forcing landscape (it used to lock every phone sideways). A race holds whichever way the
    phone is held when its HUD comes up, portrait or landscape, so turning the phone to steer by tilt can't turn the screen;
    menus let go of the lock. iPhones have neither full screen nor a lock for web pages, so there the page just follows the

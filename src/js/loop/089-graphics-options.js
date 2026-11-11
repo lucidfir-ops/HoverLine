@@ -75,8 +75,8 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
       const m=T&&T.mats;if(m){const p=g2('pulse')?this.pulse:0;if(p>0.005||this.lp>0.005){m.edgeM.color.setScalar(1+0.9*p);m.rail.color.setRGB(1+0.4*p,0.69*(1+0.6*p),0.25*p);m.glass.opacity=0.10+0.14*p}this.lp=p}}
     if(T&&T.env){T.env.update(S.t,g2('anim'));if(T.env.cave)T.env.cave(camera);if(T.env.sky)T.env.sky.position.copy(camera.position);this.moteCol=T.look.mote}
     if(++this.tick%30===0)this.applyEnv()}};
-const _eu=new THREE.Euler(),_em=new THREE.Matrix4(),_eq=new THREE.Quaternion(),_es=new THREE.Vector3(),_ep=new THREE.Vector3(),_ec=new THREE.Color();
-const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_vd=new THREE.Vector3(),_ve2=new THREE.Vector3(),_vbk=new THREE.Vector3(),_vm=new THREE.Matrix4(),_vq=new THREE.Quaternion(),_vq2=new THREE.Quaternion(),_vq3=new THREE.Quaternion(),_ve=new THREE.Vector3(),_vp=new THREE.Vector3(),_vs=new THREE.Vector3(),_vcol=new THREE.Color();
+const _eu=new THREE.Euler(),_em=new THREE.Matrix4(),_eq=new THREE.Quaternion(),_es=new THREE.Vector3(),_ep=new THREE.Vector3();
+const _va=new THREE.Vector3(),_vb=new THREE.Vector3(),_vc=new THREE.Vector3(),_vd=new THREE.Vector3(),_ve2=new THREE.Vector3(),_vbk=new THREE.Vector3(),_vm=new THREE.Matrix4(),_vq=new THREE.Quaternion(),_vq2=new THREE.Quaternion(),_vq3=new THREE.Quaternion(),_ve=new THREE.Vector3(),_vp=new THREE.Vector3(),_vs=new THREE.Vector3();
 function fpsTick(d){const ov=(g2('scan')?'s':'')+(g2('vig')?'v':'');if(ov!==FPS.ov){FPS.ov=ov;$('scrS').hidden=!g2('scan');$('scrV').hidden=!g2('vig');$('scrS').style.setProperty('--sl',(4/Math.min(devicePixelRatio||1,2)).toFixed(2)+'px')}
   if(!FPS.on||!(d>0))return;FPS.n++;FPS.acc+=d;if(FPS.acc>=0.5){$('fps').textContent=Math.round(FPS.n/FPS.acc)+' FPS';FPS.n=0;FPS.acc=0}}
 function frame(now){
@@ -94,7 +94,7 @@ function frame(now){
   requestAnimationFrame(frame)}
 
 
-let lastRank=-1,splitSaid='',lapT0=3;
+let lastRank=-1,lapT0=3;
 /* Tune codes: the current tune's state packed as D/T + 8 hex digits. Keep saves it locally; Load plays it back; the tune then evolves from there. */
 function tuneUI(){try{mmSync()}catch(e){}try{for(const id of['likeTune','likeTune2','likeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.liked()))}for(const id of['dislikeTune','dislikeTune2','dislikeTune3']){const b=$(id);if(b)b.setAttribute('aria-pressed',String(music.disliked()))}}catch(e){}const c=music.code(),so=music.soOn&&music.soCur,pre=music.modeEff()==='pre'&&music.style!=='off'?music.pgBusy?' · pregen: rendering':music.pg&&music.pgH()&&music.pg.code===codeOf(music.pgH())?' · pregen: ready':'':'';$('tuneHud').textContent=so?'♪ '+so.t+' · '+so.a:c?'♪ '+KEYS[music.st.key]+' '+THEMES[music.st.theme].mode+' · '+c:'';$('tuneInfo').textContent=music.info();const ml=music.modeLabel();$('titleTune').textContent=so?'♪ '+so.t+' · '+so.a+' ('+so.l+')':c&&music.style!=='off'?(ml?ml+' · ':'♪ ')+c+' · '+music.info()+pre:'';
   if(document.activeElement!==$('tuneIn'))$('tuneIn').value=c;

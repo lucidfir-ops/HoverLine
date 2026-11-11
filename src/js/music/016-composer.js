@@ -11,7 +11,7 @@
 /* Prototype 46: the high-pass on each non-bass bus (Hz), and in breakdowns, where the bass is out */
 const MHP={pad:200,keys:180,arp:220,resp:180,amb:150},MHPB={pad:90,keys:70};
 const MOV=[['drop',16],['b',16],['brk',8],['rise',8],['drop',16],['sw',8],['a',8],['brk',8],['rise',8]],LAYERS=['amb','pad','tex','kick','snare','hat','bass','lead','arp','echo','resp','keys'];
-const rmp=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a))),rnd2=x=>Math.max(2,Math.round(x/2)*2);
+const rmp=(x,a,b)=>Math.max(0,Math.min(1,(x-a)/(b-a)));
 const PENT={minor:[0,3,5,7,10],major:[0,2,4,7,9]},AMBDEG={minor:[0,3,5,7,8,10],major:[0,2,4,5,7,9]};
 const LV={a:{pad:.8,tex:0,kick:.9,snare:.9,hat:.85,bass:.9,lead:.55,arp:.35,keys:.6},b:{pad:.8,tex:0,kick:1,snare:1,hat:.9,bass:1,lead:.7,arp:.6,keys:.35},
   drop:{pad:.65,tex:0,kick:1,snare:1,hat:1,bass:1,lead:.75,arp:.8,keys:.3},sw:{pad:.55,tex:.2,kick:1,snare:1,hat:.85,bass:1,lead:0,arp:.55,keys:.4},
