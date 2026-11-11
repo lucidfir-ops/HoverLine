@@ -157,8 +157,8 @@ function fire(r,slot){
   else if(w==='swarm'){const tg=[];for(const o of racers){const d=wrapU(o.u-r.u);if(o!==r&&live(o)&&d>2&&d<320)tg.push([d,o])}tg.sort((a,b)=>a[0]-b[0]);
     for(let k=0;k<4;k++){const m=shotMesh('missile',true);scene.add(m);shots.push({type:'missile',mini:true,u:r.u+3,lat:clampLat(r.u+3,r.lat+(k-1.5)*1.2,0.6),v:Math.max(r.v,70)+90+k*8,owner:r,life:3.5,target:tg.length?tg[k%tg.length][1]:null,mesh:m})}
     if(near&&!fx)audio.blip(880,0.25,0.12,'sawtooth',300)}
-  else if(w==='quake'){const m=shotMesh('quake'),g=(Math.random()*2-1)*(W/2-4.5);scene.add(m);shots.push({type:'quake',u:r.u+4,lat:0,gap:g,vl:g,v:Math.max(r.v,60)+75,owner:r,life:3.6,hits:new Set(),mesh:m});if(near){if(!fx)audio.boom(r===player?0.45:0.25);S.shake=Math.max(S.shake,r===player?0.3:0.1)}}
-  else if(w==='bouncer'){const m=shotMesh('bounce');scene.add(m);shots.push({type:'bounce',u:r.u+3,lat:r.lat,v:Math.max(r.v,60)+90,vl:(r.lat>0?-1:1)*(14+Math.random()*8),owner:r,life:6,mesh:m});if(near&&!fx)audio.blip(330,0.2,0.14,'square',660)}
+  else if(w==='quake'){const m=shotMesh('quake'),g=(rand(r)*2-1)*(W/2-4.5);scene.add(m);shots.push({type:'quake',u:r.u+4,lat:0,gap:g,vl:g,v:Math.max(r.v,60)+75,owner:r,life:3.6,hits:new Set(),mesh:m});if(near){if(!fx)audio.boom(r===player?0.45:0.25);S.shake=Math.max(S.shake,r===player?0.3:0.1)}}
+  else if(w==='bouncer'){const m=shotMesh('bounce');scene.add(m);shots.push({type:'bounce',u:r.u+3,lat:r.lat,v:Math.max(r.v,60)+90,vl:(r.lat>0?-1:1)*(14+rand(r)*8),owner:r,life:6,mesh:m});if(near&&!fx)audio.blip(330,0.2,0.14,'square',660)}
   else if(w==='hunter'){const t=leaderFor(r),m=shotMesh('hunter');scene.add(m);const wait=!!t&&t.utot<r.utot;shots.push({type:'hunter',u:r.u+3,lat:r.lat,v:wait?Math.max(30,r.v-40):Math.max(r.v,70)+140,owner:r,life:14,target:t,mesh:m,wait});
     if(near&&!fx)audio.blip(240,0.6,0.16,'sawtooth',900);}
   else if(w==='phase'){r.phase=1.5;if(near&&!fx)audio.blip(1300,0.35,0.1,'sine',260)}

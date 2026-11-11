@@ -61,10 +61,10 @@ function aiStripBoost(r,uu){
 /* Prototype 60: an AI pilot in smoke (r.ink > 0, the view-loss effect the cloud gives for 2.4 s after the last puff) flies
    erratically: it loses its line (the target jumps across the road every half second), its steering swings hard (and its
    hands' wander is tripled, 054), it taps the brake and it leaves the boost alone. All of it is drawn from the race clock
-   and the pilot's own bias, not Math.random, so a race with the same hits repeats. */
+   and the pilot's own bias, not Math.random, so a race with the same hits repeats (Prototype 61: by the race clock, S.raceT, not the page's, S.t, so it repeats on a page that has been open a while too). */
 const SMOKE_AI={win:0.5,line:0.36,swing:1.1,tapWin:0.32,tapP:0.4,tapOn:0.16,wander:3};
 const aiSmoked=r=>r.ink>0&&r.isAI&&r!==player;/* a person is never flown by this: they just lose their view */
-const smokeH=(r,k,w)=>rng((Math.imul(Math.floor(S.t/w)+1,2654435761)^Math.imul((r.bias*1e4)|0,40503)^k)>>>0)();
+const smokeH=(r,k,w)=>rng((Math.imul(Math.floor(S.raceT/w)+1,2654435761)^Math.imul((r.bias*1e4)|0,40503)^k)>>>0)();
 function aiInput(r,dt){
   const none={steer:0,brake:0,pitch:0,fire:[false,false],hold:[false,false]};if(r.wreck>0)return none;
   const look=Math.max(22,r.v*0.75),F=aiF(r);
@@ -75,10 +75,10 @@ function aiInput(r,dt){
   /* splits: choose a route before the fork, line up on its half of the road, then follow its line */
   let bnd=null,ybA=null,rBrk=0,rUp=0,lane=false;const SPin=T.splits.find(S=>uu>=S.u0&&uu<=S.u1);for(const SP of SPin?[SPin]:T.splits){const d=modU(SP.u0-uu);if(d<260||(uu>=SP.u0&&uu<=SP.u1)){if(r.brPick?.SP!==SP){const needs=r.hp<r.d.hp*0.7||r.ammo<r.d.ammo*0.45,heavy=(r.d.mass||1)>=1.2||(r.build&&r.build.stats.handling<=2),nimble=(r.build&&r.build.stats.handling>=4)||(r.d.size||1)<0.8;
       {const p0=clamp(0.5+(needs?0.3:0)+(heavy?0.2:0)-(nimble?0.35:0),0.1,0.9),alt=B=>SP.b.indexOf(B);let b;
-       if(SP.kind==='pit')b=Math.random()<(r.hp<r.d.hp*0.55||(r.ammo<r.d.ammo*0.25&&r.hp<r.d.hp*0.85)?0.85:0.06)?SP.longB:1-SP.longB;
-       else if(SP.kind==='cut')b=Math.random()<0.2?SP.longB:1-SP.longB;
+       if(SP.kind==='pit')b=rand(r)<(r.hp<r.d.hp*0.55||(r.ammo<r.d.ammo*0.25&&r.hp<r.d.hp*0.85)?0.85:0.06)?SP.longB:1-SP.longB;
+       else if(SP.kind==='cut')b=rand(r)<0.2?SP.longB:1-SP.longB;
        else if(SP.kind==='stack'||SP.kind==='catch')b=SP.lowB||0;/* Prototype 60: the jump picks the road (below) */
-       else{const long=Math.random()<(r.sty&&r.sty.longP!=null?0.3*p0+0.7*r.sty.longP:p0);b=alt(SP.b.find(B=>B.long===long))}
+       else{const long=rand(r)<(r.sty&&r.sty.longP!=null?0.3*p0+0.7*r.sty.longP:p0);b=alt(SP.b.find(B=>B.long===long))}
        r.brPick={SP,b,long:SP.b[b].long}}}
     const want=SP.kind==='stack'&&r.stkS===SP?r.stkB:r.brPick.b,B0=SP.b[want];
     if(uu<SP.u0||uu>SP.u1){target=B0.c[0]+clamp(r.bias,-1,1)*Math.min(W/16,Math.max(0,B0.w[0]-1.8));lane=SP.kind!=='split'&&modU(SP.u0-uu)<220;if(B0.cut){ybA=0;if(modU(SP.u0-uu)<Math.max(40,r.v*0.5))rUp=1;if(modU(SP.u0-uu)<Math.max(50,r.v*0.6)&&r.v>r.d.vmax*0.7)rBrk=0.6}}
@@ -91,28 +91,28 @@ function aiInput(r,dt){
   const Lv=ailOf(),hn=hands(r);
   for(const z of T.zones){const ahead=modU(z.u0-uu),inside=uu>=z.u0&&uu<=z.u1;if(lane||(!inside&&ahead>80))continue;
     /* (P58) a strip ridden past (Easy): decided once a lap for each strip */
-    if(Lv.strip>0&&hn){if(!r.zs||r.zs.size>300)r.zs=new Map();const key=z.u0+'|'+r.done;let sk=r.zs.get(key);if(sk==null){sk=Math.random()<Lv.strip*ailM(r);r.zs.set(key,sk)}if(sk)continue}
+    if(Lv.strip>0&&hn){if(!r.zs||r.zs.size>300)r.zs=new Map();const key=z.u0+'|'+r.done;let sk=r.zs.get(key);if(sk==null){sk=rand(r)<Lv.strip*ailM(r);r.zs.set(key,sk)}if(sk)continue}
     if(z.kind==='hp'||r.ammo<r.d.ammo*0.6){if(z.laneF){if(surf(uu,r.lat,r).sp&&SF.b===T.splits[T.spl[idxAt(z.u0)]-1]?.longB)target=z.laneF(Math.max(uu+look*0.5,z.u0));continue}const side=z.side||(r.lat>=0?1:-1);target=z.lane!=null?z.lane:side*(z.edge+W/2-0.55)/2}}
   for(const s of shots){if(s.type!=='mine')continue;const d=wrapU(s.u-r.u);if(d>0&&d<45&&Math.abs(s.lat-target)<2.4)target+=s.lat>target?-4:4}
   for(const s of shots){if(s.type!=='quake'||s.owner===r||s.hits.has(r))continue;const d=wrapU(r.u-s.u);if(d>0&&d<(s.v-r.v)*2.2*(0.5+0.5*r.skill))target=s.gap}
   for(const o of racers){if(o===r||o.isGhost||F.sh&&o.d&&(o.d.mass||1)<(r.d.mass||1))continue;const d=wrapU(o.u-r.u);if(d>0&&d<14*Math.max(1,F.av)&&Math.abs(o.lat-target)<2.2*F.av&&o.v<r.v)target+=o.lat>r.lat?-3:3}
   if(aiSmoked(r))target+=(smokeH(r,1,SMOKE_AI.win)*2-1)*W*SMOKE_AI.line;/* (P60) smoke: the line is lost */
   target=bnd?clamp(target,bnd[0]+1.6,bnd[1]-1.6):surf(uu,r.lat,r).sp?clamp(target,SF.lo+1.6,SF.hi-1.6):clamp(target,-W/2+1.6,W/2-1.6);
-  if(r.isAI&&!(r.autoT>0)&&!hands(r)){if(r.lapT>0)r.lapT-=dt;else if(Math.random()<dt*AI_LAPSE*(r.mk||1)*(0.35+Math.min(1.6,Math.abs(c)*220))){r.lapT=0.35+Math.random()*0.65;r.lapK=Math.random()<0.55?0:1;r.lapS=0.4+Math.random()*0.45;r.lapD=-Math.sign(c)||1}
+  if(r.isAI&&!(r.autoT>0)&&!hands(r)){if(r.lapT>0)r.lapT-=dt;else if(rand(r)<dt*AI_LAPSE*(r.mk||1)*(0.35+Math.min(1.6,Math.abs(c)*220))){r.lapT=0.35+rand(r)*0.65;r.lapK=rand(r)<0.55?0:1;r.lapS=0.4+rand(r)*0.45;r.lapD=-Math.sign(c)||1}
     if(r.lapT>0&&r.lapK===1)target=clamp(target-r.lapD*W*0.32*r.lapS,-W/2+0.6,W/2-0.6)}
   const desired=ybA!=null?ybA-Math.atan2(target-r.lat,20):-Math.atan2(target-r.lat,look);
   let C=T.Cs[idxAt(r.u)];if(r.brS&&r.brS.kind==='cut'&&r.br===r.brS.longB&&T.spl[idxAt(r.u)]){const y1=surf(uu+4,r.lat,r).yb,y0=surf(uu-4,r.lat,r).yb,g=surf(uu,r.lat,r).g;C=(T.K[idxAt(r.u)]+(y1-y0)/8)*g}
   const turn=(1.85-0.55*(r.v/VMAX))*r.d.turn*trimTurn(r);
-  let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(aiSmoked(r))steer+=(Math.sin(S.t*9+r.bias*3)+0.5*Math.sin(S.t*5.3+r.bias*7))*SMOKE_AI.swing;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
+  let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(aiSmoked(r))steer+=(Math.sin(S.raceT*9+r.bias*3)+0.5*Math.sin(S.raceT*5.3+r.bias*7))*SMOKE_AI.swing;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
   // brake when the corner needs more turn than the ship has
-  const smkTap=aiSmoked(r)&&smokeH(r,2,SMOKE_AI.tapWin)<SMOKE_AI.tapP&&S.t%SMOKE_AI.tapWin<SMOKE_AI.tapOn?1:0;/* (P60) smoke: brake taps */
+  const smkTap=aiSmoked(r)&&smokeH(r,2,SMOKE_AI.tapWin)<SMOKE_AI.tapP&&S.raceT%SMOKE_AI.tapWin<SMOKE_AI.tapOn?1:0;/* (P60) smoke: brake taps */
   const brake=Math.max(rBrk,smkTap,Math.abs(steer)>F.bk?clamp((Math.abs(steer)-F.bk)*1.6,0,1):0);
   const fireW=[false,false],holdW=[false,false];/* passive slots (scoops) never fire */
   if((r.isAI||BOT&&r===player)&&r.finishT==null)for(let k=0;k<2;k++){const w=r.weapons[k];if(!canFire(r,k)||r.isAI&&(S.car||QK.live)&&S.aiF<1&&(S.raceT/5+r.skill*37)%1>S.aiF)continue;
     if(w==='cannon'){holdW[k]=aiWants(r,w);continue}
     /* (P58) Phase, Barrier and Decoy (P60: now the Reflector; Flares fire themselves): Hard watches for its moment every frame; Easy misses some */
     const dfn=hn&&(w==='phase'||w==='barrier'||w==='reflector');if(dfn&&Lv.sharp){if(aiWants(r,w))fireW[k]=true;continue}
-    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+Math.random()*0.3:0.45+Math.random()*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&Math.random()<Lv.react*ailM(r)))fireW[k]=true}
+    r.aiT[k]-=dt;if(r.aiT[k]>0)continue;r.aiT[k]=(w==='reflector'?0.12+rand(r)*0.3:0.45+rand(r)*1.25)/((r.sty?r.sty.fire:1)*F.fi);if(aiWants(r,w)&&!(dfn&&Lv.react>0&&rand(r)<Lv.react*ailM(r)))fireW[k]=true}
   const kn=Math.max(T.Kn[idxAt(r.u+r.v*0.2)],T.Kn[idxAt(r.u+r.v*0.4)]),kc=T.Kn[idxAt(r.u+r.v*0.35)];
   const slA=T.Tg[idxAt(r.u+12)].y,pitch=rUp?1:r.air&&r.air!==true?F.ja:r.air===true||kc<-0.0011?-1:brake>0.05?0.7:Math.abs(T.Cs[idxAt(r.u+look*0.6)])>0.009?0.5*(r.sty?r.sty.up:1):slA>0.03?clamp(slA/0.08,0,1)*(r.sty?clamp(r.sty.up,0.4,1.2):1):slA<-0.03&&r.d.aero>0?-clamp(-slA*F.dv/0.08,0,1)*(r.sty?clamp(r.sty.dive,0.4,1.2):1):0;
   /* Held boost costs shield, so the AI saves it for straights while its shield is healthy; on a green strip the strip pays
@@ -120,7 +120,7 @@ function aiInput(r,dt){
   /* Prototype 60: before a speed jump the AI decides once a lap whether to go for the upper road (more often when the
      bonus is up there) and, if so, holds boost from 1 km out while its shield allows; it can still come up short */
   let sjB=false;if(r.isAI&&r.finishT==null&&!r.air){for(const j of T.jumps){if(!j.stk)continue;const d=modU(j.u0-uu);if(d>1000)continue;
-    const key=j.u0+'|'+r.done;if(r.sjK!==key){r.sjK=key;r.sjGo=Math.random()<(j.stk.bonus==='up'?0.85:0.45)}if(r.sjGo&&r.hp>r.d.hp*0.15)sjB=true;break}}
+    const key=j.u0+'|'+r.done;if(r.sjK!==key){r.sjK=key;r.sjGo=rand(r)<(j.stk.bonus==='up'?0.85:0.45)}if(r.sjGo&&r.hp>r.d.hp*0.15)sjB=true;break}}
   /* going for it, it races at a person's top speed (no AI pace factor) on the run-up */
   r.sjRun=sjB;
   /* Prototype 60: on a strip it boosts at every level (the levels' mistakes decide whether it takes a strip, not whether it

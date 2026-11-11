@@ -122,7 +122,7 @@ function mpStart(pl,field){chirpStop();mp.bg=false;
       else{const p=prof[k]||{},pt=(p.lv&&parseLiv(p.lv))||PAINTS[pts[k]]||PAINTS[0];r.name=(p.n||'Pilot').slice(0,12);r.css=pt.css;setShip(r,{stats:p.st||defaultBuild().stats,weapons:p.w||['missile','cannon'],frame:FRAMES[p.fr]?p.fr:'blade'},pt);r.isAI=false;r.remote=k;r.proxy=true}}
     r.key=k;r.off=false;r.left=false;r.net=null;mp.byKey.set(k,r);racers.push(r)}
   for(const r of free){r.off=true;r.ship.visible=false;r.shadow.visible=false}
-  clearShots();
+  clearShots();raceNew();
   racers.forEach((r,k)=>{const row=Math.floor(k/2),col=k%2;freshRacer(r,T.L-14-row*11,-14-row*11,col?W*0.21:-W*0.21);if(r.proxy)r.u=r.utot;r.ship.visible=true});
   S.raceT=-3;S.shake=0;S.aiK=1;mp.cls=clsOf(pl.cls).k;S.cls=clsOf(pl.cls).f;S.ail=AIL[pl.ail]?pl.ail:'normal';lowWarn=false;
   ['menu','results','pause','mp','lab','set','ctl','gfxm','lbv','opts','mus','ed'].forEach(i=>$(i).hidden=true);setFrom=null;ctlFrom=null;optsFrom=null;rebind.on=false;if(guide.on){guide.from=null;closeGuide()}
