@@ -50,7 +50,10 @@ SW.heads = function (o = {}) {
   SW.anim.push((t, dt, b) => { const P = SW.P; if (!P || !P.length) return; let um = 0; for (const q of P) um += q.r.u; um /= P.length;
     const tgt = SW.P[0].r.ship.position;
     out.forEach(({ h, grp, mat }, k) => { const fade = h.t0 != null ? ss((t - h.t0) / 1.2) * (h.t1 != null ? 1 - ss((t - h.t1) / 1.2) : 1) : 1;
-      const u = um + h.du + Math.sin(t * 0.35 + k) * 6, f = fr(u); grp.position.copy(f.p).addScaledVector(f.r, h.side * h.d).addScaledVector(WUP, h.up + Math.sin(t * 0.8 + k * 2) * h.s * 0.06);
+      const u = um + h.du + Math.sin(t * 0.35 + k) * 6, f = fr(u); h.push = h.push || 0;
+      const put = (x) => grp.position.copy(f.p).addScaledVector(f.r, h.side * (h.d + x)).addScaledVector(WUP, h.up + x * 0.3 + Math.sin(t * 0.8 + k * 2) * h.s * 0.06);
+      if (window.SPC && SPC.on) { let x = 0; while (x < 160 && (put(x), !SPC.ok(grp.position, h.s * 1.3, null))) x += 6; h.push = x > h.push ? lerp(h.push, x, 0.5) : lerp(h.push, x, 0.04); if (x > 0) SPC.note('head pushed out (frames)') }
+      put(h.push);
       // turn to watch the pack: the racers nearest, with a slow lag
       _v.copy(tgt).sub(grp.position); _v.y *= 0.5; const want = Math.atan2(_v.x, _v.z), pitch = -Math.atan2(_v.y, Math.hypot(_v.x, _v.z)) * 0.6;
       grp.rotation.set(pitch, want + Math.sin(t * 0.5 + k) * 0.08, Math.sin(t * 0.3 + k) * 0.05, 'YXZ');
@@ -61,7 +64,7 @@ SW.heads = function (o = {}) {
 // Its body follows the road's own centreline a few metres under it (so the pack rides its back up the spiral), its
 // segments sway out past the road's edges, and the head rises at the front, turned back to look at the racers.
 SW.serpent = function (o = {}) {
-  const n = o.n || 46, segL = o.segL || 9, gap = o.gap || 1.3, rad = o.rad || (C().W / 2 + 8), flat = o.flat || 0.36, depth = o.depth || rad * flat + 1.0, neck = o.neck || 8;
+  const n = o.n || 46, segL = o.segL || 9, gap = o.gap || 1.3, rad = o.rad || (C().W / 2 + 8), flat = o.flat || 0.36, depth = o.depth || rad * flat + (window.SPC && SPC.on ? SPC.o.below + 2.5 : 1.0), neck = o.neck || 8;
   // the body: open octagonal rings drawn as a wire grid (an edge per facet), one instanced draw; fins: boxes, a second draw
   const ringG = new THREE.CylinderGeometry(1, 1, 1, 8, 1, true); ringG.rotateX(Math.PI / 2);
   const body = SW.h.instanced(ringG, SW.wireMat({ mode: 'GRID', grid: [8, 1], inst: true, cs: 2.2, con: 0.7, fill: 0x04100c, side: THREE.DoubleSide }), n);
@@ -82,7 +85,7 @@ SW.serpent = function (o = {}) {
     const uh = o.follow ? lead + (o.ahead || 60) : st.u + (o.v || 160) * t, sd = o.side || (st.sd = st.sd || outSide(uh));
     const pts = L.map((s, i) => { const u = uh - i * (segL + gap), f = fr(u); const sway = Math.sin(u * 0.05 - t * 2.4) * (o.sway ?? 2.5) * Math.min(1, i / 6);
       // the neck: the first segments climb out beside the road, so the head rises past the edge, ahead of the pack
-      const nk = ss(1 - i / neck), sOff = nk * (C().W / 2 + rad * s.taper + 6), side = sd * sOff, lift = ss((sOff - (C().W / 2 + rad * s.taper + 1)) / 5) * (depth + 12);
+      const mg = window.SPC && SPC.on ? SPC.o.margin + 2 : 0, nk = ss(1 - i / neck), sOff = nk * (C().W / 2 + rad * s.taper + 6 + mg), side = sd * sOff, lift = ss((sOff - (C().W / 2 + rad * s.taper + 1 + mg)) / 5) * (depth + 12);
       const c = f.p.clone().addScaledVector(f.u, -depth * (0.6 + 0.4 * s.taper) + lift).addScaledVector(f.r, sway + side); return { c, f, s, lk: lift / (depth + 12) } });
     pts.forEach(({ c, f, s, lk }, i) => { const nx = pts[Math.min(i + 1, n - 1)].c, pv = pts[Math.max(i - 1, 0)].c, tg = pv.clone().sub(nx).normalize();
       const rr = new V3().crossVectors(tg, f.u).normalize(), uu = new V3().crossVectors(rr, tg); _m.makeBasis(rr, uu, tg); _q.setFromRotationMatrix(_m);
@@ -180,7 +183,7 @@ SW.portalJump = function (o = {}) {
   // burst the rings' blocks apart after the last racer and back before the next (56), crossing flashes for the camera's racer
   let lastIn = false;
   SW.anim.push((t, dt) => { ringE.disc.material.uniforms.uSpin.value = 5; const P = SW.P; if (!P) return; const cr = P[SW.camI].r; const inP = cr.path && cr.u >= cr.path.u0;
-    if (inP && !lastIn) flash(SW.palCol(40).lerp(new Col(1, 1, 1), 0.6)); lastIn = inP; flashStep(dt);
+    if (inP && !lastIn && !SW.noFlash) flash(SW.palCol(40).lerp(new Col(1, 1, 1), 0.6)); lastIn = inP; flashStep(dt);
     if (o.breaking) { const near = Math.min(...P.map((q) => Math.abs(q.r.u - o.uE))); const k = ss((near - 260) / 200); ringE.updBlocks(k, t); ringX.updBlocks(k, t) } });
   return SW.jump };
 // give every racer in the pack its path through the portal

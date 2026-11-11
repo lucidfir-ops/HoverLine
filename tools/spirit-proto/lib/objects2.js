@@ -44,8 +44,11 @@
     const L = SPFX.Lines(), C = SPFX.Cores(), box = new THREE.BoxGeometry(blk * 1.4, blk, blk * 1.6);
     for (let i = 0; i < n; i++) { const a = Math.PI * (i + 0.5) / n, x = -Math.cos(a) * span / 2, y = Math.sin(a) * rise;
       const m = new THREE.Matrix4().makeRotationZ(a - Math.PI / 2);
-      const far = new THREE.Vector3((rnd() - 0.5) * span * 6, rise * (1 + rnd() * 5), (rnd() - 0.2) * span * 5);
-      const out = new THREE.Vector3(x, y, 0).normalize().multiplyScalar(span * (1 + rnd())).add(new THREE.Vector3(0, rise * rnd(), (rnd() - 0.5) * span));
+      let far = new THREE.Vector3((rnd() - 0.5) * span * 6, rise * (1 + rnd() * 5), (rnd() - 0.2) * span * 5);
+      let out = new THREE.Vector3(x, y, 0).normalize().multiplyScalar(span * (1 + rnd())).add(new THREE.Vector3(0, rise * rnd(), (rnd() - 0.5) * span));
+      // round 2 (rule A): every block flies in and bursts out along its own radius, so no path crosses the arch's opening
+      if (o.outward) { const rad = new THREE.Vector3(x, y, 0).normalize(), z = (rnd() - 0.3) * span * 1.5; far = new THREE.Vector3(x, y, 0).addScaledVector(rad, span * (1.5 + 2.5 * rnd())).setZ(z);
+        out = rad.clone().multiplyScalar(span * (0.6 + rnd())).setZ((rnd() - 0.5) * span * 0.6) }
       const pi = { home: far.toArray(), target: [x, y, 0], dir: out.toArray(), axis: [rnd() - 0.5, rnd() - 0.5, rnd() - 0.5], r: rnd() }, pc = i / n;
       L.edges(box, pc, 1, pi, m); C.add(box, m, pc, pi);
       if (i === (n >> 1)) { const pts = []; SPFX.BEAST[3].forEach((pl) => { const q = pl.map(([px, py]) => new THREE.Vector3(px * blk * 0.2, (py - 2.2) * blk * 0.2, -blk * 0.81).applyMatrix4(m)); L.poly(q, false, 0.95, 1.2, pi) }) } }
