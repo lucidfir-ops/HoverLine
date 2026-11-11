@@ -99,3 +99,8 @@ const ssp=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
 const spHash=n=>{let h=(n|0)^0x9E3779B9;h=Math.imul(h^h>>>16,0x85EBCA6B);h=Math.imul(h^h>>>13,0xC2B2AE35);return((h^h>>>16)>>>0)/4294967296};
 const _spV2=new THREE.Vector2(),_spS={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},_spS2={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},
   _spM=new THREE.Matrix4(),_spQ=new THREE.Quaternion(),_spA=new THREE.Vector3(),_spB=new THREE.Vector3(),_spUp=new THREE.Vector3(0,1,0),_spFlip=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),Math.PI);
+/* Prototype 62: the Calm visuals chip on the Graphics page (dossier 71). Until it is pressed it follows Speed blur (on
+   while blur is off); once pressed it is the player's own choice, kept as hoverline.calm. */
+{const b=$('calmBtn'),sync=()=>{if(b)b.setAttribute('aria-pressed',String(spCalm()))};
+  if(b)b.onclick=()=>{SP_CALM=!spCalm();store.set('hoverline.calm',SP_CALM?'1':'0');sync();try{audio.blip(SP_CALM?880:440,0.06,0.05)}catch(e){}};
+  const g=$('gfxOpen');if(g)g.addEventListener('click',sync);sync()}
