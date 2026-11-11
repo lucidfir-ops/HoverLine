@@ -42,6 +42,17 @@ sounds and is written), and the current plan in `docs/PLAN-*.md` (newest number)
 - Never delete or overwrite older feedback or exports; additive only.
 - Keep a record of which feedback and logs have been processed in the plan's "Feedback processed" section.
 
+## Eric's names for things (check here before building anything he names)
+
+- **First flight**: the five short introductory races for a brand-new player (`QK`, src/js/ui/091-quick-race.js), flown
+  in the Blade. Not the controls tutorial (Prototype 60 got this wrong).
+- **Control tutorial**: the six steps over a stretch of road that teach the controls (src/js/ui/069-tutorial.js).
+- **Practice tracks**: the drill tracks that the Training screen used to be.
+- **Default**: the rivals level whose internal key is `normal`. **Expert** is `hard`, **Beginner** is `easy`.
+- **Frames**: the ships. **Modules**: weapons and abilities. **Strips**: the green (shield) and purple (ammo) recharge lanes.
+- When a note names something you can't find by that name in the code, look for what already exists that fits before
+  inventing it, and if unsure ask Eric.
+
 ## Working with agents (task allocation)
 
 Work is split into tasks by difficulty and given to the agents in `.claude/agents/`. See `AGENTS.md` for the tiers,
