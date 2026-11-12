@@ -1,0 +1,12 @@
+{
+ "why": "Keys the game looks up that are in none of the embedded tables, on purpose; each lookup has a fallback. tools/tests/samples.js fails on any other request for a recording that is not in a table.",
+ "keys": ["ui_select", "reflector", "scoopS", "scoopA", "v_", "x_amen_r"],
+ "notes": {
+  "ui_select": "audio.sfx('ui_select') in the orientation page: there is no recording, the call does nothing",
+  "reflector": "the Reflector module: audio.sfx(weapon) finds no recording and the weapon's own synth sound plays",
+  "scoopS": "the shield scoop: as the Reflector",
+  "scoopA": "the ammo scoop: as the Reflector",
+  "v_": "audio.voice('') warms the announcer up (decodes the lines) and asks for nothing",
+  "x_amen_r": "the amen break, re-played from the drum kit when the extras decode (SL.brkRender), not stored in a table"
+ }
+}

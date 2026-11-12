@@ -81,6 +81,7 @@ is happening (speed, position, laps). Races are deterministic given the seed, so
   recordings built into the page (`src/assets/`) as a fallback.
 - Likes (+3), keeps (+2), quick skips (-1) and the thumbs down (-2.5) steer which templates come up (`023`), each counting also toward similar templates, never ruling any out.
 - Chords are voiced by `tVoiceLead` (`020-harmony.js`): the chord's notes between an instrument's low and high, each as close as it can get to the one before. The library page plays kept tunes.
+- The recordings built into the page (`src/assets/`) are looked up by built names (`'x_'+instrument+'_'+note`, `'x_tabla_'+bol`, `'v_'+line`), so a text search cannot say which are used. `tools/audio/sample-usage.js` runs every way the game makes sound with a request recorder in the page and writes `tools/audio/sample-usage.json` (keys requested, and never requested, per table; which `samples/` packs were downloaded); `tools/tests/samples.js` is its quick guard (fails when the game asks for a recording that is not in a table; `tools/audio/known-absent.json` lists the few lookups allowed to miss); `tools/audio/prune-assets.js` and `prune-samples.js` remove what nothing asks for (`tools/audio/cut.json`); `tools/audio/render-compare.js` checks two builds sound the same. Run the full usage run after adding a template, kit or instrument, and before pruning anything.
 - After any change, run the fatigue audit (`tools/music/p46/`), which flags sounds that turn up in too many tunes or
   play through most of one.
 
