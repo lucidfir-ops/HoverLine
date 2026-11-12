@@ -1,0 +1,97 @@
+{
+ "about": "Recordings removed from src/assets in Prototype 62 because nothing can ask for them (tools/audio/sample-usage.js never saw a request in about 5,000 plays of every template, Pregen, Lite, the older generator, the menu music and long races, and reading the code finds no way to name them). tools/audio/prune-assets.js removes them; a request for any of them throws in the strict test build.",
+ "cut": [
+  "x_elec_ping",
+  "x_elec_plip",
+  "x_elec_twip",
+  "x_elec_beep",
+  "x_elec_blip2",
+  "x_elec_bong",
+  "x_elec_chime",
+  "x_elec_bell",
+  "x_elec_triangle",
+  "x_elec_twang",
+  "x_glitch_perc2",
+  "x_glitch_perc5",
+  "x_tbd_perc_hat",
+  "x_glitch_robot1",
+  "x_glitch_robot2",
+  "x_tbd_voctone",
+  "x_vinyl_backspin",
+  "s_gh"
+ ],
+ "why": {
+  "x_elec_*": "named only by the percussion layers 'blips' and 'blips2' (music/019-drum-languages.js). Prototype 46 stopped giving every template a layer and plays one only where a template names it (perc); no template, and none of the older generator's lists (PERC_FL, PERC2_FL), names blips or blips2",
+  "x_glitch_*, x_tbd_perc_hat, x_tbd_voctone, x_vinyl_backspin": "named only by the percussion layers 'robots' and 'robots2', which nothing names either",
+  "s_gh": "no code names it (the other s_ effects are s_cb, s_ch, s_g1, s_g3, s_sc, s_sp, each used)"
+ },
+ "keptOutOfDoubt": {
+  "i_pn_36": "the lowest piano recording; the piano is never asked for a note below 42 in about 300,000 notes played, but no rule in the code proves it cannot be, so it stays"
+ },
+ "tables": {
+  "sl-smp": [],
+  "sl-vox": [
+   "s_gh"
+  ],
+  "sl-ext": [
+   "x_elec_blip2",
+   "x_elec_ping",
+   "x_elec_plip",
+   "x_elec_twip",
+   "x_elec_bong",
+   "x_elec_bell",
+   "x_elec_beep",
+   "x_elec_triangle",
+   "x_glitch_perc2",
+   "x_glitch_perc5",
+   "x_tbd_perc_hat",
+   "x_tbd_voctone",
+   "x_glitch_robot1",
+   "x_glitch_robot2",
+   "x_vinyl_backspin",
+   "x_elec_chime",
+   "x_elec_twang"
+  ],
+  "sl-ext2": [],
+  "sl-sfx": [],
+  "cvox": []
+ },
+ "samples": {
+  "about": "samples/: kits, instruments and packs the game never asks for. The game loads a kit by the first of a template's kit names (dk) the manifest has, plus hats, cym, didg and tabla, and an instrument by its own name (hang, the guitars), so with this manifest nothing can ask for these; tools/audio/sample-usage.js downloaded none of their packs in about 5,000 plays. kept on purpose: gtr_chug (second choice after gtr_mute, but its sounds sit in the same pack as the kept guitars, so removing it would save no bytes).",
+  "kits": [
+   "concert",
+   "electro",
+   "esn",
+   "gas",
+   "hand",
+   "latin",
+   "original",
+   "tape",
+   "tight"
+  ],
+  "instruments": [
+   "bass_finger",
+   "bass_pick",
+   "gtr_clean",
+   "timpani",
+   "timpani_roll"
+  ],
+  "packs": [
+   "bass_finger",
+   "bass_pick",
+   "concert",
+   "electro",
+   "esn_snare_dub",
+   "esn_snare_electro",
+   "gas",
+   "gtr_clean",
+   "hand",
+   "latin",
+   "latin_s",
+   "original",
+   "tape",
+   "tight",
+   "timpani"
+  ]
+ }
+}
