@@ -29,7 +29,7 @@
      gap leaves the lip at it (94 m/s), so nobody falls short. */
 const PORT_O={La:360,Bl:150,Lr:30,Hr:2,hX:19,hLand:-4,G:130,Lc:230,Ra:170,thP:110*Math.PI/180,thD:65*Math.PI/180,j0:250,j1:1300};
 function portalDims(w){const m=SPC_O.margin,ringR=Math.hypot(w/2+m,(SPC_O.above+SPC_O.below)/2)+5,hc=(SPC_O.above-SPC_O.below)/2;
-  return{ringR,hc,Lp:w+6,B:w/2+m+8,Bc:Math.ceil(ringR+8+(w/2+7)*Math.SQRT2)}}
+  return{ringR,hc,Lp:w+6,B:w/2+m+8,Bc:Math.ceil(ringR+12+(w/2+7)*Math.SQRT2)}}
 /* a portal site (addFeatures): the variant (49 or 50) and side are drawn here; len is the approach, foot what it takes of
    the base line (the join comes back onto it up to 1.3 km past the entrance), cf the stretch that must be straight */
 function portalSite(s,r){s.pv=r()<0.5?'p':'d';s.sd=1;s.len=PORT_O.La;s.cf=PORT_O.La+40;s.foot=PORT_O.La+PORT_O.j1+60}
@@ -70,6 +70,10 @@ function portalFrames(d,uE,ds2,N2){const V=THREE.Vector3,Y=new V(0,1,0),k=Math.f
   const fr=(p,f)=>{const r=new V().crossVectors(f,Y).normalize(),u=new V().crossVectors(r,f).normalize();return new THREE.Matrix4().makeBasis(r,u,f.clone().negate()).setPosition(p)};
   o.Fe=d.Fe.clone();o.Fx=d.Fx.clone();o.ME=fr(d.E,d.Fe);o.MX=fr(d.X,d.Fx);o.M=o.MX.clone().multiply(o.ME.clone().invert());o.Mi=o.M.clone().invert();
   o.Q=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().extractRotation(o.M));return o}
+/* does a sight line carried through portal o (a: the carried camera, b: beyond the exit) pass through the exit's opening?
+   (a line that would pass outside the ring is not seen through the portal: past the entrance's rim it sees the world) */
+function portalThrough(o,ax,ay,az,bx,by,bz){const F=o.Fx,c=o.Xc||(o.Xc=new THREE.Vector3(0,o.hc,0).applyMatrix4(o.MX)),da=(ax-c.x)*F.x+(ay-c.y)*F.y+(az-c.z)*F.z,db=(bx-c.x)*F.x+(by-c.y)*F.y+(bz-c.z)*F.z;
+  if(da>0||db<0)return da<=0&&db<=0?false:true;const f=da/(da-db),x=ax+(bx-ax)*f-c.x,y=ay+(by-ay)*f-c.y,z=az+(bz-az)*f-c.z;return x*x+y*y+z*z<(o.ringR-0.6)**2}
 /* the portal whose entrance a move from u0 to u1 (forward, under half a lap) passes, or null */
 function portalCross(u0,u1){const P=T&&T.port;if(!P)return null;const L=T.L,m=x=>((x%L)+L)%L,du=m(u1-u0);if(!(du>0)||du>L/2)return null;
   for(const p of P){const d=m(p.uE-u0);if(d>0&&d<=du)return p}return null}
@@ -138,3 +142,28 @@ function portalView(cam){const fx=T&&T.portFx;if(!fx)return;for(const f of fx.li
   const prev=renderer.getRenderTarget();try{renderer.setRenderTarget(PVW.rt);renderer.render(scene,vc)}finally{renderer.setRenderTarget(prev);best.Ed.visible=true;best.Xd.visible=true;if(sky)sky.position.copy(sk0);if(vsk)VFX.sky.position.copy(cam.position)}
   PVW.calls=inf.calls;PVW.tris=inf.triangles;PVW.n++;PVW.ms=performance.now()-t0;PVW.on=best;PVW.scale=k;
   const U=best.Ed.material.uniforms;U.tV.value=PVW.rt.texture;U.uOn.value=1;U.uRes.value.copy(PVW.sz)}
+/* ---- the Spirit realm's rule round a portal (004o): the lines along which the jump is watched. From chase cameras (12 m
+   behind a racer, on three lines across the road) every 16 m over the 400 m before the entrance, to the ramp (from 20 m past
+   the exit's ring), the lip and the flight every 10 m up to 80 m past the main road (40 m on the diagonal, which heads on
+   towards the entrance's ring), at the road and 8 m over it; and from chase cameras on the ramp and
+   in the flight back to the main road every 20 m over its 300 m before the jump's line. Segments [ax,ay,az,bx,by,bz]. ---- */
+function portalWatch(ctx,O){const out=[],PT=ctx.port||[];if(!PT.length)return out;const{N,ds,P,R,U}=ctx,hw=W/2,V=THREE.Vector3,pt=(i,l,h)=>{i=((i%N)+N)%N;return new V().copy(P[i]).addScaledVector(R[i],l).addScaledVector(U[i],h)};
+  for(const o of PT){const k=o.k,back=Math.round(O.camBack/ds),nLip=Math.round(PORT_O.Lr/ds),nOver=Math.round((o.Lp*(o.pv==='d'?Math.SQRT2:1)+(o.pv==='d'?40:80))/ds),zJ=o.zC+(o.pv==='d'?o.Lp:0);
+    const tg=[];for(let q=Math.round(20/ds);q<=nLip+nOver;q+=Math.max(1,Math.round(10/ds)))for(const h of[1,8])tg.push(pt(k+q,0,h));
+    for(let d=Math.round(400/ds);d>=Math.round(zJ/ds);d-=Math.max(1,Math.round(O.camStep/ds)))for(const cl of[-hw*0.6,0,hw*0.6]){const c=pt(k-d-back,cl,O.camUp+1);for(const t of tg)out.push([c.x,c.y,c.z,t.x,t.y,t.z])}
+    const mt=[];for(let d=Math.round(zJ/ds);d<=Math.round((zJ+300)/ds);d+=Math.max(1,Math.round(20/ds)))for(const l of[-hw,0,hw])mt.push(pt(k-d,l,1));
+    for(let q=back+1;q<=nLip+nOver;q+=Math.max(1,Math.round(O.camStep/ds))){const c=pt(k+q-back,0,O.camUp+1);for(const t of mt)out.push([c.x,c.y,c.z,t.x,t.y,t.z])}}
+  return out}
+/* ---- the knots (Eric, 2026-11-12: "the celtic knots could be repurposed for the portals as shifting interweaving
+   decoration around the portal"): at each end two torus-knot bands wound round the ring, outside the opening, turning
+   slowly opposite ways; each loosens and re-ties as another knot (the knot batch's morph: (2,15) to (2,21), the strands
+   staying inside their band, so nothing ever crosses into the opening). Lite and Default; every point checked by the rule
+   at four turns of its spin (put in the knot batch, so tools/tests/spirit-clear.js checks them through their motion). ---- */
+function spPortalKnots(ctx,Lb,clr,r,st,why){const V=THREE.Vector3,Y=new V(0,1,0);let n=0;
+  for(const o of ctx.port||[])for(const end of['E','X']){const M=end==='E'?o.ME:o.MX,F=(end==='E'?o.Fe:o.Fx).clone().normalize(),c=new V(0,o.hc,0).applyMatrix4(M),
+      x=new V().crossVectors(F,Y).normalize(),z=new V().crossVectors(x,F).normalize(),q=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x,F,z));
+    for(let b=0;b<2;b++){st.tried++;const R0=o.ringR+4.6+b*3.4,r0=1.5,th=0.55,nP=Math.round(R0*9),A=SPS.knot(2,15+b*2,R0,r0,nP,3,th),B=SPS.knot(2,21+b*2,R0,r0*1.35,nP,3,th*0.8),pts=[];
+      for(const S of[A,B])for(const L of S)for(let i=0;i<L.length;i+=3)for(let a=0;a<4;a++){const p=new V(...L[i]).applyAxisAngle(Y,a*Math.PI/8).applyQuaternion(q).add(c);pts.push([p.x,p.y,p.z,0.9])}
+      if(!clr.okPts(pts)){st.dropped++;why['portal knots']=(why['portal knots']||0)+1;continue}
+      Lb.obj({c:[c.x,c.y,c.z],q:[q.x,q.y,q.z,q.w],m:[1,(b?-1:1)*(0.08+0.04*r()),r()*TAU,0],ax:[0,1,0],pal:[5,2,1,4][(n++)%4],br:0.015,ext:R0+4});
+      A.forEach((S,s)=>{for(let i=0;i<S.length-1;i++)Lb.seg(S[i],S[i+1],i/S.length,1,B[s][i],B[s][i+1])});st.placed++}}}
