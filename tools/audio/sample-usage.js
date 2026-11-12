@@ -107,6 +107,8 @@ const SEEDS = [12345, 0x9A3C7], KVS = [0, 3, 6, 9], EXTRA = [0x2A460, 0x4B6D2]; 
 async function run(opt) {
   setup(opt);
   const t00 = Date.now(), browser = await launch(), runs = [], cover = {};
+  /* opt.part: the .part file an earlier, interrupted run wrote after each phase; its requests count as one earlier run */
+  if (opt.part) { const P = JSON.parse(fs.readFileSync(path.resolve(opt.part), 'utf8')); runs.push({ name: 'resumed', group: 'resumed:' + P.groups.join('+'), REQ: P.REQ, results: [], FETCH: {}, cuthits: [], MR: {}, sum: { phases: P.groups } }) }
   // facts about the page's tables, read from a throwaway page: the key lists, the templates, the forced seeds
   const probe = await open(browser, { file: PAGE, samples: false });
   const facts = await probe.evaluate(() => {
@@ -292,6 +294,6 @@ async function fxPhase(browser, facts) {
 module.exports = { run, merge, pool };
 if (require.main === module) {
   const ph = cli('phase', null);
-  run({ page: cli('page'), out: cli('out'), workers: cli('workers', 4), quick: !!cli('quick', false), guard: !!cli('guard', false), phases: ph ? String(ph).split(',') : null, strict: cli('strict', false) })
+  run({ page: cli('page'), out: cli('out'), workers: cli('workers', 4), quick: !!cli('quick', false), guard: !!cli('guard', false), phases: ph ? String(ph).split(',') : null, strict: cli('strict', false), part: cli('part', null) })
     .catch((e) => { console.error('FAIL', e); process.exit(1) });
 }
