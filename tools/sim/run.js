@@ -1,10 +1,10 @@
 const THREE=require('three');
 const stub=()=>new Proxy(function(){},{get:(t,k)=>{if(k==='style')return{};if(k==='classList')return{add(){},remove(){},toggle(){}};if(k==='clientWidth'||k==='clientHeight'||k==='width'||k==='height')return 200;if(k==='hidden')return t._h??true;if(k===Symbol.toPrimitive)return()=>0;return t[k]??stub()},set:(t,k,v)=>{if(k==='hidden')t._h=v;else t[k]=v;return true},apply:()=>stub()});
 const els={};
-global.location={hostname:"x",href:"x"};global.top=null;global.document={addEventListener(){},hidden:false,querySelectorAll:()=>[],getElementById:id=>els[id]||(els[id]=stub()),createElement:()=>({getContext:()=>stub(),width:1,height:1,dataset:{},style:{},setAttribute(){},append(){},appendChild(){},addEventListener(){},querySelectorAll:()=>[]}),documentElement:{}};
+global.location={hostname:"x",href:"x"};global.top=null;global.document={addEventListener(){},hidden:false,querySelectorAll:()=>[],getElementById:id=>els[id]||(els[id]=stub()),createElement:()=>({getContext:()=>stub(),width:1,height:1,dataset:{},style:{},setAttribute(){},append(){},appendChild(){},addEventListener(){},querySelectorAll:()=>[]}),documentElement:{},body:{classList:{add(){},remove(){},toggle(){}},appendChild(){},style:{}}};
 global.window=global;global.devicePixelRatio=1;global.innerWidth=800;global.innerHeight=400;
 global.matchMedia=()=>({matches:false});global.fetch=()=>new Promise(()=>{});global.addEventListener=()=>{};global.performance={now:()=>0};
-global.requestAnimationFrame=()=>{};global.navigator={maxTouchPoints:5};global.screen={};global.localStorage={getItem:()=>null,setItem(){}};
+global.requestAnimationFrame=()=>{};global.MutationObserver=class{observe(){}disconnect(){}};/* (P63: the pause menu watches itself since Prototype 63) */global.navigator={maxTouchPoints:5};global.screen={};global.localStorage={getItem:()=>null,setItem(){}};
 class R{constructor(){this.capabilities={getMaxAnisotropy:()=>1}}setPixelRatio(){}setSize(){}render(){}}
 THREE.WebGLRenderer=R;THREE.CanvasTexture=class extends THREE.Texture{};
 global.THREE=THREE;
