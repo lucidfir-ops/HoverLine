@@ -89,7 +89,7 @@ function frame(now){
   else{if(S.state!=='paused')step(dt);else readInput();
     {const p=player,b=p.boost>0||p.selfBoost;GFX.fx=S.state==='race'&&p.wreck<=0?clamp(clamp((p.v/VMAX-0.95)*2.2,0,1)*(0.55+0.45*(p.dive||0))+(b?0.3:0),0,1):0;
       GFX.gl=S.state==='race'&&p.spinD>0&&p.wreck<=0?0.6*Math.pow(1-Math.min(1,p.spinT/p.spinD),1.5):0}
-    VFX.update(dt);if(!NO_RENDER||window.__hlRender){if(SPL.race&&SPL.ln)splRender();else gfxRender(scene,camera)}}
+    VFX.update(dt);if(!NO_RENDER||window.__hlRender){if(SPL.race&&SPL.ln)splRender();else{portalView(camera);/* (Prototype 63: the view through a portal, 004s) */gfxRender(scene,camera)}}}
   if(S.state==='menu'){pv3.acc+=dt;if(pv3.acc>=1/30){const cv=!$('menu').hidden?$('preview'):!$('career').hidden?$('carPreview'):!$('train').hidden?$('trPreview'):!$('mp').hidden?$('mpPreview'):!$('spl').hidden?$('splPreview'):!$('ed').hidden?$('edPreview'):null;if(cv)pv3Draw(cv,pv3.acc);pv3.acc=0}}
   requestAnimationFrame(frame)}
 

@@ -1,6 +1,7 @@
 //# track/004d-road-query.js: where the road is at a distance along it (sampleAt, idxAt) and the surface under a racer (surf: the main road or a split's route)
 const sm={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0};
 function sampleAt(u,o=sm){const{L,N,ds,P,R,U,Tg,H}=T;const f=(((u%L)+L)%L)/ds;const i=Math.floor(f)%N,j=(i+1)%N,a=f-Math.floor(f);
+  if(T.brk&&T.brk[i])return portalSample(o,i,j,a);/* (Prototype 63: never between a portal's entrance and exit) */
   o.p.lerpVectors(P[i],P[j],a);o.r.lerpVectors(R[i],R[j],a).normalize();o.u.lerpVectors(U[i],U[j],a).normalize();o.t.lerpVectors(Tg[i],Tg[j],a).normalize();o.h=H[i]+wrapA(H[j]-H[i])*a;return o}
 const idxAt=u=>Math.floor((((u%T.L)+T.L)%T.L)/T.ds)%T.N;
 /* Where the road is at distance u and lateral position lat. Outside a split: the main road (height 0, walls at ±W/2).

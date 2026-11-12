@@ -66,6 +66,8 @@ function splSrcName(P){return P.src==='dev'?(coarse?'This device':'Keyboard'):P.
 /* each pilot's chase camera: the single camera's rules (distances, fov, portrait widening from the view's own shape) */
 const _sv=new THREE.Vector3();
 function splCam(P,dt){const r=P.r,cam=P.cam,C=CAMS[S.state==='done'&&CAMS[P.cm].fpv?1:P.cm],tgtF=_sv.copy(P.pf).lerp(P.pT,C.fpv?0.15:0.35).normalize();
+  /* (Prototype 63: through a portal each view's smoothed directions turn with its frame, as the single camera's do) */
+  {const pc=T.port&&P._pu!=null?portalCross(P._pu,r.u):null;P._pu=r.u;if(pc&&P.ci0){P.fwd.applyQuaternion(pc.Q);P.up.applyQuaternion(pc.Q)}}
   if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*10)).normalize()}
   const vk=r.v/VMAX,boo=r.boost>0||!!r.selfBoost,pk=cam.aspect<1?clamp((1-cam.aspect)/0.54,0,1):0,sh=r===player?S.shake:0;
   if(C.fpv){cam.position.copy(P.pPos).addScaledVector(P.pUp,0.62).addScaledVector(P.pf,0.7);cam.up.copy(P.up);cam.lookAt(look.copy(cam.position).addScaledVector(P.fwd,40).addScaledVector(P.up,-0.6));cam.fov+=((76+16*vk+(boo?6:0)+12*pk)-cam.fov)*Math.min(1,dt*4)}

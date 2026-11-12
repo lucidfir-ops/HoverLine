@@ -7,7 +7,8 @@ const pv3={yaw:0.6,tilt:0.5,drag:null,idle:99,acc:0,data:null,fit:null};
 function pv3Build(){const n=Math.min(420,T.N),step=T.N/n,pts=[],c=new THREE.Vector3();for(const p of T.P)c.add(p);c.divideScalar(T.N);
   let rad=1;const zc=new Array(n).fill(null),gp=new Uint8Array(n);
   for(let k=0;k<n;k++){const i=Math.floor(k*step),p=T.P[i],r=T.R[i],u=T.U[i];pts.push({x:p.x-c.x,y:(p.y-c.y)*1.8,z:p.z-c.z,rx:r.x,ry:r.y*1.8,rz:r.z,uy:u.y});rad=Math.max(rad,Math.hypot(p.x-c.x,p.z-c.z));
-    const uu=i*T.ds;for(const z of T.zones)if(!z.laneF&&uu>=z.u0&&uu<=z.u1)zc[k]=z.kind==='hp'?'#46ff8c':'#be5aff';if(T.gap[i]||T.spl[i])gp[k]=1}
+    const uu=i*T.ds;for(const z of T.zones)if(!z.laneF&&uu>=z.u0&&uu<=z.u1)zc[k]=z.kind==='hp'?'#46ff8c':'#be5aff';if(T.gap[i]||T.spl[i])gp[k]=1;
+    /* (Prototype 63: no ribbon across a portal's break) */if(T.brk)for(let q=i;q<Math.floor((k+1)*step);q++)if(T.brk[q])gp[k]=1}
   /* split routes: their own ribbons, beside the main one */
   const br=[];for(const S0 of T.splits)for(const B of S0.b){const q=[];for(let k=0;k<=S0.n;k+=Math.max(1,Math.round(step))){const i=S0.i0+k,p=T.P[i],r=T.R[i],u=T.U[i],x=p.x+r.x*B.c[k]+u.x*B.h[k],y=p.y+r.y*B.c[k]+u.y*B.h[k],z=p.z+r.z*B.c[k]+u.z*B.h[k];
     q.push({x:x-c.x,y:(y-c.y)*1.8,z:z-c.z,rx:r.x,ry:r.y*1.8,rz:r.z,uy:u.y})}br.push(q)}
