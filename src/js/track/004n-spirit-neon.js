@@ -14,8 +14,8 @@ const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8,colossus:9};
    4 jade + turquoise + gold, 5 ice + violet; the colours the mock-ups were approved in */
 const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff9f2e','#ffe08a'],['#18e0ff','#3d8bff','#c13dff','#ff3fc4'],
   ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff'],
-  /* Prototype 63: 6 lime-white, for what has to stand out from every other palette (a head's face: the lattice and the heads' wire are cool or ember) */
-  ['#d8ff2a','#f4ffb0','#ffffff','#d8ff2a']];
+  /* Prototype 63: 6 hot lime, for what has to stand out from every other palette (a head's face: the lattice and the heads' wire are cool or ember) */
+  ['#c8ff00','#e4ff3a','#b4ff00','#c8ff00']];
 /* the uniforms every Spirit material shares (one object each, so setting a value once sets it everywhere):
    uT time; uBeat the music's beats (float); uKick the last kick, decaying; uKA the ages of the last four kicks (s);
    uDrop a flare after a drop starts; uBuild 0..1 through a build; uBrk 1 in a breakdown; uBreath a slow in-out (2 bars);
