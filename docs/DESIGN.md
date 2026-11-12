@@ -493,6 +493,15 @@ Low-end phones come first: every heavy effect is optional, and the default look 
 - **Driving models are never fitted from Prism races.**
 - Work is split by difficulty across agents (AGENTS.md); the lead does versions, changelog and this file.
 
+## Prototype 61 and 62 decisions
+
+- **First flight is the five quick races** in the Blade; the control tutorial follows the frame select at a career's start. Names Eric uses are listed in CLAUDE.md.
+- **Track codes are versioned:** a change to how tracks are built gets a new code version; old codes keep working unless that means carrying duplicate logic.
+- **Prism's ways in and out are a built arch**, not clipped rock: nothing clips it, so it cannot shard.
+- **Races are seeded:** track seed plus a race number (in the log) decide every AI choice; looks use their own random numbers.
+- **One file per biome** (track/004f to 004r), built from a documented context; `scene-hash` guards refactors.
+- **Spirit realm (S):** nothing ever intersects the road or the chase camera's view of it (`spClear`, tested); all motion in vertex shaders, one batch per kind of thing; music response as in round 2 with the sound's form as colour on top; portals wait for their own pass.
+
 ## How to change things safely
 
 A change to the music or the announcer ships only after it has been rendered and compared side by side with the Prototype 25 baseline. Gameplay changes ship after simulated races, and are then checked against the player's race logs.

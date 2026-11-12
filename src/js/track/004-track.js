@@ -15,13 +15,16 @@ const BIOMES={U:{k:'U',n:'Urban',bg:0x090b10,fog:[160,1100],haze:0x16213a,mote:0
   F:{k:'F',n:'Forest',bg:0x050d08,fog:[150,1150],haze:0x0f2a1c,mote:0xc8ff8a,edge:0x46ff8c},
   N:{k:'N',n:'Stratos',bg:0x010207,fog:[500,2500],haze:0x0b1024,mote:0xd8e0ff,edge:0x3ff0ff},
   R:{k:'R',n:'Reef',bg:0x01101a,fog:[90,1000],haze:0x04263a,mote:0x7ff8ff,edge:0x3ff0ff,hemi:[0x2f7f9f,0x01070c,0.8],sun:[0x7fdcff,0.35]},
-  P:{k:'P',n:'Prism',bg:0x05030a,fog:[200,1500],haze:0x150a24,mote:0xd8b0ff,edge:0x9f7bff,hemi:[0x6a5a9a,0x0a0610,0.75],sun:[0xd8c8ff,0.4]}};
+  P:{k:'P',n:'Prism',bg:0x05030a,fog:[200,1500],haze:0x150a24,mote:0xd8b0ff,edge:0x9f7bff,hemi:[0x6a5a9a,0x0a0610,0.75],sun:[0xd8c8ff,0.4]},
+  /* Prototype 62: the Spirit realm, a black void with neon wireframe; one look by night and by day */
+  S:{k:'S',n:'Spirit',bg:0x000000,fog:[600,2600],haze:0x07040e,mote:0xc8a8ff,edge:0xb070ff,hemi:[0x5a4a8a,0x05030a,0.7],sun:[0xd8c8ff,0.35]}};
 const BIOMES_DAY={U:{k:'U',n:'Urban',day:true,bg:0x9cbad6,fog:[280,1900],haze:0xb4c8dc,mote:0xffffff,edge:0xffb000,hemi:[0xdde8f4,0x3a3c44,1.1],sun:[0xfff1d6,1.0],sky:['#3f78c0','#7fb0e2','#b0cfe8','#9cbad6','#7f95a8','#4f5c68']},
   O:{k:'O',n:'Ocean',day:true,bg:0xa9d6f2,fog:[320,2100],haze:0xbfe0f4,mote:0xffffff,edge:0xe8f4ff,hemi:[0xd8ecff,0x2a4a5c,1.15],sun:[0xfff4dc,1.1],sky:['#2a6fc9','#5ea6ea','#9ccdf0','#a9d6f2','#8cc0e2','#2d6f9c']},
   F:{k:'F',n:'Forest',day:true,bg:0xa8cfb8,fog:[240,1700],haze:0xbcdcc4,mote:0xf4ffd8,edge:0x46ff8c,hemi:[0xe4f2dc,0x24382a,1.05],sun:[0xfff4d6,0.95],sky:['#3a7cc0','#78b4dc','#b4dcd0','#a8cfb8','#6f9a7c','#2e4a36']},
   R:{k:'R',n:'Reef',day:true,bg:0x1f86a6,fog:[70,1100],haze:0x3aa6c4,mote:0xe8ffff,edge:0x3ff0ff,hemi:[0xc8f6ff,0x1e5a6a,1.05],sun:[0xeafcff,0.85]},
   N:{k:'N',n:'Stratos',day:true,bg:0x9ccff4,fog:[600,2800],haze:0xbfe2fa,mote:0xffffff,edge:0x3ff0ff,hemi:[0xe8f4ff,0x8fb8dc,1.15],sun:[0xfff6e0,1.0],sky:['#2a6fc9','#5ea6ea','#a4d4f6','#c4e4fa','#a4d4f6','#6aa8e0']},
-  P:{k:'P',n:'Prism',day:true,bg:0xc8b8e0,fog:[300,1900],haze:0xd8cce8,mote:0xffffff,edge:0x9f7bff,hemi:[0xece4ff,0x3a3048,1.1],sun:[0xfff0e8,1.0],sky:['#5a62c8','#9a8ee0','#d4c4ec','#c8b8e0','#8a7aa8','#3a3050']}};
+  P:{k:'P',n:'Prism',day:true,bg:0xc8b8e0,fog:[300,1900],haze:0xd8cce8,mote:0xffffff,edge:0x9f7bff,hemi:[0xece4ff,0x3a3048,1.1],sun:[0xfff0e8,1.0],sky:['#5a62c8','#9a8ee0','#d4c4ec','#c8b8e0','#8a7aa8','#3a3050']},
+  S:{k:'S',n:'Spirit',day:true,bg:0x000000,fog:[600,2600],haze:0x07040e,mote:0xc8a8ff,edge:0xb070ff,hemi:[0x5a4a8a,0x05030a,0.7],sun:[0xd8c8ff,0.35]}};
 let tod=store.get('hoverline.tod')==='day'?'day':'night';const lookOf=k=>(tod==='day'?BIOMES_DAY:BIOMES)[k]||BIOMES.U;
 /* Night and Day can both be ticked (Prototype 31): then every new track picks one of them. */
 let todOn=(()=>{const v=(store.get('hoverline.tods')||tod).split(',').filter(x=>x==='night'||x==='day');return v.length?v:[tod]})();
@@ -29,7 +32,7 @@ let todOn=(()=>{const v=(store.get('hoverline.tods')||tod).split(',').filter(x=>
 const BDIAL=[['Scenery','towers, trees, islands or slabs · 0 to 3',3],['Falls','water or lava from a block',4],['Geysers','bursts of water or steam',4],['Tunnels','long ones, built round the road',3]];
 /* What a generated track gets: the city has one or two falls, usually a tunnel or two and sometimes a geyser; the sea a
    geyser or two, the reef a bubble vent or two; the forest and Stratos just their own scenery. */
-function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='P'?[2,a<0.5?2:3,b<0.5?2:3,0]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
+function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='P'?[2,a<0.5?2:3,b<0.5?2:3,0]:k==='S'?[2,0,0,0]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
 /* feature kinds built into the road shape (splits are added afterwards, beside it) */
 const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump'];
 /* Prototype 60: bit 24 of a seed marks a code made from Prototype 60 on (seven hex digits, starting with 1). */
