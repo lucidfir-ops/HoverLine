@@ -15,7 +15,12 @@ $('playBtn').onclick=()=>showPage('play');$('playBack').onclick=()=>showPage('ti
 $('optBtn').onclick=()=>openOpts('title');$('pauseOpt').onclick=()=>openOpts('pause');$('mpOpt').onclick=()=>openOpts('mp');$('optDone').onclick=closeOpts;
 /* the class picks (Prototype 47): the track page's (Race and Time trial) and the room host's */
 function clsFill(sel,k){if(!sel||!REAL)return;if(!sel.options.length)for(const c of CLS){const o=document.createElement('option');o.value=c.k;o.textContent=c.n+' · '+Math.round(c.f*100)+'%';sel.appendChild(o)}if(sel.value!==k)sel.value=k}
-function pacSync(){const b=$('pacBtn');if(b)b.setAttribute('aria-pressed',String(pacOn))}
+/* Prototype 63: Eric's phone showed ready module buttons that did nothing (a tap lit them, no ammo went): Pacifist was on,
+   which stops every module but left the buttons looking ready. body.pac (CSS) now greys the module buttons and the slots
+   and shows "off" while Pacifist stops them; a room ignores Pacifist (pacifist() is false there), so the class follows
+   that too (checked twice a second: a room starts and ends in other parts). */
+function pacSync(){const b=$('pacBtn');if(b)b.setAttribute('aria-pressed',String(pacOn));document.body.classList.toggle('pac',pacifist())}
+setInterval(pacSync,500);
 $('pacBtn').onclick=()=>{pacOn=!pacOn;store.set('hoverline.pacifist',pacOn?'1':'0');pacSync();note(pacOn?'Pacifist: no modules for anyone · not on the online board':'Modules on',2000)};pacSync();
 /* (P58) the rivals' level: Tilt, Beginner, Default or Expert (Prototype 60: each has its own online board, so no note) */
 function ailSync(){const s=$('ailSel');if(!s||!REAL)return;if(!s.options.length)for(const k of['tilt','easy','normal','hard']){const o=document.createElement('option');o.value=k;o.textContent=AIL[k].n;s.appendChild(o)}s.value=ailNow();const n=$('ailNote');if(n)n.textContent=''}
