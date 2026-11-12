@@ -3638,7 +3638,11 @@ const SPLAT_V=SPGL+`attribute vec2 corner;attribute vec4 lA,lB,lN,lM;uniform vec
 const SPLAT_F=`uniform vec4 uKA;uniform float uPV,uPK,uGainL,uSwellL,uWorld;varying vec3 vCol;varying float vS;varying float vD;varying float vSt;
   void main(){float e=1.-abs(vS),a=smoothstep(0.,0.4,e);vec3 col=vCol*uGainL*(1.+(uSwellL-1.)*0.6)*a*(0.85+0.6*e*e);
     float pu=0.;for(int i=0;i<4;i++){float k=uKA[i];float x=(vD-uPV*k)/16.;pu+=exp(-x*x)*exp(-k*1.4);}
-    col*=1.+uPK*pu*2.6;col+=vec3(0.5,0.45,0.6)*uPK*pu*0.25*vSt*a;gl_FragColor=vec4(col*uWorld,1.);}`;
+    col*=1.+uPK*pu*2.6;col+=vCol*uPK*pu*0.5*vSt*a;
+    /* Prototype 63 (Eric: "strong sections glow too white at the drop"): the pulse's lift is the strut's own colour (it was a grey-white), and the
+       sum is soft-capped by its brightest channel, so a strut keeps its hue however bright it is and the lines piled up along a section do not
+       reach white together */
+    float mx=max(col.r,max(col.g,col.b));col*=1./(1.+max(0.,mx-0.45)*1.1);gl_FragColor=vec4(col*uWorld,1.);}`;
 /* sections [{u, half, fade, peak}]; q detail: 2 every tier, 1 no diagonal truss and a wider grid, 0 the beams only */
 function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SPC_O;
   const sp=[45,36,30][q],ext=240,clear=34,tight=0.26,chunk=320,y0=-150,y1=300;
@@ -3701,7 +3705,7 @@ function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SP
    No effect flashes more than three times a second: kicks closer than 0.34 s to the last one shown are not shown. */
 let SP_CALM=(()=>{const v=store.get('hoverline.calm');return v==null?null:v==='1'})();
 const spCalm=()=>SP_CALM==null?!g2('blur'):SP_CALM;
-const SPMUS={an2:null,fd2:null,oq:[],sk2:{h:[],hi:0.1,lo:0,last:-9,on:[],tT:0},bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
+const SPMUS={sb:{t:0,slow:0,fast:0,k:'drop',since:0,age:0,song:null},an2:null,fd2:null,oq:[],sk2:{h:[],hi:0.1,lo:0,last:-9,on:[],tT:0},bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
   /* the analyser on the music volume (made once, on the music's own context) */
   analyser(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an&&this.src===g)return this.an;const a=c.createAnalyser();a.fftSize=512;a.smoothingTimeConstant=0.55;g.connect(a);
       const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an=a;this.src=g;this.fd=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
@@ -3713,6 +3717,12 @@ const SPMUS={an2:null,fd2:null,oq:[],sk2:{h:[],hi:0.1,lo:0,last:-9,on:[],tT:0},b
   onset(x){const s=this.sk2,h=s.h,prev=h.length?h[h.length-1]:null;h.push(x);if(h.length>14)h.shift();const dt=prev?Math.max(1e-3,x.t-prev.t):0.016;
     s.hi=Math.max(x.e,s.hi*Math.exp(-dt/2));s.lo=Math.min(x.e,s.lo+(x.e-s.lo)*Math.min(1,dt/2));let j=h.length-1;while(j>0&&x.t-h[j].t<0.08)j--;
     const rise=x.e-h[j].e;if(prev&&rise>(s.hi-s.lo)*0.18+0.01&&rise>0.02&&x.e>=prev.e&&x.t-s.last>0.34){s.last=x.t;return rise}return 0},
+  /* a song's breakdown and drop from its bass (30 to 110 Hz): the bass over the last 1.5 s against the last 20 s; a breakdown when it falls
+     under half, the drop when it is back over 0.8, at least 4 s each way and none in the first 15 s of a song (the level over all bands
+     hardly moved in the eight songs: tools/tests/spirit-songs.js, and chattered on one). A song's end, fading out, counts as a breakdown. */
+  songSec(x){const s=this.sb;if(s.song!==music.soCur){s.song=music.soCur;s.slow=s.fast=s.t=s.since=s.age=0;s.k='drop'}
+    const dt=s.t?Math.max(1e-3,Math.min(0.2,x.t-s.t)):0.016;s.t=x.t;s.slow+=(x.e-s.slow)*Math.min(1,dt/20);s.fast+=(x.e-s.fast)*Math.min(1,dt/1.5);s.since+=dt;s.age+=dt;if(s.age<15||s.since<4)return;
+    if(s.k==='drop'&&s.fast<s.slow*0.5){s.k='brk';s.since=0}else if(s.k==='brk'&&s.fast>s.slow*0.8){s.k='drop';s.since=0;this.dropT=x.t}},
   /* the kick ages, bars and sections for this frame; now: the music's clock (s) */
   read(dt,on){const c=music.ctx,raw=c?c.currentTime:performance.now()/1000,now=c?musHeard():raw,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
     /* the spectrum. Prototype 63: an analyser reads the sound where it is made, before the speaker's delay; each reading is kept
@@ -3732,21 +3742,21 @@ const SPMUS={an2:null,fd2:null,oq:[],sk2:{h:[],hi:0.1,lo:0,last:-9,on:[],tT:0},b
     const K=[];const vk=(typeof VFX!=='undefined'&&VFX.kt)||[];for(const k of vk)if(k>this.lastNow-0.05&&k<=now)K.push(k);
     /* Songs: the bass of the element's sound as it leaves the graph, held back like everything else until heard, then onsets */
     if(playing&&music.soOn){const a2=this.analyser2();if(a2){a2.getByteFrequencyData(this.fd2);const hz=c.sampleRate/2/this.fd2.length,i0=Math.max(1,Math.floor(30/hz)),i1=Math.ceil(110/hz);let sm=0;for(let i=i0;i<=i1;i++)sm+=this.fd2[i];this.oq.push({t:raw,e:sm/((i1-i0+1)*255)});if(this.oq.length>300)this.oq.shift()}
-      while(this.oq.length&&this.oq[0].t<=now){const x=this.oq.shift();if(this.onset(x))K.push(x.t)}}
+      while(this.oq.length&&this.oq[0].t<=now){const x=this.oq.shift();this.songSec(x);if(this.onset(x))K.push(x.t)}}
     else{this.oq.length=0;this.sk2.h.length=0;this.sk2.on.length=0}
     this.lastNow=now;
     for(const k of K.sort((x,y)=>x-y))if(on&&k-this.last>=0.34){this.last=k;this.acc.unshift(k);if(this.acc.length>4)this.acc.length=4;
       /* the beat follows the kicks (Songs: the tempo from the middle of the last few gaps between them, 85 to 175 bpm) */
       const spb=60/this.bpm,bk=(k-this.anchor)/spb,er=bk-Math.round(bk);this.anchor+=er*spb*0.5;
       if(music.soOn&&this.acc.length>3){const iv=[0,1,2].map(i=>this.acc[i]-this.acc[i+1]).sort((a,b)=>a-b)[1];if(iv>0.34&&iv<0.7){const b0=(k-this.anchor)/spb;this.bpm+=(60/iv-this.bpm)*0.12;this.anchor=k-b0*60/this.bpm}}}
-    if(!music.soOn&&music.bpm)this.bpm=music.bpm;if(!on||!playing)this.acc.length=0;
+    /* (a tune faster than 180 bpm keeps the realm's beat at half time: the Platonic solids light one beat in two, so never more than 3 a second) */
+    if(!music.soOn&&music.bpm)this.bpm=music.bpm>180?music.bpm/2:music.bpm;if(!on||!playing)this.acc.length=0;
     const spb=60/this.bpm,beat=(now-this.anchor)/spb;this.beat=beat;
     /* the section */
     let sec='',bi=0,bl=1;
     if(playing&&music.pgOn&&music.pgS){const S0=music.pgS,P0=S0.P,p=S0.off+(now-S0.t);if(p<P0.loopS){sec='rise';bl=Math.max(1,Math.round(P0.loopS/P0.bd));bi=p/P0.bd}
       else{const bar=((p-P0.loopS)%(P0.loopE-P0.loopS))/P0.bd;sec=bar<16?'drop':bar<32?'b':bar<40?'brk':'rise';bi=sec==='rise'?bar-40:bar%16;bl=sec==='rise'?8:16;if(sec==='drop'&&this.sec!=='drop')this.dropT=now-bar*P0.bd}}
-    else if(playing&&music.soOn&&got){this.slow+=(this.lvl-this.slow)*Math.min(1,dt/25);this.fast+=(this.lvl-this.fast)*Math.min(1,dt/1.2);
-      sec=this.fast<this.slow*0.62?'brk':'drop';if(sec==='drop'&&this.sec==='brk'&&this.fast>this.slow*0.9)this.dropT=now;else if(sec==='drop'&&this.sec==='brk')sec='brk'}
+    else if(playing&&music.soOn&&got){sec=this.sb.k}
     else if(playing){const e=music.secAt(now);if(e&&e.n){sec=e.n;bi=e.b+Math.max(0,Math.min(1,(now-e.t)/(spb*4)));bl=e.l||1;if(sec==='drop'&&this.sec!=='drop'&&e.b===0)this.dropT=e.t}}
     this.sec=sec;
     const brkT=on&&sec==='brk'?1:0;this.brk+=(brkT-this.brk)*Math.min(1,dt*2.5);
@@ -3758,6 +3768,10 @@ const SPMUS={an2:null,fd2:null,oq:[],sk2:{h:[],hi:0.1,lo:0,last:-9,on:[],tT:0},b
     this.histT+=dt;const step=spCalm()?0.2:1/15;if(this.histT>=step||!this.hist.length){this.histT=0;this.hist.unshift(this.band.slice());if(this.hist.length>12)this.hist.length=12}
     else this.hist[0]=this.band.slice();
     return this}};
+/* Prototype 63: the lattice's brightness controls from the music (M: drop 0..1, build 0..1, brk 0..1). Round 2's flare was 1.6 on the drop; with the
+   soft cap on each strut's brightness in 004q it is 1.1, which keeps the colour (Eric: the lattice glowed white at the drop on his phone).
+   Calm visuals keep it under 0.5. */
+function spLatDrive(M,calm,kick){const flare=M.drop*(calm?0.45:1.1);return{gain:(1+flare+0.3*M.build)*(1-0.75*M.brk),pk:(1-0.7*M.brk)*(calm?0.4:1),swell:1+(0.25*M.drop+0.08*kick*(1-M.brk))*(calm?0.3:1)}}
 /* the realm's frame: sp is ctx.spirit (004m); t the race clock; anim Moving scenery */
 function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.t0)));sp.t0=t;
   const on=g2('pulse'),calm=spCalm(),M=SPMUS.read(dt||1/60,on),U0=SPU;
@@ -3768,8 +3782,8 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
   U0.uWorld.value=(1-0.3*M.brk)*(1+0.12*M.drop*(calm?0.3:1));
   for(let k=0;k<12;k++){const h=M.hist[Math.min(k,M.hist.length-1)]||[0,0,0,0];U0.uSF.value[k].set(h[0],h[1],h[2],h[3])}
   /* the lattice: round 2's response, as Eric approved it (flare 1.6 on the drop; Calm keeps it under 0.5) */
-  const LU=sp.lat.U,flare=M.drop*(calm?0.45:1.6),tgt=M.build>0?sp.lat.tight*M.build*M.build*(3-2*M.build):0;M.tight=tgt<M.tight?M.tight+(tgt-M.tight)*0.35:tgt;
-  LU.uTight.value=anim?M.tight:0;LU.uPK.value=(1-0.7*M.brk)*(calm?0.4:1);LU.uGainL.value=(1+flare+0.35*M.build)*(1-0.75*M.brk);LU.uSwellL.value=1+(0.25*M.drop+0.08*U0.uKick.value*(1-M.brk))*(calm?0.3:1);
+  const LU=sp.lat.U,tgt=M.build>0?sp.lat.tight*M.build*M.build*(3-2*M.build):0,LD=spLatDrive(M,calm,U0.uKick.value);M.tight=tgt<M.tight?M.tight+(tgt-M.tight)*0.35:tgt;
+  LU.uTight.value=anim?M.tight:0;LU.uPK.value=LD.pk;LU.uGainL.value=LD.gain;LU.uSwellL.value=LD.swell;
   LU.uSwellT.value=calm||!anim?0:1;LU.uSFk.value=M.live?(calm?0.5:1):0.45;
   /* groups: 0 the pyramids, 1.. the arches */
   const G=U0.uG.value,setG=(g,v)=>G[g>>2].setComponent(g&3,v);setG(0,M.g0);
