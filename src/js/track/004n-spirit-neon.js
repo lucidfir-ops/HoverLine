@@ -7,9 +7,10 @@
    Motion modes (SPM): 0 still; 1 turns at a steady rate (and bobs); 2 turns a notch on every beat; 3 turns a notch every
    bar (and slowly), swelling on the kick; 4 a stack's tier slides out, turns a quarter and slides back when its beat
    comes; 5 flies between two places along an arc, as a group's progress (uG) says; 7 a face hinges open and closed on the
-   beat (unfolding solids); 8 is posed from the CPU (heads, riders, echoes, a colossus's head: uOP/uOQ slots).
+   beat (unfolding solids); 8 is posed from the CPU (heads, a colossus's head: uOP/uOQ slots); 9 a colossus's torso or arm, which
+   gestures from the bar clock (colG).
    Nothing here touches the race: it reads the clock, the music and where racers are, never the race's random numbers. */
-const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8};
+const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8,colossus:9};
 /* palettes, four stops each (mirrored past 1): 0 rainbow (Prism's), 1 gold + violet, 2 cyan + magenta, 3 ember + white,
    4 jade + turquoise + gold, 5 ice + violet; the colours the mock-ups were approved in */
 const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff9f2e','#ffe08a'],['#18e0ff','#3d8bff','#c13dff','#ff3fc4'],
@@ -35,6 +36,16 @@ const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uW
   float gOf(float g){int i=int(g/4.);vec4 q=uG[i];float r=mod(g,4.);return r<0.5?q.x:r<1.5?q.y:r<2.5?q.z:q.w;}
   vec3 pal(float i,float x){x=abs(fract(x*0.5)*2.-1.)*3.;float k=floor(min(x,2.999));int b=int(i)*4+int(k);return mix(uPal[b],uPal[b+1],sst(x-k));}
   float breathK(float amt){return 1.+amt*(0.6*uBreath+0.4*uKick*(1.-uBrk))*(1.-uCalm);}
+  float hh(float n){return fract(sin(n*91.3458)*47453.5453);}
+  /* Prototype 63: a colossus's gesture now, from the bar clock and its own seed sd (0..1): now and then (one cycle in 4 bars of 16,
+     a gesture in three of four cycles, slowly in, held about 8 s, slowly out) it lifts an arm and waves, leans in toward the road,
+     bows its head, raises both arms or turns to watch the leader; through a build and the drop it raises both arms. Calm visuals
+     make it a third as big and stop the waving. Out: lean and bow (radians), the arms' raise (0..1 of a half turn), the wave, the watch. */
+  void colG(float sd,out float lean,out float bow,out float aR,out float aL,out float wv,out float wt){
+    float cyc=uBeat/64.+sd*7.3,id=floor(cyc),t=fract(cyc),g=floor(hh(id+sd*13.)*8.);float e=sst((t-0.15)/0.14)*(1.-sst((t-0.6)/0.14))*(1.-0.65*uCalm);
+    lean=0.;bow=0.;aR=0.;aL=0.;wv=0.;wt=0.;
+    if(g==2.){aR=0.72*e;wv=e*(1.-uCalm);}else if(g==7.){aL=0.72*e;wv=e*(1.-uCalm);}else if(g==3.)lean=0.14*e;else if(g==4.)bow=0.55*e;else if(g==5.){aR=0.9*e;aL=aR;}else if(g==6.)wt=e;
+    float dr=sst(max(uBuild*1.1,uDrop))*(1.-0.65*uCalm)*(0.6+0.4*hh(sd*5.))*0.9;aR=max(aR,dr);aL=max(aL,dr);}
   float spAngle(vec4 m){if(m.x<0.5)return 0.;if(m.x<1.5)return m.y*uT+m.z;if(m.x<2.5)return m.z+m.y*(floor(uBeat)+sst(fract(uBeat)*3.));
     if(m.x<3.5)return m.z+m.y*(floor(uBeat*.25)+sst(fract(uBeat*.25)*4.))+m.w*uT;if(m.x>6.5&&m.x<7.5){float c=fract(uBeat/8.+m.z);return m.w*sst(c*4.)*(1.-sst(c*4.-2.2));}return 0.;}`;
 
@@ -49,7 +60,13 @@ const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
   #endif
   vec3 place(vec3 p,out float vis){vis=1.;vec3 q=p-iP.xyz;
     #ifdef SLOTS
-    if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;q=iP.xyz+uOP[s].xyz+rotQ(uOQ[s],q);return iC.xyz+rotQ(iQ,q);}
+    if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;
+      /* a colossus (Prototype 63): its head (mode 8 with iM.y 1) and its torso and arms (mode 9, iM.z the part) take the gesture; the slot gives the head's yaw */
+      if(iM.y>0.5||iM.x>8.5){float yw=2.*atan(uOQ[s].y,uOQ[s].w),ln,bw,aR,aL,wv,wt;colG(iM.x>8.5?iM.y:iM.z,ln,bw,aR,aL,wv,wt);
+        if(iM.x>8.5){if(iM.z>0.5){float a=iM.z<1.5?aL:aR,sd=iM.z<1.5?-1.:1.;q=rotA(q,vec3(0.,0.,1.),sd*(3.14159*a+0.2*wv*sin(uBeat*2.5+iM.y*6.)*step(0.3,a)));}q+=iP.xyz;}
+        else{q=rotA(q,vec3(1.,0.,0.),bw);q=rotA(q,vec3(0.,1.,0.),yw*(1.-0.55*wt))+iP.xyz;}
+        q=rotA(rotA(q,vec3(0.,1.,0.),0.55*yw*wt),vec3(1.,0.,0.),ln);return iC.xyz+rotQ(iQ,q);}
+      q=iP.xyz+uOP[s].xyz+rotQ(uOQ[s],q);return iC.xyz+rotQ(iQ,q);}
     #endif
     q=rotA(q,iX.xyz,spAngle(iM))+iP.xyz;if(iM.x>0.5&&iM.x<1.5)q.y+=sin(uT*0.4+iM.z)*iM.w;
     return iC.xyz+rotQ(iQ,q*breathK(iC.w));}

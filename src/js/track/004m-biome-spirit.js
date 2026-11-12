@@ -25,7 +25,7 @@ function scenerySpirit(ctx){
   const straight=(i,h=50)=>{const n=Math.round(h/ds),t0=Tg[ix(i)];for(let k=-n;k<=n;k+=2){const j=ix(i+k);if(kind[j]||gap[j]||spl[j]||U[j].y<0.97||Tg[j].dot(t0)<0.999)return false}return true};
   const STR=[];for(let i=0;i<N;i+=Math.max(1,Math.round(12/ds)))if(straight(i))STR.push(i);
   /* put(name, tries, gen): gen(k) gives a candidate {b: balls [[x,y,z,r]...], add()}; the first clear one is added */
-  const put=(name,tries,gen)=>{st.tried++;for(let k=0;k<tries;k++){const c=gen(k);if(!c)continue;if(clr.okPts(c.b)){c.add();st.placed++;if(k)st.moved++;return true}}st.dropped++;why[name]=(why[name]||0)+1;return false};
+  const put=(name,tries,gen)=>{st.tried++;for(let k=0;k<tries;k++){const c=gen(k);if(!c)continue;if((!c.cyl||clr.cyl(...c.cyl))&&clr.okPts(c.b)){c.add();st.placed++;if(k)st.moved++;return true}}st.dropped++;why[name]=(why[name]||0)+1;return false};
   /* the batches */
   const W2={box:spWires('box'),glyph:spWires('box'),oct:spWires('oct'),tet:spWires('tet'),ico:spWires('ico'),dod:spWires('dod')},solids=['oct','tet','ico','dod'];
   const REG=600,regs=[],LB=i=>{const k=Math.floor(ix(i)*ds/REG);return regs[k]||(regs[k]=spLines())},farL=spLines(),knotL=spLines(),live=spLines(),sh=spShoals();
@@ -179,9 +179,13 @@ function scenerySpirit(ctx){
 
   /* ---- colossi, 1.3 to 1.9 km tall, sunk to the waist in the void's floor; their heads follow the leader (slots 4..6) ---- */
   const floorY=minY-300,colossi=[];for(let n=0,nn=q===2?3:q===1?2:1;n<nn;n++){const H=R2(1300,1900);
+    /* Prototype 63: a colossus gestures (004n colG), so what must stay clear is the cylinder its gestures sweep: lean 0.14 rad and raised
+       arms keep it within 0.36 H of its axis, over the whole height; so no road, nor a sight line's 300 m, is within that (clr.cyl) */
     put('colossi',10,k=>{const a=r()*TAU,d=R2(1700,2300),c=[cxT+Math.cos(a)*d,floorY,czT+Math.sin(a)*d];if(colossi.some(o=>Math.hypot(o.c[0]-c[0],o.c[2]-c[2])<900))return null;
-      return{b:[[c[0],c[1]+H*0.35,c[2],H*0.45]],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length;
-        addSegs(live,{c,q:qq,pal:[5,1,3][n%3],br:0.01,ext:H},cl.body,1,0,1);live.obj({c,q:qq,m:[8,0,0,0],piv:cl.neck,slot,pal:[5,1,3][n%3],ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
+      return{b:[],cyl:[c[0],c[2],0.36*H+380],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length,pal=[5,1,3][n%3],sd=spHash(Math.round(c[0]*0.37+c[2]*0.61));
+        const part=(segs,z,piv)=>{live.obj({c,q:qq,m:[9,sd,z,0],piv,slot,pal,br:0.01,ext:H});for(const[a2,b2,pc]of segs)live.seg(a2,b2,pc,1)};
+        part(cl.torso,0,[0,0,0]);part(cl.armL.segs,1,cl.armL.sh);part(cl.armR.segs,2,cl.armR.sh);
+        live.obj({c,q:qq,m:[8,1,sd,0],piv:cl.neck,slot,pal,ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
         colossi.push({c,H,yaw,slot,neck:cl.neck})}}})}
   /* ---- wireframe heads pacing the pack (slots 0..3) and rare neon ghost riders (slots 7..12); posed by 004r ---- */
   const HEADS=[{sd:-1,d:34,up:10,s:8,du:20},{sd:1,d:48,up:16,s:12,du:55},{sd:-1,d:130,up:50,s:34,du:170},{sd:1,d:170,up:80,s:46,du:280}].slice(0,q===2?4:q===1?2:0);

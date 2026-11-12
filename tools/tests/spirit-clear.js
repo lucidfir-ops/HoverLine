@@ -55,6 +55,8 @@ const CHECK = (code) => {
   const breath = (amt, tm) => 1 + amt * (0.6 * tm.br + 0.4 * tm.k);
   /* moments: time, beat, kick, breath, group progress, drop, tight; the beats chosen so every notch, tier and hinge is seen */
   const TM = []; for (let q = 0; q < 24; q++) TM.push({ t: q * 7.3, b: q * 1.37 + (q % 4) * 0.25, k: q % 3 === 0 ? 1 : 0, br: [1, -1, 0][q % 3], g: [0, 0.25, 0.5, 0.75, 1, 1][q % 6], drop: q % 5 === 0 ? 1 : 0, tight: [0, 0.13, 0.26][q % 3] });
+  /* the colossi's gestures at their extremes, alone and together with the drop's raised arms */
+  const COL_POSES = []; for (const g of [{}, { aR: 0.72, wv: 1 }, { aL: 0.72, wv: 1 }, { lean: 0.14 }, { bow: 0.55 }, { aR: 0.9, aL: 0.9 }, { wt: 1 }]) for (const drop of [0, 0.9]) COL_POSES.push({ lean: 0, bow: 0, aR: 0, aL: 0, wv: 0, wt: 0, ...g, ...(drop ? { aR: Math.max(g.aR || 0, drop), aL: Math.max(g.aL || 0, drop) } : {}) });
   const fails = {}, counts = {}, bad = [];let cur = null;
   const test = (kind, x, y, z) => { counts[kind] = (counts[kind] || 0) + 1; let w = null; if (inKeep(x, y, z)) w = 'keep-out'; else if (nearSight(x, y, z)) w = 'sight'; if (w) { fails[kind + ' ' + w] = (fails[kind + ' ' + w] || 0) + 1; if (bad.length < 12 && !bad.some((q) => q[5] === cur)) bad.push([kind, w, Math.round(x), Math.round(y), Math.round(z), cur]) } };
   const A = (g, k, i) => { const a = g.attributes[k]; return a ? [a.array[i * 4], a.array[i * 4 + 1], a.array[i * 4 + 2], a.array[i * 4 + 3]] : null };
@@ -72,15 +74,24 @@ const CHECK = (code) => {
     else if (g.attributes.sA) { /* neon lines: points every 4 m; the posed slots (heads, riders, echoes) are checked in races */
       const knot = !!g.attributes.sA2;
       for (let i = 0; i < n; i++) { cur = 'l' + i + ' C' + A(g, 'iC', i).map(Math.round) + ' M' + A(g, 'iM', i).map((x) => +x.toFixed(2)) + ' A' + A(g, 'sA', i).map(Math.round); const sA = A(g, 'sA', i), sB = A(g, 'sB', i), iC = A(g, 'iC', i), iQ = A(g, 'iQ', i), iM = A(g, 'iM', i), iX = A(g, 'iX', i), iP = A(g, 'iP', i), a2 = knot ? A(g, 'sA2', i) : null, b2 = knot ? A(g, 'sB2', i) : null;
-        if (iM[0] > 7.5) { if (iP[3] < 4 || iP[3] > 6) continue }/* colossi heads: about their neck, posed by yaw only (the body is still) */
+        if (iM[0] > 7.5 && (iP[3] < 4 || iP[3] > 6)) continue; /* heads, riders: posed in races (spirit-race.js) */
+        if (iM[0] > 7.5) { /* Prototype 63: a colossus's torso, arms and head, through every gesture (004n colG) and every yaw of its head: lean 0 to 0.14,
+            bow to 0.55, arms 0 to 0.9 of a half turn (waving +-0.2 rad), turn to watch; the shader's order: part, head's bow and yaw, body yaw, lean */
+          const len = Math.hypot(sB[0] - sA[0], sB[1] - sA[1], sB[2] - sA[2]), nn = Math.max(1, Math.ceil(len / 40)), isHead = iM[0] < 8.5;
+          for (const ps of COL_POSES) for (const yw of [-1.2, 0, 1.2]) for (let q = 0; q <= nn; q++) { const f = q / nn;
+            let qv = [sA[0] + (sB[0] - sA[0]) * f - iP[0], sA[1] + (sB[1] - sA[1]) * f - iP[1], sA[2] + (sB[2] - sA[2]) * f - iP[2]];
+            if (!isHead) { if (iM[2] > 0.5) { const a = iM[2] < 1.5 ? ps.aL : ps.aR, sd = iM[2] < 1.5 ? -1 : 1; qv = rotA(qv, [0, 0, 1], sd * (Math.PI * a + 0.2 * ps.wv * (a >= 0.3 ? 1 : 0))) } }
+            else { qv = rotA(qv, [1, 0, 0], ps.bow); qv = rotA(qv, [0, 1, 0], yw * (1 - 0.55 * ps.wt)) }
+            qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]]; qv = rotA(rotA(qv, [0, 1, 0], 0.55 * yw * ps.wt), [1, 0, 0], ps.lean);
+            const w = rotQ(iQ, qv); test('colossi (gestures)', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) }
+          continue }
         const md = iM[0], times = md > 0.5 || iC[3] > 0 || knot ? TM : [TM[0]], len = Math.hypot(sB[0] - sA[0], sB[1] - sA[1], sB[2] - sA[2]), nn = Math.max(1, Math.ceil(len / 4));
         for (const tm of times) { const mk = knot ? sst(Math.sin(tm.b * 0.098 + iM[2]) * 1.4 + 0.5) : 0;
           for (let q = 0; q <= nn; q++) { const f = q / nn; let p = [sA[0] + (sB[0] - sA[0]) * f, sA[1] + (sB[1] - sA[1]) * f, sA[2] + (sB[2] - sA[2]) * f];
             if (knot) { const p2 = [a2[0] + (b2[0] - a2[0]) * f, a2[1] + (b2[1] - a2[1]) * f, a2[2] + (b2[2] - a2[2]) * f]; p = p.map((x, k) => x + (p2[k] - x) * mk) }
             let qv = [p[0] - iP[0], p[1] - iP[1], p[2] - iP[2]];
-            if (md > 7.5) { const yaw = (tm.t % 2.4) - 1.2; qv = rotA(qv, [0, 1, 0], yaw); qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]] }
-            else { qv = rotA(qv, iX, ang(iM, tm)); qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]]; if (md > 0.5 && md < 1.5) qv[1] += Math.sin(tm.t * 0.4 + iM[2]) * iM[3] }
-            const s = md > 7.5 ? 1 : breath(iC[3], tm), w = rotQ(iQ, [qv[0] * s, qv[1] * s, qv[2] * s]); test(knot ? 'knots' : md > 7.5 ? 'colossi heads' : 'lines', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } } } }
+            qv = rotA(qv, iX, ang(iM, tm)); qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]]; if (md > 0.5 && md < 1.5) qv[1] += Math.sin(tm.t * 0.4 + iM[2]) * iM[3];
+            const s = breath(iC[3], tm), w = rotQ(iQ, [qv[0] * s, qv[1] * s, qv[2] * s]); test(knot ? 'knots' : 'lines', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } } } }
     else if (g.attributes.fH) { /* shoals: each fish at its farthest (puffed, scattered, loose) */
       for (let i = 0; i < n; i++) { const fH = A(g, 'fH', i), fD = A(g, 'fD', i), fC = A(g, 'fC', i), fK = A(g, 'fK', i);
         for (const tm of TM.slice(0, 8)) { let hh = [fH[0], fH[1], fH[2]]; if (fC[3] !== 0) { const r = rotA([hh[0] - fC[0], hh[1] - fC[1], hh[2] - fC[2]], [0, 1, 0], tm.t * fC[3]); hh = [fC[0] + r[0], fC[1] + r[1], fC[2] + r[2]] }
@@ -89,7 +100,7 @@ const CHECK = (code) => {
     else if (g.attributes.lA) { /* the lattice: every strut, every 4 m, drawn in by 0, half and all of its build tightening */
       for (let i = 0; i < n; i++) { const a = A(g, 'lA', i), b = A(g, 'lB', i), an = A(g, 'lN', i), bn = A(g, 'lM', i), len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]), nn = Math.max(1, Math.ceil(len / 4));
         for (const tg of [0, 0.13, 0.26]) { const pa = [0, 1, 2].map((k) => a[k] + (an[k] - a[k]) * tg), pb = [0, 1, 2].map((k) => b[k] + (bn[k] - b[k]) * tg); for (let q = 0; q <= nn; q++) { const f = q / nn; test('lattice', pa[0] + (pb[0] - pa[0]) * f, pa[1] + (pb[1] - pa[1]) * f, pa[2] + (pb[2] - pa[2]) * f) } } } } }
-  return { code, L: Math.round(T.L), q: sp.q, info: T.bmInfo, rays: SL.length, counts, fails, bad, placed: sp.stats.placed, dropped: sp.stats.dropped, why: sp.why };
+  return { code, L: Math.round(T.L), q: sp.q, colossi: sp.colossi.length, info: T.bmInfo, rays: SL.length, counts, fails, bad, placed: sp.stats.placed, dropped: sp.stats.dropped, why: sp.why };
 };
 
 (async () => {
@@ -97,7 +108,7 @@ const CHECK = (code) => {
   let tot = 0;
   for (const code of CODES) {
     const t0 = Date.now(), r = await p.evaluate(CHECK, code), n = Object.values(r.counts || {}).reduce((a, x) => a + x, 0), nf = Object.values(r.fails || {}).reduce((a, x) => a + x, 0); tot += n;
-    console.log(code, 'L', r.L, 'q', r.q, '|', r.info, '| points', n, 'sight lines', r.rays, '| placed', r.placed, 'left out', r.dropped, JSON.stringify(r.why), Math.round((Date.now() - t0) / 100) / 10 + ' s');
+    console.log(code, 'L', r.L, 'q', r.q, '|', r.info, '| colossi', r.colossi, '| points', n, 'sight lines', r.rays, '| placed', r.placed, 'left out', r.dropped, JSON.stringify(r.why), Math.round((Date.now() - t0) / 100) / 10 + ' s');
     ok(!r.err && nf === 0, code + ': every point of every piece, through its motion, clear of the road and of every sight line' + (nf ? ' (fails: ' + JSON.stringify(r.fails) + ' e.g. ' + JSON.stringify(r.bad) + ')' : ''));
   }
   ok(tot > 1e6, 'checked ' + tot + ' points in all');

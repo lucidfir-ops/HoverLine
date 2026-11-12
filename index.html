@@ -3008,7 +3008,7 @@ function scenerySpirit(ctx){
   const straight=(i,h=50)=>{const n=Math.round(h/ds),t0=Tg[ix(i)];for(let k=-n;k<=n;k+=2){const j=ix(i+k);if(kind[j]||gap[j]||spl[j]||U[j].y<0.97||Tg[j].dot(t0)<0.999)return false}return true};
   const STR=[];for(let i=0;i<N;i+=Math.max(1,Math.round(12/ds)))if(straight(i))STR.push(i);
   /* put(name, tries, gen): gen(k) gives a candidate {b: balls [[x,y,z,r]...], add()}; the first clear one is added */
-  const put=(name,tries,gen)=>{st.tried++;for(let k=0;k<tries;k++){const c=gen(k);if(!c)continue;if(clr.okPts(c.b)){c.add();st.placed++;if(k)st.moved++;return true}}st.dropped++;why[name]=(why[name]||0)+1;return false};
+  const put=(name,tries,gen)=>{st.tried++;for(let k=0;k<tries;k++){const c=gen(k);if(!c)continue;if((!c.cyl||clr.cyl(...c.cyl))&&clr.okPts(c.b)){c.add();st.placed++;if(k)st.moved++;return true}}st.dropped++;why[name]=(why[name]||0)+1;return false};
   /* the batches */
   const W2={box:spWires('box'),glyph:spWires('box'),oct:spWires('oct'),tet:spWires('tet'),ico:spWires('ico'),dod:spWires('dod')},solids=['oct','tet','ico','dod'];
   const REG=600,regs=[],LB=i=>{const k=Math.floor(ix(i)*ds/REG);return regs[k]||(regs[k]=spLines())},farL=spLines(),knotL=spLines(),live=spLines(),sh=spShoals();
@@ -3162,9 +3162,13 @@ function scenerySpirit(ctx){
 
   /* ---- colossi, 1.3 to 1.9 km tall, sunk to the waist in the void's floor; their heads follow the leader (slots 4..6) ---- */
   const floorY=minY-300,colossi=[];for(let n=0,nn=q===2?3:q===1?2:1;n<nn;n++){const H=R2(1300,1900);
+    /* Prototype 63: a colossus gestures (004n colG), so what must stay clear is the cylinder its gestures sweep: lean 0.14 rad and raised
+       arms keep it within 0.36 H of its axis, over the whole height; so no road, nor a sight line's 300 m, is within that (clr.cyl) */
     put('colossi',10,k=>{const a=r()*TAU,d=R2(1700,2300),c=[cxT+Math.cos(a)*d,floorY,czT+Math.sin(a)*d];if(colossi.some(o=>Math.hypot(o.c[0]-c[0],o.c[2]-c[2])<900))return null;
-      return{b:[[c[0],c[1]+H*0.35,c[2],H*0.45]],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length;
-        addSegs(live,{c,q:qq,pal:[5,1,3][n%3],br:0.01,ext:H},cl.body,1,0,1);live.obj({c,q:qq,m:[8,0,0,0],piv:cl.neck,slot,pal:[5,1,3][n%3],ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
+      return{b:[],cyl:[c[0],c[2],0.36*H+380],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length,pal=[5,1,3][n%3],sd=spHash(Math.round(c[0]*0.37+c[2]*0.61));
+        const part=(segs,z,piv)=>{live.obj({c,q:qq,m:[9,sd,z,0],piv,slot,pal,br:0.01,ext:H});for(const[a2,b2,pc]of segs)live.seg(a2,b2,pc,1)};
+        part(cl.torso,0,[0,0,0]);part(cl.armL.segs,1,cl.armL.sh);part(cl.armR.segs,2,cl.armR.sh);
+        live.obj({c,q:qq,m:[8,1,sd,0],piv:cl.neck,slot,pal,ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
         colossi.push({c,H,yaw,slot,neck:cl.neck})}}})}
   /* ---- wireframe heads pacing the pack (slots 0..3) and rare neon ghost riders (slots 7..12); posed by 004r ---- */
   const HEADS=[{sd:-1,d:34,up:10,s:8,du:20},{sd:1,d:48,up:16,s:12,du:55},{sd:-1,d:130,up:50,s:34,du:170},{sd:1,d:170,up:80,s:46,du:280}].slice(0,q===2?4:q===1?2:0);
@@ -3215,9 +3219,10 @@ function scenerySpirit(ctx){
    Motion modes (SPM): 0 still; 1 turns at a steady rate (and bobs); 2 turns a notch on every beat; 3 turns a notch every
    bar (and slowly), swelling on the kick; 4 a stack's tier slides out, turns a quarter and slides back when its beat
    comes; 5 flies between two places along an arc, as a group's progress (uG) says; 7 a face hinges open and closed on the
-   beat (unfolding solids); 8 is posed from the CPU (heads, riders, echoes, a colossus's head: uOP/uOQ slots).
+   beat (unfolding solids); 8 is posed from the CPU (heads, a colossus's head: uOP/uOQ slots); 9 a colossus's torso or arm, which
+   gestures from the bar clock (colG).
    Nothing here touches the race: it reads the clock, the music and where racers are, never the race's random numbers. */
-const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8};
+const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8,colossus:9};
 /* palettes, four stops each (mirrored past 1): 0 rainbow (Prism's), 1 gold + violet, 2 cyan + magenta, 3 ember + white,
    4 jade + turquoise + gold, 5 ice + violet; the colours the mock-ups were approved in */
 const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff9f2e','#ffe08a'],['#18e0ff','#3d8bff','#c13dff','#ff3fc4'],
@@ -3243,6 +3248,16 @@ const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uW
   float gOf(float g){int i=int(g/4.);vec4 q=uG[i];float r=mod(g,4.);return r<0.5?q.x:r<1.5?q.y:r<2.5?q.z:q.w;}
   vec3 pal(float i,float x){x=abs(fract(x*0.5)*2.-1.)*3.;float k=floor(min(x,2.999));int b=int(i)*4+int(k);return mix(uPal[b],uPal[b+1],sst(x-k));}
   float breathK(float amt){return 1.+amt*(0.6*uBreath+0.4*uKick*(1.-uBrk))*(1.-uCalm);}
+  float hh(float n){return fract(sin(n*91.3458)*47453.5453);}
+  /* Prototype 63: a colossus's gesture now, from the bar clock and its own seed sd (0..1): now and then (one cycle in 4 bars of 16,
+     a gesture in three of four cycles, slowly in, held about 8 s, slowly out) it lifts an arm and waves, leans in toward the road,
+     bows its head, raises both arms or turns to watch the leader; through a build and the drop it raises both arms. Calm visuals
+     make it a third as big and stop the waving. Out: lean and bow (radians), the arms' raise (0..1 of a half turn), the wave, the watch. */
+  void colG(float sd,out float lean,out float bow,out float aR,out float aL,out float wv,out float wt){
+    float cyc=uBeat/64.+sd*7.3,id=floor(cyc),t=fract(cyc),g=floor(hh(id+sd*13.)*8.);float e=sst((t-0.15)/0.14)*(1.-sst((t-0.6)/0.14))*(1.-0.65*uCalm);
+    lean=0.;bow=0.;aR=0.;aL=0.;wv=0.;wt=0.;
+    if(g==2.){aR=0.72*e;wv=e*(1.-uCalm);}else if(g==7.){aL=0.72*e;wv=e*(1.-uCalm);}else if(g==3.)lean=0.14*e;else if(g==4.)bow=0.55*e;else if(g==5.){aR=0.9*e;aL=aR;}else if(g==6.)wt=e;
+    float dr=sst(max(uBuild*1.1,uDrop))*(1.-0.65*uCalm)*(0.6+0.4*hh(sd*5.))*0.9;aR=max(aR,dr);aL=max(aL,dr);}
   float spAngle(vec4 m){if(m.x<0.5)return 0.;if(m.x<1.5)return m.y*uT+m.z;if(m.x<2.5)return m.z+m.y*(floor(uBeat)+sst(fract(uBeat)*3.));
     if(m.x<3.5)return m.z+m.y*(floor(uBeat*.25)+sst(fract(uBeat*.25)*4.))+m.w*uT;if(m.x>6.5&&m.x<7.5){float c=fract(uBeat/8.+m.z);return m.w*sst(c*4.)*(1.-sst(c*4.-2.2));}return 0.;}`;
 
@@ -3257,7 +3272,13 @@ const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
   #endif
   vec3 place(vec3 p,out float vis){vis=1.;vec3 q=p-iP.xyz;
     #ifdef SLOTS
-    if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;q=iP.xyz+uOP[s].xyz+rotQ(uOQ[s],q);return iC.xyz+rotQ(iQ,q);}
+    if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;
+      /* a colossus (Prototype 63): its head (mode 8 with iM.y 1) and its torso and arms (mode 9, iM.z the part) take the gesture; the slot gives the head's yaw */
+      if(iM.y>0.5||iM.x>8.5){float yw=2.*atan(uOQ[s].y,uOQ[s].w),ln,bw,aR,aL,wv,wt;colG(iM.x>8.5?iM.y:iM.z,ln,bw,aR,aL,wv,wt);
+        if(iM.x>8.5){if(iM.z>0.5){float a=iM.z<1.5?aL:aR,sd=iM.z<1.5?-1.:1.;q=rotA(q,vec3(0.,0.,1.),sd*(3.14159*a+0.2*wv*sin(uBeat*2.5+iM.y*6.)*step(0.3,a)));}q+=iP.xyz;}
+        else{q=rotA(q,vec3(1.,0.,0.),bw);q=rotA(q,vec3(0.,1.,0.),yw*(1.-0.55*wt))+iP.xyz;}
+        q=rotA(rotA(q,vec3(0.,1.,0.),0.55*yw*wt),vec3(1.,0.,0.),ln);return iC.xyz+rotQ(iQ,q);}
+      q=iP.xyz+uOP[s].xyz+rotQ(uOQ[s],q);return iC.xyz+rotQ(iQ,q);}
     #endif
     q=rotA(q,iX.xyz,spAngle(iM))+iP.xyz;if(iM.x>0.5&&iM.x<1.5)q.y+=sin(uT*0.4+iM.z)*iM.w;
     return iC.xyz+rotQ(iQ,q*breathK(iC.w));}
@@ -3451,11 +3472,15 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
   const far=(x,y,z,r)=>{const rr=r+reachH+O.jumpAbove+90,c0=Math.floor((x-rr)/CELL),c1=Math.floor((x+rr)/CELL),d0=Math.floor((y-rr)/CELL),d1=Math.floor((y+rr)/CELL),e0=Math.floor((z-rr)/CELL),e1=Math.floor((z+rr)/CELL);
     if((c1-c0+1)*(d1-d0+1)*(e1-e0+1)>4000)return false;
     for(let a=c0;a<=c1;a++)for(let b=d0;b<=d1;b++)for(let c=e0;c<=e1;c++)if(G.has(key(a,b,c)))return false;return true};
+  /* Prototype 63: is a tall thing standing on the ground at x,z, within r metres of its axis at every height, clear of the road and of its
+     sight lines? (every road sample at least r + the keep-out's reach from the axis, r including the 300 m of sight lines; for the
+     colossi, whose gestures sweep a cylinder too big for balls) */
+  const cyl=(x,z,r)=>{const lim=r+reachH;for(const s of S){const dx=s.x-x,dz=s.z-z;if(dx*dx+dz*dz<lim*lim)return false}return true};
   const stats={tried:0,placed:0,moved:0,dropped:0,cut:0};
   const quick=(x,y,z)=>{const a=Math.floor(x/QC),b=Math.floor(y/QC),c=Math.floor(z/QC);if(QN.has(qk(a,b,c)))return false;for(let da=-1;da<=1;da++)for(let db=-1;db<=1;db++)for(let dc=-1;dc<=1;dc++)if(QS.has(qk(a+da,b+db,c+dc)))return false;return true};
   const ok=(x,y,z,r)=>(r<=11&&quick(x,y,z))||(r>=30&&far(x,y,z,r))||(!keep(x,y,z,r)&&!sight(x,y,z,r));
   const okPts=(L,r)=>L.every(p=>ok(p[0],p[1],p[2],p[3]!=null?p[3]:r));
-  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,stats,S,SL,O}}
+  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,cyl,stats,S,SL,O}}
 /* Prototype 62: the line drawings of tools/spirit-proto/lib (objects.js, objects2.js, pieces.js), rewritten as plain
    segment lists ([[ax,ay,az],[bx,by,bz],pc] in the piece's own frame, metres) so a placer can drop them into a batch.
    pc is where on the palette each segment sits (most go by height). Nothing here is random unless given r. */
@@ -3501,11 +3526,12 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
   const colossus=H=>{const o=[],sides=10,R0=H*0.09,R1=H*0.16,top=H*0.5,rings=10;const rs=[];
     for(let i=0;i<=rings;i++){const f=i/rings,y=f*top,r=(R0+(R1-R0)*Math.pow(f,1.4))*(1-0.15*Math.sin(f*Math.PI));const R=ring(r,sides,'xz',y,i*0.12);rs.push(R);loop(R,f*0.7,o)}
     for(let s=0;s<sides;s++)for(let i=0;i<rings;i++)o.push([rs[i][s],rs[i+1][s],i/rings*0.7]);
-    for(const sx of[-1,1]){const sh=[sx*R1*1.05,top*0.94,0],el=[sx*R1*1.5,top*0.45,H*0.05],wr=[sx*R1*1.6,-H*0.05,H*0.02];path([sh,el,wr],0.5,o);path([[sh[0],sh[1],sh[2]+R0*0.4],[el[0],el[1],el[2]+R0*0.4],[wr[0],wr[1]+H*0.02,wr[2]+R0*0.4]],0.55,o)}
+    const arms={};for(const sx of[-1,1]){const sh=[sx*R1*1.05,top*0.94,0],el=[sx*R1*1.5,top*0.45,H*0.05],wr=[sx*R1*1.6,-H*0.05,H*0.02],A=[];path([sh,el,wr],0.5,A);path([[sh[0],sh[1],sh[2]+R0*0.4],[el[0],el[1],el[2]+R0*0.4],[wr[0],wr[1]+H*0.02,wr[2]+R0*0.4]],0.55,A);arms[sx]={segs:A,sh};o.push(...A)}
     const hd=[],hR=H*0.075,hy=top+H*0.04;for(let k=0;k<5;k++){const y=hy+k/4*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/4));loop(ring(r,14,'xz',y-hy),0.8+k*0.05,hd)}
     for(let s=0;s<14;s+=2){const a=s*TW/14,pts=[];for(let k=0;k<=8;k++){const y=k/8*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/8));pts.push(V(Math.cos(a)*r,y,Math.sin(a)*r))}path(pts,0.85,hd)}
     loop(ring(hR*1.45,24,'xy').map(p=>V(p[0],p[1]+hR*1.1,-hR*0.3)),1,hd);for(const sx of[-1,1])loop(ring(hR*0.16,8,'xy').map(p=>V(p[0]+sx*hR*0.35,p[1]+hR*1.15,hR*0.85)),1,hd);
-    return{body:o,head:hd,neck:[0,hy,0]}};
+    /* Prototype 63: body is everything but the head; torso and the two arms (hung from their shoulders) apart, for the gestures (004n mode 9) */
+    return{body:o,head:hd,neck:[0,hy,0],torso:o.filter(x=>!arms[-1].segs.includes(x)&&!arms[1].segs.includes(x)),armL:arms[-1],armR:arms[1]}};
   /* a frame's outline (for ghost riders and echoes): a wedge with fins, about 4 m long, nose on +z */
   const rider=()=>{const o=[],P=[V(0,0.3,2.2),V(0.9,0.2,-1.4),V(-0.9,0.2,-1.4),V(0,0.9,-1.2)];for(const[a,b]of[[0,1],[0,2],[1,2],[0,3],[1,3],[2,3]])o.push([P[a],P[b],0.6]);
     for(const sx of[-1,1]){o.push([V(sx*0.9,0.2,-1.4),V(sx*1.5,0.1,-1.8),0.8],[V(sx*1.5,0.1,-1.8),V(sx*0.7,0.3,0),0.8],[V(sx*0.5,0.5,-1.3),V(sx*0.5,0.5,-2.6),0.3])}return o};

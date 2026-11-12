@@ -66,8 +66,12 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
   const far=(x,y,z,r)=>{const rr=r+reachH+O.jumpAbove+90,c0=Math.floor((x-rr)/CELL),c1=Math.floor((x+rr)/CELL),d0=Math.floor((y-rr)/CELL),d1=Math.floor((y+rr)/CELL),e0=Math.floor((z-rr)/CELL),e1=Math.floor((z+rr)/CELL);
     if((c1-c0+1)*(d1-d0+1)*(e1-e0+1)>4000)return false;
     for(let a=c0;a<=c1;a++)for(let b=d0;b<=d1;b++)for(let c=e0;c<=e1;c++)if(G.has(key(a,b,c)))return false;return true};
+  /* Prototype 63: is a tall thing standing on the ground at x,z, within r metres of its axis at every height, clear of the road and of its
+     sight lines? (every road sample at least r + the keep-out's reach from the axis, r including the 300 m of sight lines; for the
+     colossi, whose gestures sweep a cylinder too big for balls) */
+  const cyl=(x,z,r)=>{const lim=r+reachH;for(const s of S){const dx=s.x-x,dz=s.z-z;if(dx*dx+dz*dz<lim*lim)return false}return true};
   const stats={tried:0,placed:0,moved:0,dropped:0,cut:0};
   const quick=(x,y,z)=>{const a=Math.floor(x/QC),b=Math.floor(y/QC),c=Math.floor(z/QC);if(QN.has(qk(a,b,c)))return false;for(let da=-1;da<=1;da++)for(let db=-1;db<=1;db++)for(let dc=-1;dc<=1;dc++)if(QS.has(qk(a+da,b+db,c+dc)))return false;return true};
   const ok=(x,y,z,r)=>(r<=11&&quick(x,y,z))||(r>=30&&far(x,y,z,r))||(!keep(x,y,z,r)&&!sight(x,y,z,r));
   const okPts=(L,r)=>L.every(p=>ok(p[0],p[1],p[2],p[3]!=null?p[3]:r));
-  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,stats,S,SL,O}}
+  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,cyl,stats,S,SL,O}}

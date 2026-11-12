@@ -44,11 +44,12 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
   const colossus=H=>{const o=[],sides=10,R0=H*0.09,R1=H*0.16,top=H*0.5,rings=10;const rs=[];
     for(let i=0;i<=rings;i++){const f=i/rings,y=f*top,r=(R0+(R1-R0)*Math.pow(f,1.4))*(1-0.15*Math.sin(f*Math.PI));const R=ring(r,sides,'xz',y,i*0.12);rs.push(R);loop(R,f*0.7,o)}
     for(let s=0;s<sides;s++)for(let i=0;i<rings;i++)o.push([rs[i][s],rs[i+1][s],i/rings*0.7]);
-    for(const sx of[-1,1]){const sh=[sx*R1*1.05,top*0.94,0],el=[sx*R1*1.5,top*0.45,H*0.05],wr=[sx*R1*1.6,-H*0.05,H*0.02];path([sh,el,wr],0.5,o);path([[sh[0],sh[1],sh[2]+R0*0.4],[el[0],el[1],el[2]+R0*0.4],[wr[0],wr[1]+H*0.02,wr[2]+R0*0.4]],0.55,o)}
+    const arms={};for(const sx of[-1,1]){const sh=[sx*R1*1.05,top*0.94,0],el=[sx*R1*1.5,top*0.45,H*0.05],wr=[sx*R1*1.6,-H*0.05,H*0.02],A=[];path([sh,el,wr],0.5,A);path([[sh[0],sh[1],sh[2]+R0*0.4],[el[0],el[1],el[2]+R0*0.4],[wr[0],wr[1]+H*0.02,wr[2]+R0*0.4]],0.55,A);arms[sx]={segs:A,sh};o.push(...A)}
     const hd=[],hR=H*0.075,hy=top+H*0.04;for(let k=0;k<5;k++){const y=hy+k/4*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/4));loop(ring(r,14,'xz',y-hy),0.8+k*0.05,hd)}
     for(let s=0;s<14;s+=2){const a=s*TW/14,pts=[];for(let k=0;k<=8;k++){const y=k/8*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/8));pts.push(V(Math.cos(a)*r,y,Math.sin(a)*r))}path(pts,0.85,hd)}
     loop(ring(hR*1.45,24,'xy').map(p=>V(p[0],p[1]+hR*1.1,-hR*0.3)),1,hd);for(const sx of[-1,1])loop(ring(hR*0.16,8,'xy').map(p=>V(p[0]+sx*hR*0.35,p[1]+hR*1.15,hR*0.85)),1,hd);
-    return{body:o,head:hd,neck:[0,hy,0]}};
+    /* Prototype 63: body is everything but the head; torso and the two arms (hung from their shoulders) apart, for the gestures (004n mode 9) */
+    return{body:o,head:hd,neck:[0,hy,0],torso:o.filter(x=>!arms[-1].segs.includes(x)&&!arms[1].segs.includes(x)),armL:arms[-1],armR:arms[1]}};
   /* a frame's outline (for ghost riders and echoes): a wedge with fins, about 4 m long, nose on +z */
   const rider=()=>{const o=[],P=[V(0,0.3,2.2),V(0.9,0.2,-1.4),V(-0.9,0.2,-1.4),V(0,0.9,-1.2)];for(const[a,b]of[[0,1],[0,2],[1,2],[0,3],[1,3],[2,3]])o.push([P[a],P[b],0.6]);
     for(const sx of[-1,1]){o.push([V(sx*0.9,0.2,-1.4),V(sx*1.5,0.1,-1.8),0.8],[V(sx*1.5,0.1,-1.8),V(sx*0.7,0.3,0),0.8],[V(sx*0.5,0.5,-1.3),V(sx*0.5,0.5,-2.6),0.3])}return o};
