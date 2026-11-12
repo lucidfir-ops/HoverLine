@@ -52,6 +52,7 @@ js/music/synths/032-instruments.js
 js/music/032-template-table.js
 js/music/samples/032-songs-list.js
 js/music/samples/033-sample-library.js
+js/music/033-heard-time.js
 js/music/engine/034-songs-mode.js
 js/music/engine/035-music-object.js
 js/music/engine/036-sound-lab-voices.js

@@ -11,23 +11,28 @@
    No effect flashes more than three times a second: kicks closer than 0.34 s to the last one shown are not shown. */
 let SP_CALM=(()=>{const v=store.get('hoverline.calm');return v==null?null:v==='1'})();
 const spCalm=()=>SP_CALM==null?!g2('blur'):SP_CALM;
-const SPMUS={an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
+const SPMUS={bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
   /* the analyser on the music volume (made once, on the music's own context) */
   analyser(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an&&this.src===g)return this.an;const a=c.createAnalyser();a.fftSize=512;a.smoothingTimeConstant=0.55;g.connect(a);
       const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an=a;this.src=g;this.fd=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
   /* the kick ages, bars and sections for this frame; now: the music's clock (s) */
-  read(dt,on){const c=music.ctx,now=c?c.currentTime:performance.now()/1000,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
-    /* the spectrum */
-    const a=playing?this.analyser():null;let got=false;
-    if(a){a.getByteFrequencyData(this.fd);const F=this.fd,n=F.length,hz=c.sampleRate/2/n,b=[[20,150],[150,600],[600,3000],[3000,12000]];let tot=0;
+  read(dt,on){const c=music.ctx,raw=c?c.currentTime:performance.now()/1000,now=c?musHeard():raw,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
+    /* the spectrum. Prototype 63: an analyser reads the sound where it is made, before the speaker's delay; each reading is kept
+       with the context time it was taken and used when it is heard (musHeard), like the kicks and sections, so the picture and
+       the sound line up in every mode */
+    const a=playing?this.analyser():null;
+    if(a){a.getByteFrequencyData(this.fd);const F=this.fd,n=F.length,hz=c.sampleRate/2/n,b=[[20,150],[150,600],[600,3000],[3000,12000]],bn=[];let tot=0;
       for(let k=0;k<4;k++){const i0=Math.max(0,Math.floor(b[k][0]/hz)),i1=Math.min(n-1,Math.ceil(b[k][1]/hz));let s=0;for(let i=i0;i<=i1;i++)s+=F[i];const v=s/((i1-i0+1)*255);tot+=v;
-        this.peak[k]=Math.max(v,this.peak[k]*Math.exp(-dt/6),0.08);this.band[k]=Math.min(1,v/this.peak[k])}
-      this.lvl=tot/4;got=this.lvl>0.01}
+        this.peak[k]=Math.max(v,this.peak[k]*Math.exp(-dt/6),0.08);bn.push(Math.min(1,v/this.peak[k]))}
+      this.bq.push({t:raw,b:bn,lvl:tot/4,pk:this.peak.slice()});if(this.bq.length>300)this.bq.shift()}
+    else if(!playing)this.bq.length=0;
+    let got=false;while(this.bq.length>1&&this.bq[1].t<=now)this.bq.shift();
+    if(this.bq.length&&(this.bq[0].t<=now||this.bq.length===1)){const e=this.bq[0];for(let k=0;k<4;k++){this.band[k]=e.b[k];this.pk[k]=e.pk[k]}this.lvl=e.lvl;got=this.lvl>0.01}
     if(!got){const t=performance.now()/1000;for(let k=0;k<4;k++)this.band[k]=0.35+0.25*Math.sin(t*0.21+k*1.3)}
     this.live=got;
     /* the kicks: the engine's queue, or onsets in the bass for Songs */
     const K=[];const vk=(typeof VFX!=='undefined'&&VFX.kt)||[];for(const k of vk)if(k>this.lastNow-0.05&&k<=now)K.push(k);
-    if(music.soOn&&got){const e=this.band[0]*this.peak[0],s=this.sk;s.avg+=(e-s.avg)*Math.min(1,dt*3);if(e>s.avg*1.3+0.03&&e>s.e&&now-s.t>0.28){K.push(now);s.t=now}s.e=e}
+    if(music.soOn&&got){const e=this.band[0]*this.pk[0],s=this.sk;s.avg+=(e-s.avg)*Math.min(1,dt*3);if(e>s.avg*1.3+0.03&&e>s.e&&now-s.t>0.28){K.push(now);s.t=now}s.e=e}
     this.lastNow=now;
     for(const k of K.sort((x,y)=>x-y))if(on&&k-this.last>=0.34){this.last=k;this.acc.unshift(k);if(this.acc.length>4)this.acc.length=4;
       /* the beat follows the kicks */
@@ -41,7 +46,7 @@ const SPMUS={an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dro
       else{const bar=((p-P0.loopS)%(P0.loopE-P0.loopS))/P0.bd;sec=bar<16?'drop':bar<32?'b':bar<40?'brk':'rise';bi=sec==='rise'?bar-40:bar%16;bl=sec==='rise'?8:16;if(sec==='drop'&&this.sec!=='drop')this.dropT=now-bar*P0.bd}}
     else if(playing&&music.soOn&&got){this.slow+=(this.lvl-this.slow)*Math.min(1,dt/25);this.fast+=(this.lvl-this.fast)*Math.min(1,dt/1.2);
       sec=this.fast<this.slow*0.62?'brk':'drop';if(sec==='drop'&&this.sec==='brk'&&this.fast>this.slow*0.9)this.dropT=now;else if(sec==='drop'&&this.sec==='brk')sec='brk'}
-    else if(playing&&music.sec){sec=music.sec[0];bi=music.sec[1]+((beat%4)+4)%4/4;bl=music.sec[2]||1;if(sec==='drop'&&this.sec!=='drop'&&music.sec[1]===0)this.dropT=now}
+    else if(playing){const e=music.secAt(now);if(e&&e.n){sec=e.n;bi=e.b+Math.max(0,Math.min(1,(now-e.t)/(spb*4)));bl=e.l||1;if(sec==='drop'&&this.sec!=='drop'&&e.b===0)this.dropT=e.t}}
     this.sec=sec;
     const brkT=on&&sec==='brk'?1:0;this.brk+=(brkT-this.brk)*Math.min(1,dt*2.5);
     this.build=on&&sec==='rise'?Math.min(1,bi/Math.max(1,bl)):0;

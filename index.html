@@ -962,6 +962,8 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="sub">The genres, how the race music behaves, and your library of kept tunes · every tune has a code you can share</div>
     <div class="row" role="group" aria-label="Music mode"><span class="sub">Mode</span><button class="chip" data-mm="gen" aria-pressed="false">Generative</button><button class="chip" data-mm="pre" aria-pressed="false">Pregen</button><button class="chip" data-mm="songs" aria-pressed="false">Songs</button></div>
     <div class="row" role="group" aria-label="Music"><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false" title="What the menus play: the race music (the radio of tunes) or the quiet Ambient. Tap to switch.">Menu music: Race</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
+    <div class="slrow"><label for="msync">Lights sync</label><input type="range" id="msync" min="-200" max="300" step="10"><span id="msyncV"></span></div>
+    <p class="small">If the lights on the beat flash before you hear it (a Bluetooth speaker or some phones), slide this later; if they come after, slide it earlier. The game already allows for the delay your device reports, so 0 is usually right.</p>
     <div class="sub">Genres</div><div class="row" role="group" aria-label="Genres" id="genreRow"></div>
     <p class="small">Each tune is a template from one genre, or a fusion of two (one genre's rhythm, another's melody or colour). A tune plays only when its genres are on. In a room everyone hears the same tunes, so there all genres play.</p>
     <div class="row"><button class="heart" id="likeTune2" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune2" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
@@ -3594,23 +3596,28 @@ function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SP
    No effect flashes more than three times a second: kicks closer than 0.34 s to the last one shown are not shown. */
 let SP_CALM=(()=>{const v=store.get('hoverline.calm');return v==null?null:v==='1'})();
 const spCalm=()=>SP_CALM==null?!g2('blur'):SP_CALM;
-const SPMUS={an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
+const SPMUS={bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
   /* the analyser on the music volume (made once, on the music's own context) */
   analyser(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an&&this.src===g)return this.an;const a=c.createAnalyser();a.fftSize=512;a.smoothingTimeConstant=0.55;g.connect(a);
       const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an=a;this.src=g;this.fd=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
   /* the kick ages, bars and sections for this frame; now: the music's clock (s) */
-  read(dt,on){const c=music.ctx,now=c?c.currentTime:performance.now()/1000,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
-    /* the spectrum */
-    const a=playing?this.analyser():null;let got=false;
-    if(a){a.getByteFrequencyData(this.fd);const F=this.fd,n=F.length,hz=c.sampleRate/2/n,b=[[20,150],[150,600],[600,3000],[3000,12000]];let tot=0;
+  read(dt,on){const c=music.ctx,raw=c?c.currentTime:performance.now()/1000,now=c?musHeard():raw,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
+    /* the spectrum. Prototype 63: an analyser reads the sound where it is made, before the speaker's delay; each reading is kept
+       with the context time it was taken and used when it is heard (musHeard), like the kicks and sections, so the picture and
+       the sound line up in every mode */
+    const a=playing?this.analyser():null;
+    if(a){a.getByteFrequencyData(this.fd);const F=this.fd,n=F.length,hz=c.sampleRate/2/n,b=[[20,150],[150,600],[600,3000],[3000,12000]],bn=[];let tot=0;
       for(let k=0;k<4;k++){const i0=Math.max(0,Math.floor(b[k][0]/hz)),i1=Math.min(n-1,Math.ceil(b[k][1]/hz));let s=0;for(let i=i0;i<=i1;i++)s+=F[i];const v=s/((i1-i0+1)*255);tot+=v;
-        this.peak[k]=Math.max(v,this.peak[k]*Math.exp(-dt/6),0.08);this.band[k]=Math.min(1,v/this.peak[k])}
-      this.lvl=tot/4;got=this.lvl>0.01}
+        this.peak[k]=Math.max(v,this.peak[k]*Math.exp(-dt/6),0.08);bn.push(Math.min(1,v/this.peak[k]))}
+      this.bq.push({t:raw,b:bn,lvl:tot/4,pk:this.peak.slice()});if(this.bq.length>300)this.bq.shift()}
+    else if(!playing)this.bq.length=0;
+    let got=false;while(this.bq.length>1&&this.bq[1].t<=now)this.bq.shift();
+    if(this.bq.length&&(this.bq[0].t<=now||this.bq.length===1)){const e=this.bq[0];for(let k=0;k<4;k++){this.band[k]=e.b[k];this.pk[k]=e.pk[k]}this.lvl=e.lvl;got=this.lvl>0.01}
     if(!got){const t=performance.now()/1000;for(let k=0;k<4;k++)this.band[k]=0.35+0.25*Math.sin(t*0.21+k*1.3)}
     this.live=got;
     /* the kicks: the engine's queue, or onsets in the bass for Songs */
     const K=[];const vk=(typeof VFX!=='undefined'&&VFX.kt)||[];for(const k of vk)if(k>this.lastNow-0.05&&k<=now)K.push(k);
-    if(music.soOn&&got){const e=this.band[0]*this.peak[0],s=this.sk;s.avg+=(e-s.avg)*Math.min(1,dt*3);if(e>s.avg*1.3+0.03&&e>s.e&&now-s.t>0.28){K.push(now);s.t=now}s.e=e}
+    if(music.soOn&&got){const e=this.band[0]*this.pk[0],s=this.sk;s.avg+=(e-s.avg)*Math.min(1,dt*3);if(e>s.avg*1.3+0.03&&e>s.e&&now-s.t>0.28){K.push(now);s.t=now}s.e=e}
     this.lastNow=now;
     for(const k of K.sort((x,y)=>x-y))if(on&&k-this.last>=0.34){this.last=k;this.acc.unshift(k);if(this.acc.length>4)this.acc.length=4;
       /* the beat follows the kicks */
@@ -3624,7 +3631,7 @@ const SPMUS={an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dro
       else{const bar=((p-P0.loopS)%(P0.loopE-P0.loopS))/P0.bd;sec=bar<16?'drop':bar<32?'b':bar<40?'brk':'rise';bi=sec==='rise'?bar-40:bar%16;bl=sec==='rise'?8:16;if(sec==='drop'&&this.sec!=='drop')this.dropT=now-bar*P0.bd}}
     else if(playing&&music.soOn&&got){this.slow+=(this.lvl-this.slow)*Math.min(1,dt/25);this.fast+=(this.lvl-this.fast)*Math.min(1,dt/1.2);
       sec=this.fast<this.slow*0.62?'brk':'drop';if(sec==='drop'&&this.sec==='brk'&&this.fast>this.slow*0.9)this.dropT=now;else if(sec==='drop'&&this.sec==='brk')sec='brk'}
-    else if(playing&&music.sec){sec=music.sec[0];bi=music.sec[1]+((beat%4)+4)%4/4;bl=music.sec[2]||1;if(sec==='drop'&&this.sec!=='drop'&&music.sec[1]===0)this.dropT=now}
+    else if(playing){const e=music.secAt(now);if(e&&e.n){sec=e.n;bi=e.b+Math.max(0,Math.min(1,(now-e.t)/(spb*4)));bl=e.l||1;if(sec==='drop'&&this.sec!=='drop'&&e.b===0)this.dropT=e.t}}
     this.sec=sec;
     const brkT=on&&sec==='brk'?1:0;this.brk+=(brkT-this.brk)*Math.min(1,dt*2.5);
     this.build=on&&sec==='rise'?Math.min(1,bi/Math.max(1,bl)):0;
@@ -5969,6 +5976,16 @@ const SMP=(()=>{
   return SMP})();
 /* the sample library's manifest loads beside the songs/ probe: a copy without samples/ just falls back */
 try{SMP.init()}catch(e){}
+/* Prototype 63 (Eric, from his phone: "I see a light bloom briefly and then hear the associated noise"). The engine
+   schedules a note at an audio-clock time t, up to 0.3 s before it plays; the sound leaves the speaker only when the
+   context's clock has reached t plus the output latency (a phone's audio path, and much more on Bluetooth). A picture that
+   fires when currentTime reaches t is that much early. musHeard() is the context clock minus the output latency
+   (outputLatency where the browser reports it, baseLatency otherwise) minus the player's own Music sync offset
+   (Music page, hoverline.msync, in ms: later lights are a positive number, default 0), so "t <= musHeard()" is "it is
+   audible now". An analyser reads the sound before that delay, so what it hears is held back by the same time. */
+let MUS_SYNC=(()=>{const v=+store.get('hoverline.msync');return isFinite(v)?Math.max(-200,Math.min(300,v)):0})();
+function musLat(){const c=music.ctx;return c?(c.outputLatency||c.baseLatency||0):0}
+function musHeard(){const c=music.ctx;return c?c.currentTime-musLat()-MUS_SYNC/1000:performance.now()/1000}
 /* Songs (Prototype 38): they come as files beside the page in the itch.io zip and the Wi-Fi host pack (songs/), so a
    copy without them (the offline file, the Claude page) plays the generative music instead. */
 (function(){try{if(location.protocol==='file:'){SONGS.ok=false;return}fetch('songs/songs.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{SONGS.ok=!!(j&&j.length);try{songsUI()}catch(e){}if(SONGS.ok)setTimeout(()=>{try{if(music.modeEff()==='songs'&&music.ctx&&music.style!=='off'&&!music.soOn)music.soStart()}catch(e){}},0)}).catch(()=>{SONGS.ok=false;try{songsUI()}catch(e){}})}catch(e){SONGS.ok=false}})();
@@ -6255,7 +6272,11 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   mlog(e,o){try{if(this===music&&LOG.cur)logEv(e,o)}catch(x){}},
   played(){return this.ctx?Math.round((this.ctx.currentTime-(this.tuneAt||0))*10)/10:null},
   /* ---- once per bar: phase changes, arrangement, layer faders ---- */
-  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
+  /* Prototype 63: every bar's start time with the section it began (the section changes at scheduling time, up to 0.3 s before
+     it is heard: pictures read this log at the heard time instead, music.secAt) */
+  onBar(t,sd){try{return this.onBar0(t,sd)}finally{const s=this.sec,L=this.secLog||(this.secLog=[]);L.push({t,n:s?s[0]:'',b:s?s[1]:0,l:s?s[2]:0});if(L.length>48)L.shift()}},
+  secAt(h){const L=this.secLog;if(!L)return null;let e=null;for(const x of L)if(x.t<=h)e=x;return e},
+  onBar0(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
     if(this.want){this.phase=this.want;this.want=null;this.pb=0;
       if(this.phase==='pre'||this.phase==='drop'){const N=this.phase==='pre'?this.cinN:0,fin=this.finalPending;this.finalPending=false;
         this.phase='groove';fresh=true;this.swT0=null;this.hb=32-N;this.gb=0;this.mi=0;this.buildT0=-1;this.revealAt=-1;this.padUntil=0;this.queue=[];
@@ -9300,6 +9321,8 @@ $('sndOpen').onclick=()=>setPane('setSnd');$('sndDone').onclick=()=>setPane('set
 $('logOpen').onclick=()=>setPane('setLog');$('logDone').onclick=()=>setPane('setMain',$('logOpen'));
 for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.addEventListener('input',()=>{audio[k]=+el.value;store.set('hoverline.'+k,el.value);$(id+'V').textContent=el.value+'%';audio.applyVol()});
   el.addEventListener('change',()=>{audio.init();audio.applyVol();if(k==='volS')audio.blip(660,0.12,0.12,'triangle')})}
+/* Prototype 63: the lights' sync with the sound (musHeard, music/033) */
+{const el=$('msync'),sh=()=>{el.value=String(MUS_SYNC);$('msyncV').textContent=(MUS_SYNC>0?'+':'')+MUS_SYNC+' ms'};sh();el.addEventListener('input',()=>{MUS_SYNC=+el.value;store.set('hoverline.msync',String(MUS_SYNC));sh()});el.addEventListener('change',()=>audio.blip(660,0.06,0.05))}
 $('sndChip').onclick=()=>{audio.init();audio.setOn(!audio.on);setSync()};
 function closeCtl(){tilt.msg='';rebind.on=false;$('ctl').hidden=true;const f=ctlFrom;ctlFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}
 /* ---------- nose guide ----------
@@ -11990,7 +12013,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
     /* atmosphere: a coloured haze */
     {const hz=g2('haze'),f=scene.fog,lk=(T&&T.look)||BIOMES.U;if(hz!==this.hz){this.hz=hz;if(hz){f.color.setHex(lk.haze);f.near=40;f.far=lk.k==='N'?1400:700;scene.background.setHex(lk.haze)}else{f.color.setHex(lk.bg);f.near=lk.fog[0];f.far=lk.fog[1];scene.background.setHex(lk.bg)}}}
     /* the beat on the track edges */
-    {const ct=music.ctx?music.ctx.currentTime:0;while(this.kick.length&&this.kick[0]<=ct){(this.kt||(this.kt=[])).unshift(this.kick.shift());this.pulse=1}if(this.kt&&this.kt.length>8)this.kt.length=8;if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
+    {const ct=musHeard();while(this.kick.length&&this.kick[0]<=ct){(this.kt||(this.kt=[])).unshift(this.kick.shift());this.pulse=1}if(this.kt&&this.kt.length>8)this.kt.length=8;if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
       const m=T&&T.mats;if(m){const p=g2('pulse')?this.pulse:0;if(p>0.005||this.lp>0.005){m.edgeM.color.setScalar(1+0.9*p);m.rail.color.setRGB(1+0.4*p,0.69*(1+0.6*p),0.25*p);m.glass.opacity=0.10+0.14*p}this.lp=p}}
     if(T&&T.env){T.env.update(S.t,g2('anim'));if(T.env.cave)T.env.cave(camera);if(T.env.sky)T.env.sky.position.copy(camera.position);this.moteCol=T.look.mote}
     if(++this.tick%30===0)this.applyEnv()}};
