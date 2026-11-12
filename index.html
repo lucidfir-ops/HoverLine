@@ -1006,7 +1006,7 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="logo">PAUSED</div>
     <div class="sub" id="pauseWhy" hidden></div>
     <div class="row ptune" id="pauseTuneRow" hidden><span class="small" id="pauseTune"></span><button class="heart" id="likeTune3" aria-pressed="false" aria-label="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune3" aria-pressed="false" aria-label="Less like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button><button class="chip" id="tiltRe" hidden>Recentre tilt</button></div>
-    <div class="row"><button class="btn go" id="resumeBtn" data-back>Resume</button><button class="btn" id="restartBtn">Restart</button><button class="btn" id="pauseOpt">Options</button><button class="btn" id="pauseRe" hidden>Reconnect</button><button class="btn" id="quitBtn">Menu</button></div>
+    <div class="row"><button class="btn go" id="resumeBtn" data-back>Resume</button><button class="btn" id="restartBtn">Restart</button><button class="btn" id="pauseOpt">Options</button><button class="btn" id="pauseRot" hidden aria-label="Rotate screen" title="Rotate screen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="6" width="7" height="12" rx="1.5"/><path d="M3.5 10A8.8 8.8 0 0 1 15 3.3"/><path d="M12.6 1.8L15 3.3 13.4 5.8"/><path d="M20.5 14A8.8 8.8 0 0 1 9 20.7"/><path d="M11.4 22.2L9 20.7 10.6 18.2"/></svg></button><button class="btn" id="pauseRe" hidden>Reconnect</button><button class="btn" id="quitBtn">Menu</button></div>
   </div>
 </div>
 
@@ -9134,7 +9134,7 @@ function orSync(){const so=screen.orientation;if(!so||typeof so.lock!=='function
   else if(!want&&OR.on){OR.on=false;try{so.unlock()}catch(e){}}}
 /* Prototype 48: apply a new choice now: lock again if full screen, else go full screen (a tap), which locks */
 function orApply(){if(!coarse||!orCan())return;if(document.fullscreenElement){OR.on=false;orSync()}else goFull()}
-function orSetSync(){const r=$('orRow');if(r)r.hidden=!orCan();const rb=$('rotBtn');if(rb){rb.hidden=!(orCan()&&coarse);rb.setAttribute('aria-label',orPick==='portrait'?'Rotate to landscape':'Rotate to portrait');rb.title=rb.getAttribute('aria-label')}document.querySelectorAll('[data-orient]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.orient===orPick)))}
+function orSetSync(){const r=$('orRow');if(r)r.hidden=!orCan();for(const id of['rotBtn','pauseRot']){const rb=$(id);if(rb){rb.hidden=!(orCan()&&coarse);rb.setAttribute('aria-label',orPick==='portrait'?'Rotate to landscape':'Rotate to portrait');rb.title=rb.getAttribute('aria-label')}}document.querySelectorAll('[data-orient]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.orient===orPick)))}
 function orShow(next){OR.next=next||null;orSetSync();$('orSet').hidden=false;navTo($('orSet'))}
 /* the choice: saved; before the quick race it also goes full screen, so Tap to race already stands the chosen way */
 function orChoose(o){orPick=o;store.set('hoverline.orient',o);orSetSync();const box=$('orSet');if(box.hidden)return;box.hidden=true;try{audio.sfx('ui_select')}catch(e){}
@@ -9142,7 +9142,21 @@ function orChoose(o){orPick=o;store.set('hoverline.orient',o);orSetSync();const 
   if(next&&coarse&&canFull){if(document.fullscreenElement)orSync();else goFull()}}
 document.querySelectorAll('[data-or]').forEach(b=>b.onclick=()=>orChoose(b.dataset.or));
 document.querySelectorAll('[data-orient]').forEach(b=>b.onclick=()=>{orPick=b.dataset.orient;store.set('hoverline.orient',orPick);orSetSync();orApply()});
-$('rotBtn').onclick=()=>{orPick=(orPick?orPick[0]:orNow())==='p'?'landscape':'portrait';store.set('hoverline.orient',orPick);orSetSync();try{audio.sfx('ui_select')}catch(e){}orApply()};
+const orRotate=()=>{orPick=(orPick?orPick[0]:orNow())==='p'?'landscape':'portrait';store.set('hoverline.orient',orPick);orSetSync();try{audio.sfx('ui_select')}catch(e){}orApply()};
+$('rotBtn').onclick=orRotate;
+/* Prototype 63: the same button in the pause menu, so a race can be turned without leaving it. Eric: leaving the game to
+   look at something else and coming back left it locked landscape, with no way to go on in portrait. Pause is where a
+   race waits, so: the button is there (shown with the other, on a phone or tablet that can lock), it takes the
+   orientation lock again from the saved choice (full screen first, which needs the tap that pressed it), and a race
+   that was hidden (ui/061 already pauses it) takes the lock again when the page is back and, if the browser let go of
+   full screen meanwhile, on the Resume tap, the first gesture it can use. orRotate saves the choice like the title's button. */
+$('pauseRot').onclick=orRotate;
+new MutationObserver(()=>{if(!$('pause').hidden)orSetSync()}).observe($('pause'),{attributes:true,attributeFilter:['hidden']});
+const orAway={on:false};
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(S.state==='race'||S.state==='countdown'||S.state==='paused')orAway.on=true;return}
+  if(orAway.on&&(S.state==='paused'||mp.on&&mp.auto)){/* back from elsewhere: lock again if the page is still full screen (no gesture needed); if not, the Resume tap does it */orApply2()}else orAway.on=false});
+function orApply2(){if(!coarse||!orCan()||!orPick)return;if(document.fullscreenElement){OR.on=false;orSync()}}
+$('resumeBtn').addEventListener('click',()=>{if(!orAway.on)return;orAway.on=false;if(coarse&&orCan()&&orPick)orApply()});
 orSetSync();
 if(orCan()&&framed)try{screen.orientation.unlock()}catch(e){}
 /* Prototype 48: with a way chosen, the first touch on this visit goes full screen, which locks it (once a visit, so leaving

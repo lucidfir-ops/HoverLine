@@ -23,7 +23,7 @@ function orSync(){const so=screen.orientation;if(!so||typeof so.lock!=='function
   else if(!want&&OR.on){OR.on=false;try{so.unlock()}catch(e){}}}
 /* Prototype 48: apply a new choice now: lock again if full screen, else go full screen (a tap), which locks */
 function orApply(){if(!coarse||!orCan())return;if(document.fullscreenElement){OR.on=false;orSync()}else goFull()}
-function orSetSync(){const r=$('orRow');if(r)r.hidden=!orCan();const rb=$('rotBtn');if(rb){rb.hidden=!(orCan()&&coarse);rb.setAttribute('aria-label',orPick==='portrait'?'Rotate to landscape':'Rotate to portrait');rb.title=rb.getAttribute('aria-label')}document.querySelectorAll('[data-orient]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.orient===orPick)))}
+function orSetSync(){const r=$('orRow');if(r)r.hidden=!orCan();for(const id of['rotBtn','pauseRot']){const rb=$(id);if(rb){rb.hidden=!(orCan()&&coarse);rb.setAttribute('aria-label',orPick==='portrait'?'Rotate to landscape':'Rotate to portrait');rb.title=rb.getAttribute('aria-label')}}document.querySelectorAll('[data-orient]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.orient===orPick)))}
 function orShow(next){OR.next=next||null;orSetSync();$('orSet').hidden=false;navTo($('orSet'))}
 /* the choice: saved; before the quick race it also goes full screen, so Tap to race already stands the chosen way */
 function orChoose(o){orPick=o;store.set('hoverline.orient',o);orSetSync();const box=$('orSet');if(box.hidden)return;box.hidden=true;try{audio.sfx('ui_select')}catch(e){}
@@ -31,7 +31,21 @@ function orChoose(o){orPick=o;store.set('hoverline.orient',o);orSetSync();const 
   if(next&&coarse&&canFull){if(document.fullscreenElement)orSync();else goFull()}}
 document.querySelectorAll('[data-or]').forEach(b=>b.onclick=()=>orChoose(b.dataset.or));
 document.querySelectorAll('[data-orient]').forEach(b=>b.onclick=()=>{orPick=b.dataset.orient;store.set('hoverline.orient',orPick);orSetSync();orApply()});
-$('rotBtn').onclick=()=>{orPick=(orPick?orPick[0]:orNow())==='p'?'landscape':'portrait';store.set('hoverline.orient',orPick);orSetSync();try{audio.sfx('ui_select')}catch(e){}orApply()};
+const orRotate=()=>{orPick=(orPick?orPick[0]:orNow())==='p'?'landscape':'portrait';store.set('hoverline.orient',orPick);orSetSync();try{audio.sfx('ui_select')}catch(e){}orApply()};
+$('rotBtn').onclick=orRotate;
+/* Prototype 63: the same button in the pause menu, so a race can be turned without leaving it. Eric: leaving the game to
+   look at something else and coming back left it locked landscape, with no way to go on in portrait. Pause is where a
+   race waits, so: the button is there (shown with the other, on a phone or tablet that can lock), it takes the
+   orientation lock again from the saved choice (full screen first, which needs the tap that pressed it), and a race
+   that was hidden (ui/061 already pauses it) takes the lock again when the page is back and, if the browser let go of
+   full screen meanwhile, on the Resume tap, the first gesture it can use. orRotate saves the choice like the title's button. */
+$('pauseRot').onclick=orRotate;
+new MutationObserver(()=>{if(!$('pause').hidden)orSetSync()}).observe($('pause'),{attributes:true,attributeFilter:['hidden']});
+const orAway={on:false};
+document.addEventListener('visibilitychange',()=>{if(document.hidden){if(S.state==='race'||S.state==='countdown'||S.state==='paused')orAway.on=true;return}
+  if(orAway.on&&(S.state==='paused'||mp.on&&mp.auto)){/* back from elsewhere: lock again if the page is still full screen (no gesture needed); if not, the Resume tap does it */orApply2()}else orAway.on=false});
+function orApply2(){if(!coarse||!orCan()||!orPick)return;if(document.fullscreenElement){OR.on=false;orSync()}}
+$('resumeBtn').addEventListener('click',()=>{if(!orAway.on)return;orAway.on=false;if(coarse&&orCan()&&orPick)orApply()});
 orSetSync();
 if(orCan()&&framed)try{screen.orientation.unlock()}catch(e){}
 /* Prototype 48: with a way chosen, the first touch on this visit goes full screen, which locks it (once a visit, so leaving
