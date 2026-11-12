@@ -76,7 +76,7 @@ function roadShape(seed,wk,cx,lk,sp,bk){
   if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.14)ex.push('drop');if(rn()<0.15)ex.push('sjump');if(rn()<0.12)ex.push('cjump');if(ex.length)fopt.extra=ex}
   /* Prototype 63: about one Spirit track in four gets a portal jump (004s), drawn on its own numbers so the rest of the
      track is built as it would be without one; where no straight is long enough it is left out */
-  if(bk==='S'&&!sp&&rng((seed^0x9047A1)>>>0)()<0.3){if(!fopt)fopt={r:rng((seed^0x9047A2)>>>0),pool:[['sweep',1]],count:0,avoid};fopt.extra=[...(fopt.extra||[]),'portal']}
+  if(bk==='S'&&!sp&&rng((seed^0x9047A1)>>>0)()<0.8){if(!fopt)fopt={r:rng((seed^0x9047A2)>>>0),pool:[['sweep',1]],count:0,avoid};fopt.extra=[...(fopt.extra||[]),'portal']}
   let dropped={};
   if(fopt){let best=null;const ban={};
     /* Try up to six layouts and keep the first with no faults (see trackFaults). If none is clean, leave out one of each

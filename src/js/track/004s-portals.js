@@ -33,12 +33,12 @@ function portalDims(w){const m=SPC_O.margin,ringR=Math.hypot(w/2+m,(SPC_O.above+
 /* a portal site (addFeatures): the variant (49 or 50) and side are drawn here; len is the approach, foot what it takes of
    the base line (the join comes back onto it up to 1.3 km past the entrance), cf the stretch that must be straight */
 function portalSite(s,r){s.pv=r()<0.5?'p':'d';s.sd=1;s.len=PORT_O.La;s.cf=PORT_O.La+40;s.foot=PORT_O.La+PORT_O.j1+60}
-/* only where the base line runs straight and nearly level for the approach: under 0.07 slope, no bend tighter than
-   300 m, and the straight line from its start to the entrance never more than 30 m off the base line */
-function portalCheck(st,b){const{P,Cs,N,ds}=b,n=Math.round(PORT_O.La/ds),i0=st.i,why=k=>{st.skip=true;(globalThis.__pchk=globalThis.__pchk||{})[k]=(globalThis.__pchk[k]||0)+1};if(i0+n+Math.round(PORT_O.j1/ds)>=N)return why('end');
-  const A=P[i0],B=P[i0+n],dx=B.x-A.x,dz=B.z-A.z,L0=Math.hypot(dx,dz)||1;if(Math.abs(B.y-A.y)/L0>0.07)return why('slope');
+/* only where the base line runs straight and nearly level for the approach: under 0.1 slope, no bend tighter than
+   220 m, and the straight line from its start to the entrance never more than 45 m off the base line */
+function portalCheck(st,b){const{P,Cs,N,ds}=b,n=Math.round(PORT_O.La/ds),i0=st.i,why=k=>{st.skip=true;st.why=k};if(i0+n+Math.round(PORT_O.j1/ds)>=N)return why('end');
+  const A=P[i0],B=P[i0+n],dx=B.x-A.x,dz=B.z-A.z,L0=Math.hypot(dx,dz)||1;if(Math.abs(B.y-A.y)/L0>0.1)return why('slope');
   let cm=0,dm=0;for(let j=0;j<=n;j+=2){const q=P[i0+j],t=j/n;cm=Math.max(cm,Math.abs(Cs[i0+j]));dm=Math.max(dm,Math.hypot(A.x+dx*t-q.x,A.z+dz*t-q.z))}
-  if(cm>1/300)why('bend '+Math.round(1/cm));else if(dm>30)why('off '+Math.round(dm))}
+  if(cm>1/220)why('bend '+Math.round(1/cm));else if(dm>45)why('off '+Math.round(dm))}
 /* the portal's road from base sample i (addFeatures' emit loop): the approach straightened onto the line from i to the
    entrance, the break, the exit road; it returns the base sample the join came back to. c: {P,U,N,ds,i,site,emit,marks,
    oP,RH,shiftAt,liftAt,upAt,joinScore,joinEmit,W} */
