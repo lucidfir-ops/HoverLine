@@ -72,7 +72,7 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
   const L=sp.L,wu=d=>{d=((d%L)+L)%L;return d>L/2?d-L:d};
   for(const a of sp.arches){let p=1;if(lead){const dl=wu(a.u-lead.u),dz=wu(a.u-last.u);p=dl>0?ssp((400-dl)/260):dz>-20?1:1-ssp((-dz-20)/60)}setG(a.g,p)}
   /* the posed slots */
-  const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<24;s++)OP[s].w=0;
+  const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<SP_SLOTS;s++)OP[s].w=0;
   const lp=lead?sampleAt(lead.u,_spS):null;
   /* each head: the nearest clear place, outward from its own, 12 m at a time; out at once, back in slowly; the place shown
      is checked again, and the head is hidden for that frame if it is not clear */
@@ -82,19 +82,47 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
     OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);_spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(lead.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
   for(const c of sp.colossi){const s=c.slot,tx=lead?lead.ship.position:mine?camera.position:_spA.set(0,0,0),dx=tx.x-c.c[0],dz=tx.z-c.c[2];let yaw=Math.atan2(dx,dz)-c.yaw;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));yaw=Math.max(-1.2,Math.min(1.2,yaw));
     c.y=c.y==null?yaw:c.y+(yaw-c.y)*Math.min(1,dt*0.8);OP[s].set(0,0,0,1);_spQ.setFromAxisAngle(_spUp,c.y);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}
-  /* rare ghost riders: now and then (one half minute of a race in five), a few neon riders fly beside the pack for 4 s */
+  /* Prototype 63: rare ghost riders and echoes, drawn as the frames the racers fly (spGhost*, below). Each frame type has
+     one merged line mesh with images of its own; an image is posed by two uniforms and is faint (Eric: fainter, and the
+     mesh of the frame they follow). */
+  sp.ghosts=sp.ghosts||new Map();for(const G of sp.ghosts.values()){G.used=0;G.rused=0;for(const v of G.OP)v.w=0}
+  /* rare ghost riders: now and then (one half minute of a race in five), a few neon riders fly beside the pack for 4 s, each
+     as the frame of one of the racers */
   if(sp.riders&&lead&&S.state==='race'){const slot=Math.floor(S.raceT/30);if(slot!==sp.rideSlot){sp.rideSlot=slot;if(spHash(slot*7919+sp.seed)<0.2&&S.raceT>8)sp.ride={t0:S.raceT,n:3+Math.floor(spHash(slot*31+5)*3)}}
     const R0=sp.ride;if(R0&&S.raceT-R0.t0<4.5){const e=S.raceT-R0.t0,fade=Math.min(1,e*2,(4.5-e)*2);for(let k=0;k<Math.min(R0.n,sp.riders);k++){const sd=k%2?1:-1,f=sampleAt(lead.u-25+k*14,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,lat=W/2+SPC_O.margin+5+(k>>1)*5;
-      const x=f.p.x+sx/sl*sd*lat,y=f.p.y+3+k%3,z=f.p.z+sz/sl*sd*lat;if(!sp.clr.ok(x,y,z,3))continue;const fl=0.75+0.25*Math.sin(e*TAU*2+k);OP[7+k].set(x,y,z,fade*fl*0.8);
-      _spM.lookAt(_spA.set(0,0,0),_spB.copy(f.t),f.u);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[7+k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}}}
+      const x=f.p.x+sx/sl*sd*lat,y=f.p.y+3+k%3,z=f.p.z+sz/sl*sd*lat;if(!sp.clr.ok(x,y,z,3))continue;const fl=0.75+0.25*Math.sin(e*TAU*2+k);
+      _spM.lookAt(_spA.set(0,0,0),_spB.copy(f.t),f.u);_spQ.setFromRotationMatrix(_spM);spGhostPose(sp,rs[k%rs.length],true,x,y,z,_spQ,fade*fl*0.8)}}}
   /* echoes of the leaders: on the two short stretches, three faint after-images of each of the first three racers; as one
      leaves a stretch, the third joins the second, the second the first and the first the frame (0.12 s each) */
   if(sp.echo&&race&&sp.echoes.length){const top=rs.slice().sort((a,b)=>b.utot-a.utot).slice(0,3),H=sp.hist||(sp.hist=new Map()),tt=S.raceT||t;
     top.forEach((r,k)=>{let h=H.get(r);if(!h)H.set(r,h={p:[],ex:-9,in:false});h.p.unshift({t:tt,x:r.ship.position.x,y:r.ship.position.y,z:r.ship.position.z,q:r.ship.quaternion.clone()});if(h.p.length>40)h.p.length=40;
       const inS=sp.echoes.some(e=>{const d=wu(r.u-e.u0);return d>=0&&d<=e.u1-e.u0});if(h.in&&!inS)h.ex=tt;h.in=inS;const e=tt-h.ex;if(!inS&&e>0.36)return;
       const d1=e<0.24?0.13:Math.max(0,0.13-(e-0.24)/0.12*0.13),d2=e<0.12?0.26:e<0.24?0.26-(e-0.12)/0.12*0.13:d1,d3=e<0.12?0.39-e/0.12*0.13:d2,dl=inS?[0.13,0.26,0.39]:[d1,d2,d3];
-      for(let j=0;j<3;j++){const s=13+k*3+j;if(s>=24)break;const want=tt-dl[j];let pz=h.p[h.p.length-1];for(const p of h.p)if(p.t<=want){pz=p;break}
-        OP[s].set(pz.x,pz.y,pz.z,(inS?1:Math.max(0,1-e/0.36))*(0.9-j*0.2));_spQ.copy(pz.q).multiply(_spFlip);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}})}}
+      for(let j=0;j<3;j++){const want=tt-dl[j];let pz=h.p[h.p.length-1];for(const p of h.p)if(p.t<=want){pz=p;break}
+        spGhostPose(sp,r,false,pz.x,pz.y,pz.z,pz.q,(inS?1:Math.max(0,1-e/0.36))*(0.9-j*0.2))}})}
+  for(const G of sp.ghosts.values())G.mesh.visible=G.used+G.rused>0}
+/* ---- the frame ghosts (Prototype 63) ----
+   The line drawing of a frame is taken once from a ship the game built (its edge lines, in the ship's own space: the very mesh
+   that frame is flown as), simplified (short edges dropped, at most 150 of the longest kept) and cached by frame. Each frame
+   type that is in the race then gets one mesh: that drawing repeated for 13 images (9 echoes and 4 ghost riders), all drawn as
+   one batch; an image is placed by its slot's two uniforms, so after-images cost nothing on the CPU but two vectors. */
+const SPGH_E=9,SPGH_R=4,SPF=new Map();
+function spFrameSegs(ship,key){let C=SPF.get(key);if(C)return C;const T=THREE,sc=ship.scale.x||1,all=[];
+  ship.updateMatrixWorld(true);const inv=new T.Matrix4().copy(ship.matrixWorld).invert(),M=new T.Matrix4(),v=new T.Vector3(),w=new T.Vector3();
+  ship.traverse(o=>{if(!(o.isLineSegments&&o.userData.edge))return;const P=o.geometry.attributes.position;M.multiplyMatrices(inv,o.matrixWorld);
+    for(let i=0;i+1<P.count;i+=2){v.fromBufferAttribute(P,i).applyMatrix4(M).multiplyScalar(sc);w.fromBufferAttribute(P,i+1).applyMatrix4(M).multiplyScalar(sc);
+      const l=v.distanceTo(w);if(l>=0.22)all.push({l,a:[v.x,v.y,v.z],b:[w.x,w.y,w.z]})}});
+  all.sort((p,q)=>q.l-p.l);C=all.slice(0,150).map(e=>[e.a,e.b,Math.min(1,Math.max(0,0.25+(e.a[1]+e.b[1])*0.3))]);
+  if(!C.length)C=SPS.rider();SPF.set(key,C);return C}
+function spGhostSet(sp,r){const key=(r.build&&r.build.frame)||'blade';let G=sp.ghosts.get(key);if(G)return G;
+  const M=SPGH_E+SPGH_R,segs=spFrameSegs(r.ship,key),Lb=spLines();
+  for(let m=0;m<M;m++){Lb.obj({m:[8,0,0,0],slot:m,pal:m<SPGH_E?5:2,ext:1e4});for(const[a,b,pc]of segs)Lb.seg(a,b,pc,m<SPGH_E?0.2:0.4)}
+  const mat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6}),OP=Array.from({length:M},()=>new THREE.Vector4(0,-9999,0,0)),OQ=Array.from({length:M},()=>new THREE.Vector4(0,0,0,1));
+  mat.defines.SLOTS=1;mat.defines.SLOTN=M;mat.uniforms.uOP={value:OP};mat.uniforms.uOQ={value:OQ};
+  const mesh=Lb.mesh(mat,false);mesh.visible=false;sp.group.add(mesh);G={key,mesh,OP,OQ,used:0,rused:0,segs:segs.length};sp.ghosts.set(key,G);return G}
+/* pose one image of racer r's frame (rider: a ghost rider, else an echo) at x,y,z facing q, shown at strength a */
+function spGhostPose(sp,r,rider,x,y,z,q,a){if(!r||!r.ship)return;const G=spGhostSet(sp,r),m=rider?SPGH_E+G.rused:G.used;if(rider?G.rused>=SPGH_R:G.used>=SPGH_E)return;if(rider)G.rused++;else G.used++;
+  G.OP[m].set(x,y,z,a);G.OQ[m].set(q.x,q.y,q.z,q.w)}
 const ssp=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
 const spHash=n=>{let h=(n|0)^0x9E3779B9;h=Math.imul(h^h>>>16,0x85EBCA6B);h=Math.imul(h^h>>>13,0xC2B2AE35);return((h^h>>>16)>>>0)/4294967296};
 const _spV2=new THREE.Vector2(),_spS={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},_spS2={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},

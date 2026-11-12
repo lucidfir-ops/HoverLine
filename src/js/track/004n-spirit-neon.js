@@ -19,8 +19,11 @@ const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff
    uDrop a flare after a drop starts; uBuild 0..1 through a build; uBrk 1 in a breakdown; uBreath a slow in-out (2 bars);
    uCalm 1 with Calm visuals; uG group progress (pyramids shedding, arches assembling); uOP/uOQ the posed slots;
    uSF the sound form (4 bands x 12 moments, newest first); uLvl the music's level; uRes the drawing size in pixels */
+/* Prototype 63: the posed slots are 8 now (heads 0..3, colossi 4..6); echoes and ghost riders are drawn as the racers' own
+   frames by the frame ghosts (004r), each frame type with its own images and uniforms */
+const SP_SLOTS=8;
 const SPU={uT:{value:0},uBeat:{value:0},uKick:{value:0},uKA:{value:new THREE.Vector4(9,9,9,9)},uDrop:{value:0},uBuild:{value:0},uBrk:{value:0},uBreath:{value:0},uCalm:{value:0},
-  uG:{value:Array.from({length:6},()=>new THREE.Vector4())},uOP:{value:Array.from({length:24},()=>new THREE.Vector4(0,-9999,0,0))},uOQ:{value:Array.from({length:24},()=>new THREE.Vector4(0,0,0,1))},
+  uG:{value:Array.from({length:6},()=>new THREE.Vector4())},uOP:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,-9999,0,0))},uOQ:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,0,0,1))},
   uSF:{value:Array.from({length:12},()=>new THREE.Vector4())},uLvl:{value:0},uRes:{value:new THREE.Vector2(960,540)},uWorld:{value:1},
   uPal:{value:SPPAL.flatMap(p=>p.map(h=>{const c=new THREE.Color(h);return new THREE.Vector3(c.r,c.g,c.b)}))}};
 const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[24];uniform vec2 uRes;
@@ -40,7 +43,7 @@ const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
   #endif
   uniform vec2 uFog;uniform float uWidth,uMinPx,uMaxPx,uGain;varying vec3 vCol;varying float vS;
   #ifdef SLOTS
-  uniform vec4 uOP[24],uOQ[24];
+  uniform vec4 uOP[SLOTN],uOQ[SLOTN];
   #endif
   vec3 place(vec3 p,out float vis){vis=1.;vec3 q=p-iP.xyz;
     #ifdef SLOTS
