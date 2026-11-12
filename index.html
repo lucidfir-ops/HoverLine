@@ -3168,7 +3168,11 @@ function scenerySpirit(ctx){
         colossi.push({c,H,yaw,slot,neck:cl.neck})}}})}
   /* ---- wireframe heads pacing the pack (slots 0..3) and rare neon ghost riders (slots 7..12); posed by 004r ---- */
   const HEADS=[{sd:-1,d:34,up:10,s:8,du:20},{sd:1,d:48,up:16,s:12,du:55},{sd:-1,d:130,up:50,s:34,du:170},{sd:1,d:170,up:80,s:46,du:280}].slice(0,q===2?4:q===1?2:0);
-  HEADS.forEach((h,k)=>{live.obj({m:[8,0,0,0],slot:k,pal:[5,2,1,3][k],ext:1e4});SPS.head().forEach(([a,b,pc])=>live.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,1))});
+  /* Prototype 63: the head's wire is cool and a little dim, its face (eyes, brows, nose, mouth) is a second batch in lime-white (palette 6),
+     bolder and brighter than anything round it, so the features read at race speed (Eric) */
+  const liveF=spLines();
+  HEADS.forEach((h,k)=>{live.obj({m:[8,0,0,0],slot:k,pal:[5,2,5,2][k],ext:1e4});SPS.head().forEach(([a,b,pc])=>live.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,0.6));
+    liveF.obj({m:[8,0,0,0],slot:k,pal:6,ext:1e4});SPS.headFace().forEach(([a,b,pc])=>liveF.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,2.4))});
   /* Prototype 63: ghost riders and echoes are drawn as the racers' own frames (one merged line mesh per frame type, built on
      first use: 004r), so nothing is built here for them; RIDE caps the riders shown, ECHO says echoes are on */
   const RIDE=q?4:0,ECHO=q?3:0;
@@ -3195,7 +3199,8 @@ function scenerySpirit(ctx){
   const fogN=[500,2400],fogF=[900,3000];
   addM(W2.box.mesh(spWireMat({fog:fogN})));addM(W2.glyph.mesh(spWireMat({glyph:true,fog:fogN})));for(const s of solids)addM(W2[s].mesh(spWireMat({tri:true,fog:fogN})));
   const lmat=spLineMat({fog:fogN,width:0.16});regs.forEach(Lb=>Lb&&addM(Lb.mesh(lmat,true)));addM(farL.mesh(spLineMat({fog:fogF,width:0.5,maxPx:5}),false));addM(knotL.mesh(spLineMat({fog:fogN,width:0.16,knot:true}),false));
-  const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;liveMat.defines.SLOTN=SP_SLOTS;addM(live.mesh(liveMat,false));addM(sh.mesh());
+  const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;liveMat.defines.SLOTN=SP_SLOTS;addM(live.mesh(liveMat,false));
+  const faceMat=spLineMat({fog:[1200,3000],width:0.55,minPx:2.6,maxPx:11});faceMat.defines.SLOTS=1;faceMat.defines.SLOTN=SP_SLOTS;addM(liveF.mesh(faceMat,false));addM(sh.mesh());
   for(const m of lat.meshes)addM(m);
   /* what the moving parts need (004r), and the line that describes the track */
   lap('meshes');delete ms.t;ctx.spirit={ms,L,seed,q,group,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};
@@ -3216,7 +3221,9 @@ const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8};
 /* palettes, four stops each (mirrored past 1): 0 rainbow (Prism's), 1 gold + violet, 2 cyan + magenta, 3 ember + white,
    4 jade + turquoise + gold, 5 ice + violet; the colours the mock-ups were approved in */
 const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff9f2e','#ffe08a'],['#18e0ff','#3d8bff','#c13dff','#ff3fc4'],
-  ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff']];
+  ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff'],
+  /* Prototype 63: 6 lime-white, for what has to stand out from every other palette (a head's face: the lattice and the heads' wire are cool or ember) */
+  ['#d8ff2a','#f4ffb0','#ffffff','#d8ff2a']];
 /* the uniforms every Spirit material shares (one object each, so setting a value once sets it everywhere):
    uT time; uBeat the music's beats (float); uKick the last kick, decaying; uKA the ages of the last four kicks (s);
    uDrop a flare after a drop starts; uBuild 0..1 through a build; uBrk 1 in a breakdown; uBreath a slow in-out (2 bars);
@@ -3229,7 +3236,7 @@ const SPU={uT:{value:0},uBeat:{value:0},uKick:{value:0},uKA:{value:new THREE.Vec
   uG:{value:Array.from({length:6},()=>new THREE.Vector4())},uOP:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,-9999,0,0))},uOQ:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,0,0,1))},
   uSF:{value:Array.from({length:12},()=>new THREE.Vector4())},uLvl:{value:0},uRes:{value:new THREE.Vector2(960,540)},uWorld:{value:1},
   uPal:{value:SPPAL.flatMap(p=>p.map(h=>{const c=new THREE.Color(h);return new THREE.Vector3(c.r,c.g,c.b)}))}};
-const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[24];uniform vec2 uRes;
+const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[28];uniform vec2 uRes;
   vec3 rotA(vec3 v,vec3 k,float a){float c=cos(a),s=sin(a);return v*c+cross(k,v)*s+k*dot(k,v)*(1.-c);}
   vec3 rotQ(vec4 q,vec3 v){vec3 t=2.*cross(q.xyz,v);return v+q.w*t+cross(q.xyz,t);}
   float sst(float x){x=clamp(x,0.,1.);return x*x*(3.-2.*x);}
@@ -3471,13 +3478,24 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
   const flower=s=>{const o=[],rr=s/5,C=[[0,0]];for(let k=0;k<6;k++){const a=k*TW/6;C.push([Math.cos(a)*rr,Math.sin(a)*rr]);C.push([Math.cos(a)*rr*2,Math.sin(a)*rr*2]);C.push([Math.cos(a+TW/12)*rr*Math.sqrt(3),Math.sin(a+TW/12)*rr*Math.sqrt(3)])}
     for(const[cx,cy]of C)loop(ring(rr,28,'xy').map(p=>V(p[0]+cx,p[1]+cy,0)),Math.hypot(cx,cy)/s,o);loop(ring(rr*3,64,'xy'),0.9,o);
     const M=C.filter((c,i)=>i===0||i%3!==0).slice(0,13);for(let i=0;i<M.length;i++)for(let j=i+1;j<M.length;j+=2)o.push([V(M[i][0],M[i][1],0.3),V(M[j][0],M[j][1],0.3),0.6]);return o};
-  /* a head: rings of a head's profile (brow, nose, chin on +z) and meridians, two eye rings; height 1 */
-  const head=()=>{const o=[],nr=11,nm=12,prof=y=>{const t=y;return 0.36*Math.sqrt(Math.max(0,1-Math.pow((t-0.55)/0.52,2)))*(t<0.25?0.75+t:1)},face=(a,y)=>{const fz=Math.max(0,Math.cos(a));let f=0;
+  /* a head: rings of a head's profile (brow, nose, chin on +z) and meridians; height 1. Its face is a separate list (headFace, below) so
+     it can be drawn in a colour of its own */
+  const hprof=y=>{const t=y;return 0.36*Math.sqrt(Math.max(0,1-Math.pow((t-0.55)/0.52,2)))*(t<0.25?0.75+t:1)},hface=(a,y)=>{const fz=Math.max(0,Math.cos(a));let f=0;
       if(y>0.6&&y<0.72)f=0.06;else if(y>0.4&&y<0.6)f=0.11*Math.exp(-Math.pow((y-0.48)/0.05,2))*Math.pow(fz,6);else if(y<0.2&&y>0.05)f=0.05;return f*fz*fz};
-    const P=(a,y)=>{const r=prof(y)+face(a,y);return V(Math.sin(a)*r*0.9,y,Math.cos(a)*r)};
-    for(let k=1;k<nr;k++){const y=0.04+k/nr*0.98,pts=[];for(let i=0;i<32;i++)pts.push(P(i*TW/32,y));loop(pts,y,o)}
-    for(let m=0;m<nm;m++){const a=m*TW/nm,pts=[];for(let k=0;k<=20;k++)pts.push(P(a,0.04+k/20*0.98));path(pts,0.5,o)}
-    for(const sx of[-1,1])loop(ring(0.045,10,'xy').map(p=>V(p[0]+sx*0.12,p[1]+0.62,0.33)),1,o);return o};
+  const hP=(a,y)=>{const r=hprof(y)+hface(a,y);return V(Math.sin(a)*r*0.9,y,Math.cos(a)*r)};
+  const head=()=>{const o=[],nr=11,nm=12;
+    for(let k=1;k<nr;k++){const y=0.04+k/nr*0.98,pts=[];for(let i=0;i<32;i++)pts.push(hP(i*TW/32,y));loop(pts,y,o)}
+    for(let m=0;m<nm;m++){const a=m*TW/nm,pts=[];for(let k=0;k<=20;k++)pts.push(hP(a,0.04+k/20*0.98));path(pts,0.5,o)}return o};
+  /* Prototype 63 (Eric: "a deeply contrasting colour should be used so you can see their features"): the face as bold lines laid
+     just off the head's skin: two almond eyes with an iris ring, brows, the nose and a mouth with its corners */
+  const headFace=()=>{const o=[],on=(x,y,lift=0.02)=>{let lo=-1.3,hi=1.3;for(let i=0;i<24;i++){const m=(lo+hi)/2;if(hP(m,y)[0]<x)lo=m;else hi=m}const p=hP((lo+hi)/2,y);return V(p[0],p[1],p[2]+lift)};
+    const poly=(pts,closed,pc)=>{const q=pts.map(p=>on(p[0],p[1]));for(let i=0;i<q.length-1;i++)o.push([q[i],q[i+1],pc]);if(closed)o.push([q[q.length-1],q[0],pc])};
+    for(const sx of[-1,1]){const ex=sx*0.13,ey=0.625,alm=[];for(let i=0;i<10;i++){const t=i*TW/10;alm.push([ex+Math.cos(t)*0.075,ey+Math.sin(t)*0.034])}poly(alm,true,0.1);
+      const ir=[];for(let i=0;i<8;i++){const t=i*TW/8;ir.push([ex+Math.cos(t)*0.026,ey+Math.sin(t)*0.026])}poly(ir,true,0.9);
+      poly([[sx*0.05,0.69],[sx*0.12,0.715],[sx*0.21,0.7]],false,0.5);poly([[sx*0.06,0.675],[sx*0.12,0.695],[sx*0.2,0.68]],false,0.5)}
+    poly([[0,0.66],[0,0.55],[-0.04,0.48],[0,0.455],[0.04,0.48],[0,0.55]],false,0.4);
+    poly([[-0.14,0.31],[-0.07,0.285],[0,0.28],[0.07,0.285],[0.14,0.31],[0.07,0.265],[0,0.255],[-0.07,0.265],[-0.14,0.31]],false,0.7);
+    poly([[-0.1,0.2],[0,0.19],[0.1,0.2]],false,0.3);return o};
   /* a colossus from the waist up (the floor is at y = 0): rings of the torso, shoulders, arms hanging into the floor; its head
      (a ring head with a face) separately, about the neck at headAt */
   const colossus=H=>{const o=[],sides=10,R0=H*0.09,R1=H*0.16,top=H*0.5,rings=10;const rs=[];
@@ -3501,7 +3519,7 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
       for(let k=0;k<3;k++){const a=k*TW/3;br(V(0,-0.3*s,0),[Math.cos(a)*0.4,0.9,Math.sin(a)*0.4],s*0.45,0)}loop(ring(s*0.5,12,'xz',-0.3*s),0,o)}
     else{path([V(0,-0.3*s,0),V(0,s*0.5,0)],0.2,o);for(let k=0;k<3;k++){const y=s*(0.45+k*0.25),rr=s*(0.6-k*0.15);loop(ring(rr,16,'xz',y),0.4+k*0.2,o)}for(let k=0;k<8;k++){const a=k*TW/8;o.push([V(Math.cos(a)*s*0.6,s*0.45,Math.sin(a)*s*0.6),V(0,s*1.2,0),0.9])}}
     loop(ring(s*0.5,8,'xz',-0.3*s).map((p,i)=>V(p[0],p[1]-(i%2?s*0.15:0),p[2])),0.1,o);return o};
-  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm}})();
+  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm,headFace}})();
 /* Prototype 62: round 2's lattice (tools/spirit-proto/lib/realm.js, SPR.lattice), which Eric liked best ("looks good";
    "the music response is good!"), kept as it was: a cubic grid of struts round the road, cleared 34 m round it and by the
    rule, in three tiers (beams, the grid, the diagonal truss) that appear as a section strengthens. Sections (2 or 3 a
@@ -3665,11 +3683,16 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
   const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<SP_SLOTS;s++)OP[s].w=0;
   const lp=lead?sampleAt(lead.u,_spS):null;
   /* each head: the nearest clear place, outward from its own, 12 m at a time; out at once, back in slowly; the place shown
-     is checked again, and the head is hidden for that frame if it is not clear */
-  sp.heads.forEach((h,k)=>{if(!lead)return;const f=sampleAt(lead.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
+     is checked again, and the head is hidden for that frame if it is not clear. Prototype 63 (Eric: "the faces that follow
+     you should always face you"): the heads pace the local player (in split screen the leading local pilot) and each turns
+     its face to the camera it is drawn for (the nearest local pilot's, in split screen) */
+  const locals=rs.filter(r=>SPL.race?r.lp:r===player).sort((a,b)=>b.utot-a.utot),fo=locals[0]||lead;
+  sp.heads.forEach((h,k)=>{if(!fo)return;const f=sampleAt(fo.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
     h.push=h.push||0;let want=-1;for(let tr=0;tr<8&&want<0;tr++){const q=at(h.d+tr*12);if(sp.clr.ok(q[0],y,q[1],r0))want=tr*12}
     if(want<0){h.push=96;return}h.push=want>h.push?want:h.push+(want-h.push)*0.05;const q=at(h.d+h.push),by=y+Math.sin(t*0.7+k)*h.s*0.05;
-    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);_spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(lead.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
+    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);
+    let tg=null,bd=1e18;if(locals.length<2)tg=camera.position;else for(const r of locals){const c=r.lp&&r.lp.cam?r.lp.cam.position:r.ship.position,d=(c.x-q[0])**2+(c.z-q[1])**2;if(d<bd){bd=d;tg=c}}
+    _spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(tg||fo.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
   for(const c of sp.colossi){const s=c.slot,tx=lead?lead.ship.position:mine?camera.position:_spA.set(0,0,0),dx=tx.x-c.c[0],dz=tx.z-c.c[2];let yaw=Math.atan2(dx,dz)-c.yaw;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));yaw=Math.max(-1.2,Math.min(1.2,yaw));
     c.y=c.y==null?yaw:c.y+(yaw-c.y)*Math.min(1,dt*0.8);OP[s].set(0,0,0,1);_spQ.setFromAxisAngle(_spUp,c.y);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}
   /* Prototype 63: rare ghost riders and echoes, drawn as the frames the racers fly (spGhost*, below). Each frame type has

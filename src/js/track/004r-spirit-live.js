@@ -80,11 +80,16 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
   const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<SP_SLOTS;s++)OP[s].w=0;
   const lp=lead?sampleAt(lead.u,_spS):null;
   /* each head: the nearest clear place, outward from its own, 12 m at a time; out at once, back in slowly; the place shown
-     is checked again, and the head is hidden for that frame if it is not clear */
-  sp.heads.forEach((h,k)=>{if(!lead)return;const f=sampleAt(lead.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
+     is checked again, and the head is hidden for that frame if it is not clear. Prototype 63 (Eric: "the faces that follow
+     you should always face you"): the heads pace the local player (in split screen the leading local pilot) and each turns
+     its face to the camera it is drawn for (the nearest local pilot's, in split screen) */
+  const locals=rs.filter(r=>SPL.race?r.lp:r===player).sort((a,b)=>b.utot-a.utot),fo=locals[0]||lead;
+  sp.heads.forEach((h,k)=>{if(!fo)return;const f=sampleAt(fo.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
     h.push=h.push||0;let want=-1;for(let tr=0;tr<8&&want<0;tr++){const q=at(h.d+tr*12);if(sp.clr.ok(q[0],y,q[1],r0))want=tr*12}
     if(want<0){h.push=96;return}h.push=want>h.push?want:h.push+(want-h.push)*0.05;const q=at(h.d+h.push),by=y+Math.sin(t*0.7+k)*h.s*0.05;
-    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);_spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(lead.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
+    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);
+    let tg=null,bd=1e18;if(locals.length<2)tg=camera.position;else for(const r of locals){const c=r.lp&&r.lp.cam?r.lp.cam.position:r.ship.position,d=(c.x-q[0])**2+(c.z-q[1])**2;if(d<bd){bd=d;tg=c}}
+    _spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(tg||fo.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
   for(const c of sp.colossi){const s=c.slot,tx=lead?lead.ship.position:mine?camera.position:_spA.set(0,0,0),dx=tx.x-c.c[0],dz=tx.z-c.c[2];let yaw=Math.atan2(dx,dz)-c.yaw;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));yaw=Math.max(-1.2,Math.min(1.2,yaw));
     c.y=c.y==null?yaw:c.y+(yaw-c.y)*Math.min(1,dt*0.8);OP[s].set(0,0,0,1);_spQ.setFromAxisAngle(_spUp,c.y);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}
   /* Prototype 63: rare ghost riders and echoes, drawn as the frames the racers fly (spGhost*, below). Each frame type has

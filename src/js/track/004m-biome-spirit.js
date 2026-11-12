@@ -185,7 +185,11 @@ function scenerySpirit(ctx){
         colossi.push({c,H,yaw,slot,neck:cl.neck})}}})}
   /* ---- wireframe heads pacing the pack (slots 0..3) and rare neon ghost riders (slots 7..12); posed by 004r ---- */
   const HEADS=[{sd:-1,d:34,up:10,s:8,du:20},{sd:1,d:48,up:16,s:12,du:55},{sd:-1,d:130,up:50,s:34,du:170},{sd:1,d:170,up:80,s:46,du:280}].slice(0,q===2?4:q===1?2:0);
-  HEADS.forEach((h,k)=>{live.obj({m:[8,0,0,0],slot:k,pal:[5,2,1,3][k],ext:1e4});SPS.head().forEach(([a,b,pc])=>live.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,1))});
+  /* Prototype 63: the head's wire is cool and a little dim, its face (eyes, brows, nose, mouth) is a second batch in lime-white (palette 6),
+     bolder and brighter than anything round it, so the features read at race speed (Eric) */
+  const liveF=spLines();
+  HEADS.forEach((h,k)=>{live.obj({m:[8,0,0,0],slot:k,pal:[5,2,5,2][k],ext:1e4});SPS.head().forEach(([a,b,pc])=>live.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,0.6));
+    liveF.obj({m:[8,0,0,0],slot:k,pal:6,ext:1e4});SPS.headFace().forEach(([a,b,pc])=>liveF.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,2.4))});
   /* Prototype 63: ghost riders and echoes are drawn as the racers' own frames (one merged line mesh per frame type, built on
      first use: 004r), so nothing is built here for them; RIDE caps the riders shown, ECHO says echoes are on */
   const RIDE=q?4:0,ECHO=q?3:0;
@@ -212,7 +216,8 @@ function scenerySpirit(ctx){
   const fogN=[500,2400],fogF=[900,3000];
   addM(W2.box.mesh(spWireMat({fog:fogN})));addM(W2.glyph.mesh(spWireMat({glyph:true,fog:fogN})));for(const s of solids)addM(W2[s].mesh(spWireMat({tri:true,fog:fogN})));
   const lmat=spLineMat({fog:fogN,width:0.16});regs.forEach(Lb=>Lb&&addM(Lb.mesh(lmat,true)));addM(farL.mesh(spLineMat({fog:fogF,width:0.5,maxPx:5}),false));addM(knotL.mesh(spLineMat({fog:fogN,width:0.16,knot:true}),false));
-  const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;liveMat.defines.SLOTN=SP_SLOTS;addM(live.mesh(liveMat,false));addM(sh.mesh());
+  const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;liveMat.defines.SLOTN=SP_SLOTS;addM(live.mesh(liveMat,false));
+  const faceMat=spLineMat({fog:[1200,3000],width:0.55,minPx:2.6,maxPx:11});faceMat.defines.SLOTS=1;faceMat.defines.SLOTN=SP_SLOTS;addM(liveF.mesh(faceMat,false));addM(sh.mesh());
   for(const m of lat.meshes)addM(m);
   /* what the moving parts need (004r), and the line that describes the track */
   lap('meshes');delete ms.t;ctx.spirit={ms,L,seed,q,group,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};

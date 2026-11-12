@@ -13,7 +13,9 @@ const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8};
 /* palettes, four stops each (mirrored past 1): 0 rainbow (Prism's), 1 gold + violet, 2 cyan + magenta, 3 ember + white,
    4 jade + turquoise + gold, 5 ice + violet; the colours the mock-ups were approved in */
 const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff9f2e','#ffe08a'],['#18e0ff','#3d8bff','#c13dff','#ff3fc4'],
-  ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff']];
+  ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff'],
+  /* Prototype 63: 6 lime-white, for what has to stand out from every other palette (a head's face: the lattice and the heads' wire are cool or ember) */
+  ['#d8ff2a','#f4ffb0','#ffffff','#d8ff2a']];
 /* the uniforms every Spirit material shares (one object each, so setting a value once sets it everywhere):
    uT time; uBeat the music's beats (float); uKick the last kick, decaying; uKA the ages of the last four kicks (s);
    uDrop a flare after a drop starts; uBuild 0..1 through a build; uBrk 1 in a breakdown; uBreath a slow in-out (2 bars);
@@ -26,7 +28,7 @@ const SPU={uT:{value:0},uBeat:{value:0},uKick:{value:0},uKA:{value:new THREE.Vec
   uG:{value:Array.from({length:6},()=>new THREE.Vector4())},uOP:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,-9999,0,0))},uOQ:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,0,0,1))},
   uSF:{value:Array.from({length:12},()=>new THREE.Vector4())},uLvl:{value:0},uRes:{value:new THREE.Vector2(960,540)},uWorld:{value:1},
   uPal:{value:SPPAL.flatMap(p=>p.map(h=>{const c=new THREE.Color(h);return new THREE.Vector3(c.r,c.g,c.b)}))}};
-const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[24];uniform vec2 uRes;
+const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[28];uniform vec2 uRes;
   vec3 rotA(vec3 v,vec3 k,float a){float c=cos(a),s=sin(a);return v*c+cross(k,v)*s+k*dot(k,v)*(1.-c);}
   vec3 rotQ(vec4 q,vec3 v){vec3 t=2.*cross(q.xyz,v);return v+q.w*t+cross(q.xyz,t);}
   float sst(float x){x=clamp(x,0.,1.);return x*x*(3.-2.*x);}

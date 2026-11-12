@@ -21,13 +21,24 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
   const flower=s=>{const o=[],rr=s/5,C=[[0,0]];for(let k=0;k<6;k++){const a=k*TW/6;C.push([Math.cos(a)*rr,Math.sin(a)*rr]);C.push([Math.cos(a)*rr*2,Math.sin(a)*rr*2]);C.push([Math.cos(a+TW/12)*rr*Math.sqrt(3),Math.sin(a+TW/12)*rr*Math.sqrt(3)])}
     for(const[cx,cy]of C)loop(ring(rr,28,'xy').map(p=>V(p[0]+cx,p[1]+cy,0)),Math.hypot(cx,cy)/s,o);loop(ring(rr*3,64,'xy'),0.9,o);
     const M=C.filter((c,i)=>i===0||i%3!==0).slice(0,13);for(let i=0;i<M.length;i++)for(let j=i+1;j<M.length;j+=2)o.push([V(M[i][0],M[i][1],0.3),V(M[j][0],M[j][1],0.3),0.6]);return o};
-  /* a head: rings of a head's profile (brow, nose, chin on +z) and meridians, two eye rings; height 1 */
-  const head=()=>{const o=[],nr=11,nm=12,prof=y=>{const t=y;return 0.36*Math.sqrt(Math.max(0,1-Math.pow((t-0.55)/0.52,2)))*(t<0.25?0.75+t:1)},face=(a,y)=>{const fz=Math.max(0,Math.cos(a));let f=0;
+  /* a head: rings of a head's profile (brow, nose, chin on +z) and meridians; height 1. Its face is a separate list (headFace, below) so
+     it can be drawn in a colour of its own */
+  const hprof=y=>{const t=y;return 0.36*Math.sqrt(Math.max(0,1-Math.pow((t-0.55)/0.52,2)))*(t<0.25?0.75+t:1)},hface=(a,y)=>{const fz=Math.max(0,Math.cos(a));let f=0;
       if(y>0.6&&y<0.72)f=0.06;else if(y>0.4&&y<0.6)f=0.11*Math.exp(-Math.pow((y-0.48)/0.05,2))*Math.pow(fz,6);else if(y<0.2&&y>0.05)f=0.05;return f*fz*fz};
-    const P=(a,y)=>{const r=prof(y)+face(a,y);return V(Math.sin(a)*r*0.9,y,Math.cos(a)*r)};
-    for(let k=1;k<nr;k++){const y=0.04+k/nr*0.98,pts=[];for(let i=0;i<32;i++)pts.push(P(i*TW/32,y));loop(pts,y,o)}
-    for(let m=0;m<nm;m++){const a=m*TW/nm,pts=[];for(let k=0;k<=20;k++)pts.push(P(a,0.04+k/20*0.98));path(pts,0.5,o)}
-    for(const sx of[-1,1])loop(ring(0.045,10,'xy').map(p=>V(p[0]+sx*0.12,p[1]+0.62,0.33)),1,o);return o};
+  const hP=(a,y)=>{const r=hprof(y)+hface(a,y);return V(Math.sin(a)*r*0.9,y,Math.cos(a)*r)};
+  const head=()=>{const o=[],nr=11,nm=12;
+    for(let k=1;k<nr;k++){const y=0.04+k/nr*0.98,pts=[];for(let i=0;i<32;i++)pts.push(hP(i*TW/32,y));loop(pts,y,o)}
+    for(let m=0;m<nm;m++){const a=m*TW/nm,pts=[];for(let k=0;k<=20;k++)pts.push(hP(a,0.04+k/20*0.98));path(pts,0.5,o)}return o};
+  /* Prototype 63 (Eric: "a deeply contrasting colour should be used so you can see their features"): the face as bold lines laid
+     just off the head's skin: two almond eyes with an iris ring, brows, the nose and a mouth with its corners */
+  const headFace=()=>{const o=[],on=(x,y,lift=0.02)=>{let lo=-1.3,hi=1.3;for(let i=0;i<24;i++){const m=(lo+hi)/2;if(hP(m,y)[0]<x)lo=m;else hi=m}const p=hP((lo+hi)/2,y);return V(p[0],p[1],p[2]+lift)};
+    const poly=(pts,closed,pc)=>{const q=pts.map(p=>on(p[0],p[1]));for(let i=0;i<q.length-1;i++)o.push([q[i],q[i+1],pc]);if(closed)o.push([q[q.length-1],q[0],pc])};
+    for(const sx of[-1,1]){const ex=sx*0.13,ey=0.625,alm=[];for(let i=0;i<10;i++){const t=i*TW/10;alm.push([ex+Math.cos(t)*0.075,ey+Math.sin(t)*0.034])}poly(alm,true,0.1);
+      const ir=[];for(let i=0;i<8;i++){const t=i*TW/8;ir.push([ex+Math.cos(t)*0.026,ey+Math.sin(t)*0.026])}poly(ir,true,0.9);
+      poly([[sx*0.05,0.69],[sx*0.12,0.715],[sx*0.21,0.7]],false,0.5);poly([[sx*0.06,0.675],[sx*0.12,0.695],[sx*0.2,0.68]],false,0.5)}
+    poly([[0,0.66],[0,0.55],[-0.04,0.48],[0,0.455],[0.04,0.48],[0,0.55]],false,0.4);
+    poly([[-0.14,0.31],[-0.07,0.285],[0,0.28],[0.07,0.285],[0.14,0.31],[0.07,0.265],[0,0.255],[-0.07,0.265],[-0.14,0.31]],false,0.7);
+    poly([[-0.1,0.2],[0,0.19],[0.1,0.2]],false,0.3);return o};
   /* a colossus from the waist up (the floor is at y = 0): rings of the torso, shoulders, arms hanging into the floor; its head
      (a ring head with a face) separately, about the neck at headAt */
   const colossus=H=>{const o=[],sides=10,R0=H*0.09,R1=H*0.16,top=H*0.5,rings=10;const rs=[];
@@ -51,4 +62,4 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
       for(let k=0;k<3;k++){const a=k*TW/3;br(V(0,-0.3*s,0),[Math.cos(a)*0.4,0.9,Math.sin(a)*0.4],s*0.45,0)}loop(ring(s*0.5,12,'xz',-0.3*s),0,o)}
     else{path([V(0,-0.3*s,0),V(0,s*0.5,0)],0.2,o);for(let k=0;k<3;k++){const y=s*(0.45+k*0.25),rr=s*(0.6-k*0.15);loop(ring(rr,16,'xz',y),0.4+k*0.2,o)}for(let k=0;k<8;k++){const a=k*TW/8;o.push([V(Math.cos(a)*s*0.6,s*0.45,Math.sin(a)*s*0.6),V(0,s*1.2,0),0.9])}}
     loop(ring(s*0.5,8,'xz',-0.3*s).map((p,i)=>V(p[0],p[1]-(i%2?s*0.15:0),p[2])),0.1,o);return o};
-  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm}})();
+  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm,headFace}})();
