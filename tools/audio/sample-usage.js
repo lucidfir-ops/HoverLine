@@ -70,7 +70,7 @@ async function pool(browser, name, o, jobs, run) {
   const fresh = async () => {
     const p = await open(browser, { file: PAGE, samples: o.samples, strict: !!CUT, cut: CUT && CUT.cut });
     await p.evaluate(`(${driverMain})()`);
-    p.boot = await p.evaluate((b) => __D.boot(b), { lite: !!o.lite }); return p;
+    p.boot = await p.evaluate((b) => __D.boot(b), { lite: !!o.lite }); if (o.real) await p.evaluate(() => __D.setStub(false)); return p;
   };
   const harvest = async (p, dead) => {
     try {
@@ -152,7 +152,7 @@ async function run(opt) {
   }
   if (PHASES.includes('lite')) {
     const jobs = ids.map((id) => tuneJob('tpl:lite', 'gen', { id, seed: 4242, kv: 0, lite: true }));
-    const r = await pool(browser, 'lite', { samples: false, lite: true }, jobs, runTune); r.group = 'lite'; r.sum = sumRuns(r); add(r);
+    const r = await pool(browser, 'lite', { samples: false, lite: true, real: true }, jobs, runTune); r.group = 'lite'; r.sum = sumRuns(r); add(r);
   }
   let oldCodes = [];
   if (PHASES.includes('old') || PHASES.includes('menu')) {
@@ -162,7 +162,7 @@ async function run(opt) {
     oldCodes = plan.codes; cover.oldCodes = plan.codes; cover.oldRandomCodes = rnd;
     if (PHASES.includes('old')) {
       for (const samples of [false, true]) {
-        const jobs = []; const keyed = (c, k) => c.slice(0, -8) + ((parseInt(c.slice(-8), 16) & ~(15 << 4)) | k << 4 >>> 0).toString(16).toUpperCase().padStart(8, '0');
+        const jobs = []; const keyed = (c, k) => c.slice(0, -8) + (((parseInt(c.slice(-8), 16) & ~(15 << 4)) | (k << 4)) >>> 0).toString(16).toUpperCase().padStart(8, '0');
         for (const c of plan.codes) for (const k of QUICK ? [0] : [0, 4, 8]) jobs.push(tuneJob('old:gen', 'gen', { code: keyed(c, k) }));
         for (const c of rnd) jobs.push(tuneJob('old:rand', 'gen', { code: c }));
         const r = await pool(browser, 'old ' + (samples ? 'present' : 'absent'), { samples }, jobs, runTune); r.group = 'old:' + (samples ? 'present' : 'absent'); r.sum = sumRuns(r); add(r);
@@ -182,7 +182,7 @@ async function run(opt) {
   if (PHASES.includes('chain')) {
     for (const samples of [false, true]) {
       const jobs = Array.from({ length: QUICK ? 4 : 24 }, (_, i) => tuneJob('chain', 'gen', { code: 'S' + ((1 + (i * 37) % N).toString(16).toUpperCase().padStart(2, '0')) + (0x1000 + i * 977).toString(16).toUpperCase().padStart(8, '0'), chain: 100 + i * 31, bars: 330, rs: i + 1 }));
-      const r = await pool(browser, 'chain ' + (samples ? 'present' : 'absent'), { samples }, jobs, runTune); r.group = 'chain:' + (samples ? 'present' : 'absent'); r.sum = sumRuns(r); add(r);
+      const r = await pool(browser, 'chain ' + (samples ? 'present' : 'absent'), { samples, real: true }, jobs, runTune); r.group = 'chain:' + (samples ? 'present' : 'absent'); r.sum = sumRuns(r); add(r);
     }
   }
   if (PHASES.includes('fx')) { const r = await fxPhase(browser, facts); r.group = 'fx'; r.sum = r.fxSum; add(r) }

@@ -118,12 +118,12 @@ function driverMain() {
     return digest((await M.pgMake(st)).buf);
   };
   D.renderGen = async (st, o = {}) => {
-    stubOn = false; const pr = await prelude(st, { kind: 'render', ...o }); st = pr.st; const bars = o.bars || 24, secs = Math.ceil(bars * 4 * 60 / 120) + 12;
+    const stubWas = stubOn; stubOn = false; const pr = await prelude(st, { kind: 'render', ...o }); st = pr.st; const bars = o.bars || 24, secs = Math.ceil(bars * 4 * 60 / 120) + 12;
     const oc = new OfflineAudioContext(2, SR * secs, SR); M.ctx = null; M.timer = null; M.init(oc); M.setState(st); await settle(); M.cueRace(); await settle();
     fakeT = 0; M.ctx = mkCtx(oc); M.timer = -1; M.nextT = 0.08; M.pos = 0; M.live = { steer: 0, brake: 0, boost: 0, rank: 0.4, speed: 0.8 };
     M.setMood('count'); const goT = M.countIn(2.999); let goNow = false, bar0 = -1, nBars = 0, step = 0; seedRandom(o.rs || 1); const pn = performance.now; performance.now = () => fakeT * 1000; /* nothing may yield from here to the render: anything else drawing Math.random would move the sequence */
     while (nBars < bars && step < 8000) { fakeT += 0.1; step++; if (!goNow && fakeT >= goT) { goNow = true; M.setMood('race') } try { M.tick() } catch (e) {} const bn = Math.floor(M.pos / 16); if (bar0 < 0) bar0 = bn; nBars = bn - bar0; }
-    performance.now = pn; M.ctx = oc; const buf = await oc.startRendering(); stubOn = true; return digest(buf);
+    performance.now = pn; M.ctx = oc; const buf = await oc.startRendering(); stubOn = stubWas; return digest(buf);
   };
   /* the older generator's choice tables, enumerated: build() is cheap (microseconds), so every kit, instrument,
      percussion, texture and accent choice the codes can make is built for every flavour and every kx and kx2 value
