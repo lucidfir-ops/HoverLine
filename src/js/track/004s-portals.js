@@ -17,7 +17,7 @@
      road's keep-out), then a 130 m gap (the flight over the main road, 21 m over it), a 230 m catch road 4 m under the
      main road's level (half as wide again at first), a 110 degree turn back (radius 170 m) and a smooth join onto the
      main road's line 250-1300 m past E.
-   - 50, diagonal: the same pieces, facing 45 degrees forward-left; the flight crosses the main centreline Bc = 64/56/50 m
+   - 50, diagonal: the same pieces, facing 45 degrees forward-left; the flight crosses the main centreline Bc = 67/60/55 m
      before E (so the flight and its keep-out pass clear of the entrance ring), and the turn back is 65 degrees.
    Why so close (the dossier had the exit 120 m back): a racer g seconds behind the leader at speed v is v*g metres back
    when the leader enters E; the leader crosses over the main road (B + ramp + lip offset) metres later, and the follower

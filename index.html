@@ -1294,7 +1294,7 @@ const BDIAL=[['Scenery','towers, trees, islands or slabs · 0 to 3',3],['Falls',
    geyser or two, the reef a bubble vent or two; the forest and Stratos just their own scenery. */
 function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='P'?[2,a<0.5?2:3,b<0.5?2:3,0]:k==='S'?[2,0,0,0]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
 /* feature kinds built into the road shape (splits are added afterwards, beside it) */
-const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump'];
+const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump','portal'];/* (Prototype 63: portal, Spirit tracks only) */
 /* Prototype 60: bit 24 of a seed marks a code made from Prototype 60 on (seven hex digits, starting with 1). */
 const TV1=0x1000000;
 const KB=k=>k==='vspire'?'spire':k==='dhelix'?'helix':k;
@@ -1303,20 +1303,22 @@ const KB=k=>k==='vspire'?'spire':k==='dhelix'?'helix':k;
    with one builder per biome after it). Each takes what it needs from the road object rd. */
 function buildTrack(seed,wk,cx,lk,sp,bm){
   if(T)disposeGroup(T.group);
-  const rd=roadShape(seed,wk,cx,lk,sp);Object.assign(rd,roadBuild(rd));
-  const{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,group,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,minY}=rd;let{minX,maxX,minZ,maxZ}=rd;
+  const rd=roadShape(seed,wk,cx,lk,sp,bm&&bm.k);Object.assign(rd,roadBuild(rd));
+  const{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,group,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,minY,brk,port}=rd;let{minX,maxX,minZ,maxZ}=rd;
   const{LK,bk,dial,floorY,water,tun,prism,env,bmInfo}=buildScenery(rd,bm);
   headL.visible=!!cx;hemi.color.setHex(LK.hemi?LK.hemi[0]:0x9fb4d0);hemi.groundColor.setHex(LK.hemi?LK.hemi[1]:0x15120c);hemi.intensity=LK.hemi?LK.hemi[2]:0.85;sun.color.setHex(LK.sun?LK.sun[0]:0xfff1d6);sun.intensity=LK.sun?LK.sun[1]:0.7;
   for(const S0 of splits)for(const q of S0.pts){minX=Math.min(minX,q.x);maxX=Math.max(maxX,q.x);minZ=Math.min(minZ,q.z);maxZ=Math.max(maxZ,q.z)}
   /* Prototype 60: which new jump's gap each sample is in (its index + 1), for drawing a frame over it level (placeShip) */
   const jg=new Uint16Array(N);jumps.forEach((j,n)=>{if(j.kind)for(let k=Math.ceil(j.u0/ds);k<=Math.floor(j.u1/ds);k++)jg[k%N]=n+1});
-  T={jg,env,tun,prism,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY}};
+  T={jg,env,tun,prism,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY},
+    /* Prototype 63: the portals' breaks (004s): brk[k] on the sample before an entrance, port the portals, portK by k */
+    brk:brk||null,port:port||null,portK:port?Object.fromEntries(port.map(o=>[o.k,o])):null,portFx:rd.portFx||null};
   try{VFX.hz=null}catch(e){}
 }
 /* Prototype 61 (the split of 004-track.js): the first step of buildTrack. Returns the road object rd: the centreline P,
    frames R U Tg, headings H, curvature (Cs over 60 m, Kg in the road, Kn over the crest), kind and gap per sample, feats,
    jumps, drops, splits (spl per sample), and what the next steps need (the rng r, gI0 where the green strips start). */
-function roadShape(seed,wk,cx,lk,sp){
+function roadShape(seed,wk,cx,lk,sp,bk){
   const D=DIFF[wk]||DIFF.S,LN=LENS[lk]||LENS.M;W=D.w;
   let r,L,N,ds,P,Tg,H,C,Cs,minR=0;
   /* About a quarter of tracks (or the editor's Figure 8) are a figure of eight: the circuit crosses itself once, the two
@@ -1367,7 +1369,7 @@ function roadShape(seed,wk,cx,lk,sp){
   {const B=new Float32Array(N);for(let i=0;i<N;i++)B[i]=clamp(-Cs[i]*60,-0.5,0.5);
    for(let i=0;i<N;i++){const t=Tg[i],h=H[i];const right=new THREE.Vector3(-Math.cos(h),0,Math.sin(h));const back=t.clone().negate();const up=new THREE.Vector3().crossVectors(back,right).normalize();
     const b=B[i];R.push(right.clone().multiplyScalar(Math.cos(b)).addScaledVector(up,-Math.sin(b)));U.push(up.clone().multiplyScalar(Math.cos(b)).addScaledVector(right,Math.sin(b)))}}
-  let Kg=C,kind=new Uint8Array(N),gap=new Uint8Array(N),feats=[],jumps=[],drops=[];
+  let Kg=C,kind=new Uint8Array(N),gap=new Uint8Array(N),feats=[],jumps=[],drops=[],brk=null,port=null;
   /* Simple tracks: about half get one or two big vertical sections (rolling sweeps, a long dive, or a steep climb to a
      plateau and back down), and nothing that turns you over. Complex tracks pick from the full set. */
   /* Complex tracks pick a theme (a subset of feature kinds) and pack it in nearly as tightly as a maxed-out custom track,
@@ -1381,12 +1383,16 @@ function roadShape(seed,wk,cx,lk,sp){
   let fopt=null;if(!cx){const r2=rng((seed^0x5E1DE)>>>0),nv=r2()<0.45?0:r2()<0.65?1:2,sp1=rng((seed^0x5917E)>>>0)()<0.3;if(nv||sp1)fopt={r:r2,pool:[['sweep',2],['dive',1.2],['climb',1.6]],count:nv,avoid};if(sp1)fopt.extra=['spire']}
   else{const rt=rng((seed^0x7E3A5)>>>0),th=TTHEMES[Math.floor(rt()*TTHEMES.length)];fopt={r,lf:LN.f,pool:th.pool,count:14,dense:true,theme:th.n,avoid}}
   /* Custom tracks (the editor): exactly the features asked for, as many as fit. */
-  if(sp)fopt=FKG.some(k=>sp.n[k]>0)?{r,lf:LN.f,want:sp.n,avoid}:null;
+  /* (Prototype 63: a portal only in the Spirit realm; elsewhere its count is ignored) */
+  if(sp)fopt=FKG.some(k=>sp.n[k]>0&&(k!=='portal'||bk==='S'))?{r,lf:LN.f,want:bk==='S'||!sp.n.portal?sp.n:{...sp.n,portal:0},avoid}:null;
   /* Prototype 60: codes from Prototype 60 on (v1) may have the new pieces */
   const v1=seed>=TV1;if(fopt&&v1)fopt.v1=true;
   /* and a complex one may have a drop, a speed jump or a long jump, each on its own draw (14%, 15%, 12%); the long ones
      often don't fit (short tracks, other pieces in the way), so about 10%, 7% and 4% of new complex tracks have one */
   if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.14)ex.push('drop');if(rn()<0.15)ex.push('sjump');if(rn()<0.12)ex.push('cjump');if(ex.length)fopt.extra=ex}
+  /* Prototype 63: about one Spirit track in four gets a portal jump (004s), drawn on its own numbers so the rest of the
+     track is built as it would be without one; where no straight is long enough it is left out */
+  if(bk==='S'&&!sp&&rng((seed^0x9047A1)>>>0)()<0.8){if(!fopt)fopt={r:rng((seed^0x9047A2)>>>0),pool:[['sweep',1]],count:0,avoid};fopt.extra=[...(fopt.extra||[]),'portal']}
   let dropped={};
   if(fopt){let best=null;const ban={};
     /* Try up to six layouts and keep the first with no faults (see trackFaults). If none is clean, leave out one of each
@@ -1399,7 +1405,7 @@ function roadShape(seed,wk,cx,lk,sp){
       if(!best||c<best.c){best={f,c,o,fl}}if(!c)break;
       if(att>=5){const seen=new Set();for(const x of fl)for(const k of x.in)if(!seen.has(k)){seen.add(k);ban[k]=(ban[k]||0)+1}if(!seen.size&&att>=6&&att<13)att=13}}
     const f=best.f;if(best.o.want)for(const k of FKG){const cut=(fopt.want[k]||0)-(best.o.want[k]||0);if(cut>0)best.o.dropped[k]=(best.o.dropped[k]||0)+cut}
-    Object.assign(fopt,{dropped:best.o.dropped});dropped=fopt.dropped||{};({P,R,U,Tg,H,N,ds,L,kind,gap,feats,jumps}=f);drops=f.drops||[];Kg=f.K;Cs=new Float32Array(N);
+    Object.assign(fopt,{dropped:best.o.dropped});dropped=fopt.dropped||{};({P,R,U,Tg,H,N,ds,L,kind,gap,feats,jumps}=f);drops=f.drops||[];brk=f.brk||null;port=f.port||null;Kg=f.K;Cs=new Float32Array(N);
     const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let s=0;for(let k=-K;k<=K;k++)s+=Kg[(i+k+N)%N];Cs[i]=s/(2*K+1)}}
   /* ---- splits: the road divides into a long route and a short one, then joins again ----
      The long route swings 70-140 m out to one side over a hill and carries two boost pads, an ammo strip and a shield
@@ -1494,7 +1500,7 @@ function roadShape(seed,wk,cx,lk,sp){
         height, swings out to one side and comes down to join the lower one, which is wider at first to catch the rest;
       - catch: the long jump's landing, one road half as wide again as the track for 300 m, narrowing back.
       Each is checked clear of the rest of the track (routePts) and left out if it isn't: the jump then lands on the road. */
-   for(const f of feats){if(f.kind!=='drop'&&f.kind!=='sjump'&&f.kind!=='cjump')continue;const js=jumps.filter(j=>j.kind===f.kind&&j.u0>=f.u0&&j.u0<=f.u1).sort((a,b)=>a.u0-b.u0);if(!js.length)continue;
+   for(const f of feats){if(f.kind!=='drop'&&f.kind!=='sjump'&&f.kind!=='cjump'&&f.kind!=='portal')continue;const js=jumps.filter(j=>j.kind===f.kind&&j.u0>=f.u0&&j.u0<=f.u1).sort((a,b)=>a.u0-b.u0);if(!js.length)continue;
      const rf=rng((seed^0x60E1^Math.round(f.u0))>>>0),m=Math.round(90/ds),B2=n=>[0,1].map(()=>({c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)})),inGI=(i0,n)=>i0+n+Math.round(20/ds)<gI0;
      if(f.kind==='drop'&&f.tail==='split'){const jl=js[js.length-1],i0=Math.round((jl.u1+15)/ds),n=Math.round(f.Ls/ds);if(!inGI(i0,n))continue;
        const A=45+rf()*45+W*1.1,HL=7+rf()*9,HS=rf()<0.5?-(3+rf()*4):0,Aw=(6+rf()*5)*0.55,kw=rf()<0.5?2:3,wL=W*0.42,wS=Math.max(5.6,W*0.32),pref=rf()<0.5?1:-1;
@@ -1519,7 +1525,7 @@ function roadShape(seed,wk,cx,lk,sp){
          let sep=true;for(let k=0;k<=n&&sep;k++){const d=side*(Ub.c[k]-Db.c[k]);if(d-(Ub.w[k]+Db.w[k])<-0.01&&Ub.h[k]-Db.h[k]<8.5)sep=false}if(!sep)continue;
          const pts=routePts(i0,n,m,Ub);if(!pts)continue;finishB(B);const lb=bonus==='up'?ub:1-ub;Ub.long=lb===ub;Db.long=!Ub.long;
          const S0={kind:'stack',i0,n,u0:i0*ds,u1:(i0+n)*ds,side,longB:lb,upB:ub,lowB:1-ub,bonus,b:B,pts,feat:1};mark(S0);j.stk=S0;j.hu=Hu;break}}
-     else if(f.kind==='cjump'){const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Lc/ds);if(!inGI(i0,n))continue;
+     else if(f.kind==='cjump'||f.kind==='portal'){/* (Prototype 63: and a portal jump's catch road, the same shape) */const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Lc/ds);if(!inGI(i0,n))continue;
        const B=[{c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)}];for(let k=0;k<=n;k++){const x=k/n;B[0].w[k]=W/2*(1.55-0.55*ss01((x-0.5)/0.42))}
        finishB(B);B[0].long=false;const pts=[];for(let k=0;k<=n;k+=Math.max(1,Math.round(12/ds)))pts.push(P[(i0+k)%N].clone());mark({kind:'catch',i0,n,u0:i0*ds,u1:(i0+n)*ds,side:1,longB:0,b:B,pts,feat:1});j.ctch=1}}
    for(const S0 of splits){if(S0.b.length!==2)continue;const[A0,A1]=S0.b,adj=new Uint8Array(S0.n+1);let any=0;
@@ -1533,9 +1539,10 @@ function roadShape(seed,wk,cx,lk,sp){
    if(fopt&&splits.length){const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let a=0;for(let k=-K;k<=K;k++)a+=Kg[(i+k+N)%N];Cs[i]=a/(2*K+1)}}
    if(sp&&splitDrop)dropped.split=(dropped.split||0)+splitDrop}
   const Kn=new Float32Array(N);{const raw=new Float32Array(N),d=new THREE.Vector3();for(let i=0;i<N;i++){d.subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);raw[i]=d.dot(U[i])}
+    if(port)for(const o of port){raw[o.k]=raw[(o.k-1+N)%N];raw[(o.k+1)%N]=raw[(o.k+2)%N]}
     for(let i=0;i<N;i++){let a=0;for(let k=-3;k<=3;k++)a+=raw[(i+k+N)%N];Kn[i]=a/7}}
   let corners=0;{let inC=false;for(let i=0;i<N;i++){const c=Math.abs(Cs[i])>1/180&&!kind[i];if(c&&!inC)corners++;inC=c}}
-  return{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,gI0,r,seed,wk,cx,lk,sp}}
+  return{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,gI0,r,seed,wk,cx,lk,sp,brk,port}}
 /* Contiguous index runs that are not jump gaps (the last run wraps past the start line). */
 /* What a road must never have (Prototype 31): two parts of the lap passing through each other or nearly touching (closer than
    a road width side by side and under 9.5 m apart in height at the edges, spirals and spires included), a kink (the direction turning more
@@ -1552,6 +1559,8 @@ function trackFaults(f,W){const{P,R,Tg,feats,N,ds,gap}=f,own=feats.filter(x=>x.k
       for(const j of a){const dj=j-i;if(dj<sep||N-dj<sep)continue;const q=P[j],ex=p.x-q.x,ez=p.z-q.z;if(ex*ex+ez*ez<w2&&Math.abs(p.y-q.y)-(Math.abs(R[i].y)+Math.abs(R[j].y))*W/2<9.5&&!mine(i*ds,j*ds))add('clash',i*ds,j*ds)}}}
   const skip=new Uint8Array(N);for(const x of own)for(let k=Math.floor((x.u0+10)/ds);k<=Math.ceil((x.u1-10)/ds);k++)skip[((k%N)+N)%N]=1;
   for(const d of f.drops||[])for(let k=Math.floor(d.u0/ds)-2;k<=Math.ceil(d.u1/ds)+2;k++)skip[((k%N)+N)%N]=1;
+  /* (Prototype 63: a portal's break turns the road at once: no kink to find there) */
+  for(const o of f.port||[])for(let k=o.k-Math.ceil(32/ds);k<=o.k+Math.ceil(32/ds);k++)skip[((k%N)+N)%N]=1;
   const k6=Math.max(1,Math.round(6/ds)),k15=Math.max(1,Math.round(15/ds)),ang=(a,b)=>Math.acos(clamp(a.dot(b),-1,1));
   for(let i=0;i<N;i++){if(skip[i]||gap[i]||gap[(i+k15)%N]||gap[(i-k15+N)%N])continue;
     if(ang(Tg[(i-k6+N)%N],Tg[(i+k6)%N])>0.52||ang(Tg[(i-k15+N)%N],Tg[(i+k15)%N])>0.96)add('kink',i*ds);
@@ -1625,15 +1634,17 @@ function addFeatures(b,r,W,opt={}){
        straight down the middle, pulling out underneath the ring and back onto the line */
     else if(kd==='spire'){s.Rs=clamp(104+W*1.4,120,145);s.Hs=122+r()*22;s.dpt=34;s.dir=r()<0.5?-1:1;s.Lc=2.45*s.Rs;s.len=0}
     else if(kd==='drop'||kd==='sjump'||kd==='cjump')jumpProf(s,kd);
+    /* Prototype 63: the Spirit realm's portal jump (004s) */
+    else if(kd==='portal')portalSite(s,r);
     else s.len={loop:0,twist:200,corkscrew:240,jump:lr+jumpG+12}[kd];
     if(kd==='sweep'&&opt.dense&&s.n>1){s.n=1;s.sg=[1];s.amp=[s.amp[0]];s.len=s.lam}
-    s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
+    if(kd!=='portal')s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
     if(k0==='vspire')s.rev=1;if(k0==='dhelix')s.Hh=-s.Hh;
     /* on a new code, a spire rises up the middle and spirals down half the time, and a spiral falls instead of rising (a fifth of the draws; the falling ones fit more often, so about half the spirals on new tracks fall) */
     if(opt.v1&&!opt.want&&k0==='spire'&&r()<0.5)s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
     if(k0!==kd)s.src=k0;
     return s};
-  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300})[kd]||200;
+  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300,portal:1720})[kd]||200;
   /* The spire's road, from O heading F: ease out to the side and onto the ring, one and a half turns up round it, a half
      turn in to the middle at the top, over the edge, straight down the middle and out underneath the ring. pts and ups
      are the samples; d0 is where the drop (the mag-lock) starts; q the end, heading Fh. (Prototype 60: a function, so the
@@ -1686,7 +1697,7 @@ function addFeatures(b,r,W,opt={}){
   for(let i=sites.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[sites[i],sites[j]]=[sites[j],sites[i]]}
   {const free=usable-used,wts=sites.map(()=>0.3+r()),ws=wts.reduce((a,b)=>a+b,0)||1;let cur=0.08*N*ds;
    for(let k=0;k<sites.length;k++){const st=sites[k],gap=free*wts[k]/ws,straight=st.kind!=='sweep'&&st.kind!=='dive'&&st.kind!=='climb';let best=cur+gap*r(),bs=1e9;
-     if(straight)for(let t=0;t<24;t++){const at=cur+gap*r(),i0=Math.floor(at/ds);let m=0;for(let j=0;j<Math.ceil(st.foot/ds);j+=3)m=Math.max(m,Math.abs(Cs[(i0+j)%N]));if(m<bs){bs=m;best=at}}
+     if(straight)for(let t=0;t<24;t++){const at=cur+gap*r(),i0=Math.floor(at/ds);let m=0;for(let j=0;j<Math.ceil((st.cf||st.foot)/ds);j+=3)m=Math.max(m,Math.abs(Cs[(i0+j)%N]));if(m<bs){bs=m;best=at}}
      st.i=Math.floor(best/ds);
      /* keep clear of the figure-eight crossing: push the feature past it */
      for(const[a,b]of opt.avoid||[]){const e=st.i+Math.ceil(st.foot/ds);if(e>a&&st.i<b)st.i=b+1}
@@ -1710,7 +1721,9 @@ function addFeatures(b,r,W,opt={}){
       pts.push([C0.clone().addScaledVector(Fh,st.Rs*0.42),-st.dpt,st.Hs]);for(let k=1;k<=4;k++)pts.push([C0.clone().addScaledVector(Fh,st.Rs*(0.42+k*0.2)),-st.dpt,-st.dpt]);
       for(const[q,h0,h1]of pts)for(let j=0;j<N;j+=4){const dj=((j-st.i)%N+N)%N;if(dj<=hiN||dj>=N-loN)continue;const p=P[j];if((p.x-q.x)**2+(p.z-q.z)**2<(W+40)**2&&p.y>O.y+h0-38&&p.y<O.y+h1+38)return true}return false};
     if(hits(st.dir)){st.dir=-st.dir;if(hits(st.dir))st.skip=true}}
-  {const dropped=opt.dropped||{};for(let k=sites.length-1;k>=0;k--){const st=sites[k];if(st.skip||st.i+Math.ceil(st.foot/ds)>(st.prof?0.78:0.88)*N){dropped[st.kind]=(dropped[st.kind]||0)+1;sites.splice(k,1)}}if(opt.want)opt.dropped=dropped}
+  /* Prototype 63: a portal needs a straight, nearly level approach (portalCheck) */
+  for(const st of sites)if(st.kind==='portal')portalCheck(st,b);
+  {const dropped=opt.dropped||{};for(let k=sites.length-1;k>=0;k--){const st=sites[k];if(st.skip||st.i+Math.ceil(st.foot/ds)>(st.prof||st.kind==='portal'?0.78:0.88)*N){dropped[st.kind]=(dropped[st.kind]||0)+1;sites.splice(k,1)}}if(opt.want)opt.dropped=dropped}
   sites.sort((a,b)=>a.i-b.i);
   const oP=[],oU=[],marks=[];let blend=null,blendH=null;
   const shiftAt=()=>{if(!blend)return 0;const len=Math.max(170,Math.abs(blend.dx)*5),v=blend.dx*(1-ss01(blend.d/len));blend.d+=ds;if(blend.d>len)blend=null;return v};
@@ -1733,18 +1746,23 @@ function addFeatures(b,r,W,opt={}){
      the set piece covered are skipped. (Shifting the old line sideways onto the run-out could fold the road back on
      itself, or throw it up and down on a banked bend.) q is where the set piece ends, heading Fh; it returns the base
      sample joined. */
-  const joinBack=(q,Fh,O,i,site)=>{const Y=new V(0,1,0);
-        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds)),A0=q.clone();
-        const herm=(E,m1,ch,x)=>{const x2=x*x,x3=x2*x;return A0.clone().multiplyScalar(2*x3-3*x2+1).addScaledVector(Fh,ch*(x3-2*x2+x)).addScaledVector(E,3*x2-2*x3).addScaledVector(m1,ch*(x3-x2))};
-        /* score a join by how sharply it would bend (the most it turns per metre anywhere along it) and how steep it is */
-        let bj=-1,bc=1e9;
-        for(let j=i+Math.round(adv*0.5);j<=Math.min(N-1,i+Math.round((site.foot+260)/ds));j+=2){const ch=P[j].distanceTo(q);if(ch<90)continue;
-          let prev=herm(P[j],Tg[j],ch,0),pd=null,kmax=0,smax=0;for(let k=1;k<=16;k++){const p=herm(P[j],Tg[j],ch,k/16),d=p.clone().sub(prev),l=d.length();d.divideScalar(l);
+  /* (Prototype 63: split in three, so the portal's road can join from anywhere: the curve, its score over a range of base
+     samples, and its samples; a spire joins exactly as before) */
+  const herm=(A0,Fh,E,m1,ch,x)=>{const x2=x*x,x3=x2*x;return A0.clone().multiplyScalar(2*x3-3*x2+1).addScaledVector(Fh,ch*(x3-2*x2+x)).addScaledVector(E,3*x2-2*x3).addScaledVector(m1,ch*(x3-x2))};
+  /* score a join by how sharply it would bend (the most it turns per metre anywhere along it) and how steep it is */
+  const joinScore=(q,Fh,j0,j1)=>{let bj=-1,bc=1e9;const A0=q.clone();
+        for(let j=j0;j<=j1;j+=2){const ch=P[j].distanceTo(q);if(ch<90)continue;
+          let prev=herm(A0,Fh,P[j],Tg[j],ch,0),pd=null,kmax=0,smax=0;for(let k=1;k<=16;k++){const p=herm(A0,Fh,P[j],Tg[j],ch,k/16),d=p.clone().sub(prev),l=d.length();d.divideScalar(l);
             if(pd)kmax=Math.max(kmax,Math.acos(clamp(d.dot(pd),-1,1))/l);smax=Math.max(smax,Math.abs(d.y));pd=d;prev=p}
           const c=kmax*120+Math.max(0,smax-0.3)*6+ch/5000;if(c<bc){bc=c;bj=j}}
+        return bj};
+  const joinEmit=(q,Fh,bj)=>{const Y=new V(0,1,0),A0=q.clone(),E=P[bj],ch=Math.max(60,E.distanceTo(q)),nC=Math.ceil(ch*1.15/ds);
+          for(let k=0;k<nC;k++){const x=k/nC;emit(herm(A0,Fh,E,Tg[bj],ch,x),Y.clone().lerp(U[bj],ss01(x)).normalize())}};
+  const joinBack=(q,Fh,O,i,site)=>{
+        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds));
+        let bj=joinScore(q,Fh,i+Math.round(adv*0.5),Math.min(N-1,i+Math.round((site.foot+260)/ds)));
         if(bj<0)bj=Math.min(N-1,i+adv);
-        {const E=P[bj],ch=Math.max(60,E.distanceTo(q)),nC=Math.ceil(ch*1.15/ds);
-          for(let k=0;k<nC;k++){const x=k/nC;emit(herm(E,Tg[bj],ch,x),Y.clone().lerp(U[bj],ss01(x)).normalize())}}
+        joinEmit(q,Fh,bj);
         return bj};
   let si=0,i=0;
   while(i<N){const site=sites[si];
@@ -1784,6 +1802,8 @@ function addFeatures(b,r,W,opt={}){
         marks.push({kind:'sdrop',a:start,b:start+g.nMag});
         marks.push({kind:kd,a:start,b:oP.length,data:{...g.data,src:site.src}});
         i=joinBack(g.q,g.Fh,O,i,site);blend=null;blendH=null;upB=null}
+      /* Prototype 63: the portal jump (004s): the approach, the break, the exit road, and back onto the line like a spire */
+      else if(kd==='portal'){i=portalEmit({P,U,N,ds,i,site,emit,marks,oP,RH,shiftAt,liftAt,upAt,joinScore,joinEmit,W});blend=null;blendH=null;upB=null}
       else{const n=Math.ceil(site.len/ds);
         /* on a sloping stretch a rise or drop is made smaller, so together they stay under about 35 degrees */
         if(kd==='climb'||kd==='dive'||kd==='sweep'){let sb=0;for(let k=0;k<n;k+=2){const t=Tg[Math.min(N-1,i+k)];sb=Math.max(sb,Math.abs(t.y)/Math.max(0.2,Math.hypot(t.x,t.z)))}const room=Math.max(0.12,0.7-sb);
@@ -1817,26 +1837,33 @@ function addFeatures(b,r,W,opt={}){
         marks.push({kind:kd,a:start,b:oP.length,data:site.prof?{nd:site.nd,tail:site.tail,Ls:site.Ls,hu:site.hu,bonus:site.bonus,Lc:site.Lc}:null});continue}}
     const s=shiftAt();emit(P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),upAt(i));i++}
   // even resampling of the closed polyline
-  const M=oP.length,cum=new Float64Array(M+1);for(let k=1;k<=M;k++)cum[k]=cum[k-1]+oP[k%M].distanceTo(oP[k-1]);
+  /* (Prototype 63: a portal's break, from the entrance to the exit, has no length: u runs straight through it) */
+  const brkA=new Set();for(const m of marks)if(m.kind==='pbrk')brkA.add(m.a);
+  const M=oP.length,cum=new Float64Array(M+1);for(let k=1;k<=M;k++)cum[k]=cum[k-1]+(brkA.size&&brkA.has(k-1)?0:oP[k%M].distanceTo(oP[k-1]));
   const L=cum[M],N2=Math.round(L/2),ds2=L/N2,P2=[],U2=[],map=new Float64Array(M);for(let k=0;k<M;k++)map[k]=cum[k];
   let seg=0;for(let k=0;k<N2;k++){const s=k*ds2;while(seg<M-1&&cum[seg+1]<s)seg++;const a=(s-cum[seg])/Math.max(1e-9,cum[seg+1]-cum[seg]);
     P2.push(new V().lerpVectors(oP[seg],oP[(seg+1)%M],a));U2.push(new V().lerpVectors(oU[seg],oU[(seg+1)%M],a).normalize())}
   const T2=[],R2=[],H2=new Float32Array(N2),K2=new Float32Array(N2),kind=new Uint8Array(N2),gap=new Uint8Array(N2);
-  for(let k=0;k<N2;k++){const t=new V().subVectors(P2[(k+1)%N2],P2[(k-1+N2)%N2]).normalize();T2.push(t);const u=U2[k];u.addScaledVector(t,-u.dot(t)).normalize();R2.push(new V().crossVectors(t,u));H2[k]=Math.atan2(t.x,t.z)}
+  /* the break's sample (the last before the entrance) and the portal's frames; its tangents and curvature are one-sided */
+  let brk=null;const port=[];if(brkA.size){brk=new Uint8Array(N2);for(const m of marks)if(m.kind==='pbrk'){const o=portalFrames(m.d,map[m.a],ds2,N2);brk[o.k]=1;port.push(o)}}
+  for(let k=0;k<N2;k++){const t=brk&&brk[k]?new V().subVectors(P2[k],P2[(k-1+N2)%N2]).normalize():brk&&brk[(k-1+N2)%N2]?new V().subVectors(P2[(k+1)%N2],P2[k]).normalize():new V().subVectors(P2[(k+1)%N2],P2[(k-1+N2)%N2]).normalize();T2.push(t);const u=U2[k];u.addScaledVector(t,-u.dot(t)).normalize();R2.push(new V().crossVectors(t,u));H2[k]=Math.atan2(t.x,t.z)}
   for(let k=0;k<N2;k++){const d=new V().subVectors(T2[(k+1)%N2],T2[(k-1+N2)%N2]).divideScalar(2*ds2);K2[k]=-d.dot(R2[k])}
-  const feats=[],jumps=[],drops=[];let lip=null,lip2=null;const NEWJ={drop:1,sjump:1,cjump:1};
+  if(brk)for(const o of port){const k=o.k;K2[k]=K2[(k-1+N2)%N2];K2[(k+1)%N2]=K2[(k+2)%N2]}
+  const feats=[],jumps=[],drops=[];let lip=null,lip2=null,pk0=null;const NEWJ={drop:1,sjump:1,cjump:1,portal:1};
   for(const m of marks){const u0=map[m.a];
     if(m.kind==='lip2'){lip2=u0;continue}
+    /* Prototype 63: a portal's stretch for the things that keep off features (from 60 m before the jump's line to the turn) */
+    if(m.kind==='pbrk')continue;if(m.kind==='pkind0'){pk0=u0;continue}if(m.kind==='pkind1'){for(let k=Math.floor(pk0/ds2);k<=Math.ceil(u0/ds2);k++)kind[k%N2]=1;continue}
     if(m.kind==='land2'){const d=m.d;jumps.push({u0:lip2,u1:u0,G:u0-lip2,slope:d.slope,lipH:d.lipH,kind:d.kind});for(let k=Math.ceil(lip2/ds2);k<=Math.floor(u0/ds2);k++)gap[k%N2]=1;
       for(let k=Math.floor((lip2-30)/ds2);k<=Math.ceil((u0+30)/ds2);k++)kind[((k%N2)+N2)%N2]=1;continue}
     if(NEWJ[m.kind]){const u1=m.b<M?map[m.b]:L;feats.push({kind:m.kind,u0,u1,...(m.data||{})});continue}
     if(m.kind==='lip')lip=u0;else if(m.kind==='sdrop')drops.push({u0,u1:m.b<M?map[m.b]:L});else if(m.kind==='land'){jumps.push({u0:lip,u1:u0,G:u0-lip,slope:2*1.2/24,lipH:1.2});for(let k=Math.ceil(lip/ds2);k<=Math.floor(u0/ds2);k++)gap[k%N2]=1}
     else{const u1=m.b<M?map[m.b]:L;feats.push({kind:m.kind,u0,u1,...(m.data||{})});if(m.kind!=='sweep'&&m.kind!=='dive'&&m.kind!=='climb')for(let k=Math.floor(u0/ds2);k<=Math.ceil(u1/ds2);k++)kind[k%N2]=1}}
-  return{P:P2,U:U2,R:R2,Tg:T2,H:H2,K:K2,N:N2,ds:ds2,L,kind,gap,feats,jumps,drops}}
+  return{P:P2,U:U2,R:R2,Tg:T2,H:H2,K:K2,N:N2,ds:ds2,L,kind,gap,feats,jumps,drops,brk,port:brk?port:null}}
 /* Prototype 61: the second step of buildTrack: draws the road from rd (roadShape) into a new group and places what races
    use on it (pads, zones, marks, wall heights, catch fences, mag-lock). Returns them, the drawing helpers (strip, add,
    basis, the road's materials) and the road's bounds, for the scenery and T. */
-function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl,splits,feats,jumps,drops,gI0,r}=rd;
+function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl,splits,feats,jumps,drops,gI0,r,brk}=rd;
   const group=new THREE.Group();scene.add(group);
   function strip(latA,hA,latB,hB,o={}){
     const from=o.from||0,to=o.to==null?N:o.to,rows=to-from+1,uvS=o.uv||0;
@@ -1857,7 +1884,7 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
   const glass=new THREE.MeshBasicMaterial({color:0xffb000,transparent:true,opacity:.10,side:THREE.DoubleSide,depthWrite:false});
   const rail=new THREE.MeshBasicMaterial({color:0xffb000,side:THREE.DoubleSide});
   const dark=new THREE.MeshLambertMaterial({color:0x0e1015,side:THREE.DoubleSide});
-  const skip=new Uint8Array(N);for(let i=0;i<N;i++)skip[i]=gap[i]||spl[i]?1:0;
+  const skip=new Uint8Array(N);for(let i=0;i<N;i++)skip[i]=gap[i]||spl[i]||brk&&brk[i]?1:0;/* (Prototype 63: the road ends at a portal's entrance and starts again at its exit) */
   /* mag-lock: the drop down the middle of a spire, from just before the edge to the bottom of the pull-out */
   const mag=new Uint8Array(N);for(const d of drops){const a=Math.floor((d.u0-30)/ds),b=Math.ceil((d.u1+10)/ds);for(let k=a;k<=b;k++)mag[((k%N)+N)%N]=1}
   {const mM=new THREE.MeshBasicMaterial({map:magTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});let k=0;
@@ -2003,7 +2030,7 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
   {const railM=rail,fG=new THREE.MeshBasicMaterial({color:0xffb000,transparent:true,opacity:.06,side:THREE.DoubleSide,depthWrite:false}),postM=new THREE.MeshLambertMaterial({color:0x2a2e36});
    const fl=0.12,w0=W/2+0.05,c=i=>ctop[i%N],bot=i=>gap[i%N]?-0.3:wallH[i%N]+0.18,runs=[],posts=[],pE=Math.round(12/ds);
    let k0=0;while(k0<N&&ctop[k0]>0)k0++;
-   for(let k=k0;k<k0+N;k++){if(!(ctop[k%N]>0))continue;let e=k;while(e<k0+N&&ctop[e%N]>0)e++;runs.push([k,e-1]);k=e}
+   for(let k=k0;k<k0+N;k++){if(!(ctop[k%N]>0))continue;let e=k;while(e<k0+N&&ctop[e%N]>0&&!(brk&&brk[(e-1+N)%N]&&e>k))e++;runs.push([k,e-1]);k=e-1}
    for(const[a,b]of runs){
      for(const sd of[-1,1]){const L=h=>sd*(w0+fl*h);
        add(strip(i=>L(bot(i)),bot,i=>L(c(i)),c,{from:a,to:b}),fG);add(strip(i=>L(c(i)),c,i=>L(c(i)+0.2),i=>c(i)+0.2,{from:a,to:b}),railM)}
@@ -2050,10 +2077,13 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
     const beam=new THREE.Mesh(new THREE.BoxGeometry(W+3.1,k?0.6:1.4,0.7),m);beam.position.set(0,8,0);g.add(beam);
     g.position.copy(P[i]);g.quaternion.copy(basis(i));group.add(g)}
 
+  /* Prototype 63: the portals' rings, discs and signs (004s) */
+  const portFx=rd.port?portalRoad({...rd,group,strip,add,basis,standOK,signI,wallH,ctop}):null;
   let minY=1e9,maxY=-1e9,minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;for(const p of P){minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minZ=Math.min(minZ,p.z);maxZ=Math.max(maxZ,p.z)}
-  return{group,strip,add,basis,dark,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ}}
+  return{group,strip,add,basis,dark,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,portFx}}
 const sm={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0};
 function sampleAt(u,o=sm){const{L,N,ds,P,R,U,Tg,H}=T;const f=(((u%L)+L)%L)/ds;const i=Math.floor(f)%N,j=(i+1)%N,a=f-Math.floor(f);
+  if(T.brk&&T.brk[i])return portalSample(o,i,j,a);/* (Prototype 63: never between a portal's entrance and exit) */
   o.p.lerpVectors(P[i],P[j],a);o.r.lerpVectors(R[i],R[j],a).normalize();o.u.lerpVectors(U[i],U[j],a).normalize();o.t.lerpVectors(Tg[i],Tg[j],a).normalize();o.h=H[i]+wrapA(H[j]-H[i])*a;return o}
 const idxAt=u=>Math.floor((((u%T.L)+T.L)%T.L)/T.ds)%T.N;
 /* Where the road is at distance u and lateral position lat. Outside a split: the main road (height 0, walls at ±W/2).
@@ -2284,7 +2314,7 @@ function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,drop
             for(let a2=0;a2<=n;a2++)for(let b2=0;b2<=n-a2;b2++){const u=a2/n,v=b2/n,w=1-u-v;if(inRoad(ax*u+bx*v+cx*w,ay*u+by*v+cy*w,az*u+bz*v+cz*w))return false}}}}
         return true};
     return{scan,tilt,inRoad,clearTri}};
-  const ctx={seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,drops,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
+  const ctx={port:rd.port||null,seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,drops,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
   return ctx}
 function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   const{bk,LK,day,er,floorY,ds,lam,BOX,group,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,pl}=ctx;
@@ -3107,8 +3137,8 @@ function scenerySpirit(ctx){
   /* ---- knots that untie and tie again as another knot (KNOT: two shapes, one morph) ---- */
   const knotAt=(Lb,c,size,pal,fast)=>{const A=SPS.knot(2,3,size*0.6,size*0.28,fast?120:180,3,size*0.05),B=SPS.knot(3,5,size*0.55,size*0.25,fast?120:180,3,size*0.05);
     Lb.obj({c,m:[1,0.15*sgn(),r()*TAU,0],ax:rax(),pal,br:0.04,ext:size});A.forEach((S,s)=>{for(let i=0;i<S.length-1;i++)Lb.seg(S[i],S[i+1],i/S.length,1,B[s][i],B[s][i+1])})};
-  if(q)for(let n=0,nn=cnt(0.8,[0,0.6,1]);n<nn;n++){const size=R2(14,24);put('knots',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(55,100),R2(20,50));return{b:[[...c,size*1.0]],add:()=>knotAt(knotL,c,size,pick([1,3,4,5]),q<2)}})}
-  if(q===2)put('knots (huge)',6,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(700,900),R2(250,350));return{b:[[...c,240]],add:()=>knotAt(knotL,c,240,4)}});
+  /* Prototype 63: no longer free in the sky (Eric: "a little out of place"): the knots frame the portals instead (004s) */
+  if(q&&ctx.port)spPortalKnots(ctx,knotL,clr,r,st,why);
 
   /* ---- unfolding solids: a cube opens into its cross and folds back, a tetrahedron into its star (faces hinge on the beat) ---- */
   if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),cube=n%2===0;
@@ -3415,7 +3445,8 @@ const SPC_O={margin:6,below:4,above:16,jumpAbove:40,sight:300,camBack:12,camUp:4
 function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2,drops=ctx.drops||[];
   /* where frames leave the road: every jump (its gap and 80 m after), every drop and every spire's fall */
   const air=new Uint8Array(N),mark=(u0,u1)=>{for(let u=u0;u<=u1;u+=ds){air[(((Math.round(u/ds))%N)+N)%N]=1}};
-  for(const j of jumps||[])mark(j.u0-30,j.u1+80);for(const d of drops)if(d.u0!=null)mark(d.u0-30,(d.u1!=null?d.u1:d.u0)+80);
+  /* (Prototype 63: a portal jump's air from 12 m before its lip, clear of the exit's ring, to where the fastest land, 420 m on) */
+  for(const j of jumps||[])if(j.kind==='portal')mark(j.u0-12,j.u0+420);else mark(j.u0-30,j.u1+80);for(const d of drops)if(d.u0!=null)mark(d.u0-30,(d.u1!=null?d.u1:d.u0)+80);
   for(const f of feats||[])if(f.kind==='drop'||f.kind==='sjump'||f.kind==='cjump')mark(f.u0-30,f.u1+80);
   /* the samples: {p, r, up, t, hw, above}, in a 3D grid of CELL metres (grid keys wrap every 1024 cells, 20 km and more:
      a far cell that shares a key only adds candidates, which the exact tests then turn away) */
@@ -3439,10 +3470,23 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
      is clear without the exact tests (they are only needed near the road and near the bends' sight lines) */
   const QC=20,qk=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023),QN=new Set(),QS=new Set();
   for(let n=0;n<S.length;n+=3){const s=S[n],a=Math.floor(s.x/QC),b=Math.floor(s.y/QC),c=Math.floor(s.z/QC);for(let da=-3;da<=3;da++)for(let db=-3;db<=3;db++)for(let dc=-3;dc<=3;dc++)QN.add(qk(a+da,b+db,c+dc))}
-  const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0};let nIn=0;
+  const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0},cm={x:0,y:0,z:0},_c=new THREE.Vector3();let nIn=0;
+  /* Prototype 63: a sight line from before a portal's entrance to the road after it is the view through the portal: from
+     the camera carried by the portal (M) to the road beyond the exit; brkIn finds the portal between two samples */
+  const PT=ctx.port||[],brkIn=(a,b)=>{for(const o of PT)if((o.k-a+N)%N<(b-a+N)%N)return o;return null};
+  const addSL=sg=>{const n=SL.push(sg)-1;
+        const a0=Math.floor(Math.min(sg[0],sg[3])/SG),a1=Math.floor(Math.max(sg[0],sg[3])/SG),b0=Math.floor(Math.min(sg[1],sg[4])/SG),b1=Math.floor(Math.max(sg[1],sg[4])/SG),c0=Math.floor(Math.min(sg[2],sg[5])/SG),c1=Math.floor(Math.max(sg[2],sg[5])/SG);
+        /* long rays cross many cells: put them only in the cells the line passes near (every half cell along it) */
+        const len=Math.hypot(sg[3]-sg[0],sg[4]-sg[1],sg[5]-sg[2]),nn=Math.max(1,Math.ceil(len/(SG*0.5)));const seen=new Set();
+        if((a1-a0+1)*(b1-b0+1)*(c1-c0+1)<=8){for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++)seen.add(skey(a,b,c))}
+        else for(let q=0;q<=nn;q++){const f=q/nn,x=sg[0]+(sg[3]-sg[0])*f,y=sg[1]+(sg[4]-sg[1])*f,z=sg[2]+(sg[5]-sg[2])*f;for(const dx of[-1,0,1])for(const dz of[-1,0,1])seen.add(skey(Math.floor((x+dx*SG*0.3)/SG),Math.floor(y/SG),Math.floor((z+dz*SG*0.3)/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y+SG*0.3)/SG),Math.floor(z/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y-SG*0.3)/SG),Math.floor(z/SG)))}
+        for(let q=0,nq=Math.max(1,Math.ceil(len/10));q<=nq;q++){const f=q/nq;QS.add(qk(Math.floor((sg[0]+(sg[3]-sg[0])*f)/QC),Math.floor((sg[1]+(sg[4]-sg[1])*f)/QC),Math.floor((sg[2]+(sg[5]-sg[2])*f)/QC)))}
+        for(const kk of seen){let L=SM.get(kk);if(!L)SM.set(kk,L=[]);L.push(n)}};
   for(let i=0;i<N;i+=step){if(ctx.gap&&ctx.gap[i])continue;const ic=(i-back+N)%N;
     for(const cl of[-hw*0.6,0,hw*0.6]){ptAt(ic,cl,O.camUp+1,ca);
-      for(let k=1;k<=nT;k++){const it=(i+k*tst)%N;if(ctx.gap&&ctx.gap[it])continue;for(const tl of[-hw,0,hw]){ptAt(it,tl,1,tb);
+      for(let k=1;k<=nT;k++){const it=(i+k*tst)%N;if(ctx.gap&&ctx.gap[it])continue;const po=PT.length?brkIn(ic,it):null;
+        if(po){_c.set(ca.x,ca.y,ca.z).applyMatrix4(po.M);cm.x=_c.x;cm.y=_c.y;cm.z=_c.z}
+        for(const tl of[-hw,0,hw]){ptAt(it,tl,1,tb);if(po){if(portalThrough(po,cm.x,cm.y,cm.z,tb.x,tb.y,tb.z))addSL([cm.x,cm.y,cm.z,tb.x,tb.y,tb.z]);continue}
         /* a sight line that stays inside the keep-out all the way adds nothing (anything on it is already kept out): most
            do, on any road that isn't bending hard, so they are left out (checked at six points, each in the box of a
            road sample near where it should be) */
@@ -3450,14 +3494,11 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
           for(let dm=-3;dm<=3&&!hit;dm++){const m=((m0+dm)%N+N)%N,dx=x-P[m].x,dy=y-P[m].y,dz=z-P[m].z;if(Math.abs(dx*Tg[m].x+dy*Tg[m].y+dz*Tg[m].z)>ds*0.75)continue;if(Math.abs(dx*R[m].x+dy*R[m].y+dz*R[m].z)>hw+O.margin-0.5)continue;const h=dx*U[m].x+dy*U[m].y+dz*U[m].z;if(h>-O.below+0.5&&h<O.above-0.5)hit=true}
           if(!hit)inside=false}
         if(inside){nIn++;continue}
-        const sg=[ca.x,ca.y,ca.z,tb.x,tb.y,tb.z],n=SL.push(sg)-1;
-        const a0=Math.floor(Math.min(sg[0],sg[3])/SG),a1=Math.floor(Math.max(sg[0],sg[3])/SG),b0=Math.floor(Math.min(sg[1],sg[4])/SG),b1=Math.floor(Math.max(sg[1],sg[4])/SG),c0=Math.floor(Math.min(sg[2],sg[5])/SG),c1=Math.floor(Math.max(sg[2],sg[5])/SG);
-        /* long rays cross many cells: put them only in the cells the line passes near (every half cell along it) */
-        const len=Math.hypot(sg[3]-sg[0],sg[4]-sg[1],sg[5]-sg[2]),nn=Math.max(1,Math.ceil(len/(SG*0.5)));const seen=new Set();
-        if((a1-a0+1)*(b1-b0+1)*(c1-c0+1)<=8){for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++)seen.add(skey(a,b,c))}
-        else for(let q=0;q<=nn;q++){const f=q/nn,x=sg[0]+(sg[3]-sg[0])*f,y=sg[1]+(sg[4]-sg[1])*f,z=sg[2]+(sg[5]-sg[2])*f;for(const dx of[-1,0,1])for(const dz of[-1,0,1])seen.add(skey(Math.floor((x+dx*SG*0.3)/SG),Math.floor(y/SG),Math.floor((z+dz*SG*0.3)/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y+SG*0.3)/SG),Math.floor(z/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y-SG*0.3)/SG),Math.floor(z/SG)))}
-        for(let q=0,nq=Math.max(1,Math.ceil(len/10));q<=nq;q++){const f=q/nq;QS.add(qk(Math.floor((sg[0]+(sg[3]-sg[0])*f)/QC),Math.floor((sg[1]+(sg[4]-sg[1])*f)/QC),Math.floor((sg[2]+(sg[5]-sg[2])*f)/QC)))}
-        for(const kk of seen){let L=SM.get(kk);if(!L)SM.set(kk,L=[]);L.push(n)}}}}}
+        addSL([ca.x,ca.y,ca.z,tb.x,tb.y,tb.z])}}}}
+  /* and the portal jump watched: from the chase cameras on the 400 m before the entrance to the ramp and the flight (the
+     road and 8 m over it, to 80 m past the main road), and from the ramp and the flight back down to the main road's
+     last 300 m (the jumpers looking down on the ones coming): nothing may stand in those lines either (portalWatch, 004s) */
+  for(const sg of portalWatch(ctx,O))addSL(sg);
   /* does a ball touch a sight line? (a little margin for the other camera views) */
   const sight=(x,y,z,r)=>{r+=1.5;const a0=Math.floor((x-r)/SG),a1=Math.floor((x+r)/SG),b0=Math.floor((y-r)/SG),b1=Math.floor((y+r)/SG),c0=Math.floor((z-r)/SG),c1=Math.floor((z+r)/SG);
     for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++){const L=SM.get(skey(a,b,c));if(!L)continue;
@@ -3712,15 +3753,186 @@ const _spV2=new THREE.Vector2(),_spS={p:new THREE.Vector3(),r:new THREE.Vector3(
 {const b=$('calmBtn'),sync=()=>{if(b)b.setAttribute('aria-pressed',String(spCalm()))};
   if(b)b.onclick=()=>{SP_CALM=!spCalm();store.set('hoverline.calm',SP_CALM?'1':'0');sync();try{audio.blip(SP_CALM?880:440,0.06,0.05)}catch(e){}};
   const g=$('gfxOpen');if(g)g.addEventListener('click',sync);sync()}
+/* Prototype 63: Eric's portal jump ("on a straight ahead you drive straight into a portal, the portal exit is to the right
+   of the portal entrance and some distance before it, and it exits straight into a ramp that creates a jump over the
+   track and lands on the other side"), dossier items 49 (the exit facing across the road) and 50 (facing 45 degrees
+   forward-left), designed in docs/spirit-p62/PORTALS.md. Spirit tracks only (codes ending -S).
+
+   The road: the centreline has a break. Sample k (T.brk[k]) is the last before the entrance E; sample k+1 is the first
+   after the exit X, somewhere else. Distance along the track (u) runs straight through: E and X are the same u (uE), so
+   a racer's u, lap, place, lat, height and speed carry over and only its world position jumps. The break has no length
+   in u. Everything that steps from sample to sample treats k as an end of road (tangents and curvature are one-sided,
+   sampleAt never lerps across, the road and its walls are drawn in two runs), and a camera that crosses is carried by the
+   portal's transform M (the entrance's frame to the exit's), so the picture is continuous.
+
+   Geometry (in the entrance's frame: forward along the main road, right, up; all numbers per width in portalDims):
+   - 49, across: the exit 62/56/51 m right (Wide/Standard/Narrow) and B = 27/24/21.5 m before E, 19 m over the main road,
+     facing left. A 30 m ramp rises 2 m to the lip, W+6 m right of the main centreline (so the ramp is clear of the main
+     road's keep-out), then a 130 m gap (the flight over the main road, 21 m over it), a 230 m catch road 4 m under the
+     main road's level (half as wide again at first), a 110 degree turn back (radius 170 m) and a smooth join onto the
+     main road's line 250-1300 m past E.
+   - 50, diagonal: the same pieces, facing 45 degrees forward-left; the flight crosses the main centreline Bc = 64/56/50 m
+     before E (so the flight and its keep-out pass clear of the entrance ring), and the turn back is 65 degrees.
+   Why so close (the dossier had the exit 120 m back): a racer g seconds behind the leader at speed v is v*g metres back
+   when the leader enters E; the leader crosses over the main road (B + ramp + lip offset) metres later, and the follower
+   sees it ahead only while it is still short of the crossing line. So the follower sees the leader cross ahead when
+   v*g > B + 30 + (W+6) + ~40 m (to see it in front, not overhead): at 150 m/s about 0.85 s on 49 (round 2's 120 m back
+   needed 1.5-2.3 s). Moving the exit further back makes it worse, not better. A longer flight (the lip 25 m over the
+   catch road: about 1.5 s at 94 m/s, 1.8 s at 150, as the long jump) keeps the leaders in the air for longer.
+   - A launch pad on the ramp (the physics' jump floor, as speed and long jumps): anyone under the speed that clears the
+     gap leaves the lip at it (94 m/s), so nobody falls short. */
+const PORT_O={La:360,Bl:150,Lr:30,Hr:2,hX:19,hLand:-4,G:130,Lc:230,Ra:170,thP:110*Math.PI/180,thD:65*Math.PI/180,j0:250,j1:1300};
+function portalDims(w){const m=SPC_O.margin,ringR=Math.hypot(w/2+m,(SPC_O.above+SPC_O.below)/2)+5,hc=(SPC_O.above-SPC_O.below)/2;
+  return{ringR,hc,Lp:w+6,B:w/2+m+8,Bc:Math.ceil(ringR+12+(w/2+7)*Math.SQRT2)}}
+/* a portal site (addFeatures): the variant (49 or 50) and side are drawn here; len is the approach, foot what it takes of
+   the base line (the join comes back onto it up to 1.3 km past the entrance), cf the stretch that must be straight */
+function portalSite(s,r){s.pv=r()<0.5?'p':'d';s.sd=1;s.len=PORT_O.La;s.cf=PORT_O.La+40;s.foot=PORT_O.La+PORT_O.j1+60}
+/* only where the base line runs straight and nearly level for the approach: under 0.1 slope, no bend tighter than
+   220 m, and the straight line from its start to the entrance never more than 45 m off the base line */
+function portalCheck(st,b){const{P,Cs,N,ds}=b,n=Math.round(PORT_O.La/ds),i0=st.i,why=k=>{st.skip=true;st.why=k};if(i0+n+Math.round(PORT_O.j1/ds)>=N)return why('end');
+  const A=P[i0],B=P[i0+n],dx=B.x-A.x,dz=B.z-A.z,L0=Math.hypot(dx,dz)||1;if(Math.abs(B.y-A.y)/L0>0.1)return why('slope');
+  let cm=0,dm=0;for(let j=0;j<=n;j+=2){const q=P[i0+j],t=j/n;cm=Math.max(cm,Math.abs(Cs[i0+j]));dm=Math.max(dm,Math.hypot(A.x+dx*t-q.x,A.z+dz*t-q.z))}
+  if(cm>1/220)why('bend '+Math.round(1/cm));else if(dm>45)why('off '+Math.round(dm))}
+/* the portal's road from base sample i (addFeatures' emit loop): the approach straightened onto the line from i to the
+   entrance, the break, the exit road; it returns the base sample the join came back to. c: {P,U,N,ds,i,site,emit,marks,
+   oP,RH,shiftAt,liftAt,upAt,joinScore,joinEmit,W} */
+function portalEmit(c){const{P,N,ds,site:st,emit,marks,oP}=c,V=THREE.Vector3,Y=new V(0,1,0),O=PORT_O,D=portalDims(c.W),n=Math.round(O.La/ds),i=c.i,start=oP.length;
+  const bp=[],bu=[];for(let j=0;j<=n;j++){const q=i+j;bp.push(P[q].clone().addScaledVector(c.RH(q),c.shiftAt()).addScaledVector(Y,c.liftAt()));bu.push(c.upAt(q))}
+  const A=bp[0],E=bp[n].clone(),diag=st.pv==='d',zC=diag?D.Bc:D.B,kb=Math.max(0,n-Math.round((zC+(diag?D.Lp:0)+60)/ds));
+  for(let j=0;j<=n;j++){const w=ss01(j*ds/O.Bl),ln=A.clone().lerp(E,j/n);if(j===kb)marks.push({kind:'pkind0',a:oP.length});emit(bp[j].clone().lerp(ln,w),bu[j].clone().lerp(Y,w).normalize())}
+  const Fe=E.clone().sub(A).normalize(),Fh=new V(Fe.x,0,Fe.z).normalize(),Rt=new V().crossVectors(Fh,Y).normalize(),s=Fe.y/Math.max(0.2,Math.hypot(Fe.x,Fe.z)),sd=st.sd,
+    dirD=diag?Rt.clone().multiplyScalar(-sd).add(Fh).normalize():Rt.clone().multiplyScalar(-sd),yC=E.y-s*zC,
+    L0=E.clone().addScaledVector(Fh,diag?-zC-D.Lp:-zC).addScaledVector(Rt,sd*D.Lp),X=L0.clone().addScaledVector(dirD,-O.Lr),
+    sl=2*O.Hr/O.Lr,hLip=O.hX+O.Hr,J={lipH:hLip-O.hLand,slope:sl,G:O.G,kind:'portal'};
+  L0.y=X.y=0;const aE=oP.length-1;
+  /* the exit road: ramp, gap (the hidden line under the flight), catch, the turn back towards the main line */
+  const at=(t,y)=>L0.clone().addScaledVector(dirD,t).setY(yC+y);
+  for(let t=-O.Lr;t<0;t+=ds)emit(at(t,O.hX+O.Hr*((t+O.Lr)/O.Lr)**2),Y.clone());
+  marks.push({kind:'lip2',a:oP.length,d:J});for(let t=0;t<O.G;t+=ds)emit(at(t,O.hLand+jC(J,t/O.G)),Y.clone());
+  marks.push({kind:'land2',a:oP.length,d:J});for(let t=O.G;t<O.G+O.Lc;t+=ds)emit(at(t,O.hLand),Y.clone());
+  const Q0=at(O.G+O.Lc,O.hLand),nrm=Fh.clone().addScaledVector(dirD,-Fh.dot(dirD)).normalize(),th=diag?O.thD:O.thP,Cc=Q0.clone().addScaledVector(nrm,O.Ra),nA=Math.ceil(th*O.Ra/ds);
+  for(let k=0;k<nA;k++){const f=th*k/nA;emit(Cc.clone().addScaledVector(nrm,-O.Ra*Math.cos(f)).addScaledVector(dirD,O.Ra*Math.sin(f)),Y.clone())}
+  const q=Cc.clone().addScaledVector(nrm,-O.Ra*Math.cos(th)).addScaledVector(dirD,O.Ra*Math.sin(th)),hq=dirD.clone().multiplyScalar(Math.cos(th)).addScaledVector(nrm,Math.sin(th)).normalize();
+  marks.push({kind:'pkind1',a:oP.length});
+  const iE=i+n;let bj=c.joinScore(q,hq,iE+Math.round(O.j0/ds),Math.min(N-1,iE+Math.round(O.j1/ds)));if(bj<0)bj=Math.min(N-1,iE+Math.round(O.j1/ds));c.joinEmit(q,hq,bj);
+  marks.push({kind:'pbrk',a:aE,d:{pv:st.pv,sd,E:E.clone(),Fe:Fe.clone(),X:X.clone().setY(yC+O.hX),Fx:dirD.clone(),yC,s,ringR:D.ringR,hc:D.hc,zC,Lp:D.Lp}});
+  marks.push({kind:'portal',a:start,b:oP.length,data:{pv:st.pv,side:sd,Lc:O.Lc+0.6*th*O.Ra}});
+  return bj}
+/* the resampled break: k, the share of the step before E (aE), and the two frames and the transform E to X, M (with
+   its turn Q) and back */
+function portalFrames(d,uE,ds2,N2){const V=THREE.Vector3,Y=new V(0,1,0),k=Math.floor(uE/ds2+1e-9)%N2,o={k,aE:(uE-k*ds2)/ds2,uE,pv:d.pv,sd:d.sd,ringR:d.ringR,hc:d.hc,E:d.E,X:d.X,yC:d.yC,zC:d.zC,Lp:d.Lp};
+  const fr=(p,f)=>{const r=new V().crossVectors(f,Y).normalize(),u=new V().crossVectors(r,f).normalize();return new THREE.Matrix4().makeBasis(r,u,f.clone().negate()).setPosition(p)};
+  o.Fe=d.Fe.clone();o.Fx=d.Fx.clone();o.ME=fr(d.E,d.Fe);o.MX=fr(d.X,d.Fx);o.M=o.MX.clone().multiply(o.ME.clone().invert());o.Mi=o.M.clone().invert();
+  o.Q=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().extractRotation(o.M));return o}
+/* does a sight line carried through portal o (a: the carried camera, b: beyond the exit) pass through the exit's opening?
+   (a line that would pass outside the ring is not seen through the portal: past the entrance's rim it sees the world) */
+function portalThrough(o,ax,ay,az,bx,by,bz){const F=o.Fx,c=o.Xc||(o.Xc=new THREE.Vector3(0,o.hc,0).applyMatrix4(o.MX)),da=(ax-c.x)*F.x+(ay-c.y)*F.y+(az-c.z)*F.z,db=(bx-c.x)*F.x+(by-c.y)*F.y+(bz-c.z)*F.z;
+  if(da>0||db<0)return da<=0&&db<=0?false:true;const f=da/(da-db),x=ax+(bx-ax)*f-c.x,y=ay+(by-ay)*f-c.y,z=az+(bz-az)*f-c.z;return x*x+y*y+z*z<(o.ringR-0.6)**2}
+/* the portal whose entrance a move from u0 to u1 (forward, under half a lap) passes, or null */
+function portalCross(u0,u1){const P=T&&T.port;if(!P)return null;const L=T.L,m=x=>((x%L)+L)%L,du=m(u1-u0);if(!(du>0)||du>L/2)return null;
+  for(const p of P){const d=m(p.uE-u0);if(d>0&&d<=du)return p}return null}
+/* sampleAt across a break: the near side's sample, carried on along its own tangent (never a blend of the two places) */
+function portalSample(o,i,j,a){const{P,R,U,Tg,H,ds}=T,pt=T.portK[i],s=a<pt.aE?i:j,d=a<pt.aE?a*ds:-(1-a)*ds;
+  o.p.copy(P[s]).addScaledVector(Tg[s],d);o.r.copy(R[s]);o.u.copy(U[s]);o.t.copy(Tg[s]);o.h=H[s];return o}
+/* ---- what is drawn (roadBuild): at each end a neon ring round the road (as wide as the realm's keep-out, so nothing of
+   it is ever over the road); the entrance's disc shows the view through it (portalView) or, with that off, a slow swirl;
+   the exit's disc is a faint swirl seen only from the front (no view back: "we can't turn around"); two signs before ---- */
+const PORT_V=`varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const PORT_F=`uniform sampler2D tV;uniform float uOn,uT,uX;uniform vec2 uRes;varying vec2 vUv;
+  void main(){vec2 c=vUv-0.5;float r=length(c)*2.,a=atan(c.y,c.x),rim=smoothstep(0.8,1.,r);
+    float sw=0.5+0.5*sin(a*5.+r*13.-uT*2.4+sin(a*3.-uT)*0.8),sw2=0.5+0.5*sin(-a*3.+r*7.+uT*1.7);
+    vec3 glow=mix(vec3(0.04,0.01,0.1),vec3(0.42,0.2,1.),sw*(1.-r*0.6)*0.75)+vec3(0.1,0.5,0.9)*sw2*sw*0.25*(1.-r);
+    vec3 col=uOn>0.5?texture2D(tV,gl_FragCoord.xy/uRes).rgb:glow;col+=vec3(0.55,0.32,1.)*rim*(uOn>0.5?0.9:0.6);
+    if(uX>0.5){gl_FragColor=vec4(glow*(0.35+0.65*r)+vec3(0.55,0.32,1.)*rim*0.6,1.);return;}
+    gl_FragColor=vec4(col,1.);}`;
+function portalRoad(c){const{group,ds,N,standOK,signI}=c,V=THREE.Vector3,list=[];
+  const torus=(rad,tube,col)=>new THREE.Mesh(new THREE.TorusGeometry(rad,tube,10,120),new THREE.MeshBasicMaterial({color:col}));
+  for(const o of c.port){const f={o,R:o.ringR};
+    for(const end of['E','X']){const M=end==='E'?o.ME:o.MX,g=new THREE.Group();g.matrixAutoUpdate=false;g.matrix.copy(M).multiply(new THREE.Matrix4().makeTranslation(0,o.hc,0));
+      g.add(torus(o.ringR,0.85,0xa060ff),torus(o.ringR-1.3,0.3,0x40e8ff),torus(o.ringR+1.4,0.22,0xff70d0));
+      const disc=new THREE.Mesh(new THREE.CircleGeometry(o.ringR-0.6,72),new THREE.ShaderMaterial({uniforms:{tV:{value:null},uOn:{value:0},uX:{value:end==='X'?1:0},uRes:{value:new THREE.Vector2(1,1)},uT:SPU.uT},vertexShader:PORT_V,fragmentShader:PORT_F,
+        transparent:end==='X',blending:end==='X'?THREE.AdditiveBlending:THREE.NormalBlending,depthWrite:end==='E'}));
+      /* the entrance's disc faces the oncoming road (its back, -z in its frame, is away from it); the exit's faces the way out */
+      if(end==='X')disc.rotation.y=Math.PI;disc.renderOrder=end==='X'?3:0;g.add(disc);g.updateMatrixWorld(true);group.add(g);f[end]=g;f[end+'d']=disc;
+      f[end+'c']=new V(0,o.hc,0).applyMatrix4(M)}
+    list.push(f);
+    /* signs about 300 m and 150 m before the entrance, where a gantry could stand */
+    for(const ahead of[300,150]){const SW=W+3.1,SH=SW*340/1024,top=7.2+SH;let at=-1,dd=0;
+      for(let d=0;d<=60&&at<0;d+=10)for(const s2 of[1,-1]){const dist=ahead+s2*d,i=((o.k-Math.round(dist/ds))%N+N)%N;if(standOK(i,SW,top,0.26,0.88)){at=i;dd=Math.round((o.uE-i*ds)/10)*10;break}}
+      if(at<0)continue;signI.push(at);
+      const g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffb000});for(const sd of[-1,1]){const pl=new THREE.Mesh(new THREE.BoxGeometry(0.7,top,0.7),m);pl.position.set(sd*(W/2+1.2),top/2,0);g.add(pl)}
+      const cv=document.createElement('canvas');cv.width=1024;cv.height=340;const cg=cv.getContext('2d');cg.fillStyle='#0b0e14';cg.fillRect(0,0,1024,340);cg.strokeStyle='#ffb000';cg.lineWidth=8;cg.strokeRect(4,4,1016,332);
+      cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText('PORTAL JUMP · '+dd+' M',512,37);
+      cg.textAlign='left';cg.fillStyle='#c79bff';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText('PORTAL ▲',34,150);
+      cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';cg.fillText(o.pv==='d'?'OUT ON THE RIGHT, BEHIND YOU,':'OUT ON THE RIGHT, BEHIND YOU,',34,230);cg.fillText(o.pv==='d'?'AND JUMP ACROSS ON THE DIAGONAL':'AND JUMP RIGHT ACROSS THIS ROAD',34,282);
+      cg.textAlign='right';cg.fillStyle='#8b93a2';cg.font="700 34px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText('SHOTS GO',990,150);cg.fillText('THROUGH TOO',990,192);
+      const tx=new THREE.CanvasTexture(cv);tx.anisotropy=4;const pan=new THREE.Mesh(new THREE.PlaneGeometry(SW,SH),new THREE.MeshBasicMaterial({map:tx}));pan.position.set(0,7.2+SH/2,0);g.add(pan);
+      const bar=new THREE.Mesh(new THREE.BoxGeometry(SW,0.22,0.3),new THREE.MeshBasicMaterial({color:0xc79bff}));bar.position.set(0,7.05,0);g.add(bar);
+      g.position.copy(c.P[at]);g.quaternion.copy(c.basis(at));group.add(g)}}
+  return{list}}
+/* ---- the view through the entrance (Prototype 63; round 2's clips 06 and 07): while an entrance is in view, in front of
+   the camera and within 300 m, the scene is drawn once more into a smaller picture from a virtual camera, the main camera
+   carried through the portal (M: the entrance's frame to the exit's), and the entrance's disc shows that picture where it
+   is on screen (gl_FragCoord over the picture's size), so it lines up with the world round it and the crossing is
+   seamless. Default: at half the screen's width and height (a quarter of its pixels); Lite (Glow or Moving scenery off):
+   at a third; Ultra low (Low detail) and split screen: off (the disc shows its swirl). The nearest entrance only. Its
+   cost is about the scene's own draw calls again while it shows (PVW keeps the numbers). Nothing here draws a random
+   number or touches the race. */
+const PVW={rt:null,cam:null,fr:new THREE.Frustum(),pm:new THREE.Matrix4(),sp:new THREE.Sphere(),v:new THREE.Vector3(),v2:new THREE.Vector3(),sz:new THREE.Vector2(),m:new THREE.Matrix4(),n:0,calls:0,tris:0,ms:0,on:null,scale:0};
+function portalView(cam){const fx=T&&T.portFx;if(!fx)return;for(const f of fx.list){f.Ed.material.uniforms.uOn.value=0}PVW.on=null;
+  if(RES.low||SPL.race&&SPL.ln||!g2||S.state==='lab'||S.state==='tut'||S.state==='fsel')return;
+  cam.updateMatrixWorld();PVW.pm.multiplyMatrices(cam.projectionMatrix,cam.matrixWorldInverse);PVW.fr.setFromProjectionMatrix(PVW.pm);let best=null,bd=300;
+  for(const f of fx.list){const d=cam.position.distanceTo(f.Ec);if(d>=bd)continue;if(PVW.v.copy(cam.position).sub(f.Ec).dot(f.o.Fe)>0.5)continue;/* behind it: no view */
+    PVW.sp.set(f.Ec,f.R);if(PVW.fr.intersectsSphere(PVW.sp)){bd=d;best=f}}
+  if(!best)return;const t0=performance.now(),lite=!(g2('bloom')&&g2('anim')),k=lite?1/3:0.5;renderer.getDrawingBufferSize(PVW.sz);const w=Math.max(16,Math.round(PVW.sz.x*k)),h=Math.max(16,Math.round(PVW.sz.y*k));
+  if(!PVW.rt){PVW.rt=new THREE.WebGLRenderTarget(w,h,{minFilter:THREE.LinearFilter,magFilter:THREE.LinearFilter,format:THREE.RGBAFormat})}else if(PVW.rt.width!==w||PVW.rt.height!==h)PVW.rt.setSize(w,h);
+  if(!PVW.cam)PVW.cam=new THREE.PerspectiveCamera();const vc=PVW.cam;vc.fov=cam.fov;vc.aspect=cam.aspect;vc.far=cam.far;
+  PVW.m.multiplyMatrices(best.o.M,cam.matrixWorld);PVW.m.decompose(vc.position,vc.quaternion,vc.scale);vc.updateMatrixWorld(true);
+  /* the near plane at the exit's disc, so nothing behind the exit shows in the picture */
+  let nz=1e9;for(let a=0;a<8;a++){const th=a*Math.PI/4;PVW.v.set(Math.cos(th)*best.R,best.o.hc+Math.sin(th)*best.R,0).applyMatrix4(best.o.MX).applyMatrix4(vc.matrixWorldInverse);nz=Math.min(nz,-PVW.v.z)}
+  vc.near=clamp(nz-1,0.3,200);vc.updateProjectionMatrix();
+  const sky=T.env&&T.env.sky,sk0=sky&&sky.position.clone(),vsk=VFX.sky&&VFX.sky.visible,inf=renderer.info.render;
+  best.Ed.visible=false;best.Xd.visible=false;if(sky)sky.position.copy(vc.position);if(vsk)VFX.sky.position.copy(vc.position);
+  const prev=renderer.getRenderTarget();try{renderer.setRenderTarget(PVW.rt);renderer.render(scene,vc)}finally{renderer.setRenderTarget(prev);best.Ed.visible=true;best.Xd.visible=true;if(sky)sky.position.copy(sk0);if(vsk)VFX.sky.position.copy(cam.position)}
+  PVW.calls=inf.calls;PVW.tris=inf.triangles;PVW.n++;PVW.ms=performance.now()-t0;PVW.on=best;PVW.scale=k;
+  const U=best.Ed.material.uniforms;U.tV.value=PVW.rt.texture;U.uOn.value=1;U.uRes.value.copy(PVW.sz)}
+/* ---- the Spirit realm's rule round a portal (004o): the lines along which the jump is watched. From chase cameras (12 m
+   behind a racer, on three lines across the road) every 16 m over the 400 m before the entrance, to the ramp (from 20 m past
+   the exit's ring), the lip and the flight every 10 m up to 80 m past the main road (40 m on the diagonal, which heads on
+   towards the entrance's ring), at the road and 8 m over it; and from chase cameras on the ramp and
+   in the flight back to the main road every 20 m over its 300 m before the jump's line. Segments [ax,ay,az,bx,by,bz]. ---- */
+function portalWatch(ctx,O){const out=[],PT=ctx.port||[];if(!PT.length)return out;const{N,ds,P,R,U}=ctx,hw=W/2,V=THREE.Vector3,pt=(i,l,h)=>{i=((i%N)+N)%N;return new V().copy(P[i]).addScaledVector(R[i],l).addScaledVector(U[i],h)};
+  for(const o of PT){const k=o.k,back=Math.round(O.camBack/ds),nLip=Math.round(PORT_O.Lr/ds),nOver=Math.round((o.Lp*(o.pv==='d'?Math.SQRT2:1)+(o.pv==='d'?40:80))/ds),zJ=o.zC+(o.pv==='d'?o.Lp:0);
+    const tg=[];for(let q=Math.round(20/ds);q<=nLip+nOver;q+=Math.max(1,Math.round(10/ds)))for(const h of[1,8])tg.push(pt(k+q,0,h));
+    for(let d=Math.round(400/ds);d>=Math.round(zJ/ds);d-=Math.max(1,Math.round(O.camStep/ds)))for(const cl of[-hw*0.6,0,hw*0.6]){const c=pt(k-d-back,cl,O.camUp+1);for(const t of tg)out.push([c.x,c.y,c.z,t.x,t.y,t.z])}
+    const mt=[];for(let d=Math.round(zJ/ds);d<=Math.round((zJ+300)/ds);d+=Math.max(1,Math.round(20/ds)))for(const l of[-hw,0,hw])mt.push(pt(k-d,l,1));
+    for(let q=back+1;q<=nLip+nOver;q+=Math.max(1,Math.round(O.camStep/ds))){const c=pt(k+q-back,0,O.camUp+1);for(const t of mt)out.push([c.x,c.y,c.z,t.x,t.y,t.z])}}
+  return out}
+/* ---- the knots (Eric, 2026-11-12: "the celtic knots could be repurposed for the portals as shifting interweaving
+   decoration around the portal"): at each end two torus-knot bands wound round the ring, outside the opening, turning
+   slowly opposite ways; each loosens and re-ties as another knot (the knot batch's morph: (2,15) to (2,21), the strands
+   staying inside their band, so nothing ever crosses into the opening). Lite and Default; every point checked by the rule
+   at four turns of its spin (put in the knot batch, so tools/tests/spirit-clear.js checks them through their motion). ---- */
+function spPortalKnots(ctx,Lb,clr,r,st,why){const V=THREE.Vector3,Y=new V(0,1,0);let n=0;
+  for(const o of ctx.port||[])for(const end of['E','X']){const M=end==='E'?o.ME:o.MX,F=(end==='E'?o.Fe:o.Fx).clone().normalize(),c=new V(0,o.hc,0).applyMatrix4(M),
+      x=new V().crossVectors(F,Y).normalize(),z=new V().crossVectors(x,F).normalize(),q=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x,F,z));
+    for(let b=0;b<2;b++){st.tried++;const R0=o.ringR+4.6+b*3.4,r0=1.5,th=0.55,nP=Math.round(R0*9),A=SPS.knot(2,15+b*2,R0,r0,nP,3,th),B=SPS.knot(2,21+b*2,R0,r0*1.35,nP,3,th*0.8),pts=[];
+      for(const S of[A,B])for(const L of S)for(let i=0;i<L.length;i+=3)for(let a=0;a<4;a++){const p=new V(...L[i]).applyAxisAngle(Y,a*Math.PI/8).applyQuaternion(q).add(c);pts.push([p.x,p.y,p.z,0.9])}
+      if(!clr.okPts(pts)){st.dropped++;why['portal knots']=(why['portal knots']||0)+1;continue}
+      Lb.obj({c:[c.x,c.y,c.z],q:[q.x,q.y,q.z,q.w],m:[1,(b?-1:1)*(0.08+0.04*r()),r()*TAU,0],ax:[0,1,0],pal:[5,2,1,4][(n++)%4],br:0.015,ext:R0+4});
+      A.forEach((S,s)=>{for(let i=0;i<S.length-1;i++)Lb.seg(S[i],S[i+1],i/S.length,1,B[s][i],B[s][i+1])});st.placed++}}}
 /* ---------- maps ---------- */
 function mapper(c,pad){const b=T.bounds,w=c.width,h=c.height;const s=Math.min((w-2*pad)/(b.maxX-b.minX),(h-2*pad)/(b.maxZ-b.minZ));
   const ox=(w-(b.maxX-b.minX)*s)/2,oz=(h-(b.maxZ-b.minZ)*s)/2;return(x,z)=>[ox+(x-b.minX)*s,oz+(z-b.minZ)*s]}
 /* The course on a 2D map: the main road (with breaks where a split runs beside it) and both routes of every split. */
 function drawPath(g,m,lw,color){g.beginPath();let pen=false;
-  for(let i=0;i<=T.N;i+=2){const k=i%T.N;if(T.spl[k]&&T.spl[(k+2)%T.N]){pen=false;continue}const p=T.P[k],q=m(p.x,p.z);pen?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);pen=true}
+  for(let i=0;i<=T.N;i+=2){const k=i%T.N;if(T.spl[k]&&T.spl[(k+2)%T.N]){pen=false;continue}const p=T.P[k],q=m(p.x,p.z);pen?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1]);pen=true;
+    /* Prototype 63: a portal: the road ends at the entrance and starts again at the exit (joined by a dashed line, below) */
+    if(T.brk&&(T.brk[k]||T.brk[(k+1)%T.N])){const o=T.portK[T.brk[k]?k:(k+1)%T.N],e=m(o.E.x,o.E.z);g.lineTo(e[0],e[1]);pen=false;if(T.brk[k])i--}}
   if(!T.splits.length)g.closePath();
   for(const S0 of T.splits)for(const B of S0.b){for(let k=0;k<=S0.n;k+=2){const i=S0.i0+k,p=T.P[i],rr=T.R[i],q=m(p.x+rr.x*B.c[k],p.z+rr.z*B.c[k]);k?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1])}}
-  g.lineWidth=lw;g.strokeStyle=color;g.lineJoin='round';g.stroke()}
+  g.lineWidth=lw;g.strokeStyle=color;g.lineJoin='round';g.stroke();
+  if(T.port){g.save();g.setLineDash([lw*1.6,lw*1.6]);g.beginPath();for(const o of T.port){const a=m(o.E.x,o.E.z),b=m(o.X.x,o.X.z);g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1])}g.lineWidth=Math.max(1,lw*0.6);g.stroke();g.restore()}}
 function drawZone(g,m,z,lw){g.beginPath();for(let u=z.u0;u<=z.u1+0.1;u+=6){const uu=Math.min(u,z.u1),S0=sampleAt(uu),lt=z.laneF?z.laneF(uu):0,q=m(S0.p.x+S0.r.x*lt,S0.p.z+S0.r.z*lt);u===z.u0?g.moveTo(q[0],q[1]):g.lineTo(q[0],q[1])}
   g.strokeStyle=z.kind==='hp'?'#46ff8c':'#be5aff';g.lineWidth=lw;g.lineCap='round';g.stroke()}
 /* ---------- 3D track preview ----------
@@ -3731,7 +3943,8 @@ const pv3={yaw:0.6,tilt:0.5,drag:null,idle:99,acc:0,data:null,fit:null};
 function pv3Build(){const n=Math.min(420,T.N),step=T.N/n,pts=[],c=new THREE.Vector3();for(const p of T.P)c.add(p);c.divideScalar(T.N);
   let rad=1;const zc=new Array(n).fill(null),gp=new Uint8Array(n);
   for(let k=0;k<n;k++){const i=Math.floor(k*step),p=T.P[i],r=T.R[i],u=T.U[i];pts.push({x:p.x-c.x,y:(p.y-c.y)*1.8,z:p.z-c.z,rx:r.x,ry:r.y*1.8,rz:r.z,uy:u.y});rad=Math.max(rad,Math.hypot(p.x-c.x,p.z-c.z));
-    const uu=i*T.ds;for(const z of T.zones)if(!z.laneF&&uu>=z.u0&&uu<=z.u1)zc[k]=z.kind==='hp'?'#46ff8c':'#be5aff';if(T.gap[i]||T.spl[i])gp[k]=1}
+    const uu=i*T.ds;for(const z of T.zones)if(!z.laneF&&uu>=z.u0&&uu<=z.u1)zc[k]=z.kind==='hp'?'#46ff8c':'#be5aff';if(T.gap[i]||T.spl[i])gp[k]=1;
+    /* (Prototype 63: no ribbon across a portal's break) */if(T.brk)for(let q=i;q<Math.floor((k+1)*step);q++)if(T.brk[q])gp[k]=1}
   /* split routes: their own ribbons, beside the main one */
   const br=[];for(const S0 of T.splits)for(const B of S0.b){const q=[];for(let k=0;k<=S0.n;k+=Math.max(1,Math.round(step))){const i=S0.i0+k,p=T.P[i],r=T.R[i],u=T.U[i],x=p.x+r.x*B.c[k]+u.x*B.h[k],y=p.y+r.y*B.c[k]+u.y*B.h[k],z=p.z+r.z*B.c[k]+u.z*B.h[k];
     q.push({x:x-c.x,y:(y-c.y)*1.8,z:z-c.z,rx:r.x,ry:r.y*1.8,rz:r.z,uy:u.y})}br.push(q)}
@@ -8628,7 +8841,7 @@ function physics(r,inp,dt){
   if(!r.air||r.air===true){for(const j of T.jumps)if(uPrev<j.u0&&uu>=j.u0&&uu<j.u1&&!(j.sp&&!(r.brS===j.sp&&r.br===j.b))){const ex=r.air===true?r.h-HOVER:0,v0=r.air===true?r.vh:0;if(j.stk)r.stkS=null;
     /* Prototype 37: a frame out of phase, or hit in the last 2.5 s, leaves the lip at least fast enough to clear the gap
        (level nose, with a margin): most falls were frames hit just before the lip that reached it at walking pace. */
-    {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
+    {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'||j.kind==='portal'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them (Prototype 63: and a portal jump, the launch pad) */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
     r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)}}
   /* Prototype 60: still in the air from one new jump at the lip of the next (drops in a row): that one carries the flight
      on, from the same height over the road */
@@ -8651,7 +8864,7 @@ function physics(r,inp,dt){
         if(up){r.hb-=J.hu;hb0-=J.hu;if(r.hb<HOVER){r.v*=0.88;r.hb=HOVER;r.vh=Math.max(r.vh,0);if(r===player){S.shake=Math.min(1,S.shake+0.4);audio.hit(0.4)}}}}
       else if(r.stkB===SP.lowB&&T.spl[idxAt(uu)]){const f=Math.min(SP.n,Math.max(0,Math.round((uu-SP.u0)/T.ds))),B=SP.b[SP.upB];if(Math.abs(r.lat-B.c[f])<B.w[f]+1.5){const cap=B.h[f]-SP.b[SP.lowB].h[f]-2.6;if(r.hb>cap){r.hb=cap;r.vh=Math.min(r.vh,0)}}}}
     /* and a hit in the air over one of their gaps doesn't stop a frame short of the road that catches it */
-    if(j&&(J.kind==='sjump'||J.kind==='cjump')&&r.v<(r.jNeed||0))r.v=r.jNeed;
+    if(j&&(J.kind==='sjump'||J.kind==='cjump'||J.kind==='portal')&&r.v<(r.jNeed||0))r.v=r.jNeed;
     r.h=r.hb-(j?(J.kind?jC(J,x/J.G):gapC(x/J.G,J.G)):0);if(x>J.G+400)r.hb=Math.min(r.hb,HOVER);
     /* Past the gap and below the road: only a clipped landing if the ship was already below the far edge when it got there
        (a steep drop that crosses the road level within one step is just a hard landing). */
@@ -8759,9 +8972,10 @@ function setRivals(){const pf=profileGet();if(!pf||pf.n<2)return null;const base
 /* Bends digit: 0 smooth, 1 normal, 2 twisty, 3 figure of eight. Older 7-count codes still load (no spirals or splits). */
 /* Prototype 60: five more counts after the spires: rising spires (up the middle, spiral down), down spirals, drops, speed
    jumps and long jumps. A code only carries them when one is set, so every older editor code reads and writes as before. */
-const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire','vspire','dhelix','drop','sjump','cjump'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2,vspire:2,dhelix:2,drop:3,sjump:2,cjump:2};
+/* Prototype 63: and a portal count (0 or 1, Spirit tracks only), after the long jumps */
+const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire','vspire','dhelix','drop','sjump','cjump','portal'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2,vspire:2,dhelix:2,drop:3,sjump:2,cjump:2,portal:1};
 const specStr=sp=>{let s=String(sp.b)+FK.map(k=>sp.n[k]||0).join('');while(s.length>11&&s.endsWith('0'))s=s.slice(0,-1);return s};
-const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,8})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
+const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,9})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
 const specCx=sp=>FKG.some(k=>sp.n[k]>0);
 /* Scenery: a letter after a dash (O ocean, F forest, N Stratos, once called Night sky, R reef; urban needs none), then optionally four digits for the
    dials (scenery amount, falls, geysers, tunnels), e.g. S1A2B3C-O or SX1A2B3C-U2102. Scenery doesn't change the road, so
@@ -8770,7 +8984,7 @@ const parseBio=str=>{const m=/^([UOFNRPS])([0-9]{4})?$/.exec(String(str||'').toU
 /* Prototype 60: a track code's seed is six hex digits, or seven starting with 1 for codes made from Prototype 60 on (bit 24
    of the seed, TV1): only those may get the new road pieces (drops, speed jumps, long jumps, spires and spirals the other
    way), so every older code builds exactly the track it always did. */
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,8})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,9})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
   return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x1FFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
 let seed=saved?saved.seed:TV1+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
@@ -8987,7 +9201,8 @@ $('edBtn').onclick=()=>openEd('menu');
    once (same seed, so the circuit keeps its rough shape); Reshuffle tries a new layout with the same counts. What does
    not fit on the chosen length is listed rather than squeezed in. Opening the editor changes nothing until you do. */
 const FLBL={spire:['Spires','spiral up, drop down the middle'],sweep:['Sweeps','rolling hills'],climb:['Climbs','up to a plateau'],dive:['Dives','a long drop'],jump:['Jumps','a gap to clear'],loop:['Loops','all the way round'],twist:['Twists','a barrel roll'],corkscrew:['Corkscrews','roll and rise'],helix:['Spirals','a rising full circle'],split:['Splits','a long and a short route'],
-  /* Prototype 60 */vspire:['Rising spires','up the middle, spiral down'],dhelix:['Down spirals','a falling full circle'],drop:['Drops','the road ends, a lower one catches you'],sjump:['Speed jumps','fast enough reaches the upper road'],cjump:['Long jumps','far, wide and lower: long air']};
+  /* Prototype 60 */vspire:['Rising spires','up the middle, spiral down'],dhelix:['Down spirals','a falling full circle'],drop:['Drops','the road ends, a lower one catches you'],sjump:['Speed jumps','fast enough reaches the upper road'],cjump:['Long jumps','far, wide and lower: long air'],
+  /* Prototype 63 */portal:['Portals','Spirit only: out beside the road, jump across it']};
 const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
   if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats){const k=f.rev?'vspire':f.down?'dhelix':f.kind;if(n[k]!=null)n[k]=Math.min(FMAX[k],n[k]+1)}ed.sp={b:T.fig8?3:1,n}}
@@ -9000,7 +9215,7 @@ function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
     row.innerHTML=`<div class="en">${FLBL[k][0]}<small>${FLBL[k][1]}</small></div><button class="sb" data-d="-1" aria-label="Fewer ${FLBL[k][0]}">−</button><div class="ec"></div><button class="sb" data-d="1" aria-label="More ${FLBL[k][0]}">+</button>`;
     row.querySelectorAll('.sb').forEach(b=>b.onclick=()=>{const v=clamp(ed.sp.n[k]+ +b.dataset.d,0,FMAX[k]);if(v===ed.sp.n[k])return;ed.sp.n[k]=v;audio.blip(+b.dataset.d>0?660:330,0.08,0.06,'triangle');edChange(false)});box.append(row)}
-  for(const row of box.children){const k=row.dataset.k,v=sp.n[k],c=row.querySelector('.ec');c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=FMAX[k]}
+  for(const row of box.children){const k=row.dataset.k,v=sp.n[k],c=row.querySelector('.ec');if(k==='portal')row.hidden=ed.bm.k!=='S';/* (Prototype 63: portals are the Spirit realm's) */c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=FMAX[k]}
   document.querySelectorAll('[data-edw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.edw===ed.wk)));
   document.querySelectorAll('[data-edlen]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.edlen===ed.lk)));
   document.querySelectorAll('[data-edb]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.edb===sp.b)));
@@ -11640,7 +11855,7 @@ function mpTags(clear){const pool=mpTags.pool||(mpTags.pool=new Map());
 /* ---------- loop ---------- */
 const V3=THREE.Vector3,qP=new THREE.Quaternion(),qT=new THREE.Quaternion(),qY=new THREE.Quaternion(),qR=new THREE.Quaternion(),qS=new THREE.Quaternion(),qJ=new THREE.Quaternion(),mtx=new THREE.Matrix4();
 const AX_X=new V3(1,0,0),AX_Y=new V3(0,1,0),AX_Z=new V3(0,0,1),pos=new V3(),camT=new V3(),look=new V3(),right=new V3(),up=new V3(),back=new V3(),pf=new V3(),pUp=new V3(),pRight=new V3(),pT=new V3(),pPos=new V3();
-let camInit=false,lastT=performance.now(),hudT=0;
+let camInit=false,lastT=performance.now(),hudT=0,camU=null;
 /* Chase camera. It sits a fixed distance behind and above the ship in the ship's own frame: only its direction is smoothed,
    never its position, so it cannot fall behind at speed. Cockpit puts it on the nose (the ship itself is hidden). */
 const CAMS=[{n:'Near',d:5.6,h:2.15,l:9},{n:'Standard',d:7.4,h:2.7,l:10},{n:'Far',d:11,h:3.9,l:12},{n:'Cockpit',fpv:true}];
@@ -11883,6 +12098,11 @@ function step(dt){
   if(S.state!=='paused')updateFx(dt);
 
   // camera
+  /* Prototype 63: through a portal the camera goes with the frame (or the menu's fly-by): its position (the fly-by's) and
+     its smoothed directions are carried by the portal's transform, so the picture is continuous, the view through the
+     disc having been the view after it */
+  {const cu=S.state==='menu'?S.fly+dt*55:player.u,pc=T.port&&camU!=null?portalCross(camU,cu):null;camU=cu;
+    if(pc){if(S.state==='menu'){camera.position.applyMatrix4(pc.M);camera.up.applyQuaternion(pc.Q)}else{camFwdS.applyQuaternion(pc.Q);camUpS.applyQuaternion(pc.Q)}}}
   if(S.state==='menu'){
     S.fly+=dt*55;const s=sampleAt(S.fly),a=sampleAt(S.fly+45);
     camT.copy(s.p).addScaledVector(s.u,16).addScaledVector(s.r,Math.sin(S.t*0.3)*10);
@@ -12025,7 +12245,7 @@ function frame(now){
   else{if(S.state!=='paused')step(dt);else readInput();
     {const p=player,b=p.boost>0||p.selfBoost;GFX.fx=S.state==='race'&&p.wreck<=0?clamp(clamp((p.v/VMAX-0.95)*2.2,0,1)*(0.55+0.45*(p.dive||0))+(b?0.3:0),0,1):0;
       GFX.gl=S.state==='race'&&p.spinD>0&&p.wreck<=0?0.6*Math.pow(1-Math.min(1,p.spinT/p.spinD),1.5):0}
-    VFX.update(dt);if(!NO_RENDER||window.__hlRender){if(SPL.race&&SPL.ln)splRender();else gfxRender(scene,camera)}}
+    VFX.update(dt);if(!NO_RENDER||window.__hlRender){if(SPL.race&&SPL.ln)splRender();else{portalView(camera);/* (Prototype 63: the view through a portal, 004s) */gfxRender(scene,camera)}}}
   if(S.state==='menu'){pv3.acc+=dt;if(pv3.acc>=1/30){const cv=!$('menu').hidden?$('preview'):!$('career').hidden?$('carPreview'):!$('train').hidden?$('trPreview'):!$('mp').hidden?$('mpPreview'):!$('spl').hidden?$('splPreview'):!$('ed').hidden?$('edPreview'):null;if(cv)pv3Draw(cv,pv3.acc);pv3.acc=0}}
   requestAnimationFrame(frame)}
 
@@ -12404,6 +12624,8 @@ function splSrcName(P){return P.src==='dev'?(coarse?'This device':'Keyboard'):P.
 /* each pilot's chase camera: the single camera's rules (distances, fov, portrait widening from the view's own shape) */
 const _sv=new THREE.Vector3();
 function splCam(P,dt){const r=P.r,cam=P.cam,C=CAMS[S.state==='done'&&CAMS[P.cm].fpv?1:P.cm],tgtF=_sv.copy(P.pf).lerp(P.pT,C.fpv?0.15:0.35).normalize();
+  /* (Prototype 63: through a portal each view's smoothed directions turn with its frame, as the single camera's do) */
+  {const pc=T.port&&P._pu!=null?portalCross(P._pu,r.u):null;P._pu=r.u;if(pc&&P.ci0){P.fwd.applyQuaternion(pc.Q);P.up.applyQuaternion(pc.Q)}}
   if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*10)).normalize()}
   const vk=r.v/VMAX,boo=r.boost>0||!!r.selfBoost,pk=cam.aspect<1?clamp((1-cam.aspect)/0.54,0,1):0,sh=r===player?S.shake:0;
   if(C.fpv){cam.position.copy(P.pPos).addScaledVector(P.pUp,0.62).addScaledVector(P.pf,0.7);cam.up.copy(P.up);cam.lookAt(look.copy(cam.position).addScaledVector(P.fwd,40).addScaledVector(P.up,-0.6));cam.fov+=((76+16*vk+(boo?6:0)+12*pk)-cam.fov)*Math.min(1,dt*4)}

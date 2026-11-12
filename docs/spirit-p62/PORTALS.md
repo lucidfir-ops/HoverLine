@@ -66,7 +66,7 @@ Code: `src/js/track/004s-portals.js` (all of it is there; the other files have a
 
 **Numbers that differ from the design above.** The exit is much closer: B = W/2+14 m back (27/24/21.5 for
 Wide/Standard/Narrow) on the across portal (49), and the diagonal (50) crosses the main centreline Bc = ringR+12+(W/2+7)·√2
-back (70/62/56). The ramp is 30 m (2 m rise, lip W+6 m right of the main centreline), the gap 130 m, the catch road
+back (67/60/55). The ramp is 30 m (2 m rise, lip W+6 m right of the main centreline), the gap 130 m, the catch road
 230 m at 4 m under the main road's level, then a 110 (49) or 65 (50) degree turn of 170 m radius and a Hermite join onto
 the base line 250-1300 m past the entrance. Why closer: a follower g seconds behind sees the leader cross ahead only
 while it is still short of the jump's line, i.e. when v·g > B + ramp + lip offset + ~40 m; with B = 120 that needed
