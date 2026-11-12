@@ -1,15 +1,39 @@
 //# track/004f-biome-urban.js: the Urban scenery (U): the city: towers on a street grid round the road, flying traffic, a tower in every spiral, falls, geysers, tunnels in buildings
 /* Prototype 61: the Urban builder (SCENERY.U, 004e), from what was its part of 004-track.js. ctx: see 004e. */
+/* Prototype 63: ground fog. Eric: "The urban map should have a fog just above ground level so you can't tell how high up
+   the track is." The ground is a floor of mist (one plane in the mist colour, in the grid's place: the same draw calls) and
+   the city's materials (the towers, their edge lines, the pylons, spire frames and spiral towers; not the road, the
+   racers, signs or traffic) take a height fog term in their own shaders, so every foot fades into it. The term is the
+   fog's optical depth along the view ray from the camera to the surface, density K * exp(-(y - floorY) / H): a ray
+   that crosses the layer (down to the ground, or along to a tower's foot) is mostly mist, one that stays above it isn't
+   touched, so nothing much above 5 H over the ground (the road is 70 m up at its lowest) is hazed. No new pass, no new
+   draw call, nothing per frame (the uniforms are constants). Tuning: H is the layer's depth in m (the density falls by
+   e every H), K the density at the ground per m (1 / K is how far you see inside it), GLOW how far the mist's colour
+   is pulled from the sky's haze towards the city's amber (night), DAY_WHITE the same towards white by day. Absent in low
+   detail (RES.low), which keeps the grid it always had. Scenery only: no random number is drawn, the road is untouched. */
+const URBAN_MIST={H:20,K:0.12,GLOW:0.1,DAY_WHITE:0.28};
+const MIST_VERT='#include <begin_vertex>\nvec4 hfP=vec4(transformed,1.);\n#ifdef USE_INSTANCING\nhfP=instanceMatrix*hfP;\n#endif\nvHfW=(modelMatrix*hfP).xyz;';
+const MIST_FRAG='{float hD=vHfW.y-cameraPosition.y,hL=length(vHfW-cameraPosition),hA=1./uHf.y,hE0=exp(min(20.,-(cameraPosition.y-uHf.x)*hA)),hE1=exp(min(20.,-(vHfW.y-uHf.x)*hA)),hK=hD*hA,hT=abs(hK)<1e-3?hL*hE0:hL*(hE0-hE1)/hK;gl_FragColor.rgb=mix(gl_FragColor.rgb,uHfC,1.-exp(-uHf.z*max(hT,0.)));}\n#include <fog_fragment>';
+function mistMaterial(m,HF,HC){if(!m||m.userData.mist)return;m.userData.mist=1;const prev=m.onBeforeCompile;
+  m.onBeforeCompile=function(sh,rr){if(prev)prev.call(this,sh,rr);sh.uniforms.uHf={value:HF};sh.uniforms.uHfC={value:HC};
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vHfW;').replace('#include <begin_vertex>',MIST_VERT);
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vHfW;uniform vec3 uHf;uniform vec3 uHfC;').replace('#include <fog_fragment>',MIST_FRAG)};
+  m.customProgramCacheKey=()=>'urbanMist'+(prev?String(prev):'');m.needsUpdate=true}
 function sceneryUrban(ctx){
-  const{seed,N,ds,P,R,U,Tg,spl,splits,minX,maxX,maxY,minZ,maxZ,cxT,czT,group,day,dens,er,IM,lines,lnA,lnB,winTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,daySky,buildTunnels,floorY}=ctx;
-const grid=new THREE.GridHelper(6000,150,0x1f2c38,0x131a22);grid.position.y=floorY;group.add(grid)
+  const{LK,seed,N,ds,P,R,U,Tg,spl,splits,minX,maxX,maxY,minZ,maxZ,cxT,czT,group,day,dens,er,IM,lines,lnA,lnB,winTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,daySky,buildTunnels,floorY}=ctx;
+const mist=!RES.low,MH=new THREE.Vector3(floorY,URBAN_MIST.H,URBAN_MIST.K),
+    MC=new THREE.Color(LK.haze).lerp(new THREE.Color(day?0xffffff:LK.edge),day?URBAN_MIST.DAY_WHITE:URBAN_MIST.GLOW);
+  if(mist){const fl=new THREE.Mesh(new THREE.PlaneGeometry(7000,7000),new THREE.MeshBasicMaterial({color:MC}));fl.rotation.x=-Math.PI/2;fl.position.set(cxT,floorY,czT);group.add(fl)}
+  else{const grid=new THREE.GridHelper(6000,150,0x1f2c38,0x131a22);grid.position.y=floorY;group.add(grid)}
+  const mA=group.children.length;
   pylons(()=>floorY);
   spireFrames();
   helixMiddles(({cx0,cz0,rt,top})=>{const h=top+60-floorY,g=new THREE.CylinderGeometry(rt*0.92,rt,h,10),mm=new THREE.MeshLambertMaterial({map:winTex.clone(),emissive:0xffffff});mm.map.needsUpdate=true;mm.map.repeat.set(Math.max(2,TAU*rt/16),Math.max(2,h/16));mm.emissiveMap=mm.map;
       const m=new THREE.Mesh(g,mm);m.position.set(cx0,floorY+h/2,cz0);group.add(m);const e=new THREE.LineSegments(new THREE.EdgesGeometry(g,20),lnA);e.position.copy(m.position);group.add(e)});
+  const mB=group.children.length;
   falls();
   geysers();
-  const cityB=[],trafU={value:0};ctx.clock.push(trafU);
+  const mC=group.children.length,cityB=[],trafU={value:0};ctx.clock.push(trafU);
   const sol0=solid.length,want=[40,90,140,200][dens];
     for(let a=0;a<2400&&cityB.length<want;a++){const x=minX-350+er()*(maxX-minX+700),z=minZ-350+er()*(maxZ-minZ+700),big=er()<0.07,w=big?50+er()*50:12+er()*40,d=big?50+er()*50:12+er()*40,R0=Math.hypot(w,d)/2;
       if(near(x,z,R0+W/2+50)||!free(x,z,R0+6))continue;const h=big?260+er()*220:40+er()*er()*280;cityB.push({x,y:floorY+h/2,z,sx:w,sy:h,sz:d,amber:er()<0.15});claim(x,z,R0)}
@@ -184,6 +208,7 @@ const grid=new THREE.GridHelper(6000,150,0x1f2c38,0x131a22);grid.position.y=floo
     winM.onBeforeCompile=sh=>{sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying float vWall;').replace('#include <uv_vertex>','#include <uv_vertex>\nvWall=1.-step(0.5,abs(normal.y));\n#ifdef USE_INSTANCING\n{vec3 iS=vec3(length(instanceMatrix[0].xyz),length(instanceMatrix[1].xyz),length(instanceMatrix[2].xyz));vUv=uv*(abs(normal.x)>0.5?iS.zy:iS.xy)/48.+fract(instanceMatrix[3].xz*vec2(0.0173,0.0119)+normal.xz*0.37);}\n#endif');
       sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying float vWall;').replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\ntotalEmissiveRadiance*=vWall;')};
     if(cityB.length){IM(winM,cityB);lines(cityB.filter(o=>o.amber),lnA);lines(cityB.filter(o=>!o.amber),lnB)}
+    if(mist)for(const[a,b]of[[mA,mB],[mC,group.children.length]])for(const o of group.children.slice(a,b)){if(o.geometry&&o.geometry.attributes.aMv)continue/* the traffic */;for(const m of Array.isArray(o.material)?o.material:[o.material])mistMaterial(m,MH,MC)}
   if(day)daySky();
   buildTunnels({grounded:true,shell:()=>({sideW:16+er()*14,roof:26+er()*40}),TC:[0x1a1e25,0x05060a,0xffb000],
     outM:avgH=>{const m=new THREE.MeshLambertMaterial({map:winTex.clone(),emissive:0xffffff,side:THREE.DoubleSide});m.map.needsUpdate=true;m.map.repeat.set(Math.max(1,avgH/14),1);m.emissiveMap=m.map;return m}});}
