@@ -53,6 +53,26 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
   /* a frame's outline (for ghost riders and echoes): a wedge with fins, about 4 m long, nose on +z */
   const rider=()=>{const o=[],P=[V(0,0.3,2.2),V(0.9,0.2,-1.4),V(-0.9,0.2,-1.4),V(0,0.9,-1.2)];for(const[a,b]of[[0,1],[0,2],[1,2],[0,3],[1,3],[2,3]])o.push([P[a],P[b],0.6]);
     for(const sx of[-1,1]){o.push([V(sx*0.9,0.2,-1.4),V(sx*1.5,0.1,-1.8),0.8],[V(sx*1.5,0.1,-1.8),V(sx*0.7,0.3,0),0.8],[V(sx*0.5,0.5,-1.3),V(sx*0.5,0.5,-2.6),0.3])}return o};
+  /* Prototype 63 (dossier 26): a dodecahedron that opens like a flower. Its twelve pentagons: one is the heart, the five round it are
+     petals hinged on the heart's edges, five more hang from the petals' outer edges (a second hinge each) and the twelfth, the heart's
+     opposite, lifts clear like a pistil. Each face is a list of its edges in the closed solid's own space (circumradius s) with its hinges:
+     h1 {ax, pv, a} (about the parent edge, closed space) and h2 {ax, pv, a} or lift {dir, d}; a is the angle (rad, signed so that it opens)
+     at full bloom. */
+  const flowerNet=s=>{const g=new THREE.DodecahedronGeometry(1,0).toNonIndexed(),P=g.attributes.position,key=v=>v.map(x=>Math.round(x*1e4)).join(','),Fm=new Map();
+    for(let i=0;i<P.count;i+=3){const a=[P.getX(i),P.getY(i),P.getZ(i)],b=[P.getX(i+1),P.getY(i+1),P.getZ(i+1)],c=[P.getX(i+2),P.getY(i+2),P.getZ(i+2)],u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]],l=Math.hypot(...n),nn=n.map(x=>x/l),k=key(nn);
+      let F=Fm.get(k);if(!F)Fm.set(k,F={n:nn,V:new Map()});for(const v of[a,b,c])F.V.set(key(v),v)}
+    g.dispose();const F=[...Fm.values()].map(f=>{const v=[...f.V.values()],c=[0,1,2].map(k=>v.reduce((t,p)=>t+p[k],0)/v.length),e1=[v[0][0]-c[0],v[0][1]-c[1],v[0][2]-c[2]],e2=[f.n[1]*e1[2]-f.n[2]*e1[1],f.n[2]*e1[0]-f.n[0]*e1[2],f.n[0]*e1[1]-f.n[1]*e1[0]];
+      v.sort((p,q)=>Math.atan2((p[0]-c[0])*e2[0]+(p[1]-c[1])*e2[1]+(p[2]-c[2])*e2[2],(p[0]-c[0])*e1[0]+(p[1]-c[1])*e1[1]+(p[2]-c[2])*e1[2])-Math.atan2((q[0]-c[0])*e2[0]+(q[1]-c[1])*e2[1]+(q[2]-c[2])*e2[2],(q[0]-c[0])*e1[0]+(q[1]-c[1])*e1[1]+(q[2]-c[2])*e1[2]));return{n:f.n,v,c}});
+    const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],edge=(A,B)=>{const sh=A.v.filter(p=>B.v.some(q=>key(p)===key(q)));return sh.length===2?sh:null};
+    const root=0,R=F[root],r1=F.map((f,i)=>i).filter(i=>i!==root&&edge(R,F[i])),top=F.findIndex(f=>dot(f.n,R.n)<-0.99),r2=F.map((f,i)=>i).filter(i=>i!==root&&i!==top&&!r1.includes(i));
+    const ang=i=>{const c=F[i].c,e1=[F[r1[0]].c[0],F[r1[0]].c[1],F[r1[0]].c[2]];return Math.atan2(dot(c,[R.n[1]*e1[2]-R.n[2]*e1[1],R.n[2]*e1[0]-R.n[0]*e1[2],R.n[0]*e1[1]-R.n[1]*e1[0]]),dot(c,e1))};r1.sort((a,b)=>ang(a)-ang(b));
+    const hinge=(par,ch,a0)=>{const[p,q]=edge(F[par],F[ch]),ax=[q[0]-p[0],q[1]-p[1],q[2]-p[2]],l=Math.hypot(...ax),A=ax.map(x=>x/l),rot=(v,t)=>{const c=Math.cos(t),sn=Math.sin(t),d=[v[0]-p[0],v[1]-p[1],v[2]-p[2]],cr=[A[1]*d[2]-A[2]*d[1],A[2]*d[0]-A[0]*d[2],A[0]*d[1]-A[1]*d[0]],dd=dot(A,d);return[p[0]+d[0]*c+cr[0]*sn+A[0]*dd*(1-c),p[1]+d[1]*c+cr[1]*sn+A[1]*dd*(1-c),p[2]+d[2]*c+cr[2]*sn+A[2]*dd*(1-c)]};
+      const nr=(()=>{const c=rot([F[ch].c[0]+F[ch].n[0],F[ch].c[1]+F[ch].n[1],F[ch].c[2]+F[ch].n[2]],0.2),c0=rot(F[ch].c,0.2);return[c[0]-c0[0],c[1]-c0[1],c[2]-c0[2]]})();
+      return{ax:A,pv:p,a:(dot(nr,F[par].n)>dot(F[ch].n,F[par].n)?1:-1)*a0}};
+    const out=[],edges=f=>f.v.map((p,i)=>[p.map(x=>x*s),f.v[(i+1)%f.v.length].map(x=>x*s)]);const sc=h=>({ax:h.ax,pv:h.pv.map(x=>x*s),a:h.a});
+    out.push({e:edges(F[root])});
+    r1.forEach((i,k)=>{out.push({e:edges(F[i]),h1:sc(hinge(root,i,1.08))});const kids=r2.filter(j=>edge(F[i],F[j])&&edge(F[r1[(k+1)%5]],F[j]));for(const j of kids)out.push({e:edges(F[j]),h1:sc(hinge(root,i,1.08)),h2:sc(hinge(i,j,1.08))})});
+    out.push({e:edges(F[top]),lift:{dir:F[top].n,d:s*1.1}});return out};
   /* pieces of the other realms, each on a torn-off base: Prism's contour rock, an Urban block, a Reef coral head, a Forest
      crown (a few metres to tens; r draws their shape) */
   const realm=(kind,s,r)=>{const o=[];
@@ -63,4 +83,4 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
       for(let k=0;k<3;k++){const a=k*TW/3;br(V(0,-0.3*s,0),[Math.cos(a)*0.4,0.9,Math.sin(a)*0.4],s*0.45,0)}loop(ring(s*0.5,12,'xz',-0.3*s),0,o)}
     else{path([V(0,-0.3*s,0),V(0,s*0.5,0)],0.2,o);for(let k=0;k<3;k++){const y=s*(0.45+k*0.25),rr=s*(0.6-k*0.15);loop(ring(rr,16,'xz',y),0.4+k*0.2,o)}for(let k=0;k<8;k++){const a=k*TW/8;o.push([V(Math.cos(a)*s*0.6,s*0.45,Math.sin(a)*s*0.6),V(0,s*1.2,0),0.9])}}
     loop(ring(s*0.5,8,'xz',-0.3*s).map((p,i)=>V(p[0],p[1]-(i%2?s*0.15:0),p[2])),0.1,o);return o};
-  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm,headFace}})();
+  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm,headFace,flowerNet}})();

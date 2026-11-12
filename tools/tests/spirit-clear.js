@@ -65,15 +65,32 @@ const CHECK = (code) => {
       const pos = g.attributes.position, vs = []; const seen = new Set(); for (let v = 0; v < pos.count; v++) { const kk = pos.getX(v).toFixed(3) + pos.getY(v).toFixed(3) + pos.getZ(v).toFixed(3); if (!seen.has(kk)) { seen.add(kk); vs.push([pos.getX(v), pos.getY(v), pos.getZ(v)]) } }
       for (let i = 0; i < n; i++) { cur = 'w' + i + ' C' + A(g, 'iC', i).map(Math.round) + ' M' + A(g, 'iM', i).map((x) => +x.toFixed(2)) + ' S' + A(g, 'iS', i).map(Math.round); const iC = A(g, 'iC', i), iQ = A(g, 'iQ', i), iO = A(g, 'iO', i), iB = A(g, 'iB', i), iS = A(g, 'iS', i), iM = A(g, 'iM', i), iX = A(g, 'iX', i), iF = A(g, 'iF', i), iI = A(g, 'iI', i);
         const md = iM[0], moving = md > 0.5 || iC[3] > 0, times = moving ? TM : [TM[0]];
+        if (md > 3.5 && md < 4.5) { /* Prototype 63: a re-stacking tier, from every slot it could leave to every slot it could take, at every moment of the move (004n restackPos) */
+          const nS = iF[1], sp = iF[3], th = iI[2], nT = iM[1] + (iF[0] % 2), tt = iM[2];
+          const so = (s, t, D) => { const ox = s - (nS - 1) / 2; return Math.abs(ox) > 0.01 ? [Math.sign(ox) * D, 0] : [0, (t % 2 < 0.5 ? -1 : 1) * D] };
+          for (let sA = 0; sA < nS; sA++) for (let lA = 0; lA <= nT; lA++) for (let sB = 0; sB < nS; sB++) for (let lB = 0; lB <= nT; lB++) for (let u = 0; u <= 0.62; u += 0.04) {
+            const ph = u - 0.02 * lB, s1 = sst(ph / 0.1), m = sst((ph - 0.1) / 0.2), s3 = sst((ph - 0.3) / 0.1), D = sp * 0.9, oA = so(sA, tt, D), oB = so(sB, tt, D);
+            const pa = [(sA - (nS - 1) / 2) * sp + oA[0] * s1, oA[1] * s1], pb = [(sB - (nS - 1) / 2) * sp + oB[0] * (1 - s3), oB[1] * (1 - s3)];
+            const P = [pa[0] + (pb[0] - pa[0]) * m, (lA + 0.5) * th + ((lB + 0.5) * th - (lA + 0.5) * th) * m + (sA !== sB ? 1.4 * th * Math.sin(Math.PI * m) : 0), pa[1] + (pb[1] - pa[1]) * m];
+            for (const v0 of vs) { let v = [v0[0] * iS[0], v0[1] * iS[1], v0[2] * iS[2]]; v = rotA(v, [0, 1, 0], m * Math.PI / 2 * Math.sign(iM[3])); v = [v[0] + P[0] - iO[0], v[1] + P[1] - iO[1], v[2] + P[2] - iO[2]];
+              const b = rotQ(iB, v), bb = [b[0] + iO[0], b[1] + iO[1], b[2] + iO[2]], w = rotQ(iQ, [bb[0] * (1 + iC[3]), bb[1] * (1 + iC[3]), bb[2] * (1 + iC[3])]); test('re-stacking tiers', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } }
+          continue }
+
         for (const tm of times) for (const v0 of vs) { let v = [v0[0] * iS[0], v0[1] * iS[1], v0[2] * iS[2]];
-          if (md > 3.5 && md < 4.5) { const stp = Math.floor(tm.b), f = tm.b % 1, on = Math.abs(((stp % iM[1]) + iM[1]) % iM[1] - iM[2]) < 0.5 ? 1 : 0; v = rotA(v, [0, 1, 0], on * sst(f * 2.5 - 0.6) * Math.PI / 2 * Math.sign(iM[3])); v[0] += on * (sst(f * 3) - sst(f * 3 - 2)) * iM[3] }
           let b = rotQ(iB, v);
           if (md > 4.5 && md < 5.5) { const gk = sst((tm.g * 1.6 - iF[3]) / 1.1), j = 1 - gk, mid = [(iO[0] + iF[0]) / 2, (iO[1] + iF[1]) / 2 + iI[2], (iO[2] + iF[2]) / 2]; b = rotA(b, iX, Math.sin(Math.PI * gk) * iM[1]); for (let q = 0; q < 3; q++) b[q] += iO[q] * j * j + mid[q] * 2 * gk * j + iF[q] * gk * gk }
           else { b = [b[0] + iO[0], b[1] + iO[1], b[2] + iO[2]]; b = rotA(b, iX, ang(iM, tm)); if (md > 2.5 && md < 3.5) b = b.map((x) => x * (1 + 0.05 * tm.k)); if (md > 0.5 && md < 1.5) b[1] += Math.sin(tm.t * 0.4 + iM[2]) * iM[3] }
           const s = breath(iC[3], tm), w = rotQ(iQ, [b[0] * s, b[1] * s, b[2] * s]); test(md > 4.5 && md < 5.5 ? 'flying blocks' : 'wire solids', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } } }
     else if (g.attributes.sA) { /* neon lines: points every 4 m; the posed slots (heads, riders, echoes) are checked in races */
-      const knot = !!g.attributes.sA2;
+      const hinge2 = !!g.attributes.sA2 && A(g, 'iM', 0)[0] > 11.5, knot = !!g.attributes.sA2 && !hinge2;
       for (let i = 0; i < n; i++) { cur = 'l' + i + ' C' + A(g, 'iC', i).map(Math.round) + ' M' + A(g, 'iM', i).map((x) => +x.toFixed(2)) + ' A' + A(g, 'sA', i).map(Math.round); const sA = A(g, 'sA', i), sB = A(g, 'sB', i), iC = A(g, 'iC', i), iQ = A(g, 'iQ', i), iM = A(g, 'iM', i), iX = A(g, 'iX', i), iP = A(g, 'iP', i), a2 = knot ? A(g, 'sA2', i) : null, b2 = knot ? A(g, 'sB2', i) : null;
+        if (hinge2) { /* Prototype 63: the dodecahedron's flower, every edge at every degree of both hinges (004n mode 12), and breathing */
+          const a2 = A(g, 'sA2', i), b2 = A(g, 'sB2', i), len = Math.hypot(sB[0] - sA[0], sB[1] - sA[1], sB[2] - sA[2]), nn = Math.max(1, Math.ceil(len / 2));
+          for (let k1 = 0; k1 <= 10; k1++) for (let k2 = 0; k2 <= 10; k2++) { const bb1 = k1 / 10, bb2 = k2 / 10; for (let q = 0; q <= nn; q++) { const f = q / nn; let r = [0, 1, 2].map((k) => sA[k] + (sB[k] - sA[k]) * f);
+            if (a2[3] < 0) r = r.map((x, k) => x + b2[k] * -a2[3] * bb1); else if (a2[3] > 0) { const t = rotA([r[0] - b2[0], r[1] - b2[1], r[2] - b2[2]], a2, a2[3] * bb2); r = [t[0] + b2[0], t[1] + b2[1], t[2] + b2[2]] }
+            const t = rotA([r[0] - iP[0], r[1] - iP[1], r[2] - iP[2]], iX, iM[3] * bb1); r = [t[0] + iP[0], t[1] + iP[1], t[2] + iP[2]];
+            const w = rotQ(iQ, r.map((x) => x * 1.02)); test('flowers (dodecahedra)', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } }
+          continue }
         if (iM[0] > 7.5 && (iP[3] < 4 || iP[3] > 6)) continue; /* heads, riders: posed in races (spirit-race.js) */
         if (iM[0] > 7.5) { /* Prototype 63: a colossus's torso, arms and head, through every gesture (004n colG) and every yaw of its head: lean 0 to 0.14,
             bow to 0.55, arms 0 to 0.9 of a half turn (waving +-0.2 rad), turn to watch; the shader's order: part, head's bow and yaw, body yaw, lean */
@@ -89,6 +106,8 @@ const CHECK = (code) => {
         for (const tm of times) { const mk = knot ? sst(Math.sin(tm.b * 0.098 + iM[2]) * 1.4 + 0.5) : 0;
           for (let q = 0; q <= nn; q++) { const f = q / nn; let p = [sA[0] + (sB[0] - sA[0]) * f, sA[1] + (sB[1] - sA[1]) * f, sA[2] + (sB[2] - sA[2]) * f];
             if (knot) { const p2 = [a2[0] + (b2[0] - a2[0]) * f, a2[1] + (b2[1] - a2[1]) * f, a2[2] + (b2[2] - a2[2]) * f]; p = p.map((x, k) => x + (p2[k] - x) * mk) }
+            if (md > 12.5 && md < 13.5) { /* Prototype 63: a Platonic solid swelling on its own beat, in a ring that turns (004n mode 13) */
+              const r0 = [0, 1, 2].map((k) => iP[k] + (p[k] - iP[k]) * (1 + iM[3])), w = rotQ(iQ, rotA(r0, iX, iM[1] * tm.t)); test('platonic solids', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]); continue }
             let qv = [p[0] - iP[0], p[1] - iP[1], p[2] - iP[2]];
             qv = rotA(qv, iX, ang(iM, tm)); qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]]; if (md > 0.5 && md < 1.5) qv[1] += Math.sin(tm.t * 0.4 + iM[2]) * iM[3];
             const s = breath(iC[3], tm), w = rotQ(iQ, [qv[0] * s, qv[1] * s, qv[2] * s]); test(knot ? 'knots' : 'lines', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } } } }

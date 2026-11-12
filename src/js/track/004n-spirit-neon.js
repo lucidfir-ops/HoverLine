@@ -5,9 +5,8 @@
    frame), how it is posed (offset and turn in that frame), how it moves (a mode, a rate, a phase and an amount) and how
    it breathes; the vertex shader moves it from the shared clock below, so the CPU does no work per piece per frame.
    Motion modes (SPM): 0 still; 1 turns at a steady rate (and bobs); 2 turns a notch on every beat; 3 turns a notch every
-   bar (and slowly), swelling on the kick; 4 a stack's tier slides out, turns a quarter and slides back when its beat
-   comes; 5 flies between two places along an arc, as a group's progress (uG) says; 7 a face hinges open and closed on the
-   beat (unfolding solids); 8 is posed from the CPU (heads, a colossus's head: uOP/uOQ slots); 9 a colossus's torso or arm, which
+   bar (and slowly), swelling on the kick; 4 a stack's tiers slide out, turn a quarter and re-stack in a new order (restackPos); 5 flies between two places along an arc, as a group's progress (uG) says; 7 a face hinges open and closed on the
+   beat (unfolding solids); 12 the dodecahedron's flower; 13 a Platonic solid in its ring, lighting on its own beat; 8 is posed from the CPU (heads, a colossus's head: uOP/uOQ slots); 9 a colossus's torso or arm, which
    gestures from the bar clock (colG).
    Nothing here touches the race: it reads the clock, the music and where racers are, never the race's random numbers. */
 const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8,colossus:9};
@@ -46,19 +45,50 @@ const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uW
     lean=0.;bow=0.;aR=0.;aL=0.;wv=0.;wt=0.;
     if(g==2.){aR=0.72*e;wv=e*(1.-uCalm);}else if(g==7.){aL=0.72*e;wv=e*(1.-uCalm);}else if(g==3.)lean=0.14*e;else if(g==4.)bow=0.55*e;else if(g==5.){aR=0.9*e;aL=aR;}else if(g==6.)wt=e;
     float dr=sst(max(uBuild*1.1,uDrop))*(1.-0.65*uCalm)*(0.6+0.4*hh(sd*5.))*0.9;aR=max(aR,dr);aL=max(aL,dr);}
+  /* Prototype 63: stacks re-stack. Each cycle (16 beats, 32 in Calm) every tier of a stack takes a new level, in an order its own hash gives (rankOf);
+     now and then (one cycle in three) a stack's top tier goes to the top of the next stack for that cycle (slotOf: pure functions of the cycle,
+     so nothing is remembered). A tier that has to move slides out sideways from its stack (the middle stack of three: out in depth), turns a quarter
+     and rises or drops to its new level (over the stacks' tops when it changes stack), then slides in. */
+  float rankOf(float j,float s,float c,float g,float n){float h=hh(j*1.7+s*29.3+c*13.1+g*97.),r=0.;for(int i=0;i<8;i++){float fi=float(i);if(fi<n&&fi!=j&&hh(fi*1.7+s*29.3+c*13.1+g*97.)<h)r+=1.;}return r;}
+  vec2 slotOf(float t,float s,float c,float g,float nS,float nT){float n=nT-mod(s,2.),lv=rankOf(t,s,c,g,n);
+    if(hh(c*3.3+g*7.7)<0.34){float a=floor(hh(c*5.1+g*3.)*nS);if(s==a&&lv==n-1.)return vec2(mod(a+1.,nS),nT-mod(mod(a+1.,nS),2.));}return vec2(s,lv);}
+  vec2 stackOut(float s,float t,float nS,float D){float ox=s-(nS-1.)*0.5;return abs(ox)>0.01?vec2(sign(ox)*D,0.):vec2(0.,(mod(t,2.)<0.5?-1.:1.)*D);}
+  /* the tier's place: x,z in the stack row and y up from the ground, and the turn 0..1 (of a quarter), at cycle c, fraction u, from slot A to B */
+  vec4 restackPos(vec2 A,vec2 B,float t,float nS,float sp,float th,float u,float lvB){
+    float ph=u-0.02*lvB,s1=sst(ph/0.1),m=sst((ph-0.1)/0.2),s3=sst((ph-0.3)/0.1),D=sp*0.9;
+    vec2 hA=vec2((A.x-(nS-1.)*0.5)*sp,0.),hB=vec2((B.x-(nS-1.)*0.5)*sp,0.);
+    vec2 pa=hA+stackOut(A.x,t,nS,D)*s1,pb=hB+stackOut(B.x,t,nS,D)*(1.-s3),xz=mix(pa,pb,m);
+    float y=mix((A.y+0.5)*th,(B.y+0.5)*th,m)+(A.x!=B.x?1.4*th*sin(3.14159*m):0.);
+    return vec4(xz.x,y,xz.y,m);}
+  /* Prototype 63: the five Platonic solids each light and swell on a beat of their own: solid s (iM.z, 0..4) on every second beat in turn, so
+     one beat in two lights one of the five (never more than 3 a second up to 180 bpm); Calm visuals ease it in and halve it */
+  float gLit=0.;
+  float beatLit(float s){float b=uBeat/2.,f=fract(b),on=1.-step(0.5,abs(mod(floor(b),5.)-s));return on*sst(1.-f*1.5)*mix(1.,sst(f*3.)*0.5,uCalm);}
   float spAngle(vec4 m){if(m.x<0.5)return 0.;if(m.x<1.5)return m.y*uT+m.z;if(m.x<2.5)return m.z+m.y*(floor(uBeat)+sst(fract(uBeat)*3.));
     if(m.x<3.5)return m.z+m.y*(floor(uBeat*.25)+sst(fract(uBeat*.25)*4.))+m.w*uT;if(m.x>6.5&&m.x<7.5){float c=fract(uBeat/8.+m.z);return m.w*sst(c*4.)*(1.-sst(c*4.-2.2));}return 0.;}`;
 
 /* ---------- neon lines: every segment an instance of one quad, as wide as a few pixels (round 2's line look) ---------- */
 const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
-  #ifdef KNOT
+  #if defined(KNOT)||defined(HINGE2)
   attribute vec4 sA2,sB2;
   #endif
   uniform vec2 uFog;uniform float uWidth,uMinPx,uMaxPx,uGain;varying vec3 vCol;varying float vS;
   #ifdef SLOTS
   uniform vec4 uOP[SLOTN],uOQ[SLOTN];
   #endif
+  /* Prototype 63: the dodecahedron's flower (mode 12, HINGE2): hinge one (axis iX, pivot iP, angle iM.w) on every face but the heart, a second
+     (axis sA2, pivot sB2, angle sA2.w) on the petals' children, and the pistil (sA2.w < 0) lifts along sB2 by -sA2.w; the bloom takes 32 beats:
+     opens over 6, holds 13, closes over 6 (the second hinge a little later) */
+  #ifdef HINGE2
+  float bloomK(float c){return sst(c*5.)*(1.-sst((c-0.62)*5.));}
+  #endif
   vec3 place(vec3 p,out float vis){vis=1.;vec3 q=p-iP.xyz;
+    if(iM.x>12.5&&iM.x<13.5){float lit=beatLit(iM.z);gLit=lit;vec3 r0=iP.xyz+(p-iP.xyz)*(1.+iM.w*lit);r0=rotA(r0,iX.xyz,iM.y*uT);return iC.xyz+rotQ(iQ,r0);}
+    #ifdef HINGE2
+    if(iM.x>11.5){float c=fract(uBeat/32.+iM.z),k=1.-0.5*uCalm,b1=bloomK(c)*k,b2=bloomK(fract(c+0.96))*k;vec3 r=p;
+      if(sA2.w<0.)r+=sB2.xyz*(-sA2.w)*b1;else if(sA2.w>0.)r=rotA(r-sB2.xyz,sA2.xyz,sA2.w*b2)+sB2.xyz;
+      r=rotA(r-iP.xyz,iX.xyz,iM.w*b1)+iP.xyz;return iC.xyz+rotQ(iQ,r*breathK(iC.w));}
+    #endif
     #ifdef SLOTS
     if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;
       /* a colossus (Prototype 63): its head (mode 8 with iM.y 1) and its torso and arms (mode 9, iM.z the part) take the gesture; the slot gives the head's yaw */
@@ -83,11 +113,11 @@ const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
     float pk2=clamp(uRes.y/400.,0.35,2.5),px=clamp(uWidth*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx*pk2,uMaxPx*pk2);
     c.xy+=(n*corner.x+d*(e<0.5?-1.:1.))*px*0.5/uRes*2.*c.w;gl_Position=c;
     float f=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);vS=corner.x;
-    vCol=pal(iX.w,e<0.5?sA.w:sB.w)*sB.w*f*va*uGain*uWorld;}`;
+    vCol=pal(iX.w,e<0.5?sA.w:sB.w)*sB.w*f*va*uGain*uWorld*(1.+1.6*gLit);}`;
 const SPLINE_F=`varying vec3 vCol;varying float vS;void main(){float e=1.-abs(vS);gl_FragColor=vec4(vCol*smoothstep(0.,0.4,e)*(0.85+0.6*e*e),1.);}`;
 function spLineMat(o={}){
   return new THREE.ShaderMaterial({uniforms:Object.assign({},SPU,{uFog:{value:new THREE.Vector2(...(o.fog||[500,2400]))},uWidth:{value:o.width||0.14},uMinPx:{value:o.minPx||1.5},uMaxPx:{value:o.maxPx||6},uGain:{value:o.gain||1}}),
-    vertexShader:SPLINE_V,fragmentShader:SPLINE_F,defines:o.knot?{KNOT:1}:{},transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})}
+    vertexShader:SPLINE_V,fragmentShader:SPLINE_F,defines:o.knot?{KNOT:1}:o.hinge?{HINGE2:1}:{},transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})}
 const SP_Q0=[0,0,0,1],SP_X0=[0,1,0];
 /* a batch of segments: obj(o) says what the next segments belong to: c centre, q frame (quaternion as [x,y,z,w]), br
    breath, m [mode, rate, phase, amount], ax the axis it turns about (in its frame), piv the point it turns about, pal,
@@ -112,7 +142,10 @@ function spLines(){const A={sA:[],sB:[],iC:[],iQ:[],iM:[],iX:[],iP:[],sA2:[],sB2
 const SPWIRE_V=SPGL+`attribute vec3 bary;attribute vec4 iC,iQ,iO,iB,iS,iM,iX,iF,iI;varying vec2 vUv;varying vec3 vB;varying vec3 vCol;varying float vF;varying float vPx;varying float vSide;varying float vGl;varying float vK;
   uniform vec2 uFog;uniform float uGain;
   void main(){vec3 v=position*iS.xyz;float md=iM.x;
-    if(md>3.5&&md<4.5){float st=floor(uBeat),f=fract(uBeat),on=1.-step(0.5,abs(mod(st,iM.y)-iM.z));v=rotA(v,vec3(0.,1.,0.),on*sst(f*2.5-0.6)*1.5708*sign(iM.w));v.x+=on*(sst(f*3.)-sst(f*3.-2.))*iM.w;}
+    if(md>3.5&&md<4.5){float nS=iF.y,nT=iM.y+mod(iF.x,2.),cyc=uBeat/(16.*(1.+uCalm))+iF.z,c=floor(cyc),u=fract(cyc);
+      vec2 A=slotOf(iM.z,iF.x,c-1.,iF.z,nS,nT),B=slotOf(iM.z,iF.x,c,iF.z,nS,nT);
+      vec4 P=(A==B)?vec4((B.x-(nS-1.)*0.5)*iF.w,(B.y+0.5)*iI.z,0.,0.):restackPos(A,B,iM.z,nS,iF.w,iI.z,u,B.y);
+      v=rotA(v,vec3(0.,1.,0.),P.w*1.5708*sign(iM.w));v+=P.xyz-iO.xyz;}
     vec3 b=rotQ(iB,v);
     if(md>4.5&&md<5.5){float k=sst((gOf(iI.y)*1.6-iF.w)/1.1),j=1.-k;vec3 mid=(iO.xyz+iF.xyz)*0.5+vec3(0.,iI.z,0.);b=rotA(b,iX.xyz,sin(3.14159*k)*iM.y)+iO.xyz*j*j+mid*2.*k*j+iF.xyz*k*k;}
     else{b+=iO.xyz;b=rotA(b,iX.xyz,spAngle(iM));if(md>2.5&&md<3.5)b*=1.+0.05*uKick*(1.-uCalm);if(md>0.5&&md<1.5)b.y+=sin(uT*0.4+iM.z)*iM.w;}

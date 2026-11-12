@@ -44,11 +44,13 @@ function scenerySpirit(ctx){
     put('bestiary blocks',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(36,140),R2(-10,55));
       return{b:[[...c,rad]],add:()=>W2.glyph.add({c,s:[s0,s0*hk,s0],m:[2,TAU/8*sgn(),r()*TAU,0],ax:[0,1,0],gl:Math.floor(r()*4),pal:pick([1,3,4]),pc:r(),k:1.05,br:0.03,per:40})}})}
 
-  /* ---- stepped stacks: a tier slides out and turns a quarter on its beat; medium carved pairs near, huge ones far ---- */
+  /* ---- stepped stacks: every 16 beats the tiers slide out, turn a quarter and re-stack in a new order, and now and then a top tier
+     joins the next stack (004n restackPos); medium carved pairs near, huge ones far. Prototype 63: the ball that holds a stack through all
+     of it is wider (tiers slid out) and taller (a tier crossing over to the next stack) than the stack itself. ---- */
   const stack=(name,o)=>{const nT=o.tiers,nS=o.stacks,sz=o.size,th=sz*0.42;
-    put(name,8,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),hgt=nT*th,rad=Math.hypot((nS-1)/2*1.25*sz+0.8*sz,0.71*sz,hgt/2)*1.03;
-      const mid=new V3(...c).addScaledVector(UP,hgt/2);return{b:[[mid.x,mid.y,mid.z,rad]],add:()=>{for(let s=0;s<nS;s++){const ox=(s-(nS-1)/2)*sz*1.25,nt=nT-(s%2);
-        for(let t=0;t<nt;t++){const w=sz*(1-t*0.09);(o.carve?W2.glyph:W2.box).add({c,q:qq,off:[ox,(t+0.5)*th,0],s:[w,th*0.92,w],m:[4,nt,(t+s)%nt,sz*0.3*(t%2?1:-1)],gl:o.carve?(t+s)%4:-1,pal:o.pal,pc:t/nt,k:1,per:o.per||60,br:0.02})}}}}})};
+    put(name,8,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),hgt=(nT+2.6)*th,rad=Math.hypot((nS-1)/2*1.25*sz+1.75*sz,1.75*sz,hgt/2)*1.03;
+      const mid=new V3(...c).addScaledVector(UP,hgt/2);return{b:[[mid.x,mid.y,mid.z,rad]],add:()=>{const gs=r();for(let s=0;s<nS;s++){const ox=(s-(nS-1)/2)*sz*1.25,nt=nT-(s%2);
+        for(let t=0;t<nt;t++){const w=sz*(1-t*0.09);(o.carve?W2.glyph:W2.box).add({c,q:qq,off:[ox,(t+0.5)*th,0],s:[w,th*0.92,w],m:[4,nt,t,sz*0.3*(t%2?1:-1)],fly:[s,nS,gs,sz*1.25],lift:th,gl:o.carve?(t+s)%4:-1,pal:o.pal,pc:t/nt,k:1,per:o.per||60,br:0.02})}}}}})};
   for(let n=0,nn=cnt(1.2,[0,0.6,1]);n<nn;n++)stack('stacks',{tiers:5,stacks:2,size:R2(10,15),d0:48,d1:90,h0:-8,h1:4,carve:true,pal:4});
   for(let n=0,nn=Math.max(q?1:0,cnt(0.4,[0.5,0.7,1]));n<nn;n++)stack('stacks (huge)',{tiers:6,stacks:3,size:R2(80,130),d0:420,d1:700,h0:-160,h1:-70,pal:3,per:400});
 
@@ -102,9 +104,14 @@ function scenerySpirit(ctx){
   if(q===2)put('knots (huge)',6,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(700,900),R2(250,350));return{b:[[...c,240]],add:()=>knotAt(knotL,c,240,4)}});
 
   /* ---- unfolding solids: a cube opens into its cross and folds back, a tetrahedron into its star (faces hinge on the beat) ---- */
-  if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),cube=n%2===0;
-    put('unfolding solids',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(40,80),R2(14,34));return{b:[[...c,s*(cube?2.3:2)]],add:()=>{const Lb=LB(i),pal=pick([0,1,2,3,4,5]),ph=r(),qq=rq(),h=s/2;
-      if(cube){const sq=(pts,piv,ax,amp,pc)=>{Lb.obj({c,q:qq,m:[7,0,ph,amp],ax,piv,pal,ext:s*2});SPS.loop(pts).forEach(([a,b])=>Lb.seg(a,b,pc,1.1));Lb.seg(pts[0],pts[2],pc,0.5)};
+  const flowL=spLines();
+  if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),dod=n%3===2,cube=n%3===0;
+    put('unfolding solids',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(40,80),R2(14,34));return{b:[[...c,s*(dod?2.9:cube?2.3:2)]],add:()=>{const Lb=LB(i),pal=pick([0,1,2,3,4,5]),ph=r(),qq=rq(),h=s/2;
+      /* Prototype 63: the dodecahedron opens like a flower (dossier 26): 12 pentagons, hinged in two ranks (004p flowerNet, 004n mode 12) */
+      if(dod){const fl=SPS.flowerNet(s*0.9),Z=[0,0,0,0];fl.forEach((f,fi)=>{flowL.obj({c,q:qq,m:[12,0,ph,f.h1?f.h1.a:0],ax:f.h1?f.h1.ax:[0,1,0],piv:f.h1?f.h1.pv:[0,0,0],pal,ext:s*3});
+          const a2=f.h2?[f.h2.ax[0],f.h2.ax[1],f.h2.ax[2],f.h2.a]:f.lift?[0,0,0,-f.lift.d]:Z,b2=f.h2?[f.h2.pv[0],f.h2.pv[1],f.h2.pv[2],0]:f.lift?[f.lift.dir[0],f.lift.dir[1],f.lift.dir[2],0]:Z;
+          for(const[a,b]of f.e)flowL.seg(a,b,fi/12,1.1,a2,b2)})}
+      else if(cube){const sq=(pts,piv,ax,amp,pc)=>{Lb.obj({c,q:qq,m:[7,0,ph,amp],ax,piv,pal,ext:s*2});SPS.loop(pts).forEach(([a,b])=>Lb.seg(a,b,pc,1.1));Lb.seg(pts[0],pts[2],pc,0.5)};
         sq([[-h,-h,-h],[h,-h,-h],[h,-h,h],[-h,-h,h]],[0,0,0],[1,0,0],0,0);
         sq([[-h,-h,h],[h,-h,h],[h,h,h],[-h,h,h]],[0,-h,h],[1,0,0],Math.PI/2,0.3);sq([[-h,-h,-h],[h,-h,-h],[h,h,-h],[-h,h,-h]],[0,-h,-h],[1,0,0],-Math.PI/2,0.5);
         sq([[h,-h,-h],[h,-h,h],[h,h,h],[h,h,-h]],[h,-h,0],[0,0,1],-Math.PI/2,0.7);sq([[-h,-h,-h],[-h,-h,h],[-h,h,h],[-h,h,-h]],[-h,-h,0],[0,0,1],Math.PI/2,0.9);
@@ -116,7 +123,8 @@ function scenerySpirit(ctx){
   if(q)for(let n=0,nn=cnt(1.2,[0,0.6,1]);n<nn;n++){const kd=n%3;
     put('sacred geometry',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const size=kd===0?4:kd===1?34:3.5,c=at(i,sgn()*(kd===1?R2(70,110):R2(30,60)),kd===1?R2(35,60):R2(8,26)),rad=kd===0?size*4.2:kd===1?size*0.65:size*1.5;
       return{b:[[...c,rad]],add:()=>{const Lb=LB(i),pal=pick([1,2,3,5]);
-        if(kd===0){for(let s=0;s<5;s++){const a=s*TAU/5;Lb.obj({c,m:[1,0.3,0,0],ax:[0,1,0],pal,br:0.05,ext:rad});SPS.solid(s,size*0.8,[Math.cos(a)*size*3,0,Math.sin(a)*size*3]).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,s/5,1.2))}}
+        /* Prototype 63: each of the five solids lights and swells on a beat of its own (004n mode 13, piv the solid's own middle) */
+        if(kd===0){for(let s=0;s<5;s++){const a=s*TAU/5,mid=[Math.cos(a)*size*3,0,Math.sin(a)*size*3];Lb.obj({c,m:[13,0.3,s,0.14],ax:[0,1,0],piv:mid,pal,ext:rad});SPS.solid(s,size*0.8,mid).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,s/5,1.2))}}
         else if(kd===1){const dir=new V3(...c).sub(P[i]).setY(0).normalize(),qq=qB(new V3(-dir.z,0,dir.x),UP);Lb.obj({c,q:qq,m:[1,0.08*sgn(),0,0],ax:[0,0,1],pal,br:0.03,ext:rad});SPS.flower(size).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,0.9))}
         else for(const sg of[1,-1]){Lb.obj({c,m:[1,0.4*sg,0,0],ax:[0,1,0],pal,br:0.05,ext:rad});SPS.edges(new THREE.TetrahedronGeometry(size,0),sg).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,1.2))}}}})}
   if(q===2)put('sacred geometry (huge)',6,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(650,850),R2(380,460));return{b:[[...c,260]],add:()=>{for(let s=4;s>=0;s--){farL.obj({c,m:[1,0.05*(s%2?1:-1)*(1+s*0.3),0,0],ax:rax(),pal:1,ext:260});SPS.solid(s,60+s*40).forEach(([p0,p1,pc])=>farL.seg(p0,p1,s/5+pc*0.2,1))}}}});
@@ -221,7 +229,7 @@ function scenerySpirit(ctx){
   addM(W2.box.mesh(spWireMat({fog:fogN})));addM(W2.glyph.mesh(spWireMat({glyph:true,fog:fogN})));for(const s of solids)addM(W2[s].mesh(spWireMat({tri:true,fog:fogN})));
   const lmat=spLineMat({fog:fogN,width:0.16});regs.forEach(Lb=>Lb&&addM(Lb.mesh(lmat,true)));addM(farL.mesh(spLineMat({fog:fogF,width:0.5,maxPx:5}),false));addM(knotL.mesh(spLineMat({fog:fogN,width:0.16,knot:true}),false));
   const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;liveMat.defines.SLOTN=SP_SLOTS;addM(live.mesh(liveMat,false));
-  const faceMat=spLineMat({fog:[1200,3000],width:0.55,minPx:2.6,maxPx:11});faceMat.defines.SLOTS=1;faceMat.defines.SLOTN=SP_SLOTS;addM(liveF.mesh(faceMat,false));addM(sh.mesh());
+  const faceMat=spLineMat({fog:[1200,3000],width:0.55,minPx:2.6,maxPx:11});faceMat.defines.SLOTS=1;faceMat.defines.SLOTN=SP_SLOTS;addM(liveF.mesh(faceMat,false));addM(sh.mesh());addM(flowL.mesh(spLineMat({fog:fogN,width:0.16,hinge:true}),false));
   for(const m of lat.meshes)addM(m);
   /* what the moving parts need (004r), and the line that describes the track */
   lap('meshes');delete ms.t;ctx.spirit={ms,L,seed,q,group,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};
