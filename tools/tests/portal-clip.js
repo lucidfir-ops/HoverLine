@@ -14,14 +14,18 @@ const CLOCK = () => { let T = 1000; performance.now = () => T; window.__adv = (m
   const p = await open(b, 'clip', { vp: { width: 640, height: 360 }, render: true, init: CLOCK, settle: 300, query: '&bot=1',
     storage: { 'hoverline.orient': 'landscape', 'hoverline.laps': '1' } });
   await p.addStyleTag({ content: 'body>*:not(canvas){visibility:hidden!important}' });
-  const info = await p.evaluate(async ([code, view, delay]) => { const H = window.__hl; H.RACE.force = 630001; const c = H.parseCode(code); H.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp || null, c.bm);
+  const info = await p.evaluate(async ([code, view, delay, gap]) => { const H = window.__hl; H.RACE.force = 630001; const c = H.parseCode(code); H.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp || null, c.bm);
     await H.startRace(); H.S.goAt = null; const T = H.T, o = T.port[0], me = H.player;
     /* the late start: the chosen racers held still for the delay */
     const held = view === 'last' ? [me] : H.racers.filter((r) => r !== me); let t = 0;
     while (t < +delay) { for (const r of held) { r.v = 0 } H.step(1 / 60); for (const r of held) { r.v = 0 } t += 1 / 60 }
     /* then on to 600 m before the entrance */
     let g = 0; while (((o.uE - me.u) % T.L + T.L) % T.L > 600 && g++ < 20000) H.step(1 / 60);
-    return { uE: o.uE, pv: o.pv, L: T.L, info: T.bmInfo } }, [code, view, delay]);
+    /* GAP=s: two racers set that many seconds ahead of the player (last) or behind it (jump), at its speed, so the clip
+       shows the crossing at a known gap */
+    if (gap) { const others = H.racers.filter((r) => r !== me).sort((a, b) => Math.abs(a.utot - me.utot) - Math.abs(b.utot - me.utot)).slice(0, 2);
+      others.forEach((r, i) => { const d = (view === 'last' ? 1 : -1) * (+gap + i * 0.35) * me.v; r.u += d + (me.u - r.u); r.utot = me.utot + d; r.u = me.u + d; r.v = me.v; r.lat = (i ? 1 : -1) * 3; r.wreck = 0 }) }
+    return { uE: o.uE, pv: o.pv, L: T.L, info: T.bmInfo } }, [code, view, delay, process.env.GAP || 0]);
   console.log(JSON.stringify(info));
   const n = Math.round(+secs * +fps), sub = Math.round(60 / +fps), stats = [];
   for (let f = 0; f < n; f++) {
@@ -36,7 +40,7 @@ const CLOCK = () => { let T = 1000; performance.now = () => T; window.__adv = (m
   fs.writeFileSync(path.join(out, 'frames.json'), JSON.stringify({ info, view, code, stats }, null, 0));
   console.log(stats.filter((s, i) => i % 5 === 0).map((s) => s.d + 'm/' + s.pos + (s.view ? 'V' : '') + (s.air ? 'A' + s.air : '')).join(' '));
   try { execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', fps, '-i', path.join(out, 'f%04d.jpg'), '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '24', path.join(out, 'clip.mp4')]);
-    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', path.join(out, 'clip.mp4'), '-vf', 'fps=10,scale=480:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96[p];[b][p]paletteuse=dither=bayer', path.join(out, 'clip.gif')]) } catch (e) { console.log('ffmpeg:', e.message) }
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', path.join(out, 'clip.mp4'), '-vf', 'fps=10,scale=360:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=64[p];[b][p]paletteuse=dither=bayer:bayer_scale=3', path.join(out, 'clip.gif')]) } catch (e) { console.log('ffmpeg:', e.message) }
   if (p.errs.length) console.log('errors', p.errs);
   await b.close();
 })();
