@@ -194,9 +194,10 @@ function touchLayout(){if(!REAL)return;const t=$('touch');
   const L=tlCalc(innerWidth,innerHeight,tlIns(),{steer:steerMode,psl:pitchSlider,mods:modsMode});t.classList.add('jl');
   for(const i of TL_IDS){const e=$(i),q=L.r[i];if(!q){tlClear(e);continue}e.style.left=q.x+'px';e.style.bottom=q.b+'px';if(i!=='padHint'){e.style.width=q.w+'px';e.style.height=q.h+'px'}}
   TL.last=L}
-/* Right thumb: one big brake, two weapon buttons above it. */
+/* Right thumb: one big brake, two weapon buttons above it. Prototype 63: a tap while Pacifist is on says why nothing fires. */
+function pacNote(){if(pacifist()&&S.state==='race')note('Pacifist is on: no modules. Turn it off on the Race page.',2600)}
 for(const[id,k]of[['brk','brake'],['bst','boost'],['w1','f1'],['w2','f2']]){const el=$(id);
-  const on=e=>{touch[k]=1;if(k==='f1')fireQ[0]=true;else if(k==='f2')fireQ[1]=true;else if(k==='brake')music.event('brake');el.classList.add('on');try{el.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault()};
+  const on=e=>{touch[k]=1;if(k==='f1'||k==='f2')pacNote();if(k==='f1')fireQ[0]=true;else if(k==='f2')fireQ[1]=true;else if(k==='brake')music.event('brake');el.classList.add('on');try{el.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault()};
   const off=()=>{touch[k]=0;el.classList.remove('on')};
   el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('lostpointercapture',off);el.addEventListener('contextmenu',e=>e.preventDefault())}
 
