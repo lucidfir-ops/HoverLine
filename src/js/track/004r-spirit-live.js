@@ -11,10 +11,18 @@
    No effect flashes more than three times a second: kicks closer than 0.34 s to the last one shown are not shown. */
 let SP_CALM=(()=>{const v=store.get('hoverline.calm');return v==null?null:v==='1'})();
 const spCalm=()=>SP_CALM==null?!g2('blur'):SP_CALM;
-const SPMUS={bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
+const SPMUS={an2:null,fd2:null,oq:[],sk2:{h:[],hi:0.1,lo:0,last:-9,on:[],tT:0},bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
   /* the analyser on the music volume (made once, on the music's own context) */
   analyser(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an&&this.src===g)return this.an;const a=c.createAnalyser();a.fftSize=512;a.smoothingTimeConstant=0.55;g.connect(a);
       const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an=a;this.src=g;this.fd=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
+  /* Prototype 63: Songs mode finds its kicks in a second analyser made for it: 2048 points (23 Hz a bin, so the bass is more than two bins) and no
+     smoothing, on the music volume like the first */
+  analyser2(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an2)return this.an2;const a=c.createAnalyser();a.fftSize=2048;a.smoothingTimeConstant=0;g.connect(a);const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an2=a;this.fd2=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
+  /* a kick in the bass (30 to 110 Hz) of a song: a rise over the last 80 ms that is a good part of the range the bass has had lately (the
+     level over the last 2 s against its lowest), at most one every 0.34 s. Tuned on the eight songs in songs/ (tools/tests/spirit-songs.js). */
+  onset(x){const s=this.sk2,h=s.h,prev=h.length?h[h.length-1]:null;h.push(x);if(h.length>14)h.shift();const dt=prev?Math.max(1e-3,x.t-prev.t):0.016;
+    s.hi=Math.max(x.e,s.hi*Math.exp(-dt/2));s.lo=Math.min(x.e,s.lo+(x.e-s.lo)*Math.min(1,dt/2));let j=h.length-1;while(j>0&&x.t-h[j].t<0.08)j--;
+    const rise=x.e-h[j].e;if(prev&&rise>(s.hi-s.lo)*0.18+0.01&&rise>0.02&&x.e>=prev.e&&x.t-s.last>0.34){s.last=x.t;return rise}return 0},
   /* the kick ages, bars and sections for this frame; now: the music's clock (s) */
   read(dt,on){const c=music.ctx,raw=c?c.currentTime:performance.now()/1000,now=c?musHeard():raw,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
     /* the spectrum. Prototype 63: an analyser reads the sound where it is made, before the speaker's delay; each reading is kept
@@ -32,12 +40,15 @@ const SPMUS={bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,
     this.live=got;
     /* the kicks: the engine's queue, or onsets in the bass for Songs */
     const K=[];const vk=(typeof VFX!=='undefined'&&VFX.kt)||[];for(const k of vk)if(k>this.lastNow-0.05&&k<=now)K.push(k);
-    if(music.soOn&&got){const e=this.band[0]*this.pk[0],s=this.sk;s.avg+=(e-s.avg)*Math.min(1,dt*3);if(e>s.avg*1.3+0.03&&e>s.e&&now-s.t>0.28){K.push(now);s.t=now}s.e=e}
+    /* Songs: the bass of the element's sound as it leaves the graph, held back like everything else until heard, then onsets */
+    if(playing&&music.soOn){const a2=this.analyser2();if(a2){a2.getByteFrequencyData(this.fd2);const hz=c.sampleRate/2/this.fd2.length,i0=Math.max(1,Math.floor(30/hz)),i1=Math.ceil(110/hz);let sm=0;for(let i=i0;i<=i1;i++)sm+=this.fd2[i];this.oq.push({t:raw,e:sm/((i1-i0+1)*255)});if(this.oq.length>300)this.oq.shift()}
+      while(this.oq.length&&this.oq[0].t<=now){const x=this.oq.shift();if(this.onset(x))K.push(x.t)}}
+    else{this.oq.length=0;this.sk2.h.length=0;this.sk2.on.length=0}
     this.lastNow=now;
     for(const k of K.sort((x,y)=>x-y))if(on&&k-this.last>=0.34){this.last=k;this.acc.unshift(k);if(this.acc.length>4)this.acc.length=4;
-      /* the beat follows the kicks */
+      /* the beat follows the kicks (Songs: the tempo from the middle of the last few gaps between them, 85 to 175 bpm) */
       const spb=60/this.bpm,bk=(k-this.anchor)/spb,er=bk-Math.round(bk);this.anchor+=er*spb*0.5;
-      if(music.soOn&&this.acc.length>1){const iv=this.acc[0]-this.acc[1];if(iv>0.3&&iv<0.9)this.bpm+=(60/iv-this.bpm)*0.1}}
+      if(music.soOn&&this.acc.length>3){const iv=[0,1,2].map(i=>this.acc[i]-this.acc[i+1]).sort((a,b)=>a-b)[1];if(iv>0.34&&iv<0.7){const b0=(k-this.anchor)/spb;this.bpm+=(60/iv-this.bpm)*0.12;this.anchor=k-b0*60/this.bpm}}}
     if(!music.soOn&&music.bpm)this.bpm=music.bpm;if(!on||!playing)this.acc.length=0;
     const spb=60/this.bpm,beat=(now-this.anchor)/spb;this.beat=beat;
     /* the section */
