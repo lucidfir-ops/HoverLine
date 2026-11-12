@@ -1,6 +1,6 @@
 // P58: menus with a pad. A dropdown changes only with A (left/right move on, e.g. from the speed class to Pacifist);
 // Up from the top row of a screen goes to its main button (the Frame lab: from the frames to Done).
-const { launch, open, ok, done, wait } = require('./lib.js');
+const { launch, open, ok, done, wait, until, ANDROID_UA, FS_MOCK } = require('./lib.js');
 (async () => {
   const b = await launch(); const p = await open(b, 'nav', { vp: { width: 1280, height: 800 } });
   await p.evaluate(() => { document.getElementById('playBtn').click() }); await wait(300); await p.evaluate(() => { document.getElementById('raceMode').click() }); await wait(400);
@@ -31,5 +31,39 @@ const { launch, open, ok, done, wait } = require('./lib.js');
   await p.evaluate(() => window.__hl.navBack()); await wait(200);
   ok(await p.evaluate(() => !document.getElementById('play').hidden), 'Training: B goes back to the Race page');
   ok(p.errs.length === 0, 'no page errors');
+  // P63: the pause menu has the rotate button (a phone that can lock the screen): the pad reaches it, it turns the lock to the
+  // other way round and saves it; coming back to a hidden, paused race locks again, and the Resume tap does it where the
+  // browser let go of full screen. (How it feels on a phone is Eric's: Chromium here has no real lock.)
+  { const q = await open(b, 'rot', { vp: { width: 390, height: 844 }, touch: true, ua: ANDROID_UA, init: FS_MOCK, storage: { 'hoverline.orient': 'portrait' } });
+    await q.evaluate(() => window.__hl.startRace()); await until(q, () => window.__hl.S.state === 'race' && window.__hl.S.raceT > 1, 90000, 'race');
+    await q.evaluate(() => window.__hl.togglePause('test')); await wait(300);
+    const vis = await q.evaluate(() => { const e = document.getElementById('pauseRot'); return !e.hidden && e.getClientRects().length > 0 && /landscape/.test(e.getAttribute('aria-label')) });
+    ok(vis, 'pause menu: the rotate button shows on a phone, offering landscape');
+    const nav = await q.evaluate(() => { const h = window.__hl, id = () => document.activeElement && document.activeElement.id; h.navFocus(document.getElementById('resumeBtn')); const seen = [id()]; for (let i = 0; i < 6 && id() !== 'pauseRot'; i++) { h.navDir('r'); seen.push(id()) } return { at: id(), seen } });
+    ok(nav.at === 'pauseRot', 'pause menu: the pad reaches the rotate button (' + nav.seen.join(' > ') + ')');
+    await q.evaluate(() => window.__hl.navAct()); await wait(400);
+    let r = await q.evaluate(() => ({ pick: window.__hl.orPick, saved: window.__hl.store.get('hoverline.orient'), locks: window.__locks.slice(), fs: !!document.fullscreenElement, st: window.__hl.S.state, lab: document.getElementById('pauseRot').getAttribute('aria-label') }));
+    ok(r.pick === 'landscape' && r.saved === 'landscape' && r.st === 'paused' && r.fs && r.locks.length && /^landscape/.test(r.locks[r.locks.length - 1]) && /portrait/.test(r.lab), 'pause menu: the button turns the lock to landscape, saves it, stays in the pause ' + JSON.stringify(r));
+    await q.evaluate(() => window.__hl.navAct()); await wait(300);
+    r = await q.evaluate(() => ({ pick: window.__hl.orPick, locks: window.__locks.slice() }));
+    ok(r.pick === 'portrait' && /^portrait/.test(r.locks[r.locks.length - 1]), 'pause menu: pressed again it goes back to portrait (' + r.locks.join(',') + ')');
+    // away and back: the page was hidden (the race paused itself), the browser dropped full screen and the lock
+    await q.evaluate(() => { document.exitFullscreen(); window.__vis = 'hidden'; Object.defineProperty(document, 'hidden', { get: () => window.__vis === 'hidden', configurable: true }); Object.defineProperty(document, 'visibilityState', { get: () => window.__vis, configurable: true }); document.dispatchEvent(new Event('visibilitychange')); window.__locks.length = 0 });
+    await wait(300); await q.evaluate(() => { window.__vis = 'visible'; document.dispatchEvent(new Event('visibilitychange')) }); await wait(300);
+    r = await q.evaluate(() => ({ st: window.__hl.S.state, fs: !!document.fullscreenElement, locks: window.__locks.slice() }));
+    ok(r.st === 'paused' && !r.fs, 'back from elsewhere: still paused; the browser let go of full screen, so it waits for a tap (' + JSON.stringify(r) + ')');
+    await q.evaluate(() => document.getElementById('resumeBtn').click()); await wait(500);
+    r = await q.evaluate(() => ({ st: window.__hl.S.state, fs: !!document.fullscreenElement, locks: window.__locks.slice() }));
+    ok(r.st === 'race' && r.fs && r.locks.length && /^portrait/.test(r.locks[r.locks.length - 1]), 'Resume: full screen again and the portrait lock taken again ' + JSON.stringify(r));
+    // and away and back with full screen kept: the lock is taken again at once, with no tap
+    await q.evaluate(() => window.__hl.togglePause('test')); await wait(200);
+    await q.evaluate(() => { window.__vis = 'hidden'; document.dispatchEvent(new Event('visibilitychange')); window.__locks.length = 0 }); await wait(100);
+    await q.evaluate(() => { window.__vis = 'visible'; document.dispatchEvent(new Event('visibilitychange')) }); await wait(300);
+    r = await q.evaluate(() => ({ locks: window.__locks.slice() }));
+    ok(r.locks.length > 0 && /^portrait/.test(r.locks[0]), 'back with full screen kept: the lock is taken again with no tap (' + r.locks.join(',') + ')');
+    ok(q.errs.length === 0, 'no page errors (pause rotate)'); await q.ctx.close() }
+  { const q = await open(b, 'rot-desk', { vp: { width: 1280, height: 800 } });
+    await q.evaluate(() => window.__hl.startRace()); await until(q, () => window.__hl.S.state === 'race' && window.__hl.S.raceT > 1, 90000, 'race'); await q.evaluate(() => window.__hl.togglePause('test')); await wait(200);
+    ok(await q.evaluate(() => document.getElementById('pauseRot').hidden), 'pause menu: no rotate button on a desktop or the Deck'); await q.ctx.close() }
   await b.close(); done();
 })();
