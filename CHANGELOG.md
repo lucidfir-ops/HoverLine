@@ -1,5 +1,24 @@
 # Changelog
 
+## Prototype 63
+From your notes and phone recording of 11-11 and your logs of 11-11.
+- **Portals in the Spirit realm** (about one Spirit track in four; "Portals" in the editor for Spirit tracks). On a straight you drive into a ring and come out beside the road, just behind where you went in and 19 m up; a short ramp throws you across the road you were just on (or across it on the diagonal), you land on the far side and swing back onto the track. The ring shows the road beyond it, so going through is seamless, and the camera comes through with you. From about 1 second behind you see the pack fly over you; jumpers see the ones right behind them below. Anyone slow at the lip is lifted to clear it. Shots, missiles and mines go through too. The Celtic knots left the sky and now twist round each ring. On Ultra low and in split screen the ring shows a glow instead of the view.
+- **Upside-down road, Spirit realm only** (about one Spirit track in five; "Undersides" in the editor). The road divides: stay on top, or take the half that peels off the edge, rolls right over and slides under the road, so you race upside down on the underside of the same road while others race on top, then it rolls back up and rejoins. The underside glows cyan and violet and carries two boost pads and an ammo strip; the top has none. Steering, bends and hills feel the right way round from where you are, the camera turns with you, and shots, strips and pads stay on your face. You can't fall between the faces.
+- **Spirit realm polish:**
+  - **Lights now fire when you hear the sound**, not when it's scheduled: the realm and the track's "Lights on the beat" wait for the delay your device reports (phones and Bluetooth add a lot). A "Lights sync" slider on the Music page nudges it either way (0 is the default).
+  - Echoes and ghost riders are the frame each racer flies, and much fainter.
+  - The heads pace you, always face your camera, and have lime eyes, brows, nose and mouth that nothing else uses.
+  - The colossi gesture now and then: wave, lean toward the road, bow, watch the leader, both arms up into a drop.
+  - Stacks slide out, turn and re-stack; a dodecahedron opens like a flower; each of the five solids lights on its own beat.
+  - Strong lattice keeps its colour at the drop instead of going white.
+  - Songs mode: the realm now finds the songs' kicks (it found almost none) and its beat follows them.
+- **Module buttons on touch:** if Pacifist is on, the module buttons now look switched off and a tap says "Pacifist is on: no modules. Turn it off on the Race page." Every touch layout was tested and fired normally; Pacifist being on was the only way to get exactly what your recording shows. If it was off for you, send that race's log.
+- **Rotate in the pause menu** (phones that can lock the screen): flips portrait and landscape without leaving the race. Coming back to a race takes the lock again; if the browser dropped full screen, Resume restores it.
+- **Urban ground mist:** a low mist lies on the ground by day and night, so building feet fade and you can't tell how high the road is. The road, ships and signs are untouched; no extra draw calls; low detail keeps the grid.
+- **About 6.8 MB smaller:** the itch zip is 37 MB (was 43.8). The sample library lost 15 packs no tune can ask for (the original, tight, electro, tape, gas, concert, hand and latin kits, two bass guitars, the clean guitar, the timpani) and the page 18 unused recordings. Everything kept sounds exactly as before; a new test fails if a tune ever asks for a missing recording.
+- **Spirit track codes from Prototype 62 build different tracks now** (the knots moved, and some tracks gained a portal or an underside). Every other track code builds exactly as before. Race times change only on Spirit tracks; board era stays 58.
+- Shared logs and public rooms are version 63.
+
 ## Prototype 62
 - **The Spirit realm is in the game**: a new setting, "Spirit" (track codes ending in -S), on the Race screen, in the track editor and in rooms. It is the look you approved over two rounds of clips: a black void, neon wireframe, the lattice strong in sections that fade in and out, and everything at once: stacks, pyramids shedding and reforming, block rings, gyroscopes, knots, unfolding solids, shoals (and now and then a shape made of shoals), arches that assemble ahead of the leader, sacred geometry, bestiary blocks, the hanging stepped sky, pieces of the other realms, rooms the road runs through, the serpent under spirals, heads pacing the pack, colossi sunk to the waist, rare ghost riders, and echoes of the leaders collapsing 3, 2, 1 on two short stretches.
   - **Your rule holds in code:** nothing touches the road or blocks the view of the road ahead. Every piece is checked through its whole motion when the track is built, and a test rechecks it on twelve tracks.

@@ -502,6 +502,14 @@ Low-end phones come first: every heavy effect is optional, and the default look 
 - **One file per biome** (track/004f to 004r), built from a documented context; `scene-hash` guards refactors.
 - **Spirit realm (S):** nothing ever intersects the road or the chase camera's view of it (`spClear`, tested); all motion in vertex shaders, one batch per kind of thing; music response as in round 2 with the sound's form as colour on top; portals wait for their own pass.
 
+## Prototype 63 decisions
+
+- **Spirit-only road features** (portals, undersides) live in their own track parts (004s, 004t) and hook into road shape, physics, placement, cameras and the realm's rule the same way (docs/spirit-p62/PORTALS.md, last section). Spirit codes changed without a version split (one day old).
+- **A portal is a zero-length break in the road**: distance along the track carries straight through, so laps, places, AI, ghosts, weapons and poses need nothing special; cameras turn by the portal's rotation on the crossing frame. The exit sits close behind the entrance (not further back) so followers about 1 s behind see the pack jump.
+- **Undersides are a split, not a Möbius twist**, so taking the underside is a choice and two groups race on the two faces of one slab.
+- **Music-driven visuals use the time the sound is heard** (`musHeard`: audio clock minus output latency minus a player offset), never the time it is scheduled.
+- **Sound tables carry only what can be played** (tools/audio usage run; `tools/tests/samples.js` guards it).
+
 ## How to change things safely
 
 A change to the music or the announcer ships only after it has been rendered and compared side by side with the Prototype 25 baseline. Gameplay changes ship after simulated races, and are then checked against the player's race logs.
