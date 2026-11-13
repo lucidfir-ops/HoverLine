@@ -10,7 +10,7 @@ From Eric's notes of 2026-11-11 (evening) after Prototype 62, with a phone scree
 | 3 | Upside-down road sections, in the Spirit realm only (the plan from Prototype 60 task 8: a route that rolls round the road's edge and runs under it) | architect (Opus, high) | merged |
 | 4 | Spirit realm polish: echoes and ghost riders in each frame's own model; stacks that re-stack; the dodecahedron flower; the five solids each on its own beat; check the realm's music response in Songs mode (the recorded-songs music mode) and fix it if it doesn't react | feature-builder (Sonnet, high) | merged |
 | 5 | Prune built-in sound samples nothing can play (carried over from the P61 plan, task 10) | feature-builder (Sonnet, high) | merged (itch zip 43.8 to 37.0 MB) |
-| 6 | Merge, Prototype 63, changelog, build, hand over | lead | todo |
+| 6 | Merge, Prototype 63, changelog, build, hand over | lead | done: zip sent 2026-11-13 |
 
 Eric's notes of 2026-11-11 night were folded into running tasks: task 2 (knots become the portals' decoration) and task 4
 (echoes fainter and in the frame's mesh; music-driven lights fire when the sound is heard, not when it is scheduled;
