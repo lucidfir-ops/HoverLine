@@ -71,7 +71,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
     /* atmosphere: a coloured haze */
     {const hz=g2('haze'),f=scene.fog,lk=(T&&T.look)||BIOMES.U;if(hz!==this.hz){this.hz=hz;if(hz){f.color.setHex(lk.haze);f.near=40;f.far=lk.k==='N'?1400:700;scene.background.setHex(lk.haze)}else{f.color.setHex(lk.bg);f.near=lk.fog[0];f.far=lk.fog[1];scene.background.setHex(lk.bg)}}}
     /* the beat on the track edges */
-    {const ct=music.ctx?music.ctx.currentTime:0;while(this.kick.length&&this.kick[0]<=ct){(this.kt||(this.kt=[])).unshift(this.kick.shift());this.pulse=1}if(this.kt&&this.kt.length>8)this.kt.length=8;if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
+    {const ct=musHeard();while(this.kick.length&&this.kick[0]<=ct){(this.kt||(this.kt=[])).unshift(this.kick.shift());this.pulse=1}if(this.kt&&this.kt.length>8)this.kt.length=8;if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
       const m=T&&T.mats;if(m){const p=g2('pulse')?this.pulse:0;if(p>0.005||this.lp>0.005){m.edgeM.color.setScalar(1+0.9*p);m.rail.color.setRGB(1+0.4*p,0.69*(1+0.6*p),0.25*p);m.glass.opacity=0.10+0.14*p}this.lp=p}}
     if(T&&T.env){T.env.update(S.t,g2('anim'));if(T.env.cave)T.env.cave(camera);if(T.env.sky)T.env.sky.position.copy(camera.position);this.moteCol=T.look.mote}
     if(++this.tick%30===0)this.applyEnv()}};

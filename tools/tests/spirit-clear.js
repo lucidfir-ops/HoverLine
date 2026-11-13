@@ -70,6 +70,8 @@ const CHECK = (code) => {
   const breath = (amt, tm) => 1 + amt * (0.6 * tm.br + 0.4 * tm.k);
   /* moments: time, beat, kick, breath, group progress, drop, tight; the beats chosen so every notch, tier and hinge is seen */
   const TM = []; for (let q = 0; q < 24; q++) TM.push({ t: q * 7.3, b: q * 1.37 + (q % 4) * 0.25, k: q % 3 === 0 ? 1 : 0, br: [1, -1, 0][q % 3], g: [0, 0.25, 0.5, 0.75, 1, 1][q % 6], drop: q % 5 === 0 ? 1 : 0, tight: [0, 0.13, 0.26][q % 3] });
+  /* the colossi's gestures at their extremes, alone and together with the drop's raised arms */
+  const COL_POSES = []; for (const g of [{}, { aR: 0.72, wv: 1 }, { aL: 0.72, wv: 1 }, { lean: 0.14 }, { bow: 0.55 }, { aR: 0.9, aL: 0.9 }, { wt: 1 }]) for (const drop of [0, 0.9]) COL_POSES.push({ lean: 0, bow: 0, aR: 0, aL: 0, wv: 0, wt: 0, ...g, ...(drop ? { aR: Math.max(g.aR || 0, drop), aL: Math.max(g.aL || 0, drop) } : {}) });
   const fails = {}, counts = {}, bad = [];let cur = null;
   const test = (kind, x, y, z) => { counts[kind] = (counts[kind] || 0) + 1; let w = null; if (inKeep(x, y, z)) w = 'keep-out'; else if (nearSight(x, y, z)) w = 'sight'; if (w) { fails[kind + ' ' + w] = (fails[kind + ' ' + w] || 0) + 1; if (bad.length < 12 && !bad.some((q) => q[5] === cur)) bad.push([kind, w, Math.round(x), Math.round(y), Math.round(z), cur]) } };
   const A = (g, k, i) => { const a = g.attributes[k]; return a ? [a.array[i * 4], a.array[i * 4 + 1], a.array[i * 4 + 2], a.array[i * 4 + 3]] : null };
@@ -78,24 +80,52 @@ const CHECK = (code) => {
       const pos = g.attributes.position, vs = []; const seen = new Set(); for (let v = 0; v < pos.count; v++) { const kk = pos.getX(v).toFixed(3) + pos.getY(v).toFixed(3) + pos.getZ(v).toFixed(3); if (!seen.has(kk)) { seen.add(kk); vs.push([pos.getX(v), pos.getY(v), pos.getZ(v)]) } }
       for (let i = 0; i < n; i++) { cur = 'w' + i + ' C' + A(g, 'iC', i).map(Math.round) + ' M' + A(g, 'iM', i).map((x) => +x.toFixed(2)) + ' S' + A(g, 'iS', i).map(Math.round); const iC = A(g, 'iC', i), iQ = A(g, 'iQ', i), iO = A(g, 'iO', i), iB = A(g, 'iB', i), iS = A(g, 'iS', i), iM = A(g, 'iM', i), iX = A(g, 'iX', i), iF = A(g, 'iF', i), iI = A(g, 'iI', i);
         const md = iM[0], moving = md > 0.5 || iC[3] > 0, times = moving ? TM : [TM[0]];
+        if (md > 3.5 && md < 4.5) { /* Prototype 63: a re-stacking tier, from every slot it could leave to every slot it could take, at every moment of the move (004n restackPos) */
+          const nS = iF[1], sp = iF[3], th = iI[2], nT = iM[1] + (iF[0] % 2), tt = iM[2];
+          const so = (s, t, D) => { const ox = s - (nS - 1) / 2; return Math.abs(ox) > 0.01 ? [Math.sign(ox) * D, 0] : [0, (t % 2 < 0.5 ? -1 : 1) * D] };
+          for (let sA = 0; sA < nS; sA++) for (let lA = 0; lA <= nT; lA++) for (let sB = 0; sB < nS; sB++) for (let lB = 0; lB <= nT; lB++) for (let u = 0; u <= 0.62; u += 0.04) {
+            const ph = u - 0.02 * lB, s1 = sst(ph / 0.1), m = sst((ph - 0.1) / 0.2), s3 = sst((ph - 0.3) / 0.1), D = sp * 0.9, oA = so(sA, tt, D), oB = so(sB, tt, D);
+            const pa = [(sA - (nS - 1) / 2) * sp + oA[0] * s1, oA[1] * s1], pb = [(sB - (nS - 1) / 2) * sp + oB[0] * (1 - s3), oB[1] * (1 - s3)];
+            const P = [pa[0] + (pb[0] - pa[0]) * m, (lA + 0.5) * th + ((lB + 0.5) * th - (lA + 0.5) * th) * m + (sA !== sB ? 1.4 * th * Math.sin(Math.PI * m) : 0), pa[1] + (pb[1] - pa[1]) * m];
+            for (const v0 of vs) { let v = [v0[0] * iS[0], v0[1] * iS[1], v0[2] * iS[2]]; v = rotA(v, [0, 1, 0], m * Math.PI / 2 * Math.sign(iM[3])); v = [v[0] + P[0] - iO[0], v[1] + P[1] - iO[1], v[2] + P[2] - iO[2]];
+              const b = rotQ(iB, v), bb = [b[0] + iO[0], b[1] + iO[1], b[2] + iO[2]], w = rotQ(iQ, [bb[0] * (1 + iC[3]), bb[1] * (1 + iC[3]), bb[2] * (1 + iC[3])]); test('re-stacking tiers', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } }
+          continue }
+
         for (const tm of times) for (const v0 of vs) { let v = [v0[0] * iS[0], v0[1] * iS[1], v0[2] * iS[2]];
-          if (md > 3.5 && md < 4.5) { const stp = Math.floor(tm.b), f = tm.b % 1, on = Math.abs(((stp % iM[1]) + iM[1]) % iM[1] - iM[2]) < 0.5 ? 1 : 0; v = rotA(v, [0, 1, 0], on * sst(f * 2.5 - 0.6) * Math.PI / 2 * Math.sign(iM[3])); v[0] += on * (sst(f * 3) - sst(f * 3 - 2)) * iM[3] }
           let b = rotQ(iB, v);
           if (md > 4.5 && md < 5.5) { const gk = sst((tm.g * 1.6 - iF[3]) / 1.1), j = 1 - gk, mid = [(iO[0] + iF[0]) / 2, (iO[1] + iF[1]) / 2 + iI[2], (iO[2] + iF[2]) / 2]; b = rotA(b, iX, Math.sin(Math.PI * gk) * iM[1]); for (let q = 0; q < 3; q++) b[q] += iO[q] * j * j + mid[q] * 2 * gk * j + iF[q] * gk * gk }
           else { b = [b[0] + iO[0], b[1] + iO[1], b[2] + iO[2]]; b = rotA(b, iX, ang(iM, tm)); if (md > 2.5 && md < 3.5) b = b.map((x) => x * (1 + 0.05 * tm.k)); if (md > 0.5 && md < 1.5) b[1] += Math.sin(tm.t * 0.4 + iM[2]) * iM[3] }
           const s = breath(iC[3], tm), w = rotQ(iQ, [b[0] * s, b[1] * s, b[2] * s]); test(md > 4.5 && md < 5.5 ? 'flying blocks' : 'wire solids', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } } }
     else if (g.attributes.sA) { /* neon lines: points every 4 m; the posed slots (heads, riders, echoes) are checked in races */
-      const knot = !!g.attributes.sA2;
+      const hinge2 = !!g.attributes.sA2 && A(g, 'iM', 0)[0] > 11.5, knot = !!g.attributes.sA2 && !hinge2;
       for (let i = 0; i < n; i++) { cur = 'l' + i + ' C' + A(g, 'iC', i).map(Math.round) + ' M' + A(g, 'iM', i).map((x) => +x.toFixed(2)) + ' A' + A(g, 'sA', i).map(Math.round); const sA = A(g, 'sA', i), sB = A(g, 'sB', i), iC = A(g, 'iC', i), iQ = A(g, 'iQ', i), iM = A(g, 'iM', i), iX = A(g, 'iX', i), iP = A(g, 'iP', i), a2 = knot ? A(g, 'sA2', i) : null, b2 = knot ? A(g, 'sB2', i) : null;
-        if (iM[0] > 7.5) { if (iP[3] < 4 || iP[3] > 6) continue }/* colossi heads: about their neck, posed by yaw only (the body is still) */
+        if (hinge2) { /* Prototype 63: the dodecahedron's flower, every edge at every degree of both hinges (004n mode 12), and breathing */
+          const a2 = A(g, 'sA2', i), b2 = A(g, 'sB2', i), len = Math.hypot(sB[0] - sA[0], sB[1] - sA[1], sB[2] - sA[2]), nn = Math.max(1, Math.ceil(len / 2));
+          for (let k1 = 0; k1 <= 10; k1++) for (let k2 = 0; k2 <= 10; k2++) { const bb1 = k1 / 10, bb2 = k2 / 10; for (let q = 0; q <= nn; q++) { const f = q / nn; let r = [0, 1, 2].map((k) => sA[k] + (sB[k] - sA[k]) * f);
+            if (a2[3] < 0) r = r.map((x, k) => x + b2[k] * -a2[3] * bb1); else if (a2[3] > 0) { const t = rotA([r[0] - b2[0], r[1] - b2[1], r[2] - b2[2]], a2, a2[3] * bb2); r = [t[0] + b2[0], t[1] + b2[1], t[2] + b2[2]] }
+            const t = rotA([r[0] - iP[0], r[1] - iP[1], r[2] - iP[2]], iX, iM[3] * bb1); r = [t[0] + iP[0], t[1] + iP[1], t[2] + iP[2]];
+            const w = rotQ(iQ, r.map((x) => x * 1.02)); test('flowers (dodecahedra)', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } }
+          continue }
+        if (iM[0] > 7.5 && (iP[3] < 4 || iP[3] > 6)) continue; /* heads, riders: posed in races (spirit-race.js) */
+        if (iM[0] > 7.5) { /* Prototype 63: a colossus's torso, arms and head, through every gesture (004n colG) and every yaw of its head: lean 0 to 0.14,
+            bow to 0.55, arms 0 to 0.9 of a half turn (waving +-0.2 rad), turn to watch; the shader's order: part, head's bow and yaw, body yaw, lean */
+          const len = Math.hypot(sB[0] - sA[0], sB[1] - sA[1], sB[2] - sA[2]), nn = Math.max(1, Math.ceil(len / 40)), isHead = iM[0] < 8.5;
+          for (const ps of COL_POSES) for (const yw of [-1.2, 0, 1.2]) for (let q = 0; q <= nn; q++) { const f = q / nn;
+            let qv = [sA[0] + (sB[0] - sA[0]) * f - iP[0], sA[1] + (sB[1] - sA[1]) * f - iP[1], sA[2] + (sB[2] - sA[2]) * f - iP[2]];
+            if (!isHead) { if (iM[2] > 0.5) { const a = iM[2] < 1.5 ? ps.aL : ps.aR, sd = iM[2] < 1.5 ? -1 : 1; qv = rotA(qv, [0, 0, 1], sd * (Math.PI * a + 0.2 * ps.wv * (a >= 0.3 ? 1 : 0))) } }
+            else { qv = rotA(qv, [1, 0, 0], ps.bow); qv = rotA(qv, [0, 1, 0], yw * (1 - 0.55 * ps.wt)) }
+            qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]]; qv = rotA(rotA(qv, [0, 1, 0], 0.55 * yw * ps.wt), [1, 0, 0], ps.lean);
+            const w = rotQ(iQ, qv); test('colossi (gestures)', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) }
+          continue }
         const md = iM[0], times = md > 0.5 || iC[3] > 0 || knot ? TM : [TM[0]], len = Math.hypot(sB[0] - sA[0], sB[1] - sA[1], sB[2] - sA[2]), nn = Math.max(1, Math.ceil(len / 4));
         for (const tm of times) { const mk = knot ? sst(Math.sin(tm.b * 0.098 + iM[2]) * 1.4 + 0.5) : 0;
           for (let q = 0; q <= nn; q++) { const f = q / nn; let p = [sA[0] + (sB[0] - sA[0]) * f, sA[1] + (sB[1] - sA[1]) * f, sA[2] + (sB[2] - sA[2]) * f];
             if (knot) { const p2 = [a2[0] + (b2[0] - a2[0]) * f, a2[1] + (b2[1] - a2[1]) * f, a2[2] + (b2[2] - a2[2]) * f]; p = p.map((x, k) => x + (p2[k] - x) * mk) }
+            if (md > 12.5 && md < 13.5) { /* Prototype 63: a Platonic solid swelling on its own beat, in a ring that turns (004n mode 13) */
+              const r0 = [0, 1, 2].map((k) => iP[k] + (p[k] - iP[k]) * (1 + iM[3])), w = rotQ(iQ, rotA(r0, iX, iM[1] * tm.t)); test('platonic solids', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]); continue }
             let qv = [p[0] - iP[0], p[1] - iP[1], p[2] - iP[2]];
-            if (md > 7.5) { const yaw = (tm.t % 2.4) - 1.2; qv = rotA(qv, [0, 1, 0], yaw); qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]] }
-            else { qv = rotA(qv, iX, ang(iM, tm)); qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]]; if (md > 0.5 && md < 1.5) qv[1] += Math.sin(tm.t * 0.4 + iM[2]) * iM[3] }
-            const s = md > 7.5 ? 1 : breath(iC[3], tm), w = rotQ(iQ, [qv[0] * s, qv[1] * s, qv[2] * s]); test(knot ? 'knots' : md > 7.5 ? 'colossi heads' : 'lines', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } } } }
+            qv = rotA(qv, iX, ang(iM, tm)); qv = [qv[0] + iP[0], qv[1] + iP[1], qv[2] + iP[2]]; if (md > 0.5 && md < 1.5) qv[1] += Math.sin(tm.t * 0.4 + iM[2]) * iM[3];
+            const s = breath(iC[3], tm), w = rotQ(iQ, [qv[0] * s, qv[1] * s, qv[2] * s]); test(knot ? 'knots' : 'lines', iC[0] + w[0], iC[1] + w[1], iC[2] + w[2]) } } } }
     else if (g.attributes.fH) { /* shoals: each fish at its farthest (puffed, scattered, loose) */
       for (let i = 0; i < n; i++) { const fH = A(g, 'fH', i), fD = A(g, 'fD', i), fC = A(g, 'fC', i), fK = A(g, 'fK', i);
         for (const tm of TM.slice(0, 8)) { let hh = [fH[0], fH[1], fH[2]]; if (fC[3] !== 0) { const r = rotA([hh[0] - fC[0], hh[1] - fC[1], hh[2] - fC[2]], [0, 1, 0], tm.t * fC[3]); hh = [fC[0] + r[0], fC[1] + r[1], fC[2] + r[2]] }
@@ -104,7 +134,7 @@ const CHECK = (code) => {
     else if (g.attributes.lA) { /* the lattice: every strut, every 4 m, drawn in by 0, half and all of its build tightening */
       for (let i = 0; i < n; i++) { const a = A(g, 'lA', i), b = A(g, 'lB', i), an = A(g, 'lN', i), bn = A(g, 'lM', i), len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]), nn = Math.max(1, Math.ceil(len / 4));
         for (const tg of [0, 0.13, 0.26]) { const pa = [0, 1, 2].map((k) => a[k] + (an[k] - a[k]) * tg), pb = [0, 1, 2].map((k) => b[k] + (bn[k] - b[k]) * tg); for (let q = 0; q <= nn; q++) { const f = q / nn; test('lattice', pa[0] + (pb[0] - pa[0]) * f, pa[1] + (pb[1] - pa[1]) * f, pa[2] + (pb[2] - pa[2]) * f) } } } } }
-  return { code, L: Math.round(T.L), q: sp.q, info: T.bmInfo, rays: SL.length, counts, fails, bad, placed: sp.stats.placed, dropped: sp.stats.dropped, why: sp.why };
+  return { code, L: Math.round(T.L), q: sp.q, colossi: sp.colossi.length, info: T.bmInfo, rays: SL.length, counts, fails, bad, placed: sp.stats.placed, dropped: sp.stats.dropped, why: sp.why };
 };
 
 (async () => {
@@ -112,7 +142,7 @@ const CHECK = (code) => {
   let tot = 0;
   for (const code of CODES) {
     const t0 = Date.now(), r = await p.evaluate(CHECK, code), n = Object.values(r.counts || {}).reduce((a, x) => a + x, 0), nf = Object.values(r.fails || {}).reduce((a, x) => a + x, 0); tot += n;
-    console.log(code, 'L', r.L, 'q', r.q, '|', r.info, '| points', n, 'sight lines', r.rays, '| placed', r.placed, 'left out', r.dropped, JSON.stringify(r.why), Math.round((Date.now() - t0) / 100) / 10 + ' s');
+    console.log(code, 'L', r.L, 'q', r.q, '|', r.info, '| colossi', r.colossi, '| points', n, 'sight lines', r.rays, '| placed', r.placed, 'left out', r.dropped, JSON.stringify(r.why), Math.round((Date.now() - t0) / 100) / 10 + ' s');
     ok(!r.err && nf === 0, code + ': every point of every piece, through its motion, clear of the road and of every sight line' + (nf ? ' (fails: ' + JSON.stringify(r.fails) + ' e.g. ' + JSON.stringify(r.bad) + ')' : ''));
   }
   ok(tot > 1e6, 'checked ' + tot + ' points in all');

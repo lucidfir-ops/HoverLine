@@ -965,6 +965,8 @@ body.qk:not(.qkN) #pslide,body.qk:not(.qkN) #brk{display:none!important}
     <div class="sub">The genres, how the race music behaves, and your library of kept tunes · every tune has a code you can share</div>
     <div class="row" role="group" aria-label="Music mode"><span class="sub">Mode</span><button class="chip" data-mm="gen" aria-pressed="false">Generative</button><button class="chip" data-mm="pre" aria-pressed="false">Pregen</button><button class="chip" data-mm="songs" aria-pressed="false">Songs</button></div>
     <div class="row" role="group" aria-label="Music"><button class="chip" data-music="off" aria-pressed="false">Off</button><span class="sep"></span><button class="chip listen" aria-pressed="false" title="What the menus play: the race music (the radio of tunes) or the quiet Ambient. Tap to switch.">Menu music: Race</button><button class="chip" id="evoChip" aria-pressed="false">Evolving</button><button class="chip" id="shufChip" aria-pressed="true">Shuffle</button><button class="chip" id="liteChip" aria-pressed="false">Lite audio</button></div>
+    <div class="slrow"><label for="msync">Lights sync</label><input type="range" id="msync" min="-200" max="300" step="10"><span id="msyncV"></span></div>
+    <p class="small">If the lights on the beat flash before you hear it (a Bluetooth speaker or some phones), slide this later; if they come after, slide it earlier. The game already allows for the delay your device reports, so 0 is usually right.</p>
     <div class="sub">Genres</div><div class="row" role="group" aria-label="Genres" id="genreRow"></div>
     <p class="small">Each tune is a template from one genre, or a fusion of two (one genre's rhythm, another's melody or colour). A tune plays only when its genres are on. In a room everyone hears the same tunes, so there all genres play.</p>
     <div class="row"><button class="heart" id="likeTune2" aria-pressed="false" aria-label="Like this tune" title="Like this tune"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.3 0 5.4 3.2 4.2 6.6-1.7 4.8-9.2 9.4-9.2 9.4z"/></svg></button><button class="heart" id="dislikeTune2" aria-pressed="false" aria-label="Less like this tune" title="Less like this: plays less often, never ruled out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-9.2-9.4C1.6 7.7 3.7 4.5 7 4.5c2.1 0 3.6 1.2 5 3l-1.6 3.4 2.8 2.2-1.7 3.4"/><path d="M12.9 7.1c1.3-1.6 2.7-2.6 4.1-2.6 3.3 0 5.4 3.2 4.2 6.6-1.4 4-6.8 7.9-8.6 9.1"/></svg></button><button class="chip" id="likeChip" aria-pressed="true">Influence the radio with your likes</button></div>
@@ -3064,7 +3066,7 @@ function scenerySpirit(ctx){
   const straight=(i,h=50)=>{const n=Math.round(h/ds),t0=Tg[ix(i)];for(let k=-n;k<=n;k+=2){const j=ix(i+k);if(kind[j]||gap[j]||spl[j]||U[j].y<0.97||Tg[j].dot(t0)<0.999)return false}return true};
   const STR=[];for(let i=0;i<N;i+=Math.max(1,Math.round(12/ds)))if(straight(i))STR.push(i);
   /* put(name, tries, gen): gen(k) gives a candidate {b: balls [[x,y,z,r]...], add()}; the first clear one is added */
-  const put=(name,tries,gen)=>{st.tried++;for(let k=0;k<tries;k++){const c=gen(k);if(!c)continue;if(clr.okPts(c.b)){c.add();st.placed++;if(k)st.moved++;return true}}st.dropped++;why[name]=(why[name]||0)+1;return false};
+  const put=(name,tries,gen)=>{st.tried++;for(let k=0;k<tries;k++){const c=gen(k);if(!c)continue;if((!c.cyl||clr.cyl(...c.cyl))&&clr.okPts(c.b)){c.add();st.placed++;if(k)st.moved++;return true}}st.dropped++;why[name]=(why[name]||0)+1;return false};
   /* the batches */
   const W2={box:spWires('box'),glyph:spWires('box'),oct:spWires('oct'),tet:spWires('tet'),ico:spWires('ico'),dod:spWires('dod')},solids=['oct','tet','ico','dod'];
   const REG=600,regs=[],LB=i=>{const k=Math.floor(ix(i)*ds/REG);return regs[k]||(regs[k]=spLines())},farL=spLines(),knotL=spLines(),live=spLines(),sh=spShoals();
@@ -3083,11 +3085,13 @@ function scenerySpirit(ctx){
     put('bestiary blocks',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(36,140),R2(-10,55));
       return{b:[[...c,rad]],add:()=>W2.glyph.add({c,s:[s0,s0*hk,s0],m:[2,TAU/8*sgn(),r()*TAU,0],ax:[0,1,0],gl:Math.floor(r()*4),pal:pick([1,3,4]),pc:r(),k:1.05,br:0.03,per:40})}})}
 
-  /* ---- stepped stacks: a tier slides out and turns a quarter on its beat; medium carved pairs near, huge ones far ---- */
+  /* ---- stepped stacks: every 16 beats the tiers slide out, turn a quarter and re-stack in a new order, and now and then a top tier
+     joins the next stack (004n restackPos); medium carved pairs near, huge ones far. Prototype 63: the ball that holds a stack through all
+     of it is wider (tiers slid out) and taller (a tier crossing over to the next stack) than the stack itself. ---- */
   const stack=(name,o)=>{const nT=o.tiers,nS=o.stacks,sz=o.size,th=sz*0.42;
-    put(name,8,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),hgt=nT*th,rad=Math.hypot((nS-1)/2*1.25*sz+0.8*sz,0.71*sz,hgt/2)*1.03;
-      const mid=new V3(...c).addScaledVector(UP,hgt/2);return{b:[[mid.x,mid.y,mid.z,rad]],add:()=>{for(let s=0;s<nS;s++){const ox=(s-(nS-1)/2)*sz*1.25,nt=nT-(s%2);
-        for(let t=0;t<nt;t++){const w=sz*(1-t*0.09);(o.carve?W2.glyph:W2.box).add({c,q:qq,off:[ox,(t+0.5)*th,0],s:[w,th*0.92,w],m:[4,nt,(t+s)%nt,sz*0.3*(t%2?1:-1)],gl:o.carve?(t+s)%4:-1,pal:o.pal,pc:t/nt,k:1,per:o.per||60,br:0.02})}}}}})};
+    put(name,8,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(o.d0,o.d1),R2(o.h0,o.h1)),qq=qLevel(i),hgt=(nT+2.6)*th,rad=Math.hypot((nS-1)/2*1.25*sz+1.75*sz,1.75*sz,hgt/2)*1.03;
+      const mid=new V3(...c).addScaledVector(UP,hgt/2);return{b:[[mid.x,mid.y,mid.z,rad]],add:()=>{const gs=r();for(let s=0;s<nS;s++){const ox=(s-(nS-1)/2)*sz*1.25,nt=nT-(s%2);
+        for(let t=0;t<nt;t++){const w=sz*(1-t*0.09);(o.carve?W2.glyph:W2.box).add({c,q:qq,off:[ox,(t+0.5)*th,0],s:[w,th*0.92,w],m:[4,nt,t,sz*0.3*(t%2?1:-1)],fly:[s,nS,gs,sz*1.25],lift:th,gl:o.carve?(t+s)%4:-1,pal:o.pal,pc:t/nt,k:1,per:o.per||60,br:0.02})}}}}})};
   for(let n=0,nn=cnt(1.2,[0,0.6,1]);n<nn;n++)stack('stacks',{tiers:5,stacks:2,size:R2(10,15),d0:48,d1:90,h0:-8,h1:4,carve:true,pal:4});
   for(let n=0,nn=Math.max(q?1:0,cnt(0.4,[0.5,0.7,1]));n<nn;n++)stack('stacks (huge)',{tiers:6,stacks:3,size:R2(80,130),d0:420,d1:700,h0:-160,h1:-70,pal:3,per:400});
 
@@ -3141,9 +3145,14 @@ function scenerySpirit(ctx){
   if(q&&ctx.port)spPortalKnots(ctx,knotL,clr,r,st,why);
 
   /* ---- unfolding solids: a cube opens into its cross and folds back, a tetrahedron into its star (faces hinge on the beat) ---- */
-  if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),cube=n%2===0;
-    put('unfolding solids',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(40,80),R2(14,34));return{b:[[...c,s*(cube?2.3:2)]],add:()=>{const Lb=LB(i),pal=pick([0,1,2,3,4,5]),ph=r(),qq=rq(),h=s/2;
-      if(cube){const sq=(pts,piv,ax,amp,pc)=>{Lb.obj({c,q:qq,m:[7,0,ph,amp],ax,piv,pal,ext:s*2});SPS.loop(pts).forEach(([a,b])=>Lb.seg(a,b,pc,1.1));Lb.seg(pts[0],pts[2],pc,0.5)};
+  const flowL=spLines();
+  if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),dod=n%3===2,cube=n%3===0;
+    put('unfolding solids',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(40,80),R2(14,34));return{b:[[...c,s*(dod?2.9:cube?2.3:2)]],add:()=>{const Lb=LB(i),pal=pick([0,1,2,3,4,5]),ph=r(),qq=rq(),h=s/2;
+      /* Prototype 63: the dodecahedron opens like a flower (dossier 26): 12 pentagons, hinged in two ranks (004p flowerNet, 004n mode 12) */
+      if(dod){const fl=SPS.flowerNet(s*0.9),Z=[0,0,0,0];fl.forEach((f,fi)=>{flowL.obj({c,q:qq,m:[12,0,ph,f.h1?f.h1.a:0],ax:f.h1?f.h1.ax:[0,1,0],piv:f.h1?f.h1.pv:[0,0,0],pal,ext:s*3});
+          const a2=f.h2?[f.h2.ax[0],f.h2.ax[1],f.h2.ax[2],f.h2.a]:f.lift?[0,0,0,-f.lift.d]:Z,b2=f.h2?[f.h2.pv[0],f.h2.pv[1],f.h2.pv[2],0]:f.lift?[f.lift.dir[0],f.lift.dir[1],f.lift.dir[2],0]:Z;
+          for(const[a,b]of f.e)flowL.seg(a,b,fi/12,1.1,a2,b2)})}
+      else if(cube){const sq=(pts,piv,ax,amp,pc)=>{Lb.obj({c,q:qq,m:[7,0,ph,amp],ax,piv,pal,ext:s*2});SPS.loop(pts).forEach(([a,b])=>Lb.seg(a,b,pc,1.1));Lb.seg(pts[0],pts[2],pc,0.5)};
         sq([[-h,-h,-h],[h,-h,-h],[h,-h,h],[-h,-h,h]],[0,0,0],[1,0,0],0,0);
         sq([[-h,-h,h],[h,-h,h],[h,h,h],[-h,h,h]],[0,-h,h],[1,0,0],Math.PI/2,0.3);sq([[-h,-h,-h],[h,-h,-h],[h,h,-h],[-h,h,-h]],[0,-h,-h],[1,0,0],-Math.PI/2,0.5);
         sq([[h,-h,-h],[h,-h,h],[h,h,h],[h,h,-h]],[h,-h,0],[0,0,1],-Math.PI/2,0.7);sq([[-h,-h,-h],[-h,-h,h],[-h,h,h],[-h,h,-h]],[-h,-h,0],[0,0,1],Math.PI/2,0.9);
@@ -3155,7 +3164,8 @@ function scenerySpirit(ctx){
   if(q)for(let n=0,nn=cnt(1.2,[0,0.6,1]);n<nn;n++){const kd=n%3;
     put('sacred geometry',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const size=kd===0?4:kd===1?34:3.5,c=at(i,sgn()*(kd===1?R2(70,110):R2(30,60)),kd===1?R2(35,60):R2(8,26)),rad=kd===0?size*4.2:kd===1?size*0.65:size*1.5;
       return{b:[[...c,rad]],add:()=>{const Lb=LB(i),pal=pick([1,2,3,5]);
-        if(kd===0){for(let s=0;s<5;s++){const a=s*TAU/5;Lb.obj({c,m:[1,0.3,0,0],ax:[0,1,0],pal,br:0.05,ext:rad});SPS.solid(s,size*0.8,[Math.cos(a)*size*3,0,Math.sin(a)*size*3]).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,s/5,1.2))}}
+        /* Prototype 63: each of the five solids lights and swells on a beat of its own (004n mode 13, piv the solid's own middle) */
+        if(kd===0){for(let s=0;s<5;s++){const a=s*TAU/5,mid=[Math.cos(a)*size*3,0,Math.sin(a)*size*3];Lb.obj({c,m:[13,0.3,s,0.14],ax:[0,1,0],piv:mid,pal,ext:rad});SPS.solid(s,size*0.8,mid).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,s/5,1.2))}}
         else if(kd===1){const dir=new V3(...c).sub(P[i]).setY(0).normalize(),qq=qB(new V3(-dir.z,0,dir.x),UP);Lb.obj({c,q:qq,m:[1,0.08*sgn(),0,0],ax:[0,0,1],pal,br:0.03,ext:rad});SPS.flower(size).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,0.9))}
         else for(const sg of[1,-1]){Lb.obj({c,m:[1,0.4*sg,0,0],ax:[0,1,0],pal,br:0.05,ext:rad});SPS.edges(new THREE.TetrahedronGeometry(size,0),sg).forEach(([p0,p1,pc])=>Lb.seg(p0,p1,pc,1.2))}}}})}
   if(q===2)put('sacred geometry (huge)',6,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(650,850),R2(380,460));return{b:[[...c,260]],add:()=>{for(let s=4;s>=0;s--){farL.obj({c,m:[1,0.05*(s%2?1:-1)*(1+s*0.3),0,0],ax:rax(),pal:1,ext:260});SPS.solid(s,60+s*40).forEach(([p0,p1,pc])=>farL.seg(p0,p1,s/5+pc*0.2,1))}}}});
@@ -3218,16 +3228,24 @@ function scenerySpirit(ctx){
 
   /* ---- colossi, 1.3 to 1.9 km tall, sunk to the waist in the void's floor; their heads follow the leader (slots 4..6) ---- */
   const floorY=minY-300,colossi=[];for(let n=0,nn=q===2?3:q===1?2:1;n<nn;n++){const H=R2(1300,1900);
+    /* Prototype 63: a colossus gestures (004n colG), so what must stay clear is the cylinder its gestures sweep: lean 0.14 rad and raised
+       arms keep it within 0.36 H of its axis, over the whole height; so no road, nor a sight line's 300 m, is within that (clr.cyl) */
     put('colossi',10,k=>{const a=r()*TAU,d=R2(1700,2300),c=[cxT+Math.cos(a)*d,floorY,czT+Math.sin(a)*d];if(colossi.some(o=>Math.hypot(o.c[0]-c[0],o.c[2]-c[2])<900))return null;
-      return{b:[[c[0],c[1]+H*0.35,c[2],H*0.45]],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length;
-        addSegs(live,{c,q:qq,pal:[5,1,3][n%3],br:0.01,ext:H},cl.body,1,0,1);live.obj({c,q:qq,m:[8,0,0,0],piv:cl.neck,slot,pal:[5,1,3][n%3],ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
+      return{b:[],cyl:[c[0],c[2],0.36*H+380],add:()=>{const cl=SPS.colossus(H),yaw=Math.atan2(cxT-c[0],czT-c[2]),qq=[0,Math.sin(yaw/2),0,Math.cos(yaw/2)],slot=4+colossi.length,pal=[5,1,3][n%3],sd=spHash(Math.round(c[0]*0.37+c[2]*0.61));
+        const part=(segs,z,piv)=>{live.obj({c,q:qq,m:[9,sd,z,0],piv,slot,pal,br:0.01,ext:H});for(const[a2,b2,pc]of segs)live.seg(a2,b2,pc,1)};
+        part(cl.torso,0,[0,0,0]);part(cl.armL.segs,1,cl.armL.sh);part(cl.armR.segs,2,cl.armR.sh);
+        live.obj({c,q:qq,m:[8,1,sd,0],piv:cl.neck,slot,pal,ext:H});cl.head.forEach(([a2,b2,pc])=>live.seg([a2[0]+cl.neck[0],a2[1]+cl.neck[1],a2[2]+cl.neck[2]],[b2[0]+cl.neck[0],b2[1]+cl.neck[1],b2[2]+cl.neck[2]],pc,1.2));
         colossi.push({c,H,yaw,slot,neck:cl.neck})}}})}
   /* ---- wireframe heads pacing the pack (slots 0..3) and rare neon ghost riders (slots 7..12); posed by 004r ---- */
   const HEADS=[{sd:-1,d:34,up:10,s:8,du:20},{sd:1,d:48,up:16,s:12,du:55},{sd:-1,d:130,up:50,s:34,du:170},{sd:1,d:170,up:80,s:46,du:280}].slice(0,q===2?4:q===1?2:0);
-  HEADS.forEach((h,k)=>{live.obj({m:[8,0,0,0],slot:k,pal:[5,2,1,3][k],ext:1e4});SPS.head().forEach(([a,b,pc])=>live.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,1))});
-  const RIDE=q?6:0;for(let k=0;k<RIDE;k++){live.obj({m:[8,0,0,0],slot:7+k,pal:2,ext:1e4});SPS.rider().forEach(([a,b,pc])=>live.seg(a,b,pc,0.9))}
-  /* echoes: three after-images of each of the first three racers (slots 13..15 and the CPU's own; see 004r) */
-  const ECHO=q?3:0;for(let k=0;k<ECHO*3&&13+k<24;k++){live.obj({m:[8,0,0,0],slot:13+k,pal:5,ext:1e4});SPS.rider().forEach(([a,b,pc])=>live.seg(a,b,pc,0.35))}
+  /* Prototype 63: the head's wire is cool and a little dim, its face (eyes, brows, nose, mouth) is a second batch in hot lime (palette 6),
+     bolder and brighter than anything round it, so the features read at race speed (Eric) */
+  const liveF=spLines();
+  HEADS.forEach((h,k)=>{live.obj({m:[8,0,0,0],slot:k,pal:[5,2,5,2][k],ext:1e4});SPS.head().forEach(([a,b,pc])=>live.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,0.6));
+    liveF.obj({m:[8,0,0,0],slot:k,pal:6,ext:1e4});SPS.headFace().forEach(([a,b,pc])=>liveF.seg([a[0]*h.s,a[1]*h.s-h.s/2,a[2]*h.s],[b[0]*h.s,b[1]*h.s-h.s/2,b[2]*h.s],pc,1.4))});
+  /* Prototype 63: ghost riders and echoes are drawn as the racers' own frames (one merged line mesh per frame type, built on
+     first use: 004r), so nothing is built here for them; RIDE caps the riders shown, ECHO says echoes are on */
+  const RIDE=q?4:0,ECHO=q?3:0;
   /* the echo stretches: two short ones (120 m) on plain road, far apart */
   const echoes=[];if(q)for(let t=0;t<40&&echoes.length<2;t++){const i=Math.floor(r()*N),n0=Math.round(120/ds);let okE=true;for(let k=0;k<=n0;k+=3)if(gap[ix(i+k)]||kind[ix(i+k)])okE=false;if(okE&&!echoes.some(e=>Math.abs(wrapI(e.i0-i))*ds<L/4))echoes.push({i0:i,u0:i*ds,u1:i*ds+120})}
 
@@ -3251,10 +3269,11 @@ function scenerySpirit(ctx){
   const fogN=[500,2400],fogF=[900,3000];
   addM(W2.box.mesh(spWireMat({fog:fogN})));addM(W2.glyph.mesh(spWireMat({glyph:true,fog:fogN})));for(const s of solids)addM(W2[s].mesh(spWireMat({tri:true,fog:fogN})));
   const lmat=spLineMat({fog:fogN,width:0.16});regs.forEach(Lb=>Lb&&addM(Lb.mesh(lmat,true)));addM(farL.mesh(spLineMat({fog:fogF,width:0.5,maxPx:5}),false));addM(knotL.mesh(spLineMat({fog:fogN,width:0.16,knot:true}),false));
-  const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;addM(live.mesh(liveMat,false));addM(sh.mesh());
+  const liveMat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6});liveMat.defines.SLOTS=1;liveMat.defines.SLOTN=SP_SLOTS;addM(live.mesh(liveMat,false));
+  const faceMat=spLineMat({fog:[1200,3000],width:0.55,minPx:2.6,maxPx:11});faceMat.defines.SLOTS=1;faceMat.defines.SLOTN=SP_SLOTS;addM(liveF.mesh(faceMat,false));addM(sh.mesh());addM(flowL.mesh(spLineMat({fog:fogN,width:0.16,hinge:true}),false));
   for(const m of lat.meshes)addM(m);
   /* what the moving parts need (004r), and the line that describes the track */
-  lap('meshes');delete ms.t;ctx.spirit={ms,L,seed,q,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};
+  lap('meshes');delete ms.t;ctx.spirit={ms,L,seed,q,group,clr,arches,colossi,heads:HEADS,riders:RIDE,echo:ECHO,echoes,rooms,lat,floor,meshes,stats:st,why,counts:{box:W2.box.n,glyph:W2.glyph.n,solids:solids.reduce((a,s)=>a+W2[s].n,0),lines:regs.reduce((a,L0)=>a+(L0?L0.n:0),0)+farL.n,knots:knotL.n,live:live.n,fish:sh.n,lattice:lat.segs}};
   ctx.tick=(t,anim)=>spLive(ctx.spirit,t,anim);
   ctx.info.push('the Spirit realm'+(rooms.length?' · '+ctx.pl(rooms.length,'room'):'')+(arches.length?' · '+arches.length+(arches.length>1?' arches':' arch'):''));
   function wrapI(d){d=((d%N)+N)%N;return d>N/2?d-N:d}}
@@ -3264,46 +3283,98 @@ function scenerySpirit(ctx){
    frame), how it is posed (offset and turn in that frame), how it moves (a mode, a rate, a phase and an amount) and how
    it breathes; the vertex shader moves it from the shared clock below, so the CPU does no work per piece per frame.
    Motion modes (SPM): 0 still; 1 turns at a steady rate (and bobs); 2 turns a notch on every beat; 3 turns a notch every
-   bar (and slowly), swelling on the kick; 4 a stack's tier slides out, turns a quarter and slides back when its beat
-   comes; 5 flies between two places along an arc, as a group's progress (uG) says; 7 a face hinges open and closed on the
-   beat (unfolding solids); 8 is posed from the CPU (heads, riders, echoes, a colossus's head: uOP/uOQ slots).
+   bar (and slowly), swelling on the kick; 4 a stack's tiers slide out, turn a quarter and re-stack in a new order (restackPos); 5 flies between two places along an arc, as a group's progress (uG) says; 7 a face hinges open and closed on the
+   beat (unfolding solids); 12 the dodecahedron's flower; 13 a Platonic solid in its ring, lighting on its own beat; 8 is posed from the CPU (heads, a colossus's head: uOP/uOQ slots); 9 a colossus's torso or arm, which
+   gestures from the bar clock (colG).
    Nothing here touches the race: it reads the clock, the music and where racers are, never the race's random numbers. */
-const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8};
+const SPM={still:0,spin:1,beat:2,bar:3,tier:4,fly:5,hinge:7,slot:8,colossus:9};
 /* palettes, four stops each (mirrored past 1): 0 rainbow (Prism's), 1 gold + violet, 2 cyan + magenta, 3 ember + white,
    4 jade + turquoise + gold, 5 ice + violet; the colours the mock-ups were approved in */
 const SPPAL=[['#ff3a5a','#ffd23a','#3aff9a','#3a8aff'],['#4b1cff','#a640ff','#ff9f2e','#ffe08a'],['#18e0ff','#3d8bff','#c13dff','#ff3fc4'],
-  ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff']];
+  ['#ff2a0a','#ff6a1a','#ffb070','#fff4e6'],['#0fbf7a','#2fe0b0','#3fd0ff','#ffb43a'],['#e8f6ff','#8fd8ff','#7a5cff','#c050ff'],
+  /* Prototype 63: 6 hot lime, for what has to stand out from every other palette (a head's face: the lattice and the heads' wire are cool or ember) */
+  ['#c8ff00','#e4ff3a','#b4ff00','#c8ff00']];
 /* the uniforms every Spirit material shares (one object each, so setting a value once sets it everywhere):
    uT time; uBeat the music's beats (float); uKick the last kick, decaying; uKA the ages of the last four kicks (s);
    uDrop a flare after a drop starts; uBuild 0..1 through a build; uBrk 1 in a breakdown; uBreath a slow in-out (2 bars);
    uCalm 1 with Calm visuals; uG group progress (pyramids shedding, arches assembling); uOP/uOQ the posed slots;
    uSF the sound form (4 bands x 12 moments, newest first); uLvl the music's level; uRes the drawing size in pixels */
+/* Prototype 63: the posed slots are 8 now (heads 0..3, colossi 4..6); echoes and ghost riders are drawn as the racers' own
+   frames by the frame ghosts (004r), each frame type with its own images and uniforms */
+const SP_SLOTS=8;
 const SPU={uT:{value:0},uBeat:{value:0},uKick:{value:0},uKA:{value:new THREE.Vector4(9,9,9,9)},uDrop:{value:0},uBuild:{value:0},uBrk:{value:0},uBreath:{value:0},uCalm:{value:0},
-  uG:{value:Array.from({length:6},()=>new THREE.Vector4())},uOP:{value:Array.from({length:24},()=>new THREE.Vector4(0,-9999,0,0))},uOQ:{value:Array.from({length:24},()=>new THREE.Vector4(0,0,0,1))},
+  uG:{value:Array.from({length:6},()=>new THREE.Vector4())},uOP:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,-9999,0,0))},uOQ:{value:Array.from({length:SP_SLOTS},()=>new THREE.Vector4(0,0,0,1))},
   uSF:{value:Array.from({length:12},()=>new THREE.Vector4())},uLvl:{value:0},uRes:{value:new THREE.Vector2(960,540)},uWorld:{value:1},
   uPal:{value:SPPAL.flatMap(p=>p.map(h=>{const c=new THREE.Color(h);return new THREE.Vector3(c.r,c.g,c.b)}))}};
-const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[24];uniform vec2 uRes;
+const SPGL=`uniform float uT,uBeat,uKick,uDrop,uBuild,uBrk,uBreath,uCalm,uLvl,uWorld;uniform vec4 uKA;uniform vec4 uG[6];uniform vec3 uPal[28];uniform vec2 uRes;
   vec3 rotA(vec3 v,vec3 k,float a){float c=cos(a),s=sin(a);return v*c+cross(k,v)*s+k*dot(k,v)*(1.-c);}
   vec3 rotQ(vec4 q,vec3 v){vec3 t=2.*cross(q.xyz,v);return v+q.w*t+cross(q.xyz,t);}
   float sst(float x){x=clamp(x,0.,1.);return x*x*(3.-2.*x);}
   float gOf(float g){int i=int(g/4.);vec4 q=uG[i];float r=mod(g,4.);return r<0.5?q.x:r<1.5?q.y:r<2.5?q.z:q.w;}
   vec3 pal(float i,float x){x=abs(fract(x*0.5)*2.-1.)*3.;float k=floor(min(x,2.999));int b=int(i)*4+int(k);return mix(uPal[b],uPal[b+1],sst(x-k));}
   float breathK(float amt){return 1.+amt*(0.6*uBreath+0.4*uKick*(1.-uBrk))*(1.-uCalm);}
+  float hh(float n){return fract(sin(n*91.3458)*47453.5453);}
+  /* Prototype 63: a colossus's gesture now, from the bar clock and its own seed sd (0..1): now and then (one cycle in 4 bars of 16,
+     a gesture in three of four cycles, slowly in, held about 8 s, slowly out) it lifts an arm and waves, leans in toward the road,
+     bows its head, raises both arms or turns to watch the leader; through a build and the drop it raises both arms. Calm visuals
+     make it a third as big and stop the waving. Out: lean and bow (radians), the arms' raise (0..1 of a half turn), the wave, the watch. */
+  void colG(float sd,out float lean,out float bow,out float aR,out float aL,out float wv,out float wt){
+    float cyc=uBeat/64.+sd*7.3,id=floor(cyc),t=fract(cyc),g=floor(hh(id+sd*13.)*8.);float e=sst((t-0.15)/0.14)*(1.-sst((t-0.6)/0.14))*(1.-0.65*uCalm);
+    lean=0.;bow=0.;aR=0.;aL=0.;wv=0.;wt=0.;
+    if(g==2.){aR=0.72*e;wv=e*(1.-uCalm);}else if(g==7.){aL=0.72*e;wv=e*(1.-uCalm);}else if(g==3.)lean=0.14*e;else if(g==4.)bow=0.55*e;else if(g==5.){aR=0.9*e;aL=aR;}else if(g==6.)wt=e;
+    float dr=sst(max(uBuild*1.1,uDrop))*(1.-0.65*uCalm)*(0.6+0.4*hh(sd*5.))*0.9;aR=max(aR,dr);aL=max(aL,dr);}
+  /* Prototype 63: stacks re-stack. Each cycle (16 beats, 32 in Calm) every tier of a stack takes a new level, in an order its own hash gives (rankOf);
+     now and then (one cycle in three) a stack's top tier goes to the top of the next stack for that cycle (slotOf: pure functions of the cycle,
+     so nothing is remembered). A tier that has to move slides out sideways from its stack (the middle stack of three: out in depth), turns a quarter
+     and rises or drops to its new level (over the stacks' tops when it changes stack), then slides in. */
+  float rankOf(float j,float s,float c,float g,float n){float h=hh(j*1.7+s*29.3+c*13.1+g*97.),r=0.;for(int i=0;i<8;i++){float fi=float(i);if(fi<n&&fi!=j&&hh(fi*1.7+s*29.3+c*13.1+g*97.)<h)r+=1.;}return r;}
+  vec2 slotOf(float t,float s,float c,float g,float nS,float nT){float n=nT-mod(s,2.),lv=rankOf(t,s,c,g,n);
+    if(hh(c*3.3+g*7.7)<0.34){float a=floor(hh(c*5.1+g*3.)*nS);if(s==a&&lv==n-1.)return vec2(mod(a+1.,nS),nT-mod(mod(a+1.,nS),2.));}return vec2(s,lv);}
+  vec2 stackOut(float s,float t,float nS,float D){float ox=s-(nS-1.)*0.5;return abs(ox)>0.01?vec2(sign(ox)*D,0.):vec2(0.,(mod(t,2.)<0.5?-1.:1.)*D);}
+  /* the tier's place: x,z in the stack row and y up from the ground, and the turn 0..1 (of a quarter), at cycle c, fraction u, from slot A to B */
+  vec4 restackPos(vec2 A,vec2 B,float t,float nS,float sp,float th,float u,float lvB){
+    float ph=u-0.02*lvB,s1=sst(ph/0.1),m=sst((ph-0.1)/0.2),s3=sst((ph-0.3)/0.1),D=sp*0.9;
+    vec2 hA=vec2((A.x-(nS-1.)*0.5)*sp,0.),hB=vec2((B.x-(nS-1.)*0.5)*sp,0.);
+    vec2 pa=hA+stackOut(A.x,t,nS,D)*s1,pb=hB+stackOut(B.x,t,nS,D)*(1.-s3),xz=mix(pa,pb,m);
+    float y=mix((A.y+0.5)*th,(B.y+0.5)*th,m)+(A.x!=B.x?1.4*th*sin(3.14159*m):0.);
+    return vec4(xz.x,y,xz.y,m);}
+  /* Prototype 63: the five Platonic solids each light and swell on a beat of their own: solid s (iM.z, 0..4) on every second beat in turn, so
+     one beat in two lights one of the five (never more than 3 a second up to 180 bpm); Calm visuals ease it in and halve it */
+  float gLit=0.;
+  float beatLit(float s){float b=uBeat/2.,f=fract(b),on=1.-step(0.5,abs(mod(floor(b),5.)-s));return on*sst(1.-f*1.5)*mix(1.,sst(f*3.)*0.5,uCalm);}
   float spAngle(vec4 m){if(m.x<0.5)return 0.;if(m.x<1.5)return m.y*uT+m.z;if(m.x<2.5)return m.z+m.y*(floor(uBeat)+sst(fract(uBeat)*3.));
     if(m.x<3.5)return m.z+m.y*(floor(uBeat*.25)+sst(fract(uBeat*.25)*4.))+m.w*uT;if(m.x>6.5&&m.x<7.5){float c=fract(uBeat/8.+m.z);return m.w*sst(c*4.)*(1.-sst(c*4.-2.2));}return 0.;}`;
 
 /* ---------- neon lines: every segment an instance of one quad, as wide as a few pixels (round 2's line look) ---------- */
 const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
-  #ifdef KNOT
+  #if defined(KNOT)||defined(HINGE2)
   attribute vec4 sA2,sB2;
   #endif
   uniform vec2 uFog;uniform float uWidth,uMinPx,uMaxPx,uGain;varying vec3 vCol;varying float vS;
   #ifdef SLOTS
-  uniform vec4 uOP[24],uOQ[24];
+  uniform vec4 uOP[SLOTN],uOQ[SLOTN];
+  #endif
+  /* Prototype 63: the dodecahedron's flower (mode 12, HINGE2): hinge one (axis iX, pivot iP, angle iM.w) on every face but the heart, a second
+     (axis sA2, pivot sB2, angle sA2.w) on the petals' children, and the pistil (sA2.w < 0) lifts along sB2 by -sA2.w; the bloom takes 32 beats:
+     opens over 6, holds 13, closes over 6 (the second hinge a little later) */
+  #ifdef HINGE2
+  float bloomK(float c){return sst(c*5.)*(1.-sst((c-0.62)*5.));}
   #endif
   vec3 place(vec3 p,out float vis){vis=1.;vec3 q=p-iP.xyz;
+    if(iM.x>12.5&&iM.x<13.5){float lit=beatLit(iM.z);gLit=lit;vec3 r0=iP.xyz+(p-iP.xyz)*(1.+iM.w*lit);r0=rotA(r0,iX.xyz,iM.y*uT);return iC.xyz+rotQ(iQ,r0);}
+    #ifdef HINGE2
+    if(iM.x>11.5){float c=fract(uBeat/32.+iM.z),k=1.-0.5*uCalm,b1=bloomK(c)*k,b2=bloomK(fract(c+0.96))*k;vec3 r=p;
+      if(sA2.w<0.)r+=sB2.xyz*(-sA2.w)*b1;else if(sA2.w>0.)r=rotA(r-sB2.xyz,sA2.xyz,sA2.w*b2)+sB2.xyz;
+      r=rotA(r-iP.xyz,iX.xyz,iM.w*b1)+iP.xyz;return iC.xyz+rotQ(iQ,r*breathK(iC.w));}
+    #endif
     #ifdef SLOTS
-    if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;q=iP.xyz+uOP[s].xyz+rotQ(uOQ[s],q);return iC.xyz+rotQ(iQ,q);}
+    if(iM.x>7.5){int s=int(iP.w);vis=uOP[s].w;
+      /* a colossus (Prototype 63): its head (mode 8 with iM.y 1) and its torso and arms (mode 9, iM.z the part) take the gesture; the slot gives the head's yaw */
+      if(iM.y>0.5||iM.x>8.5){float yw=2.*atan(uOQ[s].y,uOQ[s].w),ln,bw,aR,aL,wv,wt;colG(iM.x>8.5?iM.y:iM.z,ln,bw,aR,aL,wv,wt);
+        if(iM.x>8.5){if(iM.z>0.5){float a=iM.z<1.5?aL:aR,sd=iM.z<1.5?-1.:1.;q=rotA(q,vec3(0.,0.,1.),sd*(3.14159*a+0.2*wv*sin(uBeat*2.5+iM.y*6.)*step(0.3,a)));}q+=iP.xyz;}
+        else{q=rotA(q,vec3(1.,0.,0.),bw);q=rotA(q,vec3(0.,1.,0.),yw*(1.-0.55*wt))+iP.xyz;}
+        q=rotA(rotA(q,vec3(0.,1.,0.),0.55*yw*wt),vec3(1.,0.,0.),ln);return iC.xyz+rotQ(iQ,q);}
+      q=iP.xyz+uOP[s].xyz+rotQ(uOQ[s],q);return iC.xyz+rotQ(iQ,q);}
     #endif
     q=rotA(q,iX.xyz,spAngle(iM))+iP.xyz;if(iM.x>0.5&&iM.x<1.5)q.y+=sin(uT*0.4+iM.z)*iM.w;
     return iC.xyz+rotQ(iQ,q*breathK(iC.w));}
@@ -3320,11 +3391,11 @@ const SPLINE_V=SPGL+`attribute vec2 corner;attribute vec4 sA,sB,iC,iQ,iM,iX,iP;
     float pk2=clamp(uRes.y/400.,0.35,2.5),px=clamp(uWidth*projectionMatrix[1][1]*uRes.y*0.5/max(-v.z,0.1),uMinPx*pk2,uMaxPx*pk2);
     c.xy+=(n*corner.x+d*(e<0.5?-1.:1.))*px*0.5/uRes*2.*c.w;gl_Position=c;
     float f=clamp((uFog.y+v.z)/(uFog.y-uFog.x),0.,1.);vS=corner.x;
-    vCol=pal(iX.w,e<0.5?sA.w:sB.w)*sB.w*f*va*uGain*uWorld;}`;
+    vCol=pal(iX.w,e<0.5?sA.w:sB.w)*sB.w*f*va*uGain*uWorld*(1.+1.6*gLit);}`;
 const SPLINE_F=`varying vec3 vCol;varying float vS;void main(){float e=1.-abs(vS);gl_FragColor=vec4(vCol*smoothstep(0.,0.4,e)*(0.85+0.6*e*e),1.);}`;
 function spLineMat(o={}){
   return new THREE.ShaderMaterial({uniforms:Object.assign({},SPU,{uFog:{value:new THREE.Vector2(...(o.fog||[500,2400]))},uWidth:{value:o.width||0.14},uMinPx:{value:o.minPx||1.5},uMaxPx:{value:o.maxPx||6},uGain:{value:o.gain||1}}),
-    vertexShader:SPLINE_V,fragmentShader:SPLINE_F,defines:o.knot?{KNOT:1}:{},transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})}
+    vertexShader:SPLINE_V,fragmentShader:SPLINE_F,defines:o.knot?{KNOT:1}:o.hinge?{HINGE2:1}:{},transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})}
 const SP_Q0=[0,0,0,1],SP_X0=[0,1,0];
 /* a batch of segments: obj(o) says what the next segments belong to: c centre, q frame (quaternion as [x,y,z,w]), br
    breath, m [mode, rate, phase, amount], ax the axis it turns about (in its frame), piv the point it turns about, pal,
@@ -3349,7 +3420,10 @@ function spLines(){const A={sA:[],sB:[],iC:[],iQ:[],iM:[],iX:[],iP:[],sA2:[],sB2
 const SPWIRE_V=SPGL+`attribute vec3 bary;attribute vec4 iC,iQ,iO,iB,iS,iM,iX,iF,iI;varying vec2 vUv;varying vec3 vB;varying vec3 vCol;varying float vF;varying float vPx;varying float vSide;varying float vGl;varying float vK;
   uniform vec2 uFog;uniform float uGain;
   void main(){vec3 v=position*iS.xyz;float md=iM.x;
-    if(md>3.5&&md<4.5){float st=floor(uBeat),f=fract(uBeat),on=1.-step(0.5,abs(mod(st,iM.y)-iM.z));v=rotA(v,vec3(0.,1.,0.),on*sst(f*2.5-0.6)*1.5708*sign(iM.w));v.x+=on*(sst(f*3.)-sst(f*3.-2.))*iM.w;}
+    if(md>3.5&&md<4.5){float nS=iF.y,nT=iM.y+mod(iF.x,2.),cyc=uBeat/(16.*(1.+uCalm))+iF.z,c=floor(cyc),u=fract(cyc);
+      vec2 A=slotOf(iM.z,iF.x,c-1.,iF.z,nS,nT),B=slotOf(iM.z,iF.x,c,iF.z,nS,nT);
+      vec4 P=(A==B)?vec4((B.x-(nS-1.)*0.5)*iF.w,(B.y+0.5)*iI.z,0.,0.):restackPos(A,B,iM.z,nS,iF.w,iI.z,u,B.y);
+      v=rotA(v,vec3(0.,1.,0.),P.w*1.5708*sign(iM.w));v+=P.xyz-iO.xyz;}
     vec3 b=rotQ(iB,v);
     if(md>4.5&&md<5.5){float k=sst((gOf(iI.y)*1.6-iF.w)/1.1),j=1.-k;vec3 mid=(iO.xyz+iF.xyz)*0.5+vec3(0.,iI.z,0.);b=rotA(b,iX.xyz,sin(3.14159*k)*iM.y)+iO.xyz*j*j+mid*2.*k*j+iF.xyz*k*k;}
     else{b+=iO.xyz;b=rotA(b,iX.xyz,spAngle(iM));if(md>2.5&&md<3.5)b*=1.+0.05*uKick*(1.-uCalm);if(md>0.5&&md<1.5)b.y+=sin(uT*0.4+iM.z)*iM.w;}
@@ -3508,11 +3582,15 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
   const far=(x,y,z,r)=>{const rr=r+reachH+O.jumpAbove+90,c0=Math.floor((x-rr)/CELL),c1=Math.floor((x+rr)/CELL),d0=Math.floor((y-rr)/CELL),d1=Math.floor((y+rr)/CELL),e0=Math.floor((z-rr)/CELL),e1=Math.floor((z+rr)/CELL);
     if((c1-c0+1)*(d1-d0+1)*(e1-e0+1)>4000)return false;
     for(let a=c0;a<=c1;a++)for(let b=d0;b<=d1;b++)for(let c=e0;c<=e1;c++)if(G.has(key(a,b,c)))return false;return true};
+  /* Prototype 63: is a tall thing standing on the ground at x,z, within r metres of its axis at every height, clear of the road and of its
+     sight lines? (every road sample at least r + the keep-out's reach from the axis, r including the 300 m of sight lines; for the
+     colossi, whose gestures sweep a cylinder too big for balls) */
+  const cyl=(x,z,r)=>{const lim=r+reachH;for(const s of S){const dx=s.x-x,dz=s.z-z;if(dx*dx+dz*dz<lim*lim)return false}return true};
   const stats={tried:0,placed:0,moved:0,dropped:0,cut:0};
   const quick=(x,y,z)=>{const a=Math.floor(x/QC),b=Math.floor(y/QC),c=Math.floor(z/QC);if(QN.has(qk(a,b,c)))return false;for(let da=-1;da<=1;da++)for(let db=-1;db<=1;db++)for(let dc=-1;dc<=1;dc++)if(QS.has(qk(a+da,b+db,c+dc)))return false;return true};
   const ok=(x,y,z,r)=>(r<=11&&quick(x,y,z))||(r>=30&&far(x,y,z,r))||(!keep(x,y,z,r)&&!sight(x,y,z,r));
   const okPts=(L,r)=>L.every(p=>ok(p[0],p[1],p[2],p[3]!=null?p[3]:r));
-  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,stats,S,SL,O}}
+  stats.rays=SL.length;stats.raysIn=nIn;return{ok,okPts,keep,sight,far,quick,cyl,stats,S,SL,O}}
 /* Prototype 62: the line drawings of tools/spirit-proto/lib (objects.js, objects2.js, pieces.js), rewritten as plain
    segment lists ([[ax,ay,az],[bx,by,bz],pc] in the piece's own frame, metres) so a placer can drop them into a batch.
    pc is where on the palette each segment sits (most go by height). Nothing here is random unless given r. */
@@ -3535,26 +3613,58 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
   const flower=s=>{const o=[],rr=s/5,C=[[0,0]];for(let k=0;k<6;k++){const a=k*TW/6;C.push([Math.cos(a)*rr,Math.sin(a)*rr]);C.push([Math.cos(a)*rr*2,Math.sin(a)*rr*2]);C.push([Math.cos(a+TW/12)*rr*Math.sqrt(3),Math.sin(a+TW/12)*rr*Math.sqrt(3)])}
     for(const[cx,cy]of C)loop(ring(rr,28,'xy').map(p=>V(p[0]+cx,p[1]+cy,0)),Math.hypot(cx,cy)/s,o);loop(ring(rr*3,64,'xy'),0.9,o);
     const M=C.filter((c,i)=>i===0||i%3!==0).slice(0,13);for(let i=0;i<M.length;i++)for(let j=i+1;j<M.length;j+=2)o.push([V(M[i][0],M[i][1],0.3),V(M[j][0],M[j][1],0.3),0.6]);return o};
-  /* a head: rings of a head's profile (brow, nose, chin on +z) and meridians, two eye rings; height 1 */
-  const head=()=>{const o=[],nr=11,nm=12,prof=y=>{const t=y;return 0.36*Math.sqrt(Math.max(0,1-Math.pow((t-0.55)/0.52,2)))*(t<0.25?0.75+t:1)},face=(a,y)=>{const fz=Math.max(0,Math.cos(a));let f=0;
+  /* a head: rings of a head's profile (brow, nose, chin on +z) and meridians; height 1. Its face is a separate list (headFace, below) so
+     it can be drawn in a colour of its own */
+  const hprof=y=>{const t=y;return 0.36*Math.sqrt(Math.max(0,1-Math.pow((t-0.55)/0.52,2)))*(t<0.25?0.75+t:1)},hface=(a,y)=>{const fz=Math.max(0,Math.cos(a));let f=0;
       if(y>0.6&&y<0.72)f=0.06;else if(y>0.4&&y<0.6)f=0.11*Math.exp(-Math.pow((y-0.48)/0.05,2))*Math.pow(fz,6);else if(y<0.2&&y>0.05)f=0.05;return f*fz*fz};
-    const P=(a,y)=>{const r=prof(y)+face(a,y);return V(Math.sin(a)*r*0.9,y,Math.cos(a)*r)};
-    for(let k=1;k<nr;k++){const y=0.04+k/nr*0.98,pts=[];for(let i=0;i<32;i++)pts.push(P(i*TW/32,y));loop(pts,y,o)}
-    for(let m=0;m<nm;m++){const a=m*TW/nm,pts=[];for(let k=0;k<=20;k++)pts.push(P(a,0.04+k/20*0.98));path(pts,0.5,o)}
-    for(const sx of[-1,1])loop(ring(0.045,10,'xy').map(p=>V(p[0]+sx*0.12,p[1]+0.62,0.33)),1,o);return o};
+  const hP=(a,y)=>{const r=hprof(y)+hface(a,y);return V(Math.sin(a)*r*0.9,y,Math.cos(a)*r)};
+  const head=()=>{const o=[],nr=11,nm=12;
+    for(let k=1;k<nr;k++){const y=0.04+k/nr*0.98,pts=[];for(let i=0;i<32;i++)pts.push(hP(i*TW/32,y));loop(pts,y,o)}
+    for(let m=0;m<nm;m++){const a=m*TW/nm,pts=[];for(let k=0;k<=20;k++)pts.push(hP(a,0.04+k/20*0.98));path(pts,0.5,o)}return o};
+  /* Prototype 63 (Eric: "a deeply contrasting colour should be used so you can see their features"): the face as bold lines laid
+     just off the head's skin: two almond eyes with an iris ring, brows, the nose and a mouth with its corners */
+  const headFace=()=>{const o=[],on=(x,y,lift=0.02)=>{let lo=-1.3,hi=1.3;for(let i=0;i<24;i++){const m=(lo+hi)/2;if(hP(m,y)[0]<x)lo=m;else hi=m}const p=hP((lo+hi)/2,y);return V(p[0],p[1],p[2]+lift)};
+    const poly=(pts,closed,pc)=>{const q=pts.map(p=>on(p[0],p[1]));for(let i=0;i<q.length-1;i++)o.push([q[i],q[i+1],pc]);if(closed)o.push([q[q.length-1],q[0],pc])};
+    for(const sx of[-1,1]){const ex=sx*0.13,ey=0.625,alm=[];for(let i=0;i<10;i++){const t=i*TW/10;alm.push([ex+Math.cos(t)*0.075,ey+Math.sin(t)*0.034])}poly(alm,true,0.1);
+      const ir=[];for(let i=0;i<8;i++){const t=i*TW/8;ir.push([ex+Math.cos(t)*0.026,ey+Math.sin(t)*0.026])}poly(ir,true,0.9);
+      poly([[sx*0.05,0.69],[sx*0.12,0.715],[sx*0.21,0.7]],false,0.5);poly([[sx*0.06,0.675],[sx*0.12,0.695],[sx*0.2,0.68]],false,0.5)}
+    poly([[0,0.66],[0,0.55],[-0.04,0.48],[0,0.455],[0.04,0.48],[0,0.55]],false,0.4);
+    poly([[-0.14,0.31],[-0.07,0.285],[0,0.28],[0.07,0.285],[0.14,0.31],[0.07,0.265],[0,0.255],[-0.07,0.265],[-0.14,0.31]],false,0.7);
+    poly([[-0.1,0.2],[0,0.19],[0.1,0.2]],false,0.3);return o};
   /* a colossus from the waist up (the floor is at y = 0): rings of the torso, shoulders, arms hanging into the floor; its head
      (a ring head with a face) separately, about the neck at headAt */
   const colossus=H=>{const o=[],sides=10,R0=H*0.09,R1=H*0.16,top=H*0.5,rings=10;const rs=[];
     for(let i=0;i<=rings;i++){const f=i/rings,y=f*top,r=(R0+(R1-R0)*Math.pow(f,1.4))*(1-0.15*Math.sin(f*Math.PI));const R=ring(r,sides,'xz',y,i*0.12);rs.push(R);loop(R,f*0.7,o)}
     for(let s=0;s<sides;s++)for(let i=0;i<rings;i++)o.push([rs[i][s],rs[i+1][s],i/rings*0.7]);
-    for(const sx of[-1,1]){const sh=[sx*R1*1.05,top*0.94,0],el=[sx*R1*1.5,top*0.45,H*0.05],wr=[sx*R1*1.6,-H*0.05,H*0.02];path([sh,el,wr],0.5,o);path([[sh[0],sh[1],sh[2]+R0*0.4],[el[0],el[1],el[2]+R0*0.4],[wr[0],wr[1]+H*0.02,wr[2]+R0*0.4]],0.55,o)}
+    const arms={};for(const sx of[-1,1]){const sh=[sx*R1*1.05,top*0.94,0],el=[sx*R1*1.5,top*0.45,H*0.05],wr=[sx*R1*1.6,-H*0.05,H*0.02],A=[];path([sh,el,wr],0.5,A);path([[sh[0],sh[1],sh[2]+R0*0.4],[el[0],el[1],el[2]+R0*0.4],[wr[0],wr[1]+H*0.02,wr[2]+R0*0.4]],0.55,A);arms[sx]={segs:A,sh};o.push(...A)}
     const hd=[],hR=H*0.075,hy=top+H*0.04;for(let k=0;k<5;k++){const y=hy+k/4*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/4));loop(ring(r,14,'xz',y-hy),0.8+k*0.05,hd)}
     for(let s=0;s<14;s+=2){const a=s*TW/14,pts=[];for(let k=0;k<=8;k++){const y=k/8*hR*2.2,r=hR*Math.sin(Math.PI*(0.15+0.7*k/8));pts.push(V(Math.cos(a)*r,y,Math.sin(a)*r))}path(pts,0.85,hd)}
     loop(ring(hR*1.45,24,'xy').map(p=>V(p[0],p[1]+hR*1.1,-hR*0.3)),1,hd);for(const sx of[-1,1])loop(ring(hR*0.16,8,'xy').map(p=>V(p[0]+sx*hR*0.35,p[1]+hR*1.15,hR*0.85)),1,hd);
-    return{body:o,head:hd,neck:[0,hy,0]}};
+    /* Prototype 63: body is everything but the head; torso and the two arms (hung from their shoulders) apart, for the gestures (004n mode 9) */
+    return{body:o,head:hd,neck:[0,hy,0],torso:o.filter(x=>!arms[-1].segs.includes(x)&&!arms[1].segs.includes(x)),armL:arms[-1],armR:arms[1]}};
   /* a frame's outline (for ghost riders and echoes): a wedge with fins, about 4 m long, nose on +z */
   const rider=()=>{const o=[],P=[V(0,0.3,2.2),V(0.9,0.2,-1.4),V(-0.9,0.2,-1.4),V(0,0.9,-1.2)];for(const[a,b]of[[0,1],[0,2],[1,2],[0,3],[1,3],[2,3]])o.push([P[a],P[b],0.6]);
     for(const sx of[-1,1]){o.push([V(sx*0.9,0.2,-1.4),V(sx*1.5,0.1,-1.8),0.8],[V(sx*1.5,0.1,-1.8),V(sx*0.7,0.3,0),0.8],[V(sx*0.5,0.5,-1.3),V(sx*0.5,0.5,-2.6),0.3])}return o};
+  /* Prototype 63 (dossier 26): a dodecahedron that opens like a flower. Its twelve pentagons: one is the heart, the five round it are
+     petals hinged on the heart's edges, five more hang from the petals' outer edges (a second hinge each) and the twelfth, the heart's
+     opposite, lifts clear like a pistil. Each face is a list of its edges in the closed solid's own space (circumradius s) with its hinges:
+     h1 {ax, pv, a} (about the parent edge, closed space) and h2 {ax, pv, a} or lift {dir, d}; a is the angle (rad, signed so that it opens)
+     at full bloom. */
+  const flowerNet=s=>{const g=new THREE.DodecahedronGeometry(1,0).toNonIndexed(),P=g.attributes.position,key=v=>v.map(x=>Math.round(x*1e4)).join(','),Fm=new Map();
+    for(let i=0;i<P.count;i+=3){const a=[P.getX(i),P.getY(i),P.getZ(i)],b=[P.getX(i+1),P.getY(i+1),P.getZ(i+1)],c=[P.getX(i+2),P.getY(i+2),P.getZ(i+2)],u=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],w=[c[0]-a[0],c[1]-a[1],c[2]-a[2]],n=[u[1]*w[2]-u[2]*w[1],u[2]*w[0]-u[0]*w[2],u[0]*w[1]-u[1]*w[0]],l=Math.hypot(...n),nn=n.map(x=>x/l),k=key(nn);
+      let F=Fm.get(k);if(!F)Fm.set(k,F={n:nn,V:new Map()});for(const v of[a,b,c])F.V.set(key(v),v)}
+    g.dispose();const F=[...Fm.values()].map(f=>{const v=[...f.V.values()],c=[0,1,2].map(k=>v.reduce((t,p)=>t+p[k],0)/v.length),e1=[v[0][0]-c[0],v[0][1]-c[1],v[0][2]-c[2]],e2=[f.n[1]*e1[2]-f.n[2]*e1[1],f.n[2]*e1[0]-f.n[0]*e1[2],f.n[0]*e1[1]-f.n[1]*e1[0]];
+      v.sort((p,q)=>Math.atan2((p[0]-c[0])*e2[0]+(p[1]-c[1])*e2[1]+(p[2]-c[2])*e2[2],(p[0]-c[0])*e1[0]+(p[1]-c[1])*e1[1]+(p[2]-c[2])*e1[2])-Math.atan2((q[0]-c[0])*e2[0]+(q[1]-c[1])*e2[1]+(q[2]-c[2])*e2[2],(q[0]-c[0])*e1[0]+(q[1]-c[1])*e1[1]+(q[2]-c[2])*e1[2]));return{n:f.n,v,c}});
+    const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],edge=(A,B)=>{const sh=A.v.filter(p=>B.v.some(q=>key(p)===key(q)));return sh.length===2?sh:null};
+    const root=0,R=F[root],r1=F.map((f,i)=>i).filter(i=>i!==root&&edge(R,F[i])),top=F.findIndex(f=>dot(f.n,R.n)<-0.99),r2=F.map((f,i)=>i).filter(i=>i!==root&&i!==top&&!r1.includes(i));
+    const ang=i=>{const c=F[i].c,e1=[F[r1[0]].c[0],F[r1[0]].c[1],F[r1[0]].c[2]];return Math.atan2(dot(c,[R.n[1]*e1[2]-R.n[2]*e1[1],R.n[2]*e1[0]-R.n[0]*e1[2],R.n[0]*e1[1]-R.n[1]*e1[0]]),dot(c,e1))};r1.sort((a,b)=>ang(a)-ang(b));
+    const hinge=(par,ch,a0)=>{const[p,q]=edge(F[par],F[ch]),ax=[q[0]-p[0],q[1]-p[1],q[2]-p[2]],l=Math.hypot(...ax),A=ax.map(x=>x/l),rot=(v,t)=>{const c=Math.cos(t),sn=Math.sin(t),d=[v[0]-p[0],v[1]-p[1],v[2]-p[2]],cr=[A[1]*d[2]-A[2]*d[1],A[2]*d[0]-A[0]*d[2],A[0]*d[1]-A[1]*d[0]],dd=dot(A,d);return[p[0]+d[0]*c+cr[0]*sn+A[0]*dd*(1-c),p[1]+d[1]*c+cr[1]*sn+A[1]*dd*(1-c),p[2]+d[2]*c+cr[2]*sn+A[2]*dd*(1-c)]};
+      const nr=(()=>{const c=rot([F[ch].c[0]+F[ch].n[0],F[ch].c[1]+F[ch].n[1],F[ch].c[2]+F[ch].n[2]],0.2),c0=rot(F[ch].c,0.2);return[c[0]-c0[0],c[1]-c0[1],c[2]-c0[2]]})();
+      return{ax:A,pv:p,a:(dot(nr,F[par].n)>dot(F[ch].n,F[par].n)?1:-1)*a0}};
+    const out=[],edges=f=>f.v.map((p,i)=>[p.map(x=>x*s),f.v[(i+1)%f.v.length].map(x=>x*s)]);const sc=h=>({ax:h.ax,pv:h.pv.map(x=>x*s),a:h.a});
+    out.push({e:edges(F[root])});
+    r1.forEach((i,k)=>{out.push({e:edges(F[i]),h1:sc(hinge(root,i,1.08))});const kids=r2.filter(j=>edge(F[i],F[j])&&edge(F[r1[(k+1)%5]],F[j]));for(const j of kids)out.push({e:edges(F[j]),h1:sc(hinge(root,i,1.08)),h2:sc(hinge(i,j,1.08))})});
+    out.push({e:edges(F[top]),lift:{dir:F[top].n,d:s*1.1}});return out};
   /* pieces of the other realms, each on a torn-off base: Prism's contour rock, an Urban block, a Reef coral head, a Forest
      crown (a few metres to tens; r draws their shape) */
   const realm=(kind,s,r)=>{const o=[];
@@ -3565,7 +3675,7 @@ const SPS=(()=>{const TW=Math.PI*2,V=(x,y,z)=>[x,y,z];
       for(let k=0;k<3;k++){const a=k*TW/3;br(V(0,-0.3*s,0),[Math.cos(a)*0.4,0.9,Math.sin(a)*0.4],s*0.45,0)}loop(ring(s*0.5,12,'xz',-0.3*s),0,o)}
     else{path([V(0,-0.3*s,0),V(0,s*0.5,0)],0.2,o);for(let k=0;k<3;k++){const y=s*(0.45+k*0.25),rr=s*(0.6-k*0.15);loop(ring(rr,16,'xz',y),0.4+k*0.2,o)}for(let k=0;k<8;k++){const a=k*TW/8;o.push([V(Math.cos(a)*s*0.6,s*0.45,Math.sin(a)*s*0.6),V(0,s*1.2,0),0.9])}}
     loop(ring(s*0.5,8,'xz',-0.3*s).map((p,i)=>V(p[0],p[1]-(i%2?s*0.15:0),p[2])),0.1,o);return o};
-  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm}})();
+  return{V,ring,loop,path,edges,solid,tickRing,knot,flower,head,colossus,rider,realm,headFace,flowerNet}})();
 /* Prototype 62: round 2's lattice (tools/spirit-proto/lib/realm.js, SPR.lattice), which Eric liked best ("looks good";
    "the music response is good!"), kept as it was: a cubic grid of struts round the road, cleared 34 m round it and by the
    rule, in three tiers (beams, the grid, the diagonal truss) that appear as a section strengthens. Sections (2 or 3 a
@@ -3597,7 +3707,11 @@ const SPLAT_V=SPGL+`attribute vec2 corner;attribute vec4 lA,lB,lN,lM;uniform vec
 const SPLAT_F=`uniform vec4 uKA;uniform float uPV,uPK,uGainL,uSwellL,uWorld;varying vec3 vCol;varying float vS;varying float vD;varying float vSt;
   void main(){float e=1.-abs(vS),a=smoothstep(0.,0.4,e);vec3 col=vCol*uGainL*(1.+(uSwellL-1.)*0.6)*a*(0.85+0.6*e*e);
     float pu=0.;for(int i=0;i<4;i++){float k=uKA[i];float x=(vD-uPV*k)/16.;pu+=exp(-x*x)*exp(-k*1.4);}
-    col*=1.+uPK*pu*2.6;col+=vec3(0.5,0.45,0.6)*uPK*pu*0.25*vSt*a;gl_FragColor=vec4(col*uWorld,1.);}`;
+    col*=1.+uPK*pu*2.6;col+=vCol*uPK*pu*0.5*vSt*a;
+    /* Prototype 63 (Eric: "strong sections glow too white at the drop"): the pulse's lift is the strut's own colour (it was a grey-white), and the
+       sum is soft-capped by its brightest channel, so a strut keeps its hue however bright it is and the lines piled up along a section do not
+       reach white together */
+    float mx=max(col.r,max(col.g,col.b));col*=1./(1.+max(0.,mx-0.45)*1.1);gl_FragColor=vec4(col*uWorld,1.);}`;
 /* sections [{u, half, fade, peak}]; q detail: 2 every tier, 1 no diagonal truss and a wider grid, 0 the beams only */
 function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SPC_O;
   const sp=[45,36,30][q],ext=240,clear=34,tight=0.26,chunk=320,y0=-150,y1=300;
@@ -3660,37 +3774,59 @@ function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SP
    No effect flashes more than three times a second: kicks closer than 0.34 s to the last one shown are not shown. */
 let SP_CALM=(()=>{const v=store.get('hoverline.calm');return v==null?null:v==='1'})();
 const spCalm=()=>SP_CALM==null?!g2('blur'):SP_CALM;
-const SPMUS={an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
+const SPMUS={sb:{t:0,slow:0,fast:0,k:'drop',since:0,age:0,song:null},an2:null,fd2:null,oq:[],sk2:{h:[],hi:0.1,lo:0,last:-9,on:[],tT:0},bq:[],pk:[0.3,0.3,0.3,0.3],an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dropT:-99,brk:0,build:0,tight:0,g0:0,band:[0,0,0,0],peak:[0.3,0.3,0.3,0.3],lvl:0,hist:[],histT:0,slow:0,fast:0,sk:{e:0,avg:0,t:-9},lastNow:0,
   /* the analyser on the music volume (made once, on the music's own context) */
   analyser(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an&&this.src===g)return this.an;const a=c.createAnalyser();a.fftSize=512;a.smoothingTimeConstant=0.55;g.connect(a);
       const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an=a;this.src=g;this.fd=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
+  /* Prototype 63: Songs mode finds its kicks in a second analyser made for it: 2048 points (23 Hz a bin, so the bass is more than two bins) and no
+     smoothing, on the music volume like the first */
+  analyser2(){try{const g=audio.musG,c=music.ctx;if(!g||!c||g.context!==c)return null;if(this.an2)return this.an2;const a=c.createAnalyser();a.fftSize=2048;a.smoothingTimeConstant=0;g.connect(a);const z=c.createGain();z.gain.value=0;a.connect(z);z.connect(c.destination);this.an2=a;this.fd2=new Uint8Array(a.frequencyBinCount);return a}catch(e){return null}},
+  /* a kick in the bass (30 to 110 Hz) of a song: a rise over the last 80 ms that is a good part of the range the bass has had lately (the
+     level over the last 2 s against its lowest), at most one every 0.34 s. Tuned on the eight songs in songs/ (tools/tests/spirit-songs.js). */
+  onset(x){const s=this.sk2,h=s.h,prev=h.length?h[h.length-1]:null;h.push(x);if(h.length>14)h.shift();const dt=prev?Math.max(1e-3,x.t-prev.t):0.016;
+    s.hi=Math.max(x.e,s.hi*Math.exp(-dt/2));s.lo=Math.min(x.e,s.lo+(x.e-s.lo)*Math.min(1,dt/2));let j=h.length-1;while(j>0&&x.t-h[j].t<0.08)j--;
+    const rise=x.e-h[j].e;if(prev&&rise>(s.hi-s.lo)*0.18+0.01&&rise>0.02&&x.e>=prev.e&&x.t-s.last>0.34){s.last=x.t;return rise}return 0},
+  /* a song's breakdown and drop from its bass (30 to 110 Hz): the bass over the last 1.5 s against the last 20 s; a breakdown when it falls
+     under half, the drop when it is back over 0.8, at least 4 s each way and none in the first 15 s of a song (the level over all bands
+     hardly moved in the eight songs: tools/tests/spirit-songs.js, and chattered on one). A song's end, fading out, counts as a breakdown. */
+  songSec(x){const s=this.sb;if(s.song!==music.soCur){s.song=music.soCur;s.slow=s.fast=s.t=s.since=s.age=0;s.k='drop'}
+    const dt=s.t?Math.max(1e-3,Math.min(0.2,x.t-s.t)):0.016;s.t=x.t;s.slow+=(x.e-s.slow)*Math.min(1,dt/20);s.fast+=(x.e-s.fast)*Math.min(1,dt/1.5);s.since+=dt;s.age+=dt;if(s.age<15||s.since<4)return;
+    if(s.k==='drop'&&s.fast<s.slow*0.5){s.k='brk';s.since=0}else if(s.k==='brk'&&s.fast>s.slow*0.8){s.k='drop';s.since=0;this.dropT=x.t}},
   /* the kick ages, bars and sections for this frame; now: the music's clock (s) */
-  read(dt,on){const c=music.ctx,now=c?c.currentTime:performance.now()/1000,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
-    /* the spectrum */
-    const a=playing?this.analyser():null;let got=false;
-    if(a){a.getByteFrequencyData(this.fd);const F=this.fd,n=F.length,hz=c.sampleRate/2/n,b=[[20,150],[150,600],[600,3000],[3000,12000]];let tot=0;
+  read(dt,on){const c=music.ctx,raw=c?c.currentTime:performance.now()/1000,now=c?musHeard():raw,playing=!!(c&&music.style!=='off'&&(music.st||music.pgOn||music.soOn)&&c.state==='running');this.now=now;
+    /* the spectrum. Prototype 63: an analyser reads the sound where it is made, before the speaker's delay; each reading is kept
+       with the context time it was taken and used when it is heard (musHeard), like the kicks and sections, so the picture and
+       the sound line up in every mode */
+    const a=playing?this.analyser():null;
+    if(a){a.getByteFrequencyData(this.fd);const F=this.fd,n=F.length,hz=c.sampleRate/2/n,b=[[20,150],[150,600],[600,3000],[3000,12000]],bn=[];let tot=0;
       for(let k=0;k<4;k++){const i0=Math.max(0,Math.floor(b[k][0]/hz)),i1=Math.min(n-1,Math.ceil(b[k][1]/hz));let s=0;for(let i=i0;i<=i1;i++)s+=F[i];const v=s/((i1-i0+1)*255);tot+=v;
-        this.peak[k]=Math.max(v,this.peak[k]*Math.exp(-dt/6),0.08);this.band[k]=Math.min(1,v/this.peak[k])}
-      this.lvl=tot/4;got=this.lvl>0.01}
+        this.peak[k]=Math.max(v,this.peak[k]*Math.exp(-dt/6),0.08);bn.push(Math.min(1,v/this.peak[k]))}
+      this.bq.push({t:raw,b:bn,lvl:tot/4,pk:this.peak.slice()});if(this.bq.length>300)this.bq.shift()}
+    else if(!playing)this.bq.length=0;
+    let got=false;while(this.bq.length>1&&this.bq[1].t<=now)this.bq.shift();
+    if(this.bq.length&&(this.bq[0].t<=now||this.bq.length===1)){const e=this.bq[0];for(let k=0;k<4;k++){this.band[k]=e.b[k];this.pk[k]=e.pk[k]}this.lvl=e.lvl;got=this.lvl>0.01}
     if(!got){const t=performance.now()/1000;for(let k=0;k<4;k++)this.band[k]=0.35+0.25*Math.sin(t*0.21+k*1.3)}
     this.live=got;
     /* the kicks: the engine's queue, or onsets in the bass for Songs */
     const K=[];const vk=(typeof VFX!=='undefined'&&VFX.kt)||[];for(const k of vk)if(k>this.lastNow-0.05&&k<=now)K.push(k);
-    if(music.soOn&&got){const e=this.band[0]*this.peak[0],s=this.sk;s.avg+=(e-s.avg)*Math.min(1,dt*3);if(e>s.avg*1.3+0.03&&e>s.e&&now-s.t>0.28){K.push(now);s.t=now}s.e=e}
+    /* Songs: the bass of the element's sound as it leaves the graph, held back like everything else until heard, then onsets */
+    if(playing&&music.soOn){const a2=this.analyser2();if(a2){a2.getByteFrequencyData(this.fd2);const hz=c.sampleRate/2/this.fd2.length,i0=Math.max(1,Math.floor(30/hz)),i1=Math.ceil(110/hz);let sm=0;for(let i=i0;i<=i1;i++)sm+=this.fd2[i];this.oq.push({t:raw,e:sm/((i1-i0+1)*255)});if(this.oq.length>300)this.oq.shift()}
+      while(this.oq.length&&this.oq[0].t<=now){const x=this.oq.shift();this.songSec(x);if(this.onset(x))K.push(x.t)}}
+    else{this.oq.length=0;this.sk2.h.length=0;this.sk2.on.length=0}
     this.lastNow=now;
     for(const k of K.sort((x,y)=>x-y))if(on&&k-this.last>=0.34){this.last=k;this.acc.unshift(k);if(this.acc.length>4)this.acc.length=4;
-      /* the beat follows the kicks */
+      /* the beat follows the kicks (Songs: the tempo from the middle of the last few gaps between them, 85 to 175 bpm) */
       const spb=60/this.bpm,bk=(k-this.anchor)/spb,er=bk-Math.round(bk);this.anchor+=er*spb*0.5;
-      if(music.soOn&&this.acc.length>1){const iv=this.acc[0]-this.acc[1];if(iv>0.3&&iv<0.9)this.bpm+=(60/iv-this.bpm)*0.1}}
-    if(!music.soOn&&music.bpm)this.bpm=music.bpm;if(!on||!playing)this.acc.length=0;
+      if(music.soOn&&this.acc.length>3){const iv=[0,1,2].map(i=>this.acc[i]-this.acc[i+1]).sort((a,b)=>a-b)[1];if(iv>0.34&&iv<0.7){const b0=(k-this.anchor)/spb;this.bpm+=(60/iv-this.bpm)*0.12;this.anchor=k-b0*60/this.bpm}}}
+    /* (a tune faster than 180 bpm keeps the realm's beat at half time: the Platonic solids light one beat in two, so never more than 3 a second) */
+    if(!music.soOn&&music.bpm)this.bpm=music.bpm>180?music.bpm/2:music.bpm;if(!on||!playing)this.acc.length=0;
     const spb=60/this.bpm,beat=(now-this.anchor)/spb;this.beat=beat;
     /* the section */
     let sec='',bi=0,bl=1;
     if(playing&&music.pgOn&&music.pgS){const S0=music.pgS,P0=S0.P,p=S0.off+(now-S0.t);if(p<P0.loopS){sec='rise';bl=Math.max(1,Math.round(P0.loopS/P0.bd));bi=p/P0.bd}
       else{const bar=((p-P0.loopS)%(P0.loopE-P0.loopS))/P0.bd;sec=bar<16?'drop':bar<32?'b':bar<40?'brk':'rise';bi=sec==='rise'?bar-40:bar%16;bl=sec==='rise'?8:16;if(sec==='drop'&&this.sec!=='drop')this.dropT=now-bar*P0.bd}}
-    else if(playing&&music.soOn&&got){this.slow+=(this.lvl-this.slow)*Math.min(1,dt/25);this.fast+=(this.lvl-this.fast)*Math.min(1,dt/1.2);
-      sec=this.fast<this.slow*0.62?'brk':'drop';if(sec==='drop'&&this.sec==='brk'&&this.fast>this.slow*0.9)this.dropT=now;else if(sec==='drop'&&this.sec==='brk')sec='brk'}
-    else if(playing&&music.sec){sec=music.sec[0];bi=music.sec[1]+((beat%4)+4)%4/4;bl=music.sec[2]||1;if(sec==='drop'&&this.sec!=='drop'&&music.sec[1]===0)this.dropT=now}
+    else if(playing&&music.soOn&&got){sec=this.sb.k}
+    else if(playing){const e=music.secAt(now);if(e&&e.n){sec=e.n;bi=e.b+Math.max(0,Math.min(1,(now-e.t)/(spb*4)));bl=e.l||1;if(sec==='drop'&&this.sec!=='drop'&&e.b===0)this.dropT=e.t}}
     this.sec=sec;
     const brkT=on&&sec==='brk'?1:0;this.brk+=(brkT-this.brk)*Math.min(1,dt*2.5);
     this.build=on&&sec==='rise'?Math.min(1,bi/Math.max(1,bl)):0;
@@ -3701,6 +3837,10 @@ const SPMUS={an:null,src:null,fd:null,acc:[],last:-9,anchor:0,bpm:140,sec:'',dro
     this.histT+=dt;const step=spCalm()?0.2:1/15;if(this.histT>=step||!this.hist.length){this.histT=0;this.hist.unshift(this.band.slice());if(this.hist.length>12)this.hist.length=12}
     else this.hist[0]=this.band.slice();
     return this}};
+/* Prototype 63: the lattice's brightness controls from the music (M: drop 0..1, build 0..1, brk 0..1). Round 2's flare was 1.6 on the drop; with the
+   soft cap on each strut's brightness in 004q it is 1.1, which keeps the colour (Eric: the lattice glowed white at the drop on his phone).
+   Calm visuals keep it under 0.5. */
+function spLatDrive(M,calm,kick){const flare=M.drop*(calm?0.45:1.1);return{gain:(1+flare+0.3*M.build)*(1-0.75*M.brk),pk:(1-0.7*M.brk)*(calm?0.4:1),swell:1+(0.25*M.drop+0.08*kick*(1-M.brk))*(calm?0.3:1)}}
 /* the realm's frame: sp is ctx.spirit (004m); t the race clock; anim Moving scenery */
 function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.t0)));sp.t0=t;
   const on=g2('pulse'),calm=spCalm(),M=SPMUS.read(dt||1/60,on),U0=SPU;
@@ -3711,8 +3851,8 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
   U0.uWorld.value=(1-0.3*M.brk)*(1+0.12*M.drop*(calm?0.3:1));
   for(let k=0;k<12;k++){const h=M.hist[Math.min(k,M.hist.length-1)]||[0,0,0,0];U0.uSF.value[k].set(h[0],h[1],h[2],h[3])}
   /* the lattice: round 2's response, as Eric approved it (flare 1.6 on the drop; Calm keeps it under 0.5) */
-  const LU=sp.lat.U,flare=M.drop*(calm?0.45:1.6),tgt=M.build>0?sp.lat.tight*M.build*M.build*(3-2*M.build):0;M.tight=tgt<M.tight?M.tight+(tgt-M.tight)*0.35:tgt;
-  LU.uTight.value=anim?M.tight:0;LU.uPK.value=(1-0.7*M.brk)*(calm?0.4:1);LU.uGainL.value=(1+flare+0.35*M.build)*(1-0.75*M.brk);LU.uSwellL.value=1+(0.25*M.drop+0.08*U0.uKick.value*(1-M.brk))*(calm?0.3:1);
+  const LU=sp.lat.U,tgt=M.build>0?sp.lat.tight*M.build*M.build*(3-2*M.build):0,LD=spLatDrive(M,calm,U0.uKick.value);M.tight=tgt<M.tight?M.tight+(tgt-M.tight)*0.35:tgt;
+  LU.uTight.value=anim?M.tight:0;LU.uPK.value=LD.pk;LU.uGainL.value=LD.gain;LU.uSwellL.value=LD.swell;
   LU.uSwellT.value=calm||!anim?0:1;LU.uSFk.value=M.live?(calm?0.5:1):0.45;
   /* groups: 0 the pyramids, 1.. the arches */
   const G=U0.uG.value,setG=(g,v)=>G[g>>2].setComponent(g&3,v);setG(0,M.g0);
@@ -3721,29 +3861,62 @@ function spLive(sp,t,anim){const dt=Math.min(0.1,Math.max(0,t-(sp.t0==null?t:sp.
   const L=sp.L,wu=d=>{d=((d%L)+L)%L;return d>L/2?d-L:d};
   for(const a of sp.arches){let p=1;if(lead){const dl=wu(a.u-lead.u),dz=wu(a.u-last.u);p=dl>0?ssp((400-dl)/260):dz>-20?1:1-ssp((-dz-20)/60)}setG(a.g,p)}
   /* the posed slots */
-  const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<24;s++)OP[s].w=0;
+  const OP=U0.uOP.value,OQ=U0.uOQ.value;for(let s=0;s<SP_SLOTS;s++)OP[s].w=0;
   const lp=lead?sampleAt(lead.u,_spS):null;
   /* each head: the nearest clear place, outward from its own, 12 m at a time; out at once, back in slowly; the place shown
-     is checked again, and the head is hidden for that frame if it is not clear */
-  sp.heads.forEach((h,k)=>{if(!lead)return;const f=sampleAt(lead.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
+     is checked again, and the head is hidden for that frame if it is not clear. Prototype 63 (Eric: "the faces that follow
+     you should always face you"): the heads pace the local player (in split screen the leading local pilot) and each turns
+     its face to the camera it is drawn for (the nearest local pilot's, in split screen) */
+  const locals=rs.filter(r=>SPL.race?r.lp:r===player).sort((a,b)=>b.utot-a.utot),fo=locals[0]||lead;
+  sp.heads.forEach((h,k)=>{if(!fo)return;const f=sampleAt(fo.u+h.du,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,y=f.p.y+h.up,r0=h.s*0.6,at=d=>[f.p.x+sx/sl*h.sd*d,f.p.z+sz/sl*h.sd*d];
     h.push=h.push||0;let want=-1;for(let tr=0;tr<8&&want<0;tr++){const q=at(h.d+tr*12);if(sp.clr.ok(q[0],y,q[1],r0))want=tr*12}
     if(want<0){h.push=96;return}h.push=want>h.push?want:h.push+(want-h.push)*0.05;const q=at(h.d+h.push),by=y+Math.sin(t*0.7+k)*h.s*0.05;
-    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);_spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(lead.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
+    OP[k].set(q[0],by,q[1],sp.clr.ok(q[0],by,q[1],r0)?1:0);
+    let tg=null,bd=1e18;if(locals.length<2)tg=camera.position;else for(const r of locals){const c=r.lp&&r.lp.cam?r.lp.cam.position:r.ship.position,d=(c.x-q[0])**2+(c.z-q[1])**2;if(d<bd){bd=d;tg=c}}
+    _spM.lookAt(_spA.set(q[0],by,q[1]),_spB.copy(tg||fo.ship.position),_spUp);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)});
   for(const c of sp.colossi){const s=c.slot,tx=lead?lead.ship.position:mine?camera.position:_spA.set(0,0,0),dx=tx.x-c.c[0],dz=tx.z-c.c[2];let yaw=Math.atan2(dx,dz)-c.yaw;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));yaw=Math.max(-1.2,Math.min(1.2,yaw));
     c.y=c.y==null?yaw:c.y+(yaw-c.y)*Math.min(1,dt*0.8);OP[s].set(0,0,0,1);_spQ.setFromAxisAngle(_spUp,c.y);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}
-  /* rare ghost riders: now and then (one half minute of a race in five), a few neon riders fly beside the pack for 4 s */
+  /* Prototype 63: rare ghost riders and echoes, drawn as the frames the racers fly (spGhost*, below). Each frame type has
+     one merged line mesh with images of its own; an image is posed by two uniforms and is faint (Eric: fainter, and the
+     mesh of the frame they follow). */
+  sp.ghosts=sp.ghosts||new Map();for(const G of sp.ghosts.values()){G.used=0;G.rused=0;for(const v of G.OP)v.w=0}
+  /* rare ghost riders: now and then (one half minute of a race in five), a few neon riders fly beside the pack for 4 s, each
+     as the frame of one of the racers */
   if(sp.riders&&lead&&S.state==='race'){const slot=Math.floor(S.raceT/30);if(slot!==sp.rideSlot){sp.rideSlot=slot;if(spHash(slot*7919+sp.seed)<0.2&&S.raceT>8)sp.ride={t0:S.raceT,n:3+Math.floor(spHash(slot*31+5)*3)}}
     const R0=sp.ride;if(R0&&S.raceT-R0.t0<4.5){const e=S.raceT-R0.t0,fade=Math.min(1,e*2,(4.5-e)*2);for(let k=0;k<Math.min(R0.n,sp.riders);k++){const sd=k%2?1:-1,f=sampleAt(lead.u-25+k*14,_spS2),sx=-f.t.z,sz=f.t.x,sl=Math.hypot(sx,sz)||1,lat=W/2+SPC_O.margin+5+(k>>1)*5;
-      const x=f.p.x+sx/sl*sd*lat,y=f.p.y+3+k%3,z=f.p.z+sz/sl*sd*lat;if(!sp.clr.ok(x,y,z,3))continue;const fl=0.75+0.25*Math.sin(e*TAU*2+k);OP[7+k].set(x,y,z,fade*fl*0.8);
-      _spM.lookAt(_spA.set(0,0,0),_spB.copy(f.t),f.u);_spQ.setFromRotationMatrix(_spM).multiply(_spFlip);OQ[7+k].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}}}
+      const x=f.p.x+sx/sl*sd*lat,y=f.p.y+3+k%3,z=f.p.z+sz/sl*sd*lat;if(!sp.clr.ok(x,y,z,3))continue;const fl=0.75+0.25*Math.sin(e*TAU*2+k);
+      _spM.lookAt(_spA.set(0,0,0),_spB.copy(f.t),f.u);_spQ.setFromRotationMatrix(_spM);spGhostPose(sp,rs[k%rs.length],true,x,y,z,_spQ,fade*fl*0.8)}}}
   /* echoes of the leaders: on the two short stretches, three faint after-images of each of the first three racers; as one
      leaves a stretch, the third joins the second, the second the first and the first the frame (0.12 s each) */
   if(sp.echo&&race&&sp.echoes.length){const top=rs.slice().sort((a,b)=>b.utot-a.utot).slice(0,3),H=sp.hist||(sp.hist=new Map()),tt=S.raceT||t;
     top.forEach((r,k)=>{let h=H.get(r);if(!h)H.set(r,h={p:[],ex:-9,in:false});h.p.unshift({t:tt,x:r.ship.position.x,y:r.ship.position.y,z:r.ship.position.z,q:r.ship.quaternion.clone()});if(h.p.length>40)h.p.length=40;
       const inS=sp.echoes.some(e=>{const d=wu(r.u-e.u0);return d>=0&&d<=e.u1-e.u0});if(h.in&&!inS)h.ex=tt;h.in=inS;const e=tt-h.ex;if(!inS&&e>0.36)return;
       const d1=e<0.24?0.13:Math.max(0,0.13-(e-0.24)/0.12*0.13),d2=e<0.12?0.26:e<0.24?0.26-(e-0.12)/0.12*0.13:d1,d3=e<0.12?0.39-e/0.12*0.13:d2,dl=inS?[0.13,0.26,0.39]:[d1,d2,d3];
-      for(let j=0;j<3;j++){const s=13+k*3+j;if(s>=24)break;const want=tt-dl[j];let pz=h.p[h.p.length-1];for(const p of h.p)if(p.t<=want){pz=p;break}
-        OP[s].set(pz.x,pz.y,pz.z,(inS?1:Math.max(0,1-e/0.36))*(0.9-j*0.2));_spQ.copy(pz.q).multiply(_spFlip);OQ[s].set(_spQ.x,_spQ.y,_spQ.z,_spQ.w)}})}}
+      for(let j=0;j<3;j++){const want=tt-dl[j];let pz=h.p[h.p.length-1];for(const p of h.p)if(p.t<=want){pz=p;break}
+        spGhostPose(sp,r,false,pz.x,pz.y,pz.z,pz.q,(inS?1:Math.max(0,1-e/0.36))*(0.9-j*0.2))}})}
+  for(const G of sp.ghosts.values())G.mesh.visible=G.used+G.rused>0}
+/* ---- the frame ghosts (Prototype 63) ----
+   The line drawing of a frame is taken once from a ship the game built (its edge lines, in the ship's own space: the very mesh
+   that frame is flown as), simplified (short edges dropped, at most 150 of the longest kept) and cached by frame. Each frame
+   type that is in the race then gets one mesh: that drawing repeated for 13 images (9 echoes and 4 ghost riders), all drawn as
+   one batch; an image is placed by its slot's two uniforms, so after-images cost nothing on the CPU but two vectors. */
+const SPGH_E=9,SPGH_R=4,SPF=new Map();
+function spFrameSegs(ship,key){let C=SPF.get(key);if(C)return C;const T=THREE,sc=ship.scale.x||1,all=[];
+  ship.updateMatrixWorld(true);const inv=new T.Matrix4().copy(ship.matrixWorld).invert(),M=new T.Matrix4(),v=new T.Vector3(),w=new T.Vector3();
+  ship.traverse(o=>{if(!(o.isLineSegments&&o.userData.edge))return;const P=o.geometry.attributes.position;M.multiplyMatrices(inv,o.matrixWorld);
+    for(let i=0;i+1<P.count;i+=2){v.fromBufferAttribute(P,i).applyMatrix4(M).multiplyScalar(sc);w.fromBufferAttribute(P,i+1).applyMatrix4(M).multiplyScalar(sc);
+      const l=v.distanceTo(w);if(l>=0.22)all.push({l,a:[v.x,v.y,v.z],b:[w.x,w.y,w.z]})}});
+  all.sort((p,q)=>q.l-p.l);C=all.slice(0,150).map(e=>[e.a,e.b,Math.min(1,Math.max(0,0.25+(e.a[1]+e.b[1])*0.3))]);
+  if(!C.length)C=SPS.rider();SPF.set(key,C);return C}
+function spGhostSet(sp,r){const key=(r.build&&r.build.frame)||'blade';let G=sp.ghosts.get(key);if(G)return G;
+  const M=SPGH_E+SPGH_R,segs=spFrameSegs(r.ship,key),Lb=spLines();
+  for(let m=0;m<M;m++){Lb.obj({m:[8,0,0,0],slot:m,pal:m<SPGH_E?5:2,ext:1e4});for(const[a,b,pc]of segs)Lb.seg(a,b,pc,m<SPGH_E?0.2:0.4)}
+  const mat=spLineMat({fog:[1200,3000],width:0.22,maxPx:6}),OP=Array.from({length:M},()=>new THREE.Vector4(0,-9999,0,0)),OQ=Array.from({length:M},()=>new THREE.Vector4(0,0,0,1));
+  mat.defines.SLOTS=1;mat.defines.SLOTN=M;mat.uniforms.uOP={value:OP};mat.uniforms.uOQ={value:OQ};
+  const mesh=Lb.mesh(mat,false);mesh.visible=false;sp.group.add(mesh);G={key,mesh,OP,OQ,used:0,rused:0,segs:segs.length};sp.ghosts.set(key,G);return G}
+/* pose one image of racer r's frame (rider: a ghost rider, else an echo) at x,y,z facing q, shown at strength a */
+function spGhostPose(sp,r,rider,x,y,z,q,a){if(!r||!r.ship)return;const G=spGhostSet(sp,r),m=rider?SPGH_E+G.rused:G.used;if(rider?G.rused>=SPGH_R:G.used>=SPGH_E)return;if(rider)G.rused++;else G.used++;
+  G.OP[m].set(x,y,z,a);G.OQ[m].set(q.x,q.y,q.z,q.w)}
 const ssp=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
 const spHash=n=>{let h=(n|0)^0x9E3779B9;h=Math.imul(h^h>>>16,0x85EBCA6B);h=Math.imul(h^h>>>13,0xC2B2AE35);return((h^h>>>16)>>>0)/4294967296};
 const _spV2=new THREE.Vector2(),_spS={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},_spS2={p:new THREE.Vector3(),r:new THREE.Vector3(),u:new THREE.Vector3(),t:new THREE.Vector3(),h:0},
@@ -6175,6 +6348,16 @@ const SMP=(()=>{
   return SMP})();
 /* the sample library's manifest loads beside the songs/ probe: a copy without samples/ just falls back */
 try{SMP.init()}catch(e){}
+/* Prototype 63 (Eric, from his phone: "I see a light bloom briefly and then hear the associated noise"). The engine
+   schedules a note at an audio-clock time t, up to 0.3 s before it plays; the sound leaves the speaker only when the
+   context's clock has reached t plus the output latency (a phone's audio path, and much more on Bluetooth). A picture that
+   fires when currentTime reaches t is that much early. musHeard() is the context clock minus the output latency
+   (outputLatency where the browser reports it, baseLatency otherwise) minus the player's own Music sync offset
+   (Music page, hoverline.msync, in ms: later lights are a positive number, default 0), so "t <= musHeard()" is "it is
+   audible now". An analyser reads the sound before that delay, so what it hears is held back by the same time. */
+let MUS_SYNC=(()=>{const v=+store.get('hoverline.msync');return isFinite(v)?Math.max(-200,Math.min(300,v)):0})();
+function musLat(){const c=music.ctx;return c?(c.outputLatency||c.baseLatency||0):0}
+function musHeard(){const c=music.ctx;return c?c.currentTime-musLat()-MUS_SYNC/1000:performance.now()/1000}
 /* Songs (Prototype 38): they come as files beside the page in the itch.io zip and the Wi-Fi host pack (songs/), so a
    copy without them (the offline file, the Claude page) plays the generative music instead. */
 (function(){try{if(location.protocol==='file:'){SONGS.ok=false;return}fetch('songs/songs.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{SONGS.ok=!!(j&&j.length);try{songsUI()}catch(e){}if(SONGS.ok)setTimeout(()=>{try{if(music.modeEff()==='songs'&&music.ctx&&music.style!=='off'&&!music.soOn)music.soStart()}catch(e){}},0)}).catch(()=>{SONGS.ok=false;try{songsUI()}catch(e){}})}catch(e){SONGS.ok=false}})();
@@ -6461,7 +6644,11 @@ const music={kr:true,lite:(()=>{const v=store.get('hoverline.alite');return v?v=
   mlog(e,o){try{if(this===music&&LOG.cur)logEv(e,o)}catch(x){}},
   played(){return this.ctx?Math.round((this.ctx.currentTime-(this.tuneAt||0))*10)/10:null},
   /* ---- once per bar: phase changes, arrangement, layer faders ---- */
-  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
+  /* Prototype 63: every bar's start time with the section it began (the section changes at scheduling time, up to 0.3 s before
+     it is heard: pictures read this log at the heard time instead, music.secAt) */
+  onBar(t,sd){try{return this.onBar0(t,sd)}finally{const s=this.sec,L=this.secLog||(this.secLog=[]);L.push({t,n:s?s[0]:'',b:s?s[1]:0,l:s?s[2]:0});if(L.length>48)L.shift()}},
+  secAt(h){const L=this.secLog;if(!L)return null;let e=null;for(const x of L)if(x.t<=h)e=x;return e},
+  onBar0(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
     if(this.want){this.phase=this.want;this.want=null;this.pb=0;
       if(this.phase==='pre'||this.phase==='drop'){const N=this.phase==='pre'?this.cinN:0,fin=this.finalPending;this.finalPending=false;
         this.phase='groove';fresh=true;this.swT0=null;this.hb=32-N;this.gb=0;this.mi=0;this.buildT0=-1;this.revealAt=-1;this.padUntil=0;this.queue=[];
@@ -9523,6 +9710,8 @@ $('sndOpen').onclick=()=>setPane('setSnd');$('sndDone').onclick=()=>setPane('set
 $('logOpen').onclick=()=>setPane('setLog');$('logDone').onclick=()=>setPane('setMain',$('logOpen'));
 for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.addEventListener('input',()=>{audio[k]=+el.value;store.set('hoverline.'+k,el.value);$(id+'V').textContent=el.value+'%';audio.applyVol()});
   el.addEventListener('change',()=>{audio.init();audio.applyVol();if(k==='volS')audio.blip(660,0.12,0.12,'triangle')})}
+/* Prototype 63: the lights' sync with the sound (musHeard, music/033) */
+{const el=$('msync'),sh=()=>{el.value=String(MUS_SYNC);$('msyncV').textContent=(MUS_SYNC>0?'+':'')+MUS_SYNC+' ms'};sh();el.addEventListener('input',()=>{MUS_SYNC=+el.value;store.set('hoverline.msync',String(MUS_SYNC));sh()});el.addEventListener('change',()=>audio.blip(660,0.06,0.05))}
 $('sndChip').onclick=()=>{audio.init();audio.setOn(!audio.on);setSync()};
 function closeCtl(){tilt.msg='';rebind.on=false;$('ctl').hidden=true;const f=ctlFrom;ctlFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}
 /* ---------- nose guide ----------
@@ -12223,7 +12412,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
     /* atmosphere: a coloured haze */
     {const hz=g2('haze'),f=scene.fog,lk=(T&&T.look)||BIOMES.U;if(hz!==this.hz){this.hz=hz;if(hz){f.color.setHex(lk.haze);f.near=40;f.far=lk.k==='N'?1400:700;scene.background.setHex(lk.haze)}else{f.color.setHex(lk.bg);f.near=lk.fog[0];f.far=lk.fog[1];scene.background.setHex(lk.bg)}}}
     /* the beat on the track edges */
-    {const ct=music.ctx?music.ctx.currentTime:0;while(this.kick.length&&this.kick[0]<=ct){(this.kt||(this.kt=[])).unshift(this.kick.shift());this.pulse=1}if(this.kt&&this.kt.length>8)this.kt.length=8;if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
+    {const ct=musHeard();while(this.kick.length&&this.kick[0]<=ct){(this.kt||(this.kt=[])).unshift(this.kick.shift());this.pulse=1}if(this.kt&&this.kt.length>8)this.kt.length=8;if(this.kick.length>64)this.kick.splice(0,this.kick.length-64);this.pulse*=Math.exp(-dt*7);
       const m=T&&T.mats;if(m){const p=g2('pulse')?this.pulse:0;if(p>0.005||this.lp>0.005){m.edgeM.color.setScalar(1+0.9*p);m.rail.color.setRGB(1+0.4*p,0.69*(1+0.6*p),0.25*p);m.glass.opacity=0.10+0.14*p}this.lp=p}}
     if(T&&T.env){T.env.update(S.t,g2('anim'));if(T.env.cave)T.env.cave(camera);if(T.env.sky)T.env.sky.position.copy(camera.position);this.moteCol=T.look.mote}
     if(++this.tick%30===0)this.applyEnv()}};
