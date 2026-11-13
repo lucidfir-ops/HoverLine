@@ -184,3 +184,12 @@ python3 places.py results/x.jsonl                          # place, wins and gap
 
 Expert was set so the clean pilot finishes about 4th of 8 with under 10% wins on each width, in the Tether and over all
 frames, then moved by half the pilot's remaining gap to his own times (Wide +1%, Standard +2%; Narrow kept at 1.10).
+
+## Expert check (Prototype 64)
+
+`eric_p62.json` is the Eric pilot refitted (`KEEP=eric_p59.json MATCH='Prototype (59|60|62)' node fit_eric.js`) from his non-Prism Prototype 59, 60 and 62 pad logs: 22 Wide, 14 Standard and 19 Narrow finished races (17, 7 and 19 before; three Wide and two Standard that he restarted or quit feed the line and nose fit only). The wander stays as found in Prototype 60 (Wide 0.274, Standard 0.166, Narrow 0.22; Wide 0.22 to 0.33 and Standard 0.12 to 0.22 gave the same times within noise) and `cal.mod` is carried over. `eric_p62_clean.json` is its clean self, made by `mkclean.py` (which reproduces `eric_p59_clean.json` from `eric_p59.json`).
+
+- **Replay a Prototype 62 log on a Prototype 62 build.** A Spirit code builds differently since portals and undersides (Prototype 63 gives `W1AAE839-S` a portal jump it did not have), so races from before them need that commit's build: unpack commit 3ee4952 with `git archive`, run `python3 tools/build.py` there, then `SRC=DIR/build/hoverline.html OUT=game_p62.js python3 gen.py` and `GAME=./game_p62.js`. `probe60.js CODE` shows the road; its length must match the log's `len`.
+- `eric.js replay` appends to its output file: delete the file before a rerun.
+- `python3 expertcheck.py LOGS.json REPLAY.jsonl` (`WIDTHS=WS AIL=hard GAME=62`): his finished races at a rival level against replays of the same races (several reps each): his and the pilot's places, how likely a pilot of that kind is to do as badly or as well as he did, and to win none. `ratiobyver.py` gives the pilot's time over his by width and version.
+- Result (Prototype 64 check): his four finished Expert Wide races of Prototype 62 (places 2, 3, 6, 5; no wins) sit with the clean pilot (4.2 to 4.8 expected, 2 to 5% wins a race) and well above the typical pilot (6.0 to 6.3). The clean refit on 240 random tracks against Expert, Tether: Wide 3.9th and 3.8% wins, Standard 4.7th and 3.8%, Narrow 4.2nd and 3.8%. The typical pilot is 3 to 4% slower than he is on Wide and Standard (Narrow 1% faster): the same gap Prototype 60 measured and halved into Expert's pace, so Expert's numbers were left alone.
