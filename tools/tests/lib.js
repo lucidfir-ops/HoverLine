@@ -7,7 +7,7 @@ const THREE = fs.readFileSync(require('path').join(__dirname, '..', '..', 'vendo
 const PAGE = process.env.PAGE || require('path').join(__dirname, '..', '..', 'index.html');
 const ORIGIN = 'http://127.0.0.1:8099';
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const HOOK = 'requestAnimationFrame(frame);window.__hl={portalView,PVW,portalCross,makeGhost,ghostPose,rec,placeShip,mpPack,mpApply,proxyStep,RES,S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,RACE,rand,canFire,pacifist,tiltCentre,phaseLook,shots,fire,updateShots,WDEF,wrapU,live,aiWants,AIL,ailOf,mpFlags,flareCostOf,REFLECT_T,FLARE_K,FLARE_UNIT,reflectLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},step,codeStr,specStr,rndSeed,onUpper,openEd,closeEd,ed,surf,FK,FMAX,idxAt,modU,aiInput,aiStripBoost,AI_STRIP,aiSmoked,smokeH,SMOKE_AI,get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,navBack,NAV,SPL,splOpen,splGo,splLayoutFor,PADC,roster,ranking,toMenu,get LAPS(){return LAPS},mpTrackInfo,AIL,lbv,get build(){return build},get lastDev(){return lastDev},touchUI,tut,carExists,qkReplay,qkFinish,get car(){return car},get W(){return W},gfxRender,GFX,VFX,fit,sampleAt,SPU,SPMUS,get spCalm(){return spCalm()},setCalm:v=>{SP_CALM=v}};' +
+const HOOK = 'requestAnimationFrame(frame);window.__hl={portalView,PVW,portalCross,makeGhost,ghostPose,rec,placeShip,mpPack,mpApply,proxyStep,RES,S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,RACE,rand,canFire,pacifist,tiltCentre,phaseLook,shots,fire,updateShots,WDEF,wrapU,live,aiWants,AIL,ailOf,mpFlags,flareCostOf,REFLECT_T,FLARE_K,FLARE_UNIT,reflectLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},step,codeStr,specStr,rndSeed,onUpper,openEd,closeEd,ed,surf,FK,FMAX,idxAt,modU,aiInput,aiStripBoost,AI_STRIP,aiSmoked,smokeH,SMOKE_AI,get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,navBack,NAV,SPL,splOpen,splGo,splLayoutFor,PADC,roster,ranking,toMenu,get LAPS(){return LAPS},mpTrackInfo,AIL,lbv,get build(){return build},get lastDev(){return lastDev},touchUI,tut,carExists,qkReplay,qkFinish,get car(){return car},get W(){return W},gfxRender,GFX,VFX,fit,sampleAt,SPU,SPMUS,get spCalm(){return spCalm()},setCalm:v=>{SP_CALM=v},spLatDrive,perfApply,musHeard,spGhostSet};' +
   'window.__nb={Chirp,ChirpIO,chirp,LAN,lan,lanUse,audio,PDG,priestDraw,qrDraw,jsqrLib};\n})();';
 const cache = {};
 function html(file) {
@@ -28,7 +28,7 @@ function launch(extra = []) {
 // storage ({key: value} set before load), quick (no quick=0: a fresh page launches into First flight, the quick races),
 // query (added to quick=0&share=0&lb=dead), file (another page), framed
 // (load the game inside a frame on another origin, as itch does), perms, before (called with the page before goto),
-// render (draw the scene; off by default)
+// render (draw the scene; off by default), songs (serve the repo's songs/ folder, for Songs mode)
 async function open(b, label, o = {}) {
   const vp = o.vp || { width: 480, height: 270 };
   const ctx = await b.newContext({ viewport: vp, hasTouch: !!o.touch, isMobile: !!o.touch && vp.width < 1000, deviceScaleFactor: o.dpr || 1, userAgent: o.ua || undefined });
@@ -41,6 +41,12 @@ async function open(b, label, o = {}) {
   const body = html(o.file);
   await p.route('**/*', (r) => { const u = r.request().url();
     if (u.startsWith('http://127.0.0.1:8098/')) return r.fulfill({ contentType: 'text/html', body: `<!doctype html><body style="margin:0;background:#222"><iframe id="g" src="${ORIGIN}/${o.q}" allow="autoplay; fullscreen *; microphone; camera; gyroscope; accelerometer" style="border:0;width:100vw;height:100vh"></iframe></body>` });
+    /* Prototype 63: o.songs serves the repo's songs/ folder (Songs mode), with Range, as a web server does */
+    if (o.songs && u.startsWith(ORIGIN + '/songs/')) { const f = require('path').join(__dirname, '..', '..', 'songs', decodeURIComponent(u.slice((ORIGIN + '/songs/').length).split('?')[0]));
+      if (!fs.existsSync(f)) return r.fulfill({ status: 404, body: '' });
+      const buf = fs.readFileSync(f), type = f.endsWith('.json') ? 'application/json' : 'audio/mpeg', rg = /bytes=(\d*)-(\d*)/.exec(r.request().headers()['range'] || '');
+      if (rg && type === 'audio/mpeg') { const a = rg[1] ? +rg[1] : 0, e = rg[2] ? Math.min(+rg[2], buf.length - 1) : buf.length - 1; return r.fulfill({ status: 206, contentType: type, headers: { 'Accept-Ranges': 'bytes', 'Content-Range': `bytes ${a}-${e}/${buf.length}` }, body: buf.subarray(a, e + 1) }) }
+      return r.fulfill({ status: 200, contentType: type, headers: { 'Accept-Ranges': 'bytes' }, body: buf }) }
     if (u.startsWith(ORIGIN + '/')) return r.fulfill({ contentType: 'text/html; charset=utf-8', body });
     if (u.includes('three')) return r.fulfill({ contentType: 'application/javascript', body: THREE });
     return r.abort() });

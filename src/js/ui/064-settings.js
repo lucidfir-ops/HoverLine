@@ -34,5 +34,7 @@ $('sndOpen').onclick=()=>setPane('setSnd');$('sndDone').onclick=()=>setPane('set
 $('logOpen').onclick=()=>setPane('setLog');$('logDone').onclick=()=>setPane('setMain',$('logOpen'));
 for(const[k,id]of[['volM','volMus'],['volS','volSfx']]){const el=$(id);el.addEventListener('input',()=>{audio[k]=+el.value;store.set('hoverline.'+k,el.value);$(id+'V').textContent=el.value+'%';audio.applyVol()});
   el.addEventListener('change',()=>{audio.init();audio.applyVol();if(k==='volS')audio.blip(660,0.12,0.12,'triangle')})}
+/* Prototype 63: the lights' sync with the sound (musHeard, music/033) */
+{const el=$('msync'),sh=()=>{el.value=String(MUS_SYNC);$('msyncV').textContent=(MUS_SYNC>0?'+':'')+MUS_SYNC+' ms'};sh();el.addEventListener('input',()=>{MUS_SYNC=+el.value;store.set('hoverline.msync',String(MUS_SYNC));sh()});el.addEventListener('change',()=>audio.blip(660,0.06,0.05))}
 $('sndChip').onclick=()=>{audio.init();audio.setOn(!audio.on);setSync()};
 function closeCtl(){tilt.msg='';rebind.on=false;$('ctl').hidden=true;const f=ctlFrom;ctlFrom=null;if(f){$(f).hidden=false;if(f==='mp')mpView()}}

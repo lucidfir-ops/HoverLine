@@ -1,7 +1,11 @@
 //# music/engine/039-per-bar.js: music: once per bar: sections, arrangement, layer faders
 //# A fragment of the `music` object literal (it opens in music/engine/*-music-object.js): methods only, not a stand-alone script.
   /* ---- once per bar: phase changes, arrangement, layer faders ---- */
-  onBar(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
+  /* Prototype 63: every bar's start time with the section it began (the section changes at scheduling time, up to 0.3 s before
+     it is heard: pictures read this log at the heard time instead, music.secAt) */
+  onBar(t,sd){try{return this.onBar0(t,sd)}finally{const s=this.sec,L=this.secLog||(this.secLog=[]);L.push({t,n:s?s[0]:'',b:s?s[1]:0,l:s?s[2]:0});if(L.length>48)L.shift()}},
+  secAt(h){const L=this.secLog;if(!L)return null;let e=null;for(const x of L)if(x.t<=h)e=x;return e},
+  onBar0(t,sd){if(this.pgLate&&this.pgHand(t))return;const bd=sd*16;let fresh=false,lv=null,dur=bd;
     if(this.want){this.phase=this.want;this.want=null;this.pb=0;
       if(this.phase==='pre'||this.phase==='drop'){const N=this.phase==='pre'?this.cinN:0,fin=this.finalPending;this.finalPending=false;
         this.phase='groove';fresh=true;this.swT0=null;this.hb=32-N;this.gb=0;this.mi=0;this.buildT0=-1;this.revealAt=-1;this.padUntil=0;this.queue=[];

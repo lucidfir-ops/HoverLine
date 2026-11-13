@@ -30,7 +30,11 @@ const SPLAT_V=SPGL+`attribute vec2 corner;attribute vec4 lA,lB,lN,lM;uniform vec
 const SPLAT_F=`uniform vec4 uKA;uniform float uPV,uPK,uGainL,uSwellL,uWorld;varying vec3 vCol;varying float vS;varying float vD;varying float vSt;
   void main(){float e=1.-abs(vS),a=smoothstep(0.,0.4,e);vec3 col=vCol*uGainL*(1.+(uSwellL-1.)*0.6)*a*(0.85+0.6*e*e);
     float pu=0.;for(int i=0;i<4;i++){float k=uKA[i];float x=(vD-uPV*k)/16.;pu+=exp(-x*x)*exp(-k*1.4);}
-    col*=1.+uPK*pu*2.6;col+=vec3(0.5,0.45,0.6)*uPK*pu*0.25*vSt*a;gl_FragColor=vec4(col*uWorld,1.);}`;
+    col*=1.+uPK*pu*2.6;col+=vCol*uPK*pu*0.5*vSt*a;
+    /* Prototype 63 (Eric: "strong sections glow too white at the drop"): the pulse's lift is the strut's own colour (it was a grey-white), and the
+       sum is soft-capped by its brightest channel, so a strut keeps its hue however bright it is and the lines piled up along a section do not
+       reach white together */
+    float mx=max(col.r,max(col.g,col.b));col*=1./(1.+max(0.,mx-0.45)*1.1);gl_FragColor=vec4(col*uWorld,1.);}`;
 /* sections [{u, half, fade, peak}]; q detail: 2 every tier, 1 no diagonal truss and a wider grid, 0 the beams only */
 function spLattice(ctx,clr,r,q){const{N,ds,P,U}=ctx,L=N*ds,V3=THREE.Vector3,O=SPC_O;
   const sp=[45,36,30][q],ext=240,clear=34,tight=0.26,chunk=320,y0=-150,y1=300;
