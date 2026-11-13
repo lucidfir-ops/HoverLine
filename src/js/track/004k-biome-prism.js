@@ -1,9 +1,13 @@
 //# track/004k-biome-prism.js: the Prism scenery (P): a mountain range with caverns: height fields, cave mouths (gates), lakes, rivers, pools, calderas, falls, stalactites, glow worms, columns
 /* Prototype 61: the Prism builder (SCENERY.P, 004e), from what was its part of 004-track.js. ctx: see 004e. */
 function sceneryPrism(ctx){
-  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,group,LK,day,dens,nFall,nGey,lam,pylons,spireFrames,helixMiddles,daySky,starSky,roadSpace,pl,fallsL,geys}=ctx;
+  const{seed,N,ds,P,R,U,kind,gap,spl,minX,maxX,minY,maxY,minZ,maxZ,group,LK,day,dens,nFall,nGey,lam,pylons,spireFrames,helixMiddles,daySky,starSky,roadSpace,pl,fallsL,geys,er}=ctx;
   spireFrames();
-  helixMiddles();
+  /* Prototype 64: the middle of a spiral is a column of rock (built with the rock, below), not the black monolith the
+     night biomes stand there: in a cavern it stood from far under the floor to far over the roof, a giant black cube in
+     the cave (Eric, SX14D5571-3322444422222322-P: "there's now a giant black cube"). The random number it drew is still
+     drawn, so everything after it is where it was. */
+  const hxM=[];helixMiddles(o=>{er();hxM.push(o);return null});
   if(day)daySky();else starSky();
   /* ---------- Prism (Prototype 51, reworked in 52) ----------
      A mountain range of dark textured rock with a faint shimmer of oil-on-water colours (strongest where you see a slope
@@ -112,6 +116,9 @@ void main(){vec2 q=vW.xz+vec2(uT*(uW>0.5?3.0:1.2),uT*0.7);float n=vn(q/16.0)*0.6
       /* the bed: the floor under and beside it set just below it */
 
       const pos=[],ind=[];pts.forEach((q,j)=>{pos.push(q.x-q.rx*q.w,q.y,q.z-q.rz*q.w,q.x+q.rx*q.w,q.y,q.z+q.rz*q.w);if(j)ind.push((j-1)*2,j*2,(j-1)*2+1,(j-1)*2+1,j*2,j*2+1)});
+      /* Prototype 64: and round at both ends, a half disc, inside the round end of its bank (004l) */
+      for(const[j,e]of[[0,-1],[pts.length-1,1]]){const q=pts[j],o=pts[j-e]||q;let fx=q.x-o.x,fz=q.z-o.z;const l=Math.hypot(fx,fz)||1;fx/=l;fz/=l;const c=pos.length/3;pos.push(q.x,q.y,q.z);
+        for(let k=0;k<=8;k++){const t=k/8*Math.PI,a=Math.cos(t),b=Math.sin(t);pos.push(q.x+(-a*q.rx+b*fx)*q.w,q.y,q.z+(-a*q.rz+b*fz)*q.w);if(k)ind.push(c,c+k,c+k+1)}}
       const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(ind);group.add(new THREE.Mesh(g,liquid(water)));
       pts.forEach((q,j)=>{if(j%7===0)em.push({x:q.x,y:q.y+6,z:q.z,r:75,c:water?[0.04,0.16,0.34]:[0.55,0.16,0.03]})});rivers.push(pts)});
     const beds=()=>{for(const pts of rivers)for(const q of pts)for(let k2=0;k2<NV;k2++){if(Wz[k2]<=0)continue;const d=Math.hypot(vx(k2)-q.x,vz(k2)-q.z);if(d<q.w+cs*1.2)Fh[k2]=Math.min(Fh[k2],q.y-5)}};
@@ -193,7 +200,10 @@ void main(){vec2 q=vW.xz+vec2(uT*(uW>0.5?3.0:1.2),uT*0.7);float n=vn(q/16.0)*0.6
         map:(()=>{const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d'),gr=g.createRadialGradient(16,16,0,16,16,16);gr.addColorStop(0,'#fff');gr.addColorStop(0.35,'rgba(255,255,255,.7)');gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.fillRect(0,0,32,32);return new THREE.CanvasTexture(c)})()})))}
     /* the rock: one material for the outside (lit, with the shimmer) and one for inside (dark but for the baked light) */
     const S3=new THREE.Vector3(-0.42,0.78,-0.46).normalize(),cl=h=>new THREE.Color(h);
-    const rockMat=(inside)=>{const m=new THREE.ShaderMaterial({side:THREE.DoubleSide,fog:true,extensions:{derivatives:true},uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{uT:{value:0},uIn:{value:inside?1:0},uSun:{value:S3},
+    /* Prototype 64: rockMat(inside, true) is the hewn rock of the cave mouths' gates, the spirals' columns and the rubble:
+       each triangle lit flat (its normal from the screen-space slope of the surface), and a little lighter or darker by
+       which way it faces, so the jittered faces read as chiselled facets */
+    const rockMat=(inside,facet)=>{const m=new THREE.ShaderMaterial({side:THREE.DoubleSide,fog:true,extensions:{derivatives:true},defines:facet?{FACET:1}:{},uniforms:THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{uT:{value:0},uIn:{value:inside?1:0},uSun:{value:S3},
         uSunC:{value:cl(LK.sun[0]).multiplyScalar(LK.sun[1])},uSky:{value:cl(LK.hemi[0]).multiplyScalar(LK.hemi[2]*(day?0.55:0.8))},uGnd:{value:cl(LK.hemi[1]).multiplyScalar(LK.hemi[2]*(day?0.55:0.8))}}]),
       vertexShader:`attribute vec3 aGlow;varying vec3 vW;varying vec3 vN;varying vec3 vV;varying vec3 vG;
 #include <fog_pars_vertex>
@@ -205,9 +215,15 @@ void main(){vec4 wp=modelMatrix*vec4(position,1.0);vW=wp.xyz;vN=normalize(mat3(m
 float hs(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float vn(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.0-2.0*f);return mix(mix(hs(i),hs(i+vec2(1,0)),u.x),mix(hs(i+vec2(0,1)),hs(i+vec2(1,1)),u.x),u.y);}
 void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
+#ifdef FACET
+  n=normalize(cross(dFdx(vW),dFdy(vW)));if(dot(n,v)<0.0)n=-n;
+#endif
   float d1=vn(vW.xz/23.0+vec2(vW.y/31.0,0.0)),d2=vn(vW.xz/6.0+vec2(0.0,vW.y/7.0)),d3=vn(vW.xz/2.2-vec2(vW.y/2.5,0.0)),st=0.5+0.5*sin(vW.y*0.32+d1*5.0);
   float steep=1.0-abs(n.y);
   vec3 alb=mix(vec3(0.10,0.095,0.13),vec3(0.30,0.27,0.34),clamp(d1*0.5+d2*0.25+st*0.35*steep,0.0,1.0))*(0.8+0.25*d2+0.15*d3);
+#ifdef FACET
+  alb*=0.62+0.76*clamp(dot(n,vec3(0.36,0.79,0.49))*0.5+0.5,0.0,1.0);
+#endif
   float fr=pow(1.0-max(dot(n,v),0.0),2.0);
   float film=vn(vW.xz/150.0+vec2(uT*0.012,0.0))*1.5+fr*0.8+d2*0.3+vW.y/480.0;
   vec3 ir=0.5+0.5*cos(6.2832*(film+vec3(0.0,0.33,0.67)));
@@ -283,7 +299,7 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
       const NV2=pos.length/3,gl=new Float32Array(NV2*3);if(inside)for(let k=0;k<NV2;k++){if(k<NV&&!(Wz[k]>0))continue;glowAt(pos[k*3],pos[k*3+1],pos[k*3+2],gl,k*3)}g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));
       const m=new THREE.Mesh(g,rockMat(inside));m.frustumCulled=false;group.add(m);PR.meshes.push(m);return m};
     /* the edges of the liquids: skirts round the lakes, pools and caldera lakes, banks along the rivers (004l) */
-    const{skirtIn,skirtOut}=prismSkirts({group,PR,clearTri,skirts,rivers,rockMat,glowAt});
+    const{skirtIn,skirtOut}=prismSkirts({group,PR,clearTri,scan,skirts,rivers,rockMat,glowAt,vn,floorAt:(x,z)=>bil(Fh,x,z)});
     /* (P54) the caverns' roof and floor meet the outside of the mountain round their edge (they were left at height 0 there,
        which tore holes round the ways in) */
     for(let k=0;k<NV;k++)if(!(Wz[k]>0)){Fh[k]=Mh[k];Ch[k]=Mh[k]}
@@ -303,11 +319,14 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
       {const K=[],per=6*7*6;for(let s0=0;s0<SI.length;s0+=per){let ok=true;for(let t=s0;t<s0+per&&ok;t+=3){const a=SI[t]*3,b=SI[t+1]*3,c=SI[t+2]*3;ok=clearTri(SV[a],SV[a+1],SV[a+2],SV[b],SV[b+1],SV[b+2],SV[c],SV[c+1],SV[c+2])}if(ok)for(let t=s0;t<s0+per;t++)K.push(SI[t]);else nSpk--}SI.length=0;for(const q of K)SI.push(q)}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(SV,3));g.setIndex(SI);g.computeVertexNormals();
       const gl=new Float32Array(SV.length);for(let k=0;k<SV.length;k+=3)glowAt(SV[k],SV[k+1],SV[k+2],gl,k);g.setAttribute('aGlow',new THREE.BufferAttribute(gl,3));const m=new THREE.Mesh(g,rockMat(true));group.add(m);PR.meshes.push(m)}
     /* the gates at the cave mouths (004l) */
-    const nMouth=prismGates({N,ds,P,R,U,group,PR,mode,ins,Mh,bil,glowAt,skirtIn,skirtOut});
+    const hewIn=rockMat(true,true),hewOut=rockMat(false,true);
+    const nMouth=prismGates({seed,N,ds,P,R,U,group,PR,mode,ins,Mh,bil,glowAt,hewIn,hewOut,vn,surfH:PR.surfH,inRoad,clearTri});
+    /* Prototype 64: the rock columns in the middle of the spirals (004l) */
+    PR.nCols=prismColumns({hx:hxM,PR,group,zoneAt,F:PR.f,C:PR.c,ground:(x,z)=>{const g=PR.surfH(x,z);return isFinite(g)?g:PR.h(x,z)},surfH:PR.surfH,inRoad,clearTri,glowAt,hewIn,hewOut,vn});
     /* columns under the road, down to the mountainside or the cavern floor */
     pylons(PR.ground,3.4,lam(0x4a4558,0x0c0a12),60);
     const caves=[];for(let i=0;i<N;){if(!ins[i]){i++;continue}let n=0;while(i+n<N&&ins[i+n])n++;caves.push({i0:i,n});i+=n}
-    PR.caveL=caves;PR.caves=mode==='in'?1:caves.length;PR.cal=cal.length;PR.calL=cal;PR.fallL=fallsL;PR.geyL=geys;PR.pools=pools;PR.spikes=nSpk;PR.lakes=lakes;PR.rivers=rivers.length;PR.mouths=nMouth;PR.cut=Math.round(cutA)
+    PR.caveL=caves;PR.caves=mode==='in'?1:caves.length;PR.cal=cal.length;PR.calL=cal;PR.fallL=fallsL;PR.geyL=geys;PR.pools=pools;PR.spikes=nSpk;PR.lakes=lakes;PR.rivers=rivers.length;PR.riverL=rivers;PR.mouths=nMouth;PR.cut=Math.round(cutA)
   /* (the materials whose shimmer moves: their time is set each frame) */
   for(const m of prismM)ctx.clock.push(m.uniforms.uT);
   ctx.prism=PR;ctx.inside=PR.inside;ctx.plainFx=true;ctx.gCol=[0xb8b0cc,0x9a8cb8,0xd8d0e8];
