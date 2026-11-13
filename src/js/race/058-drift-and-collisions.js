@@ -125,7 +125,7 @@ function drFxStep(dt){const F=drFx,R=F.R;if(S.state==='paused')return;const race
     if(!F.m)drFxInit();const a=r.d.drift||0,pos=r.ship.position;
     if(!r._dfp){r._dfp=pos.clone();r._dfv=new THREE.Vector3();continue}r._dfv.copy(pos).sub(r._dfp).divideScalar(Math.max(dt,1e-3));r._dfp.copy(pos);if(r._dfv.lengthSq()>90000)r._dfv.set(0,0,0);
     r._df=(r._df||0)+(16+24*a)*(r.driftK||0)*(RES.low?0.5:1)*dt;const nE=Math.min(6,Math.floor(r._df));r._df-=nE;if(!nE)continue;
-    const sp=sampleAt(r.u),z=r.d.size||1,col=drFxCol(F,clamp((r.dB||0)/(DR.cap*(FRAMES.roller.drift||1)),0,1),F.c);
+    const sp=sampleAt(r.u),z=r.d.size||1;if(r._ra)flipRoll(sp.r,sp.u,r._ra);/* (Prototype 63: on the underside, its rolled frame) */const col=drFxCol(F,clamp((r.dB||0)/(DR.cap*(FRAMES.roller.drift||1)),0,1),F.c);
     for(let e=0;e<nE;e++){const o=F.P[F.i];F.i=(F.i+1)%F.n;const side=(F.i&1)?1:-1;
       F.o.set(side*0.7*z,0.05,1.45*z).applyQuaternion(r.ship.quaternion);o.p.copy(pos).add(F.o).addScaledVector(r._dfv,-R()*dt);
       o.v.copy(r._dfv).multiplyScalar(0.985).addScaledVector(sp.t,-(2+R()*2.5)).addScaledVector(sp.r,-r.drift*(1+R()*2)).addScaledVector(sp.u,0.3+R()*0.8);

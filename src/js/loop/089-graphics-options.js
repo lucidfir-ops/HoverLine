@@ -33,7 +33,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
      back as a trail. In every look (they are the hit's cue now), half as many with Low detail. */
   wisps(dt){for(const r of racers){if(!(r.spinD>0)||r.wreck>0||!r.ship||r.isGhost||r.off||Math.abs(wrapU(r.u-player.u))>180)continue;
       const k=Math.min(1,r.spinT/r.spinD),e=Math.pow(1-k,0.6);r._wa=(r._wa||0)+(r.glBig?150:100)*e*(RES.low?0.5:1)*dt;const n=Math.min(10,Math.floor(r._wa));r._wa-=n;if(!n)continue;
-      const s=sampleAt(r.u),z=r.d.size||1;
+      const s=sampleAt(r.u),z=r.d.size||1;if(r._ra)flipRoll(s.r,s.u,r._ra);/* (Prototype 63: the underside's rolled frame) */
       for(let q=0;q<n;q++){_vd.copy(r.ship.position).addScaledVector(s.r,(Math.random()-.5)*2.2*z).addScaledVector(s.u,Math.random()*0.9-0.2).addScaledVector(s.t,(0.6-Math.random()*2.4)*z);
         const f=Math.random()<0.55?0.55+Math.random()*0.4:0.15+Math.random()*0.35;_ve2.copy(s.t).multiplyScalar(r.v*f);rdir(_va);_ve2.addScaledVector(_va,1+Math.random()*3.5).addScaledVector(s.u,0.8+Math.random()*2.2);
         this.emit(this.wisp,_vd,_ve2,null,0.35+Math.random()*0.65,(0.05+0.34*Math.pow(Math.random(),2.2))*(r.glBig?1.25:1),4)}}},

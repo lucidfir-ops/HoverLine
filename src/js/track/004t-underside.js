@@ -35,7 +35,7 @@
    The AI takes it as a split's long route (two boost pads and an ammo strip on the underside, nothing on top), by the
    same odds as any split. Spirit tracks only (codes ending -S), about one in five (FLIP_O.P, and where a gentle 0.9-1 km
    stretch is free: see flipPlace), or the editor's count. */
-const FLIP_O={A:80,B:150,C:90,D0:160,D1:300,G:3,Tk:1.8,wF:0.32,P:0.36};
+const FLIP_O={A:75,B:140,C:85,D0:130,D1:240,G:3,Tk:1.8,wF:0.32,P:0.55};
 /* the two routes' tables (top T0 and under F), the first half drawn, the second its mirror; F.c is the physics centre:
    the centre's sideways move as seen in the route's own (rolled) frame, added up, so it ends where it began */
 function flipShape(n,nA,nB,nC,W,s){const O=FLIP_O,Tk=O.Tk,wF=W*O.wF,cOut=W/2+O.G+wF,h2=n/2,kA=nA,kB=kA+nB,kC=kB+nC,
@@ -58,12 +58,17 @@ function flipPt(p,r,u,F,k,s,l,d,o,fr,fu){const a=s*F.ph[k],c=Math.cos(a),n=Math.
    either side, nothing else there, ending before the last stretch's green strips), and only where every part of the
    under route and the space a frame rides in is clear of the rest of the track and of the other splits' routes */
 function flipPlace(c){const{seed,N,ds,P,Tg,Cs,busy,spl,splits,gI0,mark,finishB,W}=c,O=FLIP_O;if(!c.want)return 0;
-  const rf=rng((seed^0xF11B5)>>>0),nA=Math.round(O.A/ds),nB=Math.round(O.B/ds),nC=Math.round(O.C/ds),nD=2*Math.round((O.D0+rf()*(O.D1-O.D0))/ds/2),n=2*(nA+nB+nC)+nD,m=Math.round(90/ds),pref=rf()<0.5?1:-1;
+  const rf=rng((seed^0xF11B5)>>>0),nA=Math.round(O.A/ds),nB=Math.round(O.B/ds),nC=Math.round(O.C/ds),nD=2*Math.round((O.D0+rf()*(O.D1-O.D0))/ds/2),n=2*(nA+nB+nC)+nD,m=Math.round(60/ds),pref=rf()<0.5?1:-1;
   const starts=[];for(let i=Math.floor(N*0.1);i+n+m<Math.floor(N*0.85);i+=Math.max(1,Math.round(25/ds)))starts.push(i);
   for(let t=starts.length-1;t>0;t--){const j=Math.floor(rf()*(t+1));[starts[t],starts[j]]=[starts[j],starts[t]]}
   const V=THREE.Vector3,Y0=new V(0,1,0),rh=new V(),uf=new V(),q=new V(),fr=new V(),fu=new V(),own=[];for(const S1 of splits)for(const p of S1.pts)own.push(p);
-  for(const i0 of starts){if(i0+n+m>gI0)continue;let okS=true;for(let k=i0-m;k<=i0+n+m&&okS;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.0045)okS=false}if(!okS)continue;
-    for(const s of[pref,-pref]){const sh=flipShape(n,nA,nB,nC,W,s),F=sh.F,pts=[];let clear=true;
+  for(const i0 of starts){if(i0+n+m>gI0)continue;let okS=true;for(let k=i0-m;k<=i0+n+m&&okS;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.007)okS=false}if(!okS)continue;
+    /* and gentler over the rolls (no bend tighter than 222 m): on its side a frame feels the bend as a crest or a dip */
+    for(let k=nA;k<=nA+nB&&okS;k++)if(Math.abs(Cs[(i0+k)%N])>0.0045||Math.abs(Cs[(i0+n-k)%N])>0.0045)okS=false;if(!okS)continue;
+    /* the side the road bends towards over the rolls, if it bends: on its side there, the bend presses a frame onto the
+       face instead of lifting it off */
+    let kS=0;for(let k=nA;k<=nA+nB;k++)kS+=Cs[(i0+k)%N]+Cs[(i0+n-k)%N];kS/=2*(nB+1);const s0=Math.abs(kS)>0.0008?-Math.sign(kS):pref;
+    for(const s of[s0,-s0]){const sh=flipShape(n,nA,nB,nC,W,s),F=sh.F,pts=[];let clear=true;
       for(let k=0;k<=n&&clear;k+=Math.max(1,Math.round(6/ds))){const i=(i0+k)%N;rh.crossVectors(Tg[i],Y0).normalize();uf.copy(Y0).addScaledVector(Tg[i],-Tg[i].y).normalize();
         if(k%Math.max(1,Math.round(12/ds))===0)pts.push(flipPt(P[i],rh,uf,F,k,s,0,0,new V()));
         for(const l of[-F.w[k],0,F.w[k]])for(const d of[0,4]){flipPt(P[i],rh,uf,F,k,s,l,d,q);
