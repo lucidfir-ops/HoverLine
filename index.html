@@ -3048,7 +3048,7 @@ function prismSkirts(pz){const{group,PR,clearTri,scan,skirts,rivers,rockMat,glow
          and a bank there stood across the river: such a point of the loop is left out, so the bank runs along the edge of
          all the liquid; likewise where the crest would) */
       const wet=(x,z,j)=>{for(const L of rivers)for(let j2=0;j2<L.length;j2++){if(L===pts&&Math.abs(j2-j)<3)continue;const p=L[j2];if((p.x-x)**2+(p.z-z)**2<(p.w-1)**2)return true}return false},
-        add=(q,j,nx,nz)=>{const x=q.x+nx*q.w,z=q.z+nz*q.w;if(wet(x,z,j)||wet(x+nx*5,z+nz*5,j)){PR.bankDry=(PR.bankDry||0)+1;return}Lp.push({x,z,y:q.y,nx,nz})};
+        add=(q,j,nx,nz)=>{const x=q.x+nx*q.w,z=q.z+nz*q.w;if(wet(x,z,j)||wet(x+nx*5,z+nz*5,j)){PR.bankDry=(PR.bankDry||0)+1;return}/* (counted, for the tests) */Lp.push({x,z,y:q.y,nx,nz})};
       const Lp=[],side=(j,sd)=>{const q=pts[j];add(q,j,sd*q.rx,sd*q.rz)},
         cap=(j,e)=>{const q=pts[j],o=pts[j-e]||q;let fx=q.x-o.x,fz=q.z-o.z;const l=Math.hypot(fx,fz)||1;fx/=l;fz/=l;
           for(let k=1;k<8;k++){const t=k/8*Math.PI,a=Math.cos(t),b=Math.sin(t);add(q,j,-e*a*q.rx+b*fx,-e*a*q.rz+b*fz)}};
@@ -3078,14 +3078,16 @@ function prismGates(pz){const{seed,N,ds,P,R,U,group,PR,mode,ins,Mh,bil,glowAt,he
        take in the lifted rock and the hole's edges, and it is closed at both ends. Nothing clips it, so it has no shards. */
     /* Prototype 64: hewn (Eric: "could we make them look a little rough hewn and natural, without returning to the
        previous broken and missing textures?"). Still one closed mesh that nothing clips and that loses no triangle, but
-       every point is moved by seeded noise: the inner face only outward, away from the road (0.4 to 2.6 m on the walls, at
-       most 1 m at the crown, so it stays inside the room the rock is kept out of and no rock shows through it), the outer
-       face in or out (-1.5 to 4.5 m). The noise has a broad part (the cross-section changes along the gate, bulging and
-       narrowing every 10 m or so) and a fine part (a 3 m grid of points each a little off, which with the facet shading
-       of rockMat(...,true) reads as chiselled faces). The lip at each end is ragged: each point of the arch reaches 1 to 6
-       m further out than its neighbours, and a middle ring between the inner and outer face juts out again, so the end is
-       a broken edge of rock, closed all round. At the outside foot of each gate lie a few boulders and some rubble, each a
-       closed stone of its own, half sunk in the mountainside, never in the road's space (a stone that would be goes whole). */
+       every point is moved by seeded noise: the inner face only outward, away from the road, and never past the room the
+       rock is kept out of (W/2+2 across, 26 m up: its walls stand W/2+0.8 out and may go out about 1 m, its crown 24 m up
+       and may go out 1.6 m), so no rock can show through it; the outer face in or out (-1.5 to 4.5 m). The noise has a
+       broad part (the cross-section bulges and narrows along the gate every 10 m or so) and a fine part (a 3 m grid of
+       points each a little off, which with the facet shading of rockMat(...,true) reads as chiselled faces). The lip at
+       each end is ragged: each point round the arch reaches 1 to 6 m further out than its neighbours, and a middle ring
+       between the inner and outer face juts out again, so the end is a broken edge of rock, closed all round. At the
+       outside foot of each gate lie up to 4 boulders (2.5 to 6 m) and 8 stones of rubble, each a closed stone of its own,
+       on fairly level ground and a third sunk in it, never in the road's space (a stone that would be is left out whole).
+       The cross-sections are now level and plumb, not in the road's own frame: see put(), below. */
     let nMouth=0;PR.gates=[];PR.rubble=[];PR.gateL=[];if(mode==='mix'){const gIn=[],gOut=[],gP=[],rr=rng((seed^0x6a7e5)>>>0),SV=[],SI=[],
       prof=(hw,bot,spr,apx)=>{const q=[];for(let k=0;k<=3;k++)q.push([-hw,bot+(spr-bot)*k/3]);for(let k=1;k<16;k++){const a=Math.PI*k/16;q.push([-hw*Math.cos(a),spr+(apx-spr)*Math.sin(a)])}
         for(let k=3;k>=0;k--)q.push([hw,bot+(spr-bot)*k/3]);for(let k=1;k<4;k++)q.push([hw-2*hw*k/4,bot]);return q},
@@ -3151,7 +3153,7 @@ function hewnMesh(V,I,mat,glowAt){const g=new THREE.BufferGeometry();g.setAttrib
    cavern it runs from under the floor to over the roof, wider at both ends, and is kept under the mountain's outside;
    outside it is a pinnacle from under the ground to 25 to 40 m over the top of the spiral. Ten points a ring, rings every
    13 m or so, each point a little in or out and each ring a little off the line, closed at both ends, in the hewn rock.
-   It is as wide as the spiral leaves room for (at most 0.55 of the room, 38 m); any point in the road's space and it is
+   Its radius is 0.42 of the room the spiral leaves in its middle (at most 38 m); any point in the road's space and it is
    made narrower, up to three times, or left out. pz: {hx (helixMiddles' list), PR, group, zoneAt, F, C, ground, surfH,
    inRoad, clearTri, glowAt, hewIn, hewOut, vn}; returns how many it built. */
 function prismColumns(pz){const{hx,PR,group,zoneAt,F,C,ground,surfH,inRoad,clearTri,glowAt,hewIn,hewOut,vn}=pz;
