@@ -93,5 +93,10 @@ const db = (x) => (20 * Math.log10(Math.max(1e-6, x))).toFixed(1);
     console.log('\nlevel changes (lvl):\n' + sug.join('\n'));
     if (WRITE) { fs.writeFileSync(src, txt.replace(m[0], 'lvl:{' + Object.entries(next).map(([k, v]) => k + ':' + v).join(',') + '}')); console.log('wrote', src) }
   }
+  if (cli('readme', false)) {
+    const q = (x) => db(x), rows2 = rows.map((r) => { const e = EFFECTS.find((x) => x.id === r.id); return '| [ ] | ' + r.what + ' | ' + (e.chg || '') + ' | ' + (r.old.rms > 1e-5 ? q(r.old.rms) : 'silent') + ' | ' + q(r.a.rms) + ' | [' + r.file + '](' + r.file + ') |' });
+    fs.writeFileSync(path.join(OUT, 'levels.json'), JSON.stringify(rows.map((r) => ({ id: r.id, file: r.file, oldRms30: +r.old.rms.toFixed(4), newRms30: +r.a.rms.toFixed(4), oldPeak: +r.old.pk.toFixed(3), newPeak: +r.a.pk.toFixed(3) })), null, 1));
+    fs.writeFileSync(path.join(OUT, 'table.md'), rows2.join('\n') + '\n'); console.log('wrote table.md and levels.json');
+  }
   console.log('page errors:', p.errs.length ? p.errs.join(' | ') : 'none'); await b.close();
 })().catch((e) => { console.log('FAIL', e.stack || e.message); process.exit(1) });

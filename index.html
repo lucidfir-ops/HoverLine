@@ -4936,17 +4936,17 @@ const SFX2={
   on:store.get('hoverline.sfx2')==='1',
   CAP:56,live:[],last:{},forceKey:null,
   /* effects the old set has no recording for (audio.sfx() of these does nothing with the setting off, as before) */
-  only:{jump_drop:1,jump_sjump:1,jump_cjump:1,jump_portal:1,land_drop:1,flares:1,reflect:1,emp_hit:1,portal:1,roll_in:1,roll_out:1},
+  only:{jump_drop:1,jump_sjump:1,jump_cjump:1,jump_portal:1,land_drop:1,flares:1,reflect:1,emp_hit:1,portal:1,roll_in:1,roll_out:1,finish_win:1,finish_pod:1,finish:1},
   /* the gap before the same effect may play again (s), the most of it at once, its level (1 = the old effect's own loudness,
      set with tools/sfx/render.js --calibrate), whether it sits in the room, and whether it may wait for the beat */
-  gap:{ui_move:0.04,ui_ok:0.06,ui_back:0.06,ui_select:0.06,wall:0.13,hit_s:0.05,hit_l:0.08,land:0.1,boom:0.05,cannon:0.05,count:0.2,pad:0.15,boost:0.3,flares:0.1,reflect:0.1,blip:0.03,noise:0.1,chime:0.1},
+  gap:{finish_win:1,finish_pod:1,finish:1,ui_move:0.04,ui_ok:0.06,ui_back:0.06,ui_select:0.06,wall:0.13,hit_s:0.05,hit_l:0.08,land:0.1,boom:0.05,cannon:0.05,count:0.2,pad:0.15,boost:0.3,flares:0.1,reflect:0.1,blip:0.03,noise:0.1,chime:0.1},
   mx:{boom:4,hit_s:3,hit_l:3,wall:2,cannon:4,blip:4,wreck:2},
-  lvl:{ui_move:0.187,ui_ok:0.212,ui_back:0.264,ui_select:1,count:0.272,go:0.411,lap:0.557,final:0.546,boost:0.317,pad:0.562,jump:0.229,jump_drop:0.447,jump_sjump:0.319,jump_cjump:0.299,jump_portal:0.377,land:0.505,land_drop:0.334,deny:0.562,low:0.414,shield_full:0.21,ammo_full:0.33,hit_s:0.838,hit_l:0.4,wall:0.834,boom:0.385,wreck:0.394,missile:0.328,cannon:0.156,mines:0.456,shock:0.233,turbo:0.304,barrier:0.19,rockets:0.616,swarm:0.696,quake:0.248,bouncer:0.436,hunter:0.389,phase:0.322,reflector:0.268,emp:0.38,smoke:0.218,autopilot:0.316,overdrive:0.311,flares:0.601,reflect:0.36,emp_hit:0.348,portal:0.428,roll_in:0.346,roll_out:0.309,blip:1,noise:1},
-  rev:{go:0.5,final:0.8,lap:0.4,ui_ok:0.25,shield_full:0.5,ammo_full:0.35,boom:0.4,wreck:0.6,quake:0.5,shock:0.4,barrier:0.4,phase:0.5,reflector:0.4,reflect:0.4,portal:0.7,jump_portal:0.6,jump_cjump:0.3,
+  lvl:{finish_win:0.522,finish_pod:0.597,finish:0.392,ui_move:0.186,ui_ok:0.212,ui_back:0.264,ui_select:1,count:0.272,go:0.386,lap:0.544,final:0.532,boost:0.294,pad:0.555,jump:0.228,jump_drop:0.451,jump_sjump:0.312,jump_cjump:0.299,jump_portal:0.378,land:0.507,land_drop:0.315,deny:0.562,low:0.414,shield_full:0.21,ammo_full:0.33,hit_s:0.845,hit_l:0.401,wall:1.07,boom:0.329,wreck:0.364,missile:0.33,cannon:0.155,mines:0.453,shock:0.209,turbo:0.303,barrier:0.19,rockets:0.616,swarm:0.696,quake:0.239,bouncer:0.432,hunter:0.389,phase:0.324,reflector:0.264,emp:0.361,smoke:0.221,autopilot:0.316,overdrive:0.31,flares:0.621,reflect:0.36,emp_hit:0.339,portal:0.402,roll_in:0.345,roll_out:0.309,blip:1,noise:1},
+  rev:{finish_win:0.8,finish_pod:0.6,finish:0.5,go:0.5,final:0.8,lap:0.4,ui_ok:0.25,shield_full:0.5,ammo_full:0.35,boom:0.4,wreck:0.6,quake:0.5,shock:0.4,barrier:0.4,phase:0.5,reflector:0.4,reflect:0.4,portal:0.7,jump_portal:0.6,jump_cjump:0.3,
     roll_in:0.4,roll_out:0.3,hunter:0.3,overdrive:0.2,flares:0.3,land_drop:0.3,emp:0.2},
   beat:{ui_ok:1,ui_back:1,ui_select:1,lap:1,final:1,shield_full:1,ammo_full:1,chime:1},
   /* the music ducks under these: [depth at full level (0 to 1), hold s, release s] */
-  duck:{boom:[0.5,0.1,0.35],wreck:[0.6,0.35,0.6],quake:[0.4,0.3,0.5],shock:[0.4,0.15,0.4],land_drop:[0.35,0.1,0.35],jump_sjump:[0.25,0.15,0.3],overdrive:[0.2,0.2,0.4],final:[0.3,0.4,0.6],go:[0.25,0.15,0.4],
+  duck:{finish_win:[0.3,0.5,0.7],finish_pod:[0.25,0.3,0.5],boom:[0.5,0.1,0.35],wreck:[0.6,0.35,0.6],quake:[0.4,0.3,0.5],shock:[0.4,0.15,0.4],land_drop:[0.35,0.1,0.35],jump_sjump:[0.25,0.15,0.3],overdrive:[0.2,0.2,0.4],final:[0.3,0.4,0.6],go:[0.25,0.15,0.4],
     emp_hit:[0.35,0.2,0.4],portal:[0.35,0.2,0.5],hit_l:[0.2,0.05,0.25]},
   /* its own random numbers */
   _s:(crypto.getRandomValues(new Uint32Array(1))[0]||1)>>>0,
@@ -5060,6 +5060,12 @@ SFX2.fx={
   lap(V){const nn=[0,3,5];nn.forEach((d,i)=>{V.pl(V.n(d,6),0.28,0.5,{at:i*0.065});V.bell(V.n(d,7),0.35,0.07,{at:i*0.065})});V.nz(0.2,0.1,{f:[2000,8000],q:0.8,a:0.06,at:0.12});return 0.5},
   final(V){const nn=[0,3,5,8];nn.forEach((d,i)=>{V.pl(V.n(d,6),0.4,0.5,{at:i*0.07});V.bell(V.n(d,7),0.55,0.1,{at:i*0.07})});for(const d of[0,3,5]){const f=V.f(V.n(d,6),4);V.osc('sawtooth',f,0,0.8,0.1,{at:0.28,a:0.01,lp:[f*8,f*1.4],det:V.r(-7,7)})}
     V.nz(0.5,0.22,{f:[600,9000],q:0.7,a:0.22,sw:0.45});V.sub(V.f(V.n(0,3),0),V.f(V.n(0,2),0),0.5,0.7,{at:0.28});return 1.0},
+  /* ---- the finish line: a win, the podium, and the rest (there was no cue; only the announcer, 300 ms later) ---- */
+  finish_win(V){[0,2,3,5,7].forEach((d,i)=>{V.pl(V.n(d,6),0.4,0.45,{at:i*0.075});V.bell(V.n(d,7),0.6,0.09,{at:i*0.075})});
+    for(const d of[0,3,5,7]){const f=V.f(V.n(d,6),4);V.osc('sawtooth',f,0,1.3,0.1,{at:0.4,a:0.02,lp:[f*8,f*1.5],det:V.r(-7,7)});V.osc('sine',f,0,1.3,0.14,{at:0.4,a:0.02})}
+    V.bell(V.n(10,7),1.3,0.18,{at:0.4});V.crackle(14,1.0,0.15,{at:0.4,f0:4500,f1:9000});V.nz(0.6,0.2,{f:[600,9000],q:0.7,a:0.3,sw:0.55});V.sub(V.f(V.n(0,3),0),V.f(V.n(0,2),0),0.5,0.7,{at:0.4});return 1.8},
+  finish_pod(V){[0,3,5].forEach((d,i)=>{V.pl(V.n(d,6),0.4,0.45,{at:i*0.08});V.bell(V.n(d,7),0.5,0.09,{at:i*0.08})});for(const d of[0,3,5]){const f=V.f(V.n(d,6),4);V.osc('sine',f,0,0.9,0.14,{at:0.24,a:0.02})}V.nz(0.4,0.15,{f:[800,7000],q:0.7,a:0.2,sw:0.35,at:0.1});return 1.2},
+  finish(V){V.pl(V.n(3,6),0.3,0.4);V.pl(V.n(0,6),0.5,0.4,{at:0.12});V.osc('sine',V.f(V.n(0,5),0),0,0.7,0.14,{at:0.12,a:0.06});return 0.7},
   /* ---- movement ---- */
   boost(V){const j=V.j(1,0.05);V.osc('sawtooth',90*j,430*j,0.55,0.34,{a:0.03,lp:[300,2600],q:2.5,det:V.r(-8,8)});V.osc('square',45*j,215*j,0.5,0.18,{a:0.04,lp:[260,1200]});V.nz(0.5,0.3,{f:[500,3600],q:0.7,a:0.06,sw:0.45});V.sub(110,48,0.2,0.6);return 0.6},
   pad(V){const f=V.f(V.n(0,5),4);V.osc('sawtooth',f,f*2.9,0.34,0.3,{a:0.004,lp:[900,5200],q:7,sw:0.3});V.osc('square',f*1.5,f*4.4,0.3,0.1,{a:0.004,lp:[700,4000],sw:0.28});V.nz(0.3,0.25,{f:[1200,6000],q:1,a:0.01,sw:0.25});V.nz(0.012,0.18,{f:[5000,5000],type:'highpass',a:0.001});return 0.36},
@@ -5085,7 +5091,7 @@ SFX2.fx={
   boom(V){const v=V.vol,big=v>=0.6,mid=v>=0.3;
     if(big){V.sub(V.j(75,0.08),V.j(28,0.08),0.7,1);V.nz(0.8,0.5,{f:[V.r(3600,4800),150],q:0.6,a:0.002,sw:0.7});V.nz(0.7,0.45,{brown:true,type:'lowpass',f:[700,80],a:0.004});V.crackle(7,0.5,0.14,{f0:1200,f1:5000});V.smp('boom',{g:0.45,rate:V.r(0.85,1.1),lp:3000});return 0.9}
     if(mid){V.sub(V.j(95,0.08),V.j(38,0.08),0.4,0.9);V.nz(0.4,0.45,{f:[V.r(2800,3800),200],q:0.7,a:0.002,sw:0.35});V.nz(0.35,0.3,{brown:true,type:'lowpass',f:[600,100],a:0.003});V.crackle(3,0.25,0.1);V.smp('boom',{g:0.22,rate:V.r(1.1,1.35),lp:2500});return 0.55}
-    V.sub(V.j(130,0.08),V.j(55,0.08),0.22,0.8);V.nz(0.22,0.4,{f:[V.r(2500,3400),300],q:0.8,a:0.002,sw:0.2});V.crackle(2,0.12,0.1);return 0.3},
+    V.sub(V.j(130,0.08),V.j(55,0.08),0.22,1.2);V.nz(0.22,0.65,{f:[V.r(2500,3400),300],q:0.8,a:0.002,sw:0.2});V.crackle(2,0.12,0.15);return 0.3},
   wreck(V){const v=clamp(V.vol,0.2,1);V.sub(V.j(68,0.06),24,0.9,1);V.nz(1.0,0.5*v,{f:[4200,110],q:0.6,a:0.002,sw:0.9});V.nz(1.1,0.5*v,{brown:true,type:'lowpass',f:[800,60],a:0.004});V.smp('wreck',{g:0.55*v,rate:V.r(0.85,1.05),lp:3500});V.smp('boom',{g:0.4*v,rate:V.r(0.75,0.95),lp:2200,at:0.06});
     V.crackle(12,0.9,0.18*v,{f0:900,f1:5500});for(const r of[1,1.5,2.4])V.osc('sine',V.j(520,0.15)*r,0,0.3,0.05*v,{at:V.r(0,0.12),a:0.001});return 1.2},
   /* ---- modules (what firing one sounds like) ---- */
@@ -9680,7 +9686,7 @@ function finish(){if(QK.live){qkFinish();return}if(SPL.race){splFinish();return}
   const best=Math.min(...player.laps),prev=getBest();const isRec=prev==null||best<prev;if(isRec)store.set(bestKey(),String(best));
   if(!mp.on&&!S.car){recSample();ghostSave({T:player.finishT,paint:build.paint,lv:build.liv||null,stats:{...build.stats},fr:build.frame,d:rec.d})}
   if(mp.on&&mp.sess)mp.sess.update({st:'results'});
-  const place=rankOf(player)+1,c=$('count'),cr=S.car?carFinish(place):null;c.hidden=false;c.classList.add('go');c.textContent=place===1?'WIN':ord(place);if(place===1)setTimeout(()=>audio.voice('win'),300);else if(place<=3)setTimeout(()=>audio.voice('podium'),300);if(isRec&&prev!=null)setTimeout(()=>audio.voice('record'),1700);setTimeout(()=>{if(S.state==='done')c.hidden=true},1600);
+  const place=rankOf(player)+1,c=$('count'),cr=S.car?carFinish(place):null;c.hidden=false;c.classList.add('go');c.textContent=place===1?'WIN':ord(place);audio.sfx(place===1?'finish_win':place<=3?'finish_pod':'finish');/* (Prototype 64: a cue at the line in the new sound effects) */if(place===1)setTimeout(()=>audio.voice('win'),300);else if(place<=3)setTimeout(()=>audio.voice('podium'),300);if(isRec&&prev!=null)setTimeout(()=>audio.voice('record'),1700);setTimeout(()=>{if(S.state==='done')c.hidden=true},1600);
   music.setMood('results');
   setTimeout(()=>{if(S.state!=='done')return;
     for(const r of racers)if(r.isGhost&&r.finishT==null)r.finishT=r.run.T/r.fac;
@@ -12692,7 +12698,7 @@ function step(dt){
   if(S.state==='mpwait'){const c=$('count');c.hidden=false;c.textContent='…';c.classList.remove('go')}
   if(S.state==='countdown'){
     if(mp.on&&mp.go!=null)S.count=(mp.go-performance.now())/1000;else S.count=S.goAt?(S.goAt-performance.now())/1000:S.count-dt;const n=Math.ceil(S.count);
-    if(n<S.lastBeep){S.lastBeep=n;const said=audio.voice(['go','one','two','three'][n]||'');if(!said){if(n>0)audio.sfx('count')||audio.blip(440,0.12);else audio.sfx('go')||audio.blip(880,0.35)}else if(n===0)audio.blip(880,0.2,0.08)}
+    if(n<S.lastBeep){S.lastBeep=n;const said=audio.voice(['go','one','two','three'][n]||'');if(!said){if(n>0)audio.sfx('count')||audio.blip(440,0.12);else audio.sfx('go')||audio.blip(880,0.35)}else if(n===0)(SFX2.on&&audio.sfx('go',0.8))||audio.blip(880,0.2,0.08);else if(SFX2.on)audio.sfx('count',0.5)/* (Prototype 64: with the announcer speaking, the new set adds its tick on the key's root, and the GO chord) */}
     const c=$('count');c.hidden=false;
     if(S.count>0){c.textContent=Math.min(3,n);c.classList.remove('go')}else{c.textContent='GO';c.classList.add('go');S.state='race';S.wl=99;setTimeout(()=>{if(S.state==='race'&&S.raceT<WLOCK-4)note('Modules online after '+WLOCK+' s',1800)},900);music.go();music.setMood('race');S.raceT=mp.on&&mp.go!=null?(performance.now()-mp.go)/1000:0;setTimeout(()=>{if(c.textContent==='GO')c.hidden=true},700)}
   }

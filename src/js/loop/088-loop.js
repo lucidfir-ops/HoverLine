@@ -232,7 +232,7 @@ function step(dt){
   if(S.state==='mpwait'){const c=$('count');c.hidden=false;c.textContent='…';c.classList.remove('go')}
   if(S.state==='countdown'){
     if(mp.on&&mp.go!=null)S.count=(mp.go-performance.now())/1000;else S.count=S.goAt?(S.goAt-performance.now())/1000:S.count-dt;const n=Math.ceil(S.count);
-    if(n<S.lastBeep){S.lastBeep=n;const said=audio.voice(['go','one','two','three'][n]||'');if(!said){if(n>0)audio.sfx('count')||audio.blip(440,0.12);else audio.sfx('go')||audio.blip(880,0.35)}else if(n===0)audio.blip(880,0.2,0.08)}
+    if(n<S.lastBeep){S.lastBeep=n;const said=audio.voice(['go','one','two','three'][n]||'');if(!said){if(n>0)audio.sfx('count')||audio.blip(440,0.12);else audio.sfx('go')||audio.blip(880,0.35)}else if(n===0)(SFX2.on&&audio.sfx('go',0.8))||audio.blip(880,0.2,0.08);else if(SFX2.on)audio.sfx('count',0.5)/* (Prototype 64: with the announcer speaking, the new set adds its tick on the key's root, and the GO chord) */}
     const c=$('count');c.hidden=false;
     if(S.count>0){c.textContent=Math.min(3,n);c.classList.remove('go')}else{c.textContent='GO';c.classList.add('go');S.state='race';S.wl=99;setTimeout(()=>{if(S.state==='race'&&S.raceT<WLOCK-4)note('Modules online after '+WLOCK+' s',1800)},900);music.go();music.setMood('race');S.raceT=mp.on&&mp.go!=null?(performance.now()-mp.go)/1000:0;setTimeout(()=>{if(c.textContent==='GO')c.hidden=true},700)}
   }

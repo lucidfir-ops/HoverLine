@@ -1,0 +1,474 @@
+[
+ {
+  "id": "ui_move",
+  "file": "01-ui_move.mp3",
+  "oldRms30": 0.0215,
+  "newRms30": 0.0446,
+  "oldPeak": 0.127,
+  "newPeak": 0.181
+ },
+ {
+  "id": "ui_ok",
+  "file": "02-ui_ok.mp3",
+  "oldRms30": 0.0282,
+  "newRms30": 0.0708,
+  "oldPeak": 0.057,
+  "newPeak": 0.218
+ },
+ {
+  "id": "ui_back",
+  "file": "03-ui_back.mp3",
+  "oldRms30": 0.0211,
+  "newRms30": 0.0632,
+  "oldPeak": 0.038,
+  "newPeak": 0.221
+ },
+ {
+  "id": "ui_blip",
+  "file": "04-ui_blip.mp3",
+  "oldRms30": 0.0211,
+  "newRms30": 0.0367,
+  "oldPeak": 0.048,
+  "newPeak": 0.131
+ },
+ {
+  "id": "count",
+  "file": "05-count.mp3",
+  "oldRms30": 0.0905,
+  "newRms30": 0.1414,
+  "oldPeak": 0.314,
+  "newPeak": 0.34
+ },
+ {
+  "id": "go",
+  "file": "06-go.mp3",
+  "oldRms30": 0.1228,
+  "newRms30": 0.2289,
+  "oldPeak": 0.341,
+  "newPeak": 0.725
+ },
+ {
+  "id": "lap",
+  "file": "07-lap.mp3",
+  "oldRms30": 0.1007,
+  "newRms30": 0.1786,
+  "oldPeak": 0.169,
+  "newPeak": 0.525
+ },
+ {
+  "id": "final",
+  "file": "08-final.mp3",
+  "oldRms30": 0.0986,
+  "newRms30": 0.2642,
+  "oldPeak": 0.131,
+  "newPeak": 0.579
+ },
+ {
+  "id": "finish_win",
+  "file": "09-finish_win.mp3",
+  "oldRms30": 0,
+  "newRms30": 0.2447,
+  "oldPeak": 0,
+  "newPeak": 0.721
+ },
+ {
+  "id": "finish_pod",
+  "file": "10-finish_pod.mp3",
+  "oldRms30": 0,
+  "newRms30": 0.1936,
+  "oldPeak": 0,
+  "newPeak": 0.558
+ },
+ {
+  "id": "finish",
+  "file": "11-finish.mp3",
+  "oldRms30": 0,
+  "newRms30": 0.1277,
+  "oldPeak": 0,
+  "newPeak": 0.326
+ },
+ {
+  "id": "boost",
+  "file": "12-boost.mp3",
+  "oldRms30": 0.0384,
+  "newRms30": 0.1496,
+  "oldPeak": 0.118,
+  "newPeak": 0.313
+ },
+ {
+  "id": "pad",
+  "file": "13-pad.mp3",
+  "oldRms30": 0.0553,
+  "newRms30": 0.1409,
+  "oldPeak": 0.143,
+  "newPeak": 0.443
+ },
+ {
+  "id": "jump",
+  "file": "14-jump.mp3",
+  "oldRms30": 0.0385,
+  "newRms30": 0.1412,
+  "oldPeak": 0.133,
+  "newPeak": 0.287
+ },
+ {
+  "id": "jump_drop",
+  "file": "15-jump_drop.mp3",
+  "oldRms30": 0.0385,
+  "newRms30": 0.1555,
+  "oldPeak": 0.133,
+  "newPeak": 0.373
+ },
+ {
+  "id": "jump_sjump",
+  "file": "16-jump_sjump.mp3",
+  "oldRms30": 0.0385,
+  "newRms30": 0.2008,
+  "oldPeak": 0.133,
+  "newPeak": 0.421
+ },
+ {
+  "id": "jump_cjump",
+  "file": "17-jump_cjump.mp3",
+  "oldRms30": 0.0385,
+  "newRms30": 0.1781,
+  "oldPeak": 0.133,
+  "newPeak": 0.343
+ },
+ {
+  "id": "jump_portal",
+  "file": "18-jump_portal.mp3",
+  "oldRms30": 0.0385,
+  "newRms30": 0.1595,
+  "oldPeak": 0.133,
+  "newPeak": 0.364
+ },
+ {
+  "id": "land",
+  "file": "19-land.mp3",
+  "oldRms30": 0.0401,
+  "newRms30": 0.0985,
+  "oldPeak": 0.096,
+  "newPeak": 0.223
+ },
+ {
+  "id": "land_drop",
+  "file": "20-land_drop.mp3",
+  "oldRms30": 0.0771,
+  "newRms30": 0.1924,
+  "oldPeak": 0.184,
+  "newPeak": 0.401
+ },
+ {
+  "id": "deny",
+  "file": "21-deny.mp3",
+  "oldRms30": 0.0416,
+  "newRms30": 0.0804,
+  "oldPeak": 0.11,
+  "newPeak": 0.267
+ },
+ {
+  "id": "low",
+  "file": "22-low.mp3",
+  "oldRms30": 0.0503,
+  "newRms30": 0.1122,
+  "oldPeak": 0.112,
+  "newPeak": 0.366
+ },
+ {
+  "id": "shield_full",
+  "file": "23-shield_full.mp3",
+  "oldRms30": 0.0274,
+  "newRms30": 0.1,
+  "oldPeak": 0.075,
+  "newPeak": 0.25
+ },
+ {
+  "id": "ammo_full",
+  "file": "24-ammo_full.mp3",
+  "oldRms30": 0.0274,
+  "newRms30": 0.0998,
+  "oldPeak": 0.05,
+  "newPeak": 0.333
+ },
+ {
+  "id": "strip_shield",
+  "file": "25-strip_shield.mp3",
+  "oldRms30": 0.0622,
+  "newRms30": 0.0627,
+  "oldPeak": 0.127,
+  "newPeak": 0.127
+ },
+ {
+  "id": "strip_ammo",
+  "file": "26-strip_ammo.mp3",
+  "oldRms30": 0.0493,
+  "newRms30": 0.0493,
+  "oldPeak": 0.119,
+  "newPeak": 0.119
+ },
+ {
+  "id": "engine",
+  "file": "27-engine.mp3",
+  "oldRms30": 0.1188,
+  "newRms30": 0.0817,
+  "oldPeak": 0.235,
+  "newPeak": 0.187
+ },
+ {
+  "id": "hit_s",
+  "file": "28-hit_s.mp3",
+  "oldRms30": 0.0271,
+  "newRms30": 0.0568,
+  "oldPeak": 0.082,
+  "newPeak": 0.234
+ },
+ {
+  "id": "hit_l",
+  "file": "29-hit_l.mp3",
+  "oldRms30": 0.0521,
+  "newRms30": 0.1256,
+  "oldPeak": 0.155,
+  "newPeak": 0.327
+ },
+ {
+  "id": "wall",
+  "file": "30-wall.mp3",
+  "oldRms30": 0.0514,
+  "newRms30": 0.1118,
+  "oldPeak": 0.179,
+  "newPeak": 0.486
+ },
+ {
+  "id": "drift",
+  "file": "31-drift.mp3",
+  "oldRms30": 0.0174,
+  "newRms30": 0.0464,
+  "oldPeak": 0.06,
+  "newPeak": 0.111
+ },
+ {
+  "id": "boom_s",
+  "file": "32-boom_s.mp3",
+  "oldRms30": 0.0679,
+  "newRms30": 0.0476,
+  "oldPeak": 0.188,
+  "newPeak": 0.117
+ },
+ {
+  "id": "boom_m",
+  "file": "33-boom_m.mp3",
+  "oldRms30": 0.1223,
+  "newRms30": 0.1218,
+  "oldPeak": 0.339,
+  "newPeak": 0.302
+ },
+ {
+  "id": "boom_l",
+  "file": "34-boom_l.mp3",
+  "oldRms30": 0.2174,
+  "newRms30": 0.2419,
+  "oldPeak": 0.602,
+  "newPeak": 0.534
+ },
+ {
+  "id": "wreck",
+  "file": "35-wreck.mp3",
+  "oldRms30": 0.2563,
+  "newRms30": 0.2818,
+  "oldPeak": 0.538,
+  "newPeak": 0.622
+ },
+ {
+  "id": "w_missile",
+  "file": "36-w_missile.mp3",
+  "oldRms30": 0.0637,
+  "newRms30": 0.1439,
+  "oldPeak": 0.146,
+  "newPeak": 0.385
+ },
+ {
+  "id": "w_cannon",
+  "file": "37-w_cannon.mp3",
+  "oldRms30": 0.0341,
+  "newRms30": 0.0788,
+  "oldPeak": 0.109,
+  "newPeak": 0.333
+ },
+ {
+  "id": "w_mines",
+  "file": "38-w_mines.mp3",
+  "oldRms30": 0.087,
+  "newRms30": 0.125,
+  "oldPeak": 0.229,
+  "newPeak": 0.502
+ },
+ {
+  "id": "w_shock",
+  "file": "39-w_shock.mp3",
+  "oldRms30": 0.1442,
+  "newRms30": 0.2258,
+  "oldPeak": 0.323,
+  "newPeak": 0.406
+ },
+ {
+  "id": "w_turbo",
+  "file": "40-w_turbo.mp3",
+  "oldRms30": 0.0683,
+  "newRms30": 0.1585,
+  "oldPeak": 0.194,
+  "newPeak": 0.365
+ },
+ {
+  "id": "w_barrier",
+  "file": "41-w_barrier.mp3",
+  "oldRms30": 0.0591,
+  "newRms30": 0.1124,
+  "oldPeak": 0.084,
+  "newPeak": 0.195
+ },
+ {
+  "id": "w_rockets",
+  "file": "42-w_rockets.mp3",
+  "oldRms30": 0.0473,
+  "newRms30": 0.1258,
+  "oldPeak": 0.118,
+  "newPeak": 0.408
+ },
+ {
+  "id": "w_swarm",
+  "file": "43-w_swarm.mp3",
+  "oldRms30": 0.0441,
+  "newRms30": 0.1129,
+  "oldPeak": 0.108,
+  "newPeak": 0.336
+ },
+ {
+  "id": "w_quake",
+  "file": "44-w_quake.mp3",
+  "oldRms30": 0.1256,
+  "newRms30": 0.2551,
+  "oldPeak": 0.285,
+  "newPeak": 0.494
+ },
+ {
+  "id": "w_bouncer",
+  "file": "45-w_bouncer.mp3",
+  "oldRms30": 0.0858,
+  "newRms30": 0.1431,
+  "oldPeak": 0.188,
+  "newPeak": 0.358
+ },
+ {
+  "id": "w_hunter",
+  "file": "46-w_hunter.mp3",
+  "oldRms30": 0.0668,
+  "newRms30": 0.1591,
+  "oldPeak": 0.143,
+  "newPeak": 0.338
+ },
+ {
+  "id": "w_phase",
+  "file": "47-w_phase.mp3",
+  "oldRms30": 0.0591,
+  "newRms30": 0.1258,
+  "oldPeak": 0.241,
+  "newPeak": 0.234
+ },
+ {
+  "id": "w_reflector",
+  "file": "48-w_reflector.mp3",
+  "oldRms30": 0.0467,
+  "newRms30": 0.1114,
+  "oldPeak": 0.097,
+  "newPeak": 0.301
+ },
+ {
+  "id": "w_emp",
+  "file": "49-w_emp.mp3",
+  "oldRms30": 0.0946,
+  "newRms30": 0.1709,
+  "oldPeak": 0.261,
+  "newPeak": 0.504
+ },
+ {
+  "id": "w_smoke",
+  "file": "50-w_smoke.mp3",
+  "oldRms30": 0.0244,
+  "newRms30": 0.0784,
+  "oldPeak": 0.094,
+  "newPeak": 0.26
+ },
+ {
+  "id": "w_autopilot",
+  "file": "51-w_autopilot.mp3",
+  "oldRms30": 0.0461,
+  "newRms30": 0.0794,
+  "oldPeak": 0.071,
+  "newPeak": 0.268
+ },
+ {
+  "id": "w_overdrive",
+  "file": "52-w_overdrive.mp3",
+  "oldRms30": 0.063,
+  "newRms30": 0.1584,
+  "oldPeak": 0.196,
+  "newPeak": 0.286
+ },
+ {
+  "id": "w_flares",
+  "file": "53-w_flares.mp3",
+  "oldRms30": 0.0363,
+  "newRms30": 0.1141,
+  "oldPeak": 0.076,
+  "newPeak": 0.382
+ },
+ {
+  "id": "w_reflect",
+  "file": "54-w_reflect.mp3",
+  "oldRms30": 0.0451,
+  "newRms30": 0.112,
+  "oldPeak": 0.111,
+  "newPeak": 0.275
+ },
+ {
+  "id": "w_emp_hit",
+  "file": "55-w_emp_hit.mp3",
+  "oldRms30": 0.0858,
+  "newRms30": 0.2015,
+  "oldPeak": 0.115,
+  "newPeak": 0.473
+ },
+ {
+  "id": "w_smoke_ink",
+  "file": "56-w_smoke_ink.mp3",
+  "oldRms30": 0.0118,
+  "newRms30": 0.0536,
+  "oldPeak": 0.041,
+  "newPeak": 0.122
+ },
+ {
+  "id": "portal",
+  "file": "57-portal.mp3",
+  "oldRms30": 0,
+  "newRms30": 0.1747,
+  "oldPeak": 0,
+  "newPeak": 0.582
+ },
+ {
+  "id": "roll_in",
+  "file": "58-roll_in.mp3",
+  "oldRms30": 0,
+  "newRms30": 0.0999,
+  "oldPeak": 0,
+  "newPeak": 0.219
+ },
+ {
+  "id": "roll_out",
+  "file": "59-roll_out.mp3",
+  "oldRms30": 0,
+  "newRms30": 0.1,
+  "oldPeak": 0,
+  "newPeak": 0.213
+ }
+]
