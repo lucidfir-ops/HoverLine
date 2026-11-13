@@ -1,5 +1,18 @@
 # Changelog
 
+## Prototype 64
+From your notes of 11-11 and your logs of 11-11.
+- **New sound effects, off by default** (Settings, Sound, "New sound effects"). The old effects are short, thin recordings that sound the same every time and sit 10 to 20 dB under the music. The new set is built to be punchy and a little different each time, louder where it matters (hits, explosions, your own modules, pickups, laps); pitched ones are in the tune's key, and pickups, laps and menu ticks land on its beat. The music ducks for a moment under big hits and the announcer. New sounds for things that had none: portals (in and out), drops, speed jumps, long jumps, heavy landings, the underside roll, the finish line (win, podium, other), Flares, the Reflector and an EMP hitting you; a count tick and a GO chord under the announcer; a richer engine hum. `docs/sfx-p64/` has old-then-new MP3s of every effect with a table to tick, and AUDIT.md says what was weak.
+- **Spires:** the original (spiral up, then dive down the middle) had become as rare as the reversed one (a coin toss since Prototype 60, and both in your logs were reversed). New tracks now draw the original 6 times in 10. New codes start with 2; older codes build exactly as before, so ghosts and bests are safe. Spirals still rise about 4 times in 5.
+- **Camera on corkscrews and twists:** the chase camera's "up" lagged the road's roll by 35 to 48 degrees at Redline (it turned at a fixed speed); it now turns faster when the road rolls fast, so the lag is about 5 degrees, on all four cameras and in split screen. Corners, crests, loops and normal racing are unchanged.
+- **Prism:**
+  - The giant black cube in SX14D5571 was the dark block the night tracks stand in the middle of every spiral; in a cave it ran from under the floor to over the roof. Prism spirals now have a rock column in the middle (a pinnacle outside).
+  - Cave ways in and out look rough hewn: chiselled, uneven walls, ragged edges at both ends, boulders and rubble at their feet, and each is still one solid piece nothing can cut, so no broken textures.
+  - Fixed: on a steeply banked way in or out the mountain could show inside the tunnel as a black slab.
+  - Cave rivers sit in a raised rock bank all the way round, like the lakes, with rounded ends.
+- **Expert unchanged:** on Wide you finished 2nd, 3rd, 6th and 5th against it (3 restarts), about what the simulator expects of you at your best. Send 8 or more Expert races on Standard and a few more on Wide (Tether, not Prism), finishing each one.
+- Track codes and race times are unchanged except that new tracks start with 2 and draw more original spires; board era stays 58. Shared logs and public rooms are version 64.
+
 ## Prototype 63
 From your notes and phone recording of 11-11 and your logs of 11-11.
 - **Portals in the Spirit realm** (about one Spirit track in four; "Portals" in the editor for Spirit tracks). On a straight you drive into a ring and come out beside the road, just behind where you went in and 19 m up; a short ramp throws you across the road you were just on (or across it on the diagonal), you land on the far side and swing back onto the track. The ring shows the road beyond it, so going through is seamless, and the camera comes through with you. From about 1 second behind you see the pack fly over you; jumpers see the ones right behind them below. Anyone slow at the lip is lifted to clear it. Shots, missiles and mines go through too. The Celtic knots left the sky and now twist round each ring. On Ultra low and in split screen the ring shows a glow instead of the view.
