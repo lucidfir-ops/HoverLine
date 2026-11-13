@@ -1299,6 +1299,9 @@ function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();re
 const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump','portal'];/* (Prototype 63: portal, Spirit tracks only) */
 /* Prototype 60: bit 24 of a seed marks a code made from Prototype 60 on (seven hex digits, starting with 1). */
 const TV1=0x1000000;
+/* Prototype 64: bit 25 marks a code made from Prototype 64 on (seven hex digits, starting with 2 or 3): version 2, which has
+   everything version 1 has and draws the reversed spire less often (REV_SPIRE). Version 1 codes build as they did. */
+const TV2=0x2000000;
 const KB=k=>k==='vspire'?'spire':k==='dhelix'?'helix':k;
 /* Prototype 61: a track is built in three steps, each in its own part: the road's shape (roadShape, 004a, with addFeatures
    in 004b), the road as drawn and everything races use on it (roadBuild, 004c), then the scenery (buildScenery, 004e,
@@ -1388,7 +1391,7 @@ function roadShape(seed,wk,cx,lk,sp,bk){
   /* (Prototype 63: a portal only in the Spirit realm; elsewhere its count is ignored) */
   if(sp)fopt=FKG.some(k=>sp.n[k]>0&&(k!=='portal'||bk==='S'))?{r,lf:LN.f,want:bk==='S'||!sp.n.portal?sp.n:{...sp.n,portal:0},avoid}:null;
   /* Prototype 60: codes from Prototype 60 on (v1) may have the new pieces */
-  const v1=seed>=TV1;if(fopt&&v1)fopt.v1=true;
+  const v1=seed>=TV1;if(fopt&&v1){fopt.v1=true;if(seed>=TV2)fopt.v2=true}
   /* and a complex one may have a drop, a speed jump or a long jump, each on its own draw (14%, 15%, 12%); the long ones
      often don't fit (short tracks, other pieces in the way), so about 10%, 7% and 4% of new complex tracks have one */
   if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.14)ex.push('drop');if(rn()<0.15)ex.push('sjump');if(rn()<0.12)ex.push('cjump');if(ex.length)fopt.extra=ex}
@@ -1597,6 +1600,7 @@ const flyY=(v,G,lipH,s,g)=>{let x=0,y=lipH,vy=v*s,vx=v;const dt=1/240;while(x<G)
 /* Complex tracks: insert 3D features into the base loop, then resample to even spacing and rebuild the frames.
    Each output sample carries a position and a designed "up"; the tangent comes from the positions, so loops,
    corkscrews and rolls get exact frames. K is the curvature within the road surface, which steers the physics. */
+const REV_SPIRE=0.4;/* the share of version 2 spires drawn reversed (Prototype 64; tools/tests/spire-mix.js) */
 function addFeatures(b,r,W,opt={}){
   const{P,R,U,Tg,Cs,N,ds}=b;const V=THREE.Vector3;
   const jumpG=45+0.6*W,lr=24,rc=10+0.15*W;
@@ -1647,8 +1651,12 @@ function addFeatures(b,r,W,opt={}){
     if(kd==='sweep'&&opt.dense&&s.n>1){s.n=1;s.sg=[1];s.amp=[s.amp[0]];s.len=s.lam}
     if(kd!=='portal')s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
     if(k0==='vspire')s.rev=1;if(k0==='dhelix')s.Hh=-s.Hh;
-    /* on a new code, a spire rises up the middle and spirals down half the time, and a spiral falls instead of rising (a fifth of the draws; the falling ones fit more often, so about half the spirals on new tracks fall) */
-    if(opt.v1&&!opt.want&&k0==='spire'&&r()<0.5)s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
+    /* on a new code, a spire is the reversed one (up the middle, spiral down) half the time (version 1) and a spiral falls
+       instead of rising on a fifth of the draws (about 18% of the spirals on new tracks, measured over 1500 codes).
+       Prototype 64: version 2 codes (seed >= TV2) draw the reversed spire REV_SPIRE of the time instead. Version 1 was a
+       coin toss (measured 51% reversed, and both spires Eric met in his logs were reversed), but the original, up round
+       the ring and down the middle, is meant to be the more common. Version 1 codes keep the coin toss. */
+    if(opt.v1&&!opt.want&&k0==='spire'&&r()<(opt.v2?REV_SPIRE:0.5))s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
     if(k0!==kd)s.src=k0;
     return s};
   const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300,portal:1720})[kd]||200;
@@ -9372,11 +9380,12 @@ const specCx=sp=>FKG.some(k=>sp.n[k]>0);
 const parseBio=str=>{const m=/^([UOFNRPS])([0-9]{4})?$/.exec(String(str||'').toUpperCase());if(!m)return{k:'U',d:null};return{k:m[1],d:m[2]?m[2].split('').map((c,i)=>Math.min(BDIAL[i][2],+c)):null}};
 /* Prototype 60: a track code's seed is six hex digits, or seven starting with 1 for codes made from Prototype 60 on (bit 24
    of the seed, TV1): only those may get the new road pieces (drops, speed jumps, long jumps, spires and spirals the other
-   way), so every older code builds exactly the track it always did. */
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,10})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
-  return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x1FFFFFF,sp,bm:parseBio(m[6])}:null};
+   way), so every older code builds exactly the track it always did. Prototype 64: version 2 (bit 25, TV2, a seven-digit
+   code starting with 2 or 3) only draws the reversed spire less often; version 1 codes build as they did. */
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?([1-3][0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,10})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+  return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x3FFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
-let seed=saved?saved.seed:TV1+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
+let seed=saved?saved.seed:TV2+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
 const bioTok=()=>bio.k+(bio.d?bio.d.join(''):'');
 const bioStr=()=>bio.k==='U'&&!bio.d?'':'-'+bioTok();
 const roadStr=()=>spec&&spec.quick?'Q'+spec.quick+'-W':spec&&spec.train?'T-'+trDrill(spec.train).n.toUpperCase().replace(/[^A-Z]/g,'')+'-'+wid:wid+(cplx?'X':'')+(lenK!=='M'?lenK:'')+seed.toString(16).toUpperCase().padStart(6,'0')+(spec?'-'+specStr(spec):'');
@@ -9398,7 +9407,7 @@ const bestKey=()=>'hoverline.best.'+roadStr()+(S.car?'.car':'')+(S.train&&TRN.cu
 const ghostTag=()=>roadStr()+(S.train?'.'+LAPS+(TRN.cube?'c':''):'')+clsSfx();
 function getBest(){const v=parseFloat(store.get(bestKey())||'');return isFinite(v)?v:null}
 /* sp: undefined keeps the current editor counts, null drops them (back to generated tracks), an object sets them. */
-function loadTrack(s,wk,cx,lk,sp,bm){seed=(s&0x1FFFFFF)||1;if(wk)wid=wk;if(sp!==undefined)spec=sp;if(spec)cplx=specCx(spec);else if(cx!=null)cplx=cx;if(lk)lenK=lk;if(bm!==undefined)bio=bm||{k:'U',d:null};if(!(spec&&(spec.train||spec.quick)))store.set('hoverline.code',codeStr());buildTrack(seed,wid,cplx,lenK,spec,bio);bioSync();setField(false);music.fromTrack(seed);miniBase=null;$('seedIn').value=codeStr();resetGrid();updateMenuBest();drawPreview();S.fly=0;camInit=false;
+function loadTrack(s,wk,cx,lk,sp,bm){seed=(s&0x3FFFFFF)||1;if(wk)wid=wk;if(sp!==undefined)spec=sp;if(spec)cplx=specCx(spec);else if(cx!=null)cplx=cx;if(lk)lenK=lk;if(bm!==undefined)bio=bm||{k:'U',d:null};if(!(spec&&(spec.train||spec.quick)))store.set('hoverline.code',codeStr());buildTrack(seed,wid,cplx,lenK,spec,bio);bioSync();setField(false);music.fromTrack(seed);miniBase=null;$('seedIn').value=codeStr();resetGrid();updateMenuBest();drawPreview();S.fly=0;camInit=false;
   poolSync();todSync()}
 /* Prototype 61: a race can be replayed. Everything in a race that Math.random used to decide (an AI pilot's mistakes, lane and
    module choices, the start-line spread of its habits, a Quake's gap, a Bouncer's sideways speed) is drawn from a stream of
@@ -9536,7 +9545,7 @@ $('tiltRe').onclick=()=>{note(tiltCentre()?'Tilt centred: hold it like this to f
 function toMenu(){wakeScreen(false);if(QK.live){qkMenu('menu');return}if(LOG.cur)logEnd(player.finishT!=null?'finish':'quit');const sp=SPL.race;if(sp)splEnd();setField(false);S.state='menu';menuMusic();setHud(false);['pause','results','count','opts','set','ctl','mus','gfxm'].forEach(i=>$(i).hidden=true);if(S.car)carNext();resetGrid();showPage(S.car?'career':S.train?'train':page==='opts'?'title':page);camInit=false;if(sp)splOpen()}
 
 $('raceBtn').onclick=startRace;$('againBtn').onclick=()=>{if(mp.on)mpAgain(false);else startRace()};$('restartBtn').onclick=startRace;
-const rndSeed=()=>TV1+Math.floor(Math.random()*0xFFFFFF)+1;/* Prototype 60: new codes are version 1 (seven digits) */
+const rndSeed=()=>TV2+Math.floor(Math.random()*0xFFFFFF)+1;/* Prototype 60: new codes are version 1 (seven digits); Prototype 64: version 2 (seven digits starting with 2) */
 /* Scenery for new tracks: any of the ticked biomes (urban counts double); a track keeps its own until you change it. */
 /* the Reef joined the ticked settings once, for anyone who had every setting ticked before it existed */
 let bioOn=(()=>{let v=(store.get('hoverline.biomes')||'UOFNRPS').replace(/[^UOFNRPS]/g,'');if(v==='UOFN'&&!store.get('hoverline.bioR'))v+='R';store.set('hoverline.bioR','1');
@@ -12251,7 +12260,19 @@ let camInit=false,lastT=performance.now(),hudT=0,camU=null,camRA=0;
    never its position, so it cannot fall behind at speed. Cockpit puts it on the nose (the ship itself is hidden). */
 const CAMS=[{n:'Near',d:5.6,h:2.15,l:9},{n:'Standard',d:7.4,h:2.7,l:10},{n:'Far',d:11,h:3.9,l:12},{n:'Cockpit',fpv:true}];
 let camMode=(()=>{const v=parseInt(store.get('hoverline.cam'),10);return v>=0&&v<CAMS.length?v:1})();
-const camFwdS=new V3(0,0,-1),camUpS=new V3(0,1,0),finCam={t0:null,dir:1};
+const camFwdS=new V3(0,0,-1),camUpS=new V3(0,1,0),finCam={t0:null,dir:1},camRS={};
+/* Prototype 64: the chase camera's up followed the frame's up at a rate of 10 a second, so on a corkscrew or twist, where
+   the road rolls at 4 to 6 radians a second at Redline, it fell 24 to 32 degrees behind (the picture rolled against the
+   road: "sometimes on corkscrews the camera can't keep up"). The rate now rises with how fast the frame's up is turning
+   about the road's forward (smoothed, so a one-frame jump from a landing or a respawn doesn't count), by CAM_ROLL.g for
+   each radian a second above CAM_ROLL.w0: nothing changes in corners or over crests (they turn at under 0.8), and at 5
+   radians a second the lag is about 6 degrees. st holds one camera's last up and smoothed rate (the single camera's, or a
+   split-screen pilot's), keep is false on the first frame. Returns the rate for the up's lerp. */
+const CAM_ROLL={k0:10,w0:0.8,g:9,kmax:60,jump:0.8,wmax:9},_cuR=new V3();
+function camUpRate(st,pUp,pT,dt,keep){if(!st.pu)st.pu=new V3();let w=0;
+  if(keep&&dt>0){const a=Math.atan2(_cuR.crossVectors(st.pu,pUp).dot(pT),st.pu.dot(pUp));if(Math.abs(a)<CAM_ROLL.jump)w=Math.min(CAM_ROLL.wmax,Math.abs(a)/dt);else st.w=0}else st.w=0;
+  st.pu.copy(pUp);st.w+=(w-(st.w||0))*(1-Math.exp(-dt*25));
+  return Math.min(CAM_ROLL.kmax,CAM_ROLL.k0+CAM_ROLL.g*Math.max(0,st.w-CAM_ROLL.w0))}
 function setCam(i,say){camMode=((i%CAMS.length)+CAMS.length)%CAMS.length;store.set('hoverline.cam',String(camMode));camInit=false;
   document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.cam===camMode)));if(say)note('Camera · '+CAMS[camMode].n,900)}
 document.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>setCam(+b.dataset.cam,false));
@@ -12509,7 +12530,8 @@ function step(dt){
     camera.position.lerp(camT,camInit?1-Math.exp(-dt*2.5):1);camera.up.lerp(s.u,camInit?1-Math.exp(-dt*3):1).normalize();camera.lookAt(look.copy(a.p).addScaledVector(a.u,2));camera.fov=62;
   }else{
     const C=CAMS[S.state==='done'&&CAMS[camMode].fpv?1:camMode],tgtF=pf.clone().lerp(pT,C.fpv?0.15:0.35).normalize();
-    if(!camInit){camFwdS.copy(tgtF);camUpS.copy(pUp)}else{camFwdS.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();camUpS.lerp(pUp,1-Math.exp(-dt*10)).normalize()}
+    const kUp=camUpRate(camRS,pUp,pT,dt,camInit);
+    if(!camInit){camFwdS.copy(tgtF);camUpS.copy(pUp)}else{camFwdS.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();camUpS.lerp(pUp,1-Math.exp(-dt*kUp)).normalize()}
     const vk=player.v/VMAX,boo=player.boost>0||!!player.selfBoost,pk=camera.aspect<1?clamp((1-camera.aspect)/0.54,0,1):0;/* 0 on a landscape screen, 1 on a tall phone held upright (Prototype 40) */
     if(S.state==='done'&&finCam.t0!=null){/* finish: swing round to the front of the ship and look back at it */
       const k=clamp((S.t-finCam.t0)/2.2,0,1),e=k*k*(3-2*k),a=Math.PI*e*0.85+(S.t-finCam.t0)*0.12,side=new V3().crossVectors(camFwdS,camUpS).normalize();
@@ -13028,7 +13050,8 @@ function splCam(P,dt){const r=P.r,cam=P.cam,C=CAMS[S.state==='done'&&CAMS[P.cm].
   {const pc=T.port&&P._pu!=null?portalCross(P._pu,r.u):null;P._pu=r.u;if(pc&&P.ci0){P.fwd.applyQuaternion(pc.Q);P.up.applyQuaternion(pc.Q)}}
   /* (and on the underside's roll each view turns with its frame's roll, as the single camera does) */
   {const ra=r._ra||0;if(P.ci0&&P._ra!=null&&ra!==P._ra){_qSpl.setFromAxisAngle(_sv2.copy(P.pT).normalize(),ra-P._ra);P.fwd.applyQuaternion(_qSpl);P.up.applyQuaternion(_qSpl)}P._ra=ra}
-  if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*10)).normalize()}
+  const kUp=camUpRate(P.rs||(P.rs={}),P.pUp,P.pT,dt,P.ci0);/* (Prototype 64: the up follows faster while the road rolls fast, as the single camera's does) */
+  if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*kUp)).normalize()}
   const vk=r.v/VMAX,boo=r.boost>0||!!r.selfBoost,pk=cam.aspect<1?clamp((1-cam.aspect)/0.54,0,1):0,sh=r===player?S.shake:0;
   if(C.fpv){cam.position.copy(P.pPos).addScaledVector(P.pUp,0.62).addScaledVector(P.pf,0.7);cam.up.copy(P.up);cam.lookAt(look.copy(cam.position).addScaledVector(P.fwd,40).addScaledVector(P.up,-0.6));cam.fov+=((76+16*vk+(boo?6:0)+12*pk)-cam.fov)*Math.min(1,dt*4)}
   else{const d=(C.d+0.9*vk+(boo?0.5:0))*(1+0.3*pk);cam.position.copy(P.pPos).addScaledVector(P.fwd,-d).addScaledVector(P.up,C.h*(1+0.2*pk));

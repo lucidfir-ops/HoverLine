@@ -38,7 +38,7 @@ const HASH = (code) => { const h = window.__hl, c = h.parseCode(code); if (!c) r
   if (process.env.ONLY_HASH) { await b.close(); return done() }
   // --- the code scheme ---
   const sch = await p.evaluate(() => { const h = window.__hl, out = {};
-    const s = h.rndSeed(); out.rnd = s >= 0x1000000 && s < 0x2000000;
+    const s = h.rndSeed(); out.rnd = s >= 0x2000000 && s < 0x3000001; // Prototype 64: new codes are version 2
     h.loadTrack(0x123456, 'S', true, 'M', null, { k: 'U', d: null }); out.old = h.codeStr();
     h.loadTrack(0x1123456, 'S', true, 'M', null, { k: 'U', d: null }); out.v1 = h.codeStr(); const c = h.parseCode(out.v1); out.v1back = c && c.seed === 0x1123456;
     out.bad = h.parseCode('S2123456') === null && h.parseCode('S11234567') === null;
