@@ -102,6 +102,7 @@ function aiInput(r,dt){
     if(r.lapT>0&&r.lapK===1)target=clamp(target-r.lapD*W*0.32*r.lapS,-W/2+0.6,W/2-0.6)}
   const desired=ybA!=null?ybA-Math.atan2(target-r.lat,20):-Math.atan2(target-r.lat,look);
   let C=T.Cs[idxAt(r.u)];if(r.brS&&r.brS.kind==='cut'&&r.br===r.brS.longB&&T.spl[idxAt(r.u)]){const y1=surf(uu+4,r.lat,r).yb,y0=surf(uu-4,r.lat,r).yb,g=surf(uu,r.lat,r).g;C=(T.K[idxAt(r.u)]+(y1-y0)/8)*g}
+  else if(r.brS&&r.brS.kind==='flip'&&r.br===r.brS.fB&&T.spl[idxAt(r.u)])C+=surf(uu,r.lat,r).kx;/* (Prototype 63: on the underside the road's bends turn the other way round) */
   const turn=(1.85-0.55*(r.v/VMAX))*r.d.turn*trimTurn(r);
   let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(aiSmoked(r))steer+=(Math.sin(S.raceT*9+r.bias*3)+0.5*Math.sin(S.raceT*5.3+r.bias*7))*SMOKE_AI.swing;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
   // brake when the corner needs more turn than the ship has

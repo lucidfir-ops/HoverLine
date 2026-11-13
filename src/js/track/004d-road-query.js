@@ -6,14 +6,17 @@ function sampleAt(u,o=sm){const{L,N,ds,P,R,U,Tg,H}=T;const f=(((u%L)+L)%L)/ds;co
 const idxAt=u=>Math.floor((((u%T.L)+T.L)%T.L)/T.ds)%T.N;
 /* Where the road is at distance u and lateral position lat. Outside a split: the main road (height 0, walls at ±W/2).
    Inside: the route you are on (a racer keeps the route it chose at the fork; anything else takes the nearer one). */
-const SF={h:0,sl:0,kv:0,yb:0,lo:0,hi:0,c:0,sp:null,b:-1};
-function surf(u,lat,r,ro){const k=T.spl[idxAt(u)];SF.h=SF.sl=SF.kv=SF.yb=SF.c=0;SF.g=1;SF.lo=-W/2;SF.hi=W/2;SF.sp=null;SF.b=-1;
+/* (Prototype 63: on the Spirit realm's underside route (004t) also ph, its roll; fs, its side; cw, where its centre is
+   across the base road; kx, the turn it adds to the road's bends; dph, the roll's rate. 0 everywhere else.) */
+const SF={h:0,sl:0,kv:0,yb:0,lo:0,hi:0,c:0,sp:null,b:-1,ph:0,fs:1,cw:0,kx:0,dph:0};
+function surf(u,lat,r,ro){const k=T.spl[idxAt(u)];SF.h=SF.sl=SF.kv=SF.yb=SF.c=0;SF.ph=SF.kx=0;SF.g=1;SF.lo=-W/2;SF.hi=W/2;SF.sp=null;SF.b=-1;
   if(!k){if(r&&r.brS){r.brS=null;r.br=null}return SF}
   const SP=T.splits[k-1],uu=((u%T.L)+T.L)%T.L,f=clamp((uu-SP.u0)/T.ds,0,SP.n),j=Math.min(SP.n-1,Math.floor(f)),a=f-j,near=()=>{let bi=0,bd=1e9;SP.b.forEach((B,i)=>{const c=B.c[j]+(B.c[j+1]-B.c[j])*a,w=B.w[j]+(B.w[j+1]-B.w[j])*a,d=Math.abs(lat-c)-w;if(d<bd){bd=d;bi=i}});return bi};
   const ad=!!(SP.adj&&(SP.adj[j]||SP.adj[j+1]));
   let b;if(SP.kind==='stack'){b=r&&(r.isGhost||r.proxy)?(r.stkUp?SP.upB:SP.lowB):r&&ro?(r.brS===SP&&r.br!=null?r.br:SP.lowB):r?(r.stkS===SP?r.stkB:SP.lowB):near();if(r&&!ro){r.brS=SP;r.br=b}}
+  else if(SP.kind==='flip'&&r&&(r.isGhost||r.proxy)){b=r.flipU?SP.fB:SP.tB;if(!ro){r.brS=SP;r.br=b}}/* (Prototype 63: a ghost or a remote ship carries which face it rides) */
   else if(r&&ro)b=r.brS===SP&&r.br!=null?r.br:near();else if(r){if(r.brS!==SP){r.brS=SP;r.br=near()}else if(ad&&r.u!=null&&Math.abs(wrapU(u-r.u))<4)r.br=near();b=r.br}else b=near();
-  const B=SP.b[b],L=A=>A[j]+(A[j+1]-A[j])*a,c=L(B.c),w=L(B.w);SF.h=L(B.h);SF.sl=L(B.sl);SF.kv=L(B.kv);SF.yb=-Math.atan(L(B.dc));SF.lo=c-w;SF.hi=c+w;SF.c=c;SF.sp=SP;SF.b=b;if(B.g)SF.g=L(B.g);
+  const B=SP.b[b],L=A=>A[j]+(A[j+1]-A[j])*a,c=L(B.c),w=L(B.w);SF.h=L(B.h);SF.sl=L(B.sl);SF.kv=L(B.kv);SF.yb=-Math.atan(L(B.dc));SF.lo=c-w;SF.hi=c+w;SF.c=c;SF.sp=SP;SF.b=b;if(B.g)SF.g=L(B.g);if(B.ph){SF.ph=L(B.ph);SF.fs=SP.side;SF.cw=L(B.cw);SF.kx=L(B.kx);SF.dph=L(B.dph)}
   if(ad&&SP.b.length===2){const O=SP.b[1-b],oc=L(O.c),ow=L(O.w);SF.lo=Math.min(SF.lo,oc-ow);SF.hi=Math.max(SF.hi,oc+ow)}return SF}
 const clampLat=(u,lat,m,o)=>{const f=surf(u,lat,o);return clamp(lat,f.lo+m,f.hi-m)};
 const wrapU=d=>{const L=T.L;d=((d%L)+L)%L;return d>L/2?d-L:d};

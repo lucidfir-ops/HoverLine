@@ -18,7 +18,9 @@ const CODES = (process.env.CODES || '').split(',').filter(Boolean).length ? proc
   'NXL1C0D0E5-' + spec('sjump', 1) + '-S', 'WXL10F1F25-' + spec('cjump', 1) + '-S', 'SXL1A0B0C6-' + spec('vspire', 1) + '-S', 'WXL10F1F26-' + spec('dhelix', 1) + '-S',
   'NXQ5102B5-33224444222-S', 'WXL641365-23224444222-S',
   // (P63) portal jumps: across (49) and diagonal (50), Wide, Standard and Narrow
-  'W1234567-' + spec('portal', 1) + '-S', 'WX1ABCDE-' + spec('portal', 1) + '-S', 'SL19E3779-' + spec('portal', 1) + '-S', 'NL19E3779-' + spec('portal', 1) + '-S'];
+  'W1234567-' + spec('portal', 1) + '-S', 'WX1ABCDE-' + spec('portal', 1) + '-S', 'SL19E3779-' + spec('portal', 1) + '-S', 'NL19E3779-' + spec('portal', 1) + '-S',
+  // (P63) undersides (track/004t): Wide, Standard and Narrow, simple and complex
+  'W1B85AB4-S', 'SL14C3D65-S', 'NXL128DB8B-S'];
 
 const CHECK = (code) => {
   const h = window.__hl, c = h.parseCode(code); h.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp || null, c.bm);
@@ -31,7 +33,12 @@ const CHECK = (code) => {
   const C = 20, G = new Map(), key = (a, b, c) => ((a + 4096) * 8192 + (b + 4096)) * 8192 + (c + 4096), S = [];
   const add = (p, r, u, t, w, ab) => { const s = { x: p.x, y: p.y, z: p.z, r, u, t, w, ab }; S.push(s); const k = key(Math.floor(p.x / C), Math.floor(p.y / C), Math.floor(p.z / C)); let L = G.get(k); if (!L) G.set(k, L = []); L.push(s) };
   for (let i = 0; i < N; i++) { if (T.gap[i] && !air[i]) continue; add(P[i], R[i], U[i], Tg[i], hw, air[i] ? JAB : AB) }
-  for (const S0 of T.splits) for (const B of S0.b) for (let k = 0; k <= S0.n; k++) { const i = (S0.i0 + k) % N, p = P[i].clone().addScaledVector(R[i], B.c[k]).addScaledVector(U[i], B.h[k]); add(p, R[i], U[i], Tg[i], B.w[k], air[i] ? JAB : AB) }
+  /* (P63) the underside's route in its own frame: its centre cw across and h over the base road, turned by its roll */
+  const fl = (S0, B, k, l, d) => { const i = (S0.i0 + k) % N, a = S0.side * B.ph[k], c = Math.cos(a), sn = Math.sin(a), r = R[i].clone().multiplyScalar(c).addScaledVector(U[i], -sn), u = U[i].clone().multiplyScalar(c).addScaledVector(R[i], sn);
+    return { p: P[i].clone().addScaledVector(R[i], B.cw[k]).addScaledVector(U[i], B.h[k]).addScaledVector(r, l).addScaledVector(u, d), r, u } };
+  for (const S0 of T.splits) for (const B of S0.b) for (let k = 0; k <= S0.n; k++) { const i = (S0.i0 + k) % N;
+    if (B.ph) { const q = fl(S0, B, k, 0, 0); add(q.p, q.r, q.u, Tg[i], B.w[k], air[i] ? JAB : AB); continue }
+    const p = P[i].clone().addScaledVector(R[i], B.c[k]).addScaledVector(U[i], B.h[k]); add(p, R[i], U[i], Tg[i], B.w[k], air[i] ? JAB : AB) }
   const maxW = Math.max(...S.map((s) => s.w));
   const inKeep = (x, y, z) => { const rr = maxW + M + ds, c0 = Math.floor((x - rr) / C), c1 = Math.floor((x + rr) / C), d0 = Math.floor((y - JAB - 2) / C), d1 = Math.floor((y + BEL + 2) / C), e0 = Math.floor((z - rr) / C), e1 = Math.floor((z + rr) / C);
     for (let a = c0; a <= c1; a++) for (let b = Math.min(d0, Math.floor((y - rr) / C)); b <= Math.max(d1, Math.floor((y + rr) / C)); b++) for (let cc = e0; cc <= e1; cc++) { const L = G.get(key(a, b, cc)); if (!L) continue;
@@ -57,6 +64,12 @@ const CHECK = (code) => {
     for (let d = Math.round(400 / ds); d >= Math.round(zJ / ds); d -= st) for (const cl of [-hw * 0.6, 0, hw * 0.6]) { const a = pt((o.k - d - back + N) % N, cl, 5.5); for (const b of tg) addL(a, b) }
     for (let d = Math.round(zJ / ds); d <= Math.round((zJ + 300) / ds); d += tt) for (const l of [-hw, 0, hw]) mt.push(pt((o.k - d + N) % N, l, 1));
     for (let q = back + 1; q <= nF; q += st) { const a = pt((o.k + q - back) % N, 0, 5.5); for (const b of mt) addL(a, b) } }
+  /* (P63) the underside ridden: chase cameras on it (12 m behind, 5.5 m over it in its own frame, three lines across) from
+     300 m before the fork every 16 m, to its edges and middle 1 m over it every 20 m up to 300 m ahead (the road past it) */
+  for (const S0 of T.splits) { const B = S0.b.find((x) => x.ph); if (!B) continue; const n = S0.n;
+    const at = (k, f, d) => { if (k < 0 || k > n) { const i = ((S0.i0 + k) % N + N) % N; return pt(i, f * hw, d) } const q = fl(S0, B, k, f * B.w[k], d); return [q.p.x, q.p.y, q.p.z] };
+    for (let k = -Math.round(300 / ds); k <= n; k += st) for (const f of [-0.6, 0, 0.6]) { const a = at(k - back, f, 5.5);
+      for (let j = 1; j <= 15; j++) { const kt = k + j * tt; if (kt < 0) continue; if (k < 0 && kt > n) break; for (const g of [-1, 0, 1]) addL(a, at(kt, g, 1)) } } }
   const nearSight = (x, y, z) => { const r = 0.5, cx = Math.floor(x / SG), cy = Math.floor(y / SG), cz = Math.floor(z / SG);
     for (let a = cx - 1; a <= cx + 1; a++) for (let b = cy - 1; b <= cy + 1; b++) for (let c2 = cz - 1; c2 <= cz + 1; c2++) { const L = SM.get(sk(a, b, c2)); if (!L) continue;
       for (const n of L) { const s = SL[n], ux = s[3] - s[0], uy = s[4] - s[1], uz = s[5] - s[2], l2 = ux * ux + uy * uy + uz * uz, f = Math.max(0, Math.min(1, ((x - s[0]) * ux + (y - s[1]) * uy + (z - s[2]) * uz) / l2)), dx = s[0] + ux * f - x, dy = s[1] + uy * f - y, dz = s[2] + uz * f - z;

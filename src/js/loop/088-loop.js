@@ -2,7 +2,7 @@
 /* ---------- loop ---------- */
 const V3=THREE.Vector3,qP=new THREE.Quaternion(),qT=new THREE.Quaternion(),qY=new THREE.Quaternion(),qR=new THREE.Quaternion(),qS=new THREE.Quaternion(),qJ=new THREE.Quaternion(),mtx=new THREE.Matrix4();
 const AX_X=new V3(1,0,0),AX_Y=new V3(0,1,0),AX_Z=new V3(0,0,1),pos=new V3(),camT=new V3(),look=new V3(),right=new V3(),up=new V3(),back=new V3(),pf=new V3(),pUp=new V3(),pRight=new V3(),pT=new V3(),pPos=new V3();
-let camInit=false,lastT=performance.now(),hudT=0,camU=null;
+let camInit=false,lastT=performance.now(),hudT=0,camU=null,camRA=0;
 /* Chase camera. It sits a fixed distance behind and above the ship in the ship's own frame: only its direction is smoothed,
    never its position, so it cannot fall behind at speed. Cockpit puts it on the nose (the ship itself is hidden). */
 const CAMS=[{n:'Near',d:5.6,h:2.15,l:9},{n:'Standard',d:7.4,h:2.7,l:10},{n:'Far',d:11,h:3.9,l:12},{n:'Cockpit',fpv:true}];
@@ -128,6 +128,7 @@ function pvOpen(){PVS.k=null;pvWords();if(!PVS.raf)PVS.raf=requestAnimationFrame
 setCam(camMode,false);
 
 const _ftH=new THREE.Vector3(),_gq=new THREE.Quaternion(),_gE=new THREE.Euler(),_qCam=new THREE.Quaternion();
+const _flP=new V3();
 function placeShip(r,t){
   const s=sampleAt(r.u);
   /* Prototype 60: over a new jump's gap (a drop's is steep) the frame is drawn level, along the ground's heading with the
@@ -135,10 +136,15 @@ function placeShip(r,t){
   {const jn=T.jg&&T.jg[idxAt(r.u)],J=jn?T.jumps[jn-1]:null;if(J&&!(J.sp&&!(r.brS===J.sp&&r.br===J.b))){const x=modU(r.u-J.u0),w=ss01(Math.min(x,J.G-x)/25);
     if(w>0){_ftH.set(s.t.x,0,s.t.z).normalize();s.t.lerp(_ftH,w).normalize();s.u.lerp(AX_Y,w).normalize();s.r.crossVectors(s.t,s.u).normalize()}}}
   back.copy(s.t).negate();right.crossVectors(s.u,back).normalize();up.crossVectors(back,right);
+  const sfp=surf(r.u,r.lat,r,!(r.isGhost||r.proxy)),gh=sfp.h,ra=sfp.ph*sfp.fs;let gsl=Math.atan(sfp.sl);
+  /* Prototype 63: on the Spirit realm's underside route (004t) the frame sits on the route's face, in its rolled frame:
+     its centre (cw across the base road, gh over it), then lat across and the hover over it, turned with it; its nose
+     follows the face's slope where it is (a rolling face slopes across) */
+  if(ra){_flP.copy(s.p).addScaledVector(right,sfp.cw).addScaledVector(up,gh);flipRoll(right,up,ra);gsl=Math.atan(sfp.sl-sfp.fs*(r.lat-sfp.c)*sfp.dph)}r._ra=ra;
   mtx.makeBasis(right,up,back);qT.setFromRotationMatrix(mtx);
   qY.setFromAxisAngle(AX_Y,r.yaw-(r.dVa!=null?r.dVa:r.driftK?(r.drift||Math.sign(r.steerS))*(r.dAng||0.42)*r.driftK:0));qS.setFromAxisAngle(AX_Y,r.spin);qR.setFromAxisAngle(AX_Z,-r.steerS*0.45+(r.rollA||0));
-  const sfp=surf(r.u,r.lat,r,!(r.isGhost||r.proxy)),gh=sfp.h,gsl=Math.atan(sfp.sl);
-  pos.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));if(r.isGhost)r.vh=0;
+  if(ra)pos.copy(_flP).addScaledVector(right,r.lat-sfp.c).addScaledVector(up,(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));
+  else pos.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));if(r.isGhost)r.vh=0;
   qP.setFromAxisAngle(AX_X,r.pitch*0.25+gsl+(r.air?clamp(r.vh/Math.max(30,r.v),-0.5,0.5)*0.6:0));
   r.ship.position.copy(pos);r.ship.quaternion.copy(qT).multiply(qY).multiply(qS).multiply(qP).multiply(qR);
   /* knocked out of phase: 30 times a second the frame may blink out, or tear sideways and stretch; it shakes all the
@@ -151,7 +157,7 @@ function placeShip(r,t){
     _gq.setFromAxisAngle(AX_Y,(Math.random()-0.5)*0.24*e);r.ship.quaternion.multiply(_gq);_gq.setFromAxisAngle(AX_Z,(Math.random()-0.5)*0.22*e);r.ship.quaternion.multiply(_gq)}
   else if(sc.x!==1||sc.y!==1||sc.z!==1)sc.set(1,1,1);
   const fpvMe=r===player&&!SPL.race&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);reflectLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
-  r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
+  if(ra)r.shadow.position.copy(_flP).addScaledVector(right,r.lat-sfp.c).addScaledVector(up,0.06);else r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
   const ud=r.ship.userData;shipCtl(ud,r.brk,r.steerS,S.state==='menu'||S.state==='lab'?1:r.ammo/(r.d.ammo||100));
   if(ud.extra&&ud.extra.spin){const dt=clamp(t-(r._lt??t),0,0.1);r._lt=t;for(const q of ud.extra.spin)q.o.rotation[q.ax]+=(q.k*r.v+(q.w||0))*dt}/* the flicker is a hash of the time, not Math.random, so drawing never moves the game's random numbers (Prototype 51) */
   if(ud.extra&&(ud.extra.arc||ud.extra.field)){const fl=(Math.sin(t*127.1+(r.bias||0)*311.7)*43758.5453)%1,fz=Math.abs(fl);if(ud.extra.arc)ud.extra.arc.opacity=0.35+0.45*fz*(0.5+r.v/VMAX);if(ud.extra.field)ud.extra.field.opacity=0.16+0.1*fz+(r.air?0.1:0)}
@@ -250,6 +256,9 @@ function step(dt){
      disc having been the view after it */
   {const cu=S.state==='menu'?S.fly+dt*55:player.u,pc=T.port&&camU!=null?portalCross(camU,cu):null;camU=cu;
     if(pc){if(S.state==='menu'){camera.position.applyMatrix4(pc.M);camera.up.applyQuaternion(pc.Q)}else{camFwdS.applyQuaternion(pc.Q);camUpS.applyQuaternion(pc.Q)}}}
+  /* Prototype 63: on the underside's roll (004t) the camera turns with the frame, about the road's forward, by as much as
+     it rolled since the last frame, so the roll never runs ahead of the camera (its smoothing is only for the rest) */
+  {const ra=S.state==='menu'?0:player._ra||0;if(camInit&&ra!==camRA){_qCam.setFromAxisAngle(_flA.copy(pT).normalize(),ra-camRA);camUpS.applyQuaternion(_qCam);camFwdS.applyQuaternion(_qCam)}camRA=ra}
   if(S.state==='menu'){
     S.fly+=dt*55;const s=sampleAt(S.fly),a=sampleAt(S.fly+45);
     camT.copy(s.p).addScaledVector(s.u,16).addScaledVector(s.r,Math.sin(S.t*0.3)*10);

@@ -212,6 +212,10 @@ function roadShape(seed,wk,cx,lk,sp,bk){
      else if(f.kind==='cjump'||f.kind==='portal'){/* (Prototype 63: and a portal jump's catch road, the same shape) */const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Lc/ds);if(!inGI(i0,n))continue;
        const B=[{c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)}];for(let k=0;k<=n;k++){const x=k/n;B[0].w[k]=W/2*(1.55-0.55*ss01((x-0.5)/0.42))}
        finishB(B);B[0].long=false;const pts=[];for(let k=0;k<=n;k+=Math.max(1,Math.round(12/ds)))pts.push(P[(i0+k)%N].clone());mark({kind:'catch',i0,n,u0:i0*ds,u1:(i0+n)*ds,side:1,longB:0,b:B,pts,feat:1});j.ctch=1}}
+   /* Prototype 63: the Spirit realm's underside (004t): a split whose second route rolls under the road; about one Spirit
+      track in five (or the editor's count), drawn on its own numbers, so the rest of the track is built as without it */
+   {const fw=bk==='S'?(sp?Math.min(1,sp.n.flip||0):rng((seed^0xF11B4)>>>0)()<FLIP_O.P?1:0):0;
+    if(fw&&!flipPlace({seed,N,ds,P,Tg,Cs,busy,spl,splits,gI0,mark,finishB,W,want:fw})&&sp)dropped.flip=(dropped.flip||0)+1}
    for(const S0 of splits){if(S0.b.length!==2)continue;const[A0,A1]=S0.b,adj=new Uint8Array(S0.n+1);let any=0;
      for(let k=0;k<=S0.n;k++){const l=A0.c[k]<A1.c[k]?A0:A1,r2=l===A0?A1:A0,g=(r2.c[k]-r2.w[k])-(l.c[k]+l.w[k]);if(g<1.2&&g>-0.5&&Math.abs(A0.h[k]-A1.h[k])<1){adj[k]=1;any=1}}
      if(any)S0.adj=adj}
@@ -219,12 +223,13 @@ function roadShape(seed,wk,cx,lk,sp,bk){
      for(let k=e0;k<=e1;k++){const i=((k%N)+N)%N,w=ss01(Math.min(k-e0,e1-k)/ramp),t=Tg[i],uf=Y0.clone().addScaledVector(t,-Y0.dot(t)).normalize();
        U[i]=U[i].clone().multiplyScalar(1-w).addScaledVector(uf,w).normalize();R[i]=new THREE.Vector3().crossVectors(t,U[i]).normalize()}
      if(fopt)for(let k=e0;k<=e1;k++){const i=((k%N)+N)%N,d=new THREE.Vector3().subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);Kg[i]=-d.dot(R[i])}
-     if(!S0.feat||S0.kind==='split')feats.push({kind:'split',u0:S0.u0,u1:S0.u1})}
+     if(!S0.feat||S0.kind==='split')feats.push({kind:'split',u0:S0.u0,u1:S0.u1});else if(S0.kind==='flip')feats.push({kind:'flip',u0:S0.u0,u1:S0.u1})}
    if(fopt&&splits.length){const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let a=0;for(let k=-K;k<=K;k++)a+=Kg[(i+k+N)%N];Cs[i]=a/(2*K+1)}}
    if(sp&&splitDrop)dropped.split=(dropped.split||0)+splitDrop}
   const Kn=new Float32Array(N);{const raw=new Float32Array(N),d=new THREE.Vector3();for(let i=0;i<N;i++){d.subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);raw[i]=d.dot(U[i])}
     if(port)for(const o of port){raw[o.k]=raw[(o.k-1+N)%N];raw[(o.k+1)%N]=raw[(o.k+2)%N]}
     for(let i=0;i<N;i++){let a=0;for(let k=-3;k<=3;k++)a+=raw[(i+k+N)%N];Kn[i]=a/7}}
+  flipFinish(splits,Kg,Kn,N,ds);/* (Prototype 63: the underside's press and turn in its own frame) */
   let corners=0;{let inC=false;for(let i=0;i<N;i++){const c=Math.abs(Cs[i])>1/180&&!kind[i];if(c&&!inC)corners++;inC=c}}
   return{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,gI0,r,seed,wk,cx,lk,sp,brk,port}}
 /* Contiguous index runs that are not jump gaps (the last run wraps past the start line). */

@@ -16,8 +16,8 @@ const ERIC = ['NL9A7E2A-N', 'NLEDBAFE-R', 'NQ45F875-P', 'NX130F38-P', 'NX3D7DBD'
   'SLE54D5C', 'SXFAB551-R', 'SXL26F230-F', 'SXLB8350A-P', 'W3ADFB8-P', 'W8F8E4D-R', 'WL1861CC-N', 'WX630A48', 'WXL2AAD94-O',
   'WXQD87244-33224444222-P', 'WXL641365-23224444222-O', 'W1AAE848-P'];
 // the editor's counts for one new piece (as trackfeat60 writes them)
-const KINDS = { vspire: 10, dhelix: 11, drop: 12, sjump: 13, cjump: 14, portal: 15 };
-const spec = (k, n) => { const c = Array(16).fill(0); c[KINDS[k]] = n; return '1' + c.join('').replace(/0+$/, '') };
+const KINDS = { vspire: 10, dhelix: 11, drop: 12, sjump: 13, cjump: 14, portal: 15, flip: 16 };
+const spec = (k, n) => { const c = Array(17).fill(0); c[KINDS[k]] = n; return '1' + c.join('').replace(/0+$/, '') };
 const MORE = ['W2B4C6D', 'S5A5A5A-O', 'N3C3C3C-F', 'WQ777777-N', 'SL0ABCDE-R', 'N0FEDCB-P', 'SX1A2B3C4-U3434', 'NX1B2C3D-F3444',
   'WXL1C4D5E-O3444', 'SX1D00D1E-R3444', 'NXL1E0E0F-N3444', 'WX1F1F1F-U0000', 'SXL1A0B0C4-' + spec('drop', 2) + '-U', 'NXL1C0D0E5-' + spec('sjump', 1) + '-P',
   'WXL10F1F25-' + spec('cjump', 1) + '-R', 'SXL1A0B0C6-' + spec('vspire', 1) + '-F', 'WXL10F1F26-' + spec('dhelix', 1) + '-O'];
@@ -25,7 +25,9 @@ const MORE = ['W2B4C6D', 'S5A5A5A-O', 'N3C3C3C-F', 'WQ777777-N', 'SL0ABCDE-R', '
 const SPIRIT = ['W1234567-S', 'NX1ABCDEF-S', 'SL1C0FFEE-S', 'NXL1C0D0E5-' + spec('sjump', 1) + '-S', 'WXL10F1F26-' + spec('dhelix', 1) + '-S', 'NXQ5102B5-33224444222-S',
   // Prototype 63: every Spirit hash remade (portals change which tracks Spirit codes build; the knots moved to the portals),
   // and portal codes added: across and diagonal, Wide, Standard and Narrow
-  'W1234567-' + spec('portal', 1) + '-S', 'WX1ABCDE-' + spec('portal', 1) + '-S', 'SL19E3779-' + spec('portal', 1) + '-S', 'NL19E3779-' + spec('portal', 1) + '-S'];
+  'W1234567-' + spec('portal', 1) + '-S', 'WX1ABCDE-' + spec('portal', 1) + '-S', 'SL19E3779-' + spec('portal', 1) + '-S', 'NL19E3779-' + spec('portal', 1) + '-S',
+  // Prototype 63: undersides (track/004t), generated (Wide simple, Narrow complex long) and from the editor's count
+  'W1B85AB4-S', 'NXL128DB8B-S', 'S1ABCDE-' + spec('flip', 1) + '-S'];
 const CODES = [...ERIC, ...MORE, ...SPIRIT];
 const LOW = ['NX130F38-P', 'NXL2CF89D-23224444222-O', 'NXL4ADBF6-F', 'NXLC4B123-N', 'SXFAB551-R', 'WX630A48'];
 

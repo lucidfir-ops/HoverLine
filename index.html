@@ -1530,6 +1530,10 @@ function roadShape(seed,wk,cx,lk,sp,bk){
      else if(f.kind==='cjump'||f.kind==='portal'){/* (Prototype 63: and a portal jump's catch road, the same shape) */const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Lc/ds);if(!inGI(i0,n))continue;
        const B=[{c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)}];for(let k=0;k<=n;k++){const x=k/n;B[0].w[k]=W/2*(1.55-0.55*ss01((x-0.5)/0.42))}
        finishB(B);B[0].long=false;const pts=[];for(let k=0;k<=n;k+=Math.max(1,Math.round(12/ds)))pts.push(P[(i0+k)%N].clone());mark({kind:'catch',i0,n,u0:i0*ds,u1:(i0+n)*ds,side:1,longB:0,b:B,pts,feat:1});j.ctch=1}}
+   /* Prototype 63: the Spirit realm's underside (004t): a split whose second route rolls under the road; about one Spirit
+      track in five (or the editor's count), drawn on its own numbers, so the rest of the track is built as without it */
+   {const fw=bk==='S'?(sp?Math.min(1,sp.n.flip||0):rng((seed^0xF11B4)>>>0)()<FLIP_O.P?1:0):0;
+    if(fw&&!flipPlace({seed,N,ds,P,Tg,Cs,busy,spl,splits,gI0,mark,finishB,W,want:fw})&&sp)dropped.flip=(dropped.flip||0)+1}
    for(const S0 of splits){if(S0.b.length!==2)continue;const[A0,A1]=S0.b,adj=new Uint8Array(S0.n+1);let any=0;
      for(let k=0;k<=S0.n;k++){const l=A0.c[k]<A1.c[k]?A0:A1,r2=l===A0?A1:A0,g=(r2.c[k]-r2.w[k])-(l.c[k]+l.w[k]);if(g<1.2&&g>-0.5&&Math.abs(A0.h[k]-A1.h[k])<1){adj[k]=1;any=1}}
      if(any)S0.adj=adj}
@@ -1537,12 +1541,13 @@ function roadShape(seed,wk,cx,lk,sp,bk){
      for(let k=e0;k<=e1;k++){const i=((k%N)+N)%N,w=ss01(Math.min(k-e0,e1-k)/ramp),t=Tg[i],uf=Y0.clone().addScaledVector(t,-Y0.dot(t)).normalize();
        U[i]=U[i].clone().multiplyScalar(1-w).addScaledVector(uf,w).normalize();R[i]=new THREE.Vector3().crossVectors(t,U[i]).normalize()}
      if(fopt)for(let k=e0;k<=e1;k++){const i=((k%N)+N)%N,d=new THREE.Vector3().subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);Kg[i]=-d.dot(R[i])}
-     if(!S0.feat||S0.kind==='split')feats.push({kind:'split',u0:S0.u0,u1:S0.u1})}
+     if(!S0.feat||S0.kind==='split')feats.push({kind:'split',u0:S0.u0,u1:S0.u1});else if(S0.kind==='flip')feats.push({kind:'flip',u0:S0.u0,u1:S0.u1})}
    if(fopt&&splits.length){const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let a=0;for(let k=-K;k<=K;k++)a+=Kg[(i+k+N)%N];Cs[i]=a/(2*K+1)}}
    if(sp&&splitDrop)dropped.split=(dropped.split||0)+splitDrop}
   const Kn=new Float32Array(N);{const raw=new Float32Array(N),d=new THREE.Vector3();for(let i=0;i<N;i++){d.subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);raw[i]=d.dot(U[i])}
     if(port)for(const o of port){raw[o.k]=raw[(o.k-1+N)%N];raw[(o.k+1)%N]=raw[(o.k+2)%N]}
     for(let i=0;i<N;i++){let a=0;for(let k=-3;k<=3;k++)a+=raw[(i+k+N)%N];Kn[i]=a/7}}
+  flipFinish(splits,Kg,Kn,N,ds);/* (Prototype 63: the underside's press and turn in its own frame) */
   let corners=0;{let inC=false;for(let i=0;i<N;i++){const c=Math.abs(Cs[i])>1/180&&!kind[i];if(c&&!inC)corners++;inC=c}}
   return{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,gI0,r,seed,wk,cx,lk,sp,brk,port}}
 /* Contiguous index runs that are not jump gaps (the last run wraps past the start line). */
@@ -1933,7 +1938,7 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
     add(strip(-W/2,0,-W/2,-1.8,o),dark);add(strip(W/2,0,W/2,-1.8,o),dark);add(strip(-W/2,-1.8,W/2,-1.8,o),dark)}
   /* both routes of each split: road, edges, glass walls, rails and the underside, all following the route's line and height */
   const kRuns=(M,pred)=>{const out=[];let a=-1;for(let k=0;k<=M;k++){const p=pred(k);if(p&&a<0)a=k;if((!p||k===M)&&a>=0){const b=p?k:k-1;if(b>a)out.push([a,b]);a=-1}}return out};
-  for(const S0 of splits){const k0=S0.i0,n=S0.n,A=S0.adj,ix=i=>Math.max(0,Math.min(n,i-k0)),o={from:k0,to:k0+n+1};
+  for(const S0 of splits){if(S0.kind==='flip')continue;/* (Prototype 63: the underside draws its own, flipRoad in 004t) */const k0=S0.i0,n=S0.n,A=S0.adj,ix=i=>Math.max(0,Math.min(n,i-k0)),o={from:k0,to:k0+n+1};
     S0.b.forEach((B,bi)=>{const O=S0.b[1-bi],c=i=>B.c[ix(i)],w=i=>B.w[ix(i)],h=i=>B.h[ix(i)],L=d=>i=>c(i)-w(i)+d,Rr=d=>i=>c(i)+w(i)+d,H=d=>i=>h(i)+d;
       /* Prototype 60: a route with a gap of its own (the trunk's drop) is drawn in runs either side of it */
       const gpq=k=>!!(B.gp&&B.gp[Math.min(n,k)]),oR=B.gp?kRuns(n+1,k=>!gpq(k)).map(([a,b2])=>({from:k0+a,to:k0+b2})):[o];
@@ -1972,7 +1977,9 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
     if(lane){const c=(r()-.5)*W*0.4,hw=sw/2;add(strip(c-hw,0.035,c+hw,0.035,{from:i0,to:i1,uv:1/6}),pM);zones.push({kind:'ammo',u0:i0*ds,u1:i1*ds,side:0,edge:eIn,lane:c,hw})}
     else{edgeStrip(side,i0,i1,pM);zones.push({kind:'ammo',u0:i0*ds,u1:i1*ds,side,edge:eIn})}}}
   /* the long route's pickups: two boost pads, an ammo strip on the outside and a shield strip on the inside */
-  for(const S0 of splits){const B=S0.b[S0.longB],k0=S0.i0,at=(u,A)=>{const f=clamp((u-S0.u0)/ds,0,S0.n),j=Math.min(S0.n-1,Math.floor(f)),q=f-j;return A[j]+(A[j+1]-A[j])*q};
+  /* Prototype 63: the underside's routes, the slab and its field, and its pickups (004t) */
+  flipRoad({group,add,strip,splits,N,ds,edgeCol,roadM,edgeM,glass,rail,pads,zones,padM,pM,sw,eIn,padLen});
+  for(const S0 of splits){if(S0.kind==='flip')continue;const B=S0.b[S0.longB],k0=S0.i0,at=(u,A)=>{const f=clamp((u-S0.u0)/ds,0,S0.n),j=Math.min(S0.n-1,Math.floor(f)),q=f-j;return A[j]+(A[j+1]-A[j])*q};
     if(S0.kind==='cut'){for(const fx of[0.2,0.55]){const a=k0+Math.round(S0.n*fx),b=a+padLen;add(strip(i=>B.c[i-k0]-2.4,i=>B.h[i-k0]+0.03,i=>B.c[i-k0]+2.4,i=>B.h[i-k0]+0.03,{from:a,to:b,uv:1/12}),padM);pads.push({u0:a*ds,u1:b*ds,lat:0,latF:u=>at(u,B.c),sp:S0,b:S0.longB})}continue}
     /* Prototype 60: the long jump's catch road has none; a speed jump's bonus road two boost pads and an ammo strip once the roads part */
     if(S0.kind==='catch')continue;
@@ -2007,15 +2014,16 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
   for(const S0 of splits)for(const ahead of[500,250,80]){if(S0.kind==='cut'||S0.kind==='catch'||S0.kind==='dsplit')break;
     /* Prototype 60: a speed jump gets the signs too, about 500 and 250 m before its lip, saying which road holds the bonus */
     if(S0.kind==='stack'&&ahead===80)break;const stk=S0.kind==='stack';const SW=W+3.1,SH=SW*340/1024,top=7.2+SH,at=signAt(S0,ahead,SW,top,stk?150:0);if(!at)continue;
-    const pit=S0.kind==='pit',i=at.i,g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffb000});
+    const pit=S0.kind==='pit',flp=S0.kind==='flip',i=at.i,g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffb000});
     for(const sd of[-1,1]){const pl=new THREE.Mesh(new THREE.BoxGeometry(0.7,top,0.7),m);pl.position.set(sd*(W/2+1.2),top/2,0);g.add(pl)}
     const cv=document.createElement('canvas');cv.width=1024;cv.height=340;const cg=cv.getContext('2d');cg.fillStyle='#0b0e14';cg.fillRect(0,0,1024,340);cg.strokeStyle='#ffb000';cg.lineWidth=8;cg.strokeRect(4,4,1016,332);
-    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((stk?'SPEED JUMP · ':pit?'PIT LANE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
+    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((stk?'SPEED JUMP · ':pit?'PIT LANE · ':flp?'UNDERSIDE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
     cg.beginPath();cg.moveTo(512,92);cg.lineTo(512,316);cg.strokeStyle='#ffb000';cg.lineWidth=4;cg.stroke();
     const lL=S0.side<0,side=(x,long,arrow)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990;
-      cg.fillStyle=long?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";const nm=pit?(long?'PIT':'RACE'):(long?'LONG':'SHORT');cg.fillText(arrow&&x<512?'◀ '+nm:nm+' ▶',x0,150);
+      cg.fillStyle=flp?(long?'#3ff0ff':'#ffb000'):long?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";const nm=pit?(long?'PIT':'RACE'):flp?(long?'UNDER':'TOP'):(long?'LONG':'SHORT');cg.fillText(arrow&&x<512?'◀ '+nm:nm+' ▶',x0,150);
       cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';
-      if(pit){if(long){cg.fillText('FULL REPAIR',x0,230);cg.fillText('AMMO · LIMITER',x0,282)}else cg.fillText('KEEP RACING',x0,230)}
+      if(flp){if(long){cg.fillText('UPSIDE DOWN',x0,230);cg.fillText('2 BOOST PADS · AMMO',x0,282)}else{cg.fillText('STAY ON TOP',x0,230);cg.fillText('NO PICKUPS',x0,282)}}
+      else if(pit){if(long){cg.fillText('FULL REPAIR',x0,230);cg.fillText('AMMO · LIMITER',x0,282)}else cg.fillText('KEEP RACING',x0,230)}
       else if(long){cg.fillText('2 BOOST PADS',x0,230);cg.fillText('AMMO · SHIELD',x0,282)}else{cg.fillText('TIGHT LINE',x0,230);cg.fillText('NO PICKUPS',x0,282)}};
     if(stk){const half=(x,up)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990,bon=(S0.bonus==='up')===up;cg.fillStyle=bon?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText(up?'▲ UPPER':'LOWER ▼',x0,150);
         cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';cg.fillText(up?'172 M/S AT THE LIP':'EVERYONE ELSE',x0,230);cg.fillText(bon?'2 BOOST PADS · AMMO':'NO PICKUPS',x0,282)};half(0,true);half(1024,false)}
@@ -2090,14 +2098,17 @@ function sampleAt(u,o=sm){const{L,N,ds,P,R,U,Tg,H}=T;const f=(((u%L)+L)%L)/ds;co
 const idxAt=u=>Math.floor((((u%T.L)+T.L)%T.L)/T.ds)%T.N;
 /* Where the road is at distance u and lateral position lat. Outside a split: the main road (height 0, walls at ±W/2).
    Inside: the route you are on (a racer keeps the route it chose at the fork; anything else takes the nearer one). */
-const SF={h:0,sl:0,kv:0,yb:0,lo:0,hi:0,c:0,sp:null,b:-1};
-function surf(u,lat,r,ro){const k=T.spl[idxAt(u)];SF.h=SF.sl=SF.kv=SF.yb=SF.c=0;SF.g=1;SF.lo=-W/2;SF.hi=W/2;SF.sp=null;SF.b=-1;
+/* (Prototype 63: on the Spirit realm's underside route (004t) also ph, its roll; fs, its side; cw, where its centre is
+   across the base road; kx, the turn it adds to the road's bends; dph, the roll's rate. 0 everywhere else.) */
+const SF={h:0,sl:0,kv:0,yb:0,lo:0,hi:0,c:0,sp:null,b:-1,ph:0,fs:1,cw:0,kx:0,dph:0};
+function surf(u,lat,r,ro){const k=T.spl[idxAt(u)];SF.h=SF.sl=SF.kv=SF.yb=SF.c=0;SF.ph=SF.kx=0;SF.g=1;SF.lo=-W/2;SF.hi=W/2;SF.sp=null;SF.b=-1;
   if(!k){if(r&&r.brS){r.brS=null;r.br=null}return SF}
   const SP=T.splits[k-1],uu=((u%T.L)+T.L)%T.L,f=clamp((uu-SP.u0)/T.ds,0,SP.n),j=Math.min(SP.n-1,Math.floor(f)),a=f-j,near=()=>{let bi=0,bd=1e9;SP.b.forEach((B,i)=>{const c=B.c[j]+(B.c[j+1]-B.c[j])*a,w=B.w[j]+(B.w[j+1]-B.w[j])*a,d=Math.abs(lat-c)-w;if(d<bd){bd=d;bi=i}});return bi};
   const ad=!!(SP.adj&&(SP.adj[j]||SP.adj[j+1]));
   let b;if(SP.kind==='stack'){b=r&&(r.isGhost||r.proxy)?(r.stkUp?SP.upB:SP.lowB):r&&ro?(r.brS===SP&&r.br!=null?r.br:SP.lowB):r?(r.stkS===SP?r.stkB:SP.lowB):near();if(r&&!ro){r.brS=SP;r.br=b}}
+  else if(SP.kind==='flip'&&r&&(r.isGhost||r.proxy)){b=r.flipU?SP.fB:SP.tB;if(!ro){r.brS=SP;r.br=b}}/* (Prototype 63: a ghost or a remote ship carries which face it rides) */
   else if(r&&ro)b=r.brS===SP&&r.br!=null?r.br:near();else if(r){if(r.brS!==SP){r.brS=SP;r.br=near()}else if(ad&&r.u!=null&&Math.abs(wrapU(u-r.u))<4)r.br=near();b=r.br}else b=near();
-  const B=SP.b[b],L=A=>A[j]+(A[j+1]-A[j])*a,c=L(B.c),w=L(B.w);SF.h=L(B.h);SF.sl=L(B.sl);SF.kv=L(B.kv);SF.yb=-Math.atan(L(B.dc));SF.lo=c-w;SF.hi=c+w;SF.c=c;SF.sp=SP;SF.b=b;if(B.g)SF.g=L(B.g);
+  const B=SP.b[b],L=A=>A[j]+(A[j+1]-A[j])*a,c=L(B.c),w=L(B.w);SF.h=L(B.h);SF.sl=L(B.sl);SF.kv=L(B.kv);SF.yb=-Math.atan(L(B.dc));SF.lo=c-w;SF.hi=c+w;SF.c=c;SF.sp=SP;SF.b=b;if(B.g)SF.g=L(B.g);if(B.ph){SF.ph=L(B.ph);SF.fs=SP.side;SF.cw=L(B.cw);SF.kx=L(B.kx);SF.dph=L(B.dph)}
   if(ad&&SP.b.length===2){const O=SP.b[1-b],oc=L(O.c),ow=L(O.w);SF.lo=Math.min(SF.lo,oc-ow);SF.hi=Math.max(SF.hi,oc+ow)}return SF}
 const clampLat=(u,lat,m,o)=>{const f=surf(u,lat,o);return clamp(lat,f.lo+m,f.hi-m)};
 const wrapU=d=>{const L=T.L;d=((d%L)+L)%L;return d>L/2?d-L:d};
@@ -3528,7 +3539,8 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
   const addS=(p,r,up,t,h,above)=>{const s={x:p.x,y:p.y,z:p.z,r,up,t,hw:h,ab:above};S.push(s);const k=key(Math.floor(p.x/CELL),Math.floor(p.y/CELL),Math.floor(p.z/CELL));let L=G.get(k);if(!L)G.set(k,L=[]);L.push(s)};
   for(let i=0;i<N;i++){if(ctx.gap&&ctx.gap[i]&&!air[i])continue;addS(P[i],R[i],U[i],Tg[i],hw,air[i]?O.jumpAbove:O.above)}
   const _p=new THREE.Vector3();
-  for(const S0 of splits)for(const B of S0.b)for(let k=0;k<=S0.n;k++){const i=(S0.i0+k)%N;_p.copy(P[i]).addScaledVector(R[i],B.c[k]).addScaledVector(U[i],B.h[k]);addS(_p,R[i],U[i],Tg[i],B.w[k],air[i]?O.jumpAbove:O.above)}
+  for(const S0 of splits)for(const B of S0.b)for(let k=0;k<=S0.n;k++){if(B.ph)break;/* (Prototype 63: the underside's route in its own frame, flipKeep below) */const i=(S0.i0+k)%N;_p.copy(P[i]).addScaledVector(R[i],B.c[k]).addScaledVector(U[i],B.h[k]);addS(_p,R[i],U[i],Tg[i],B.w[k],air[i]?O.jumpAbove:O.above)}
+  flipKeep(ctx,addS,air,O);
   const reachH=Math.max(...S.map(s=>s.hw))+O.margin+ds;
   /* is a ball (x,y,z, radius r) in the keep-out? */
   const keep=(x,y,z,r)=>{const rr=reachH+r,ra=O.jumpAbove+r,c0=Math.floor((x-rr)/CELL),c1=Math.floor((x+rr)/CELL),d0=Math.floor((y-ra)/CELL),d1=Math.floor((y+ra)/CELL),e0=Math.floor((z-rr)/CELL),e1=Math.floor((z+rr)/CELL);
@@ -3573,6 +3585,8 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
      road and 8 m over it, to 80 m past the main road), and from the ramp and the flight back down to the main road's
      last 300 m (the jumpers looking down on the ones coming): nothing may stand in those lines either (portalWatch, 004s) */
   for(const sg of portalWatch(ctx,O))addSL(sg);
+  /* Prototype 63: and the underside ridden: from chase cameras on it, in its rolled frame, along it (flipWatch, 004t) */
+  for(const sg of flipWatch(ctx,O))addSL(sg);
   /* does a ball touch a sight line? (a little margin for the other camera views) */
   const sight=(x,y,z,r)=>{r+=1.5;const a0=Math.floor((x-r)/SG),a1=Math.floor((x+r)/SG),b0=Math.floor((y-r)/SG),b1=Math.floor((y+r)/SG),c0=Math.floor((z-r)/SG),c1=Math.floor((z+r)/SG);
     for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++){const L=SM.get(skey(a,b,c));if(!L)continue;
@@ -4094,6 +4108,195 @@ function spPortalKnots(ctx,Lb,clr,r,st,why){const V=THREE.Vector3,Y=new V(0,1,0)
       if(!clr.okPts(pts)){st.dropped++;why['portal knots']=(why['portal knots']||0)+1;continue}
       Lb.obj({c:[c.x,c.y,c.z],q:[q.x,q.y,q.z,q.w],m:[1,(b?-1:1)*(0.08+0.04*r()),r()*TAU,0],ax:[0,1,0],pal:[5,2,1,4][(n++)%4],br:0.015,ext:R0+4});
       A.forEach((S,s)=>{for(let i=0;i<S.length-1;i++)Lb.seg(S[i],S[i+1],i/S.length,1,B[s][i],B[s][i+1])});st.placed++}}}
+/* Prototype 63: Eric (Prototype 60): "can we sometimes have track glued to the bottom of track and you're riding it
+   upside down? almost like a mobius strip. there could be a visual effect or track colour change to be the excuse for
+   the anti gravity track section"; (Prototype 63) "put them only in the Spirit Realm".
+
+   Built as a split (kind 'flip'), not as a Möbius twist of the main road. Why: a twist of the whole road is only a long
+   barrel roll (the game has those: twists and corkscrews), everyone rides it and nobody sees the road from the other
+   side. As a split, the road divides: the top route stays on the road as it is, the other peels off its edge, rolls over
+   and runs along the underside of the same slab, so the two fields race on the two faces of one road, a few metres
+   apart, upside down to each other. That is the "track glued to the bottom of track", and it is a choice.
+
+   Geometry (in the base road's frame, right R and up U, unbanked as through every split; s the side it goes out on; W the
+   road's width, wF = 0.32 W, cOut = W/2 + 3 + wF, Tk = 1.8 m, the road's own thickness). Over n samples, each half the
+   mirror of the other:
+   - A (80 m, the fork): the road's two halves part; the top route widens to the whole road while the other moves out
+     to the side, 3 m clear of the road's edge, and narrows to 2 wF; both level, open to each other at first (you can
+     still change your mind for about 30 m);
+   - B (150 m, the roll): out there, 3 m off the edge, it rolls 180 degrees over and outwards about its own middle (so no
+     part of it ever comes near the road, and the middle of it, where a frame rides, feels no lift), dropping by Tk;
+   - C (90 m, the tuck): upside down, it slides in under the road and widens to the whole road's width: its surface is
+     now the road's underside;
+   - D (160-300 m): the two routes run on the two faces of the slab, Tk apart;
+   - then C, B and A backwards: out, roll back up, in and join.
+   The anti-grav look: on the underside route and the slab (its sides and underside) a neon field of cyan and violet
+   lanes and bands flowing past, the edges and walls in the same colours, the road's own amber fading into them as the
+   routes part. Calm visuals tones it down (dimmer, no flow, no kick).
+
+   The racer: everything races use is in (u, lat, h over the surface), as on any split. On the underside route lat is
+   measured in the route's own frame (c here, the centre as a frame riding it sees it move; cw is where its centre is
+   across the base road), so steering, the walls, the AI's line, pads and strips all work as on any road. The route's
+   roll (ph), and two terms for physics, are the only new things: the road's bends turn a frame by the curvature in its
+   own frame (kx, so upside down a left bend is your right), and its crests and dips press a frame by the curvature along
+   its own up (kv: a crest of the main road is a dip on its underside). Anti-grav: the hold that keeps a frame on the road
+   pulls it onto the face it rides; a frame can't fall between the faces (h is over its own surface).
+   The AI takes it as a split's long route (two boost pads and an ammo strip on the underside, nothing on top), by the
+   same odds as any split. Spirit tracks only (codes ending -S), about one in five (FLIP_O.P, and where a gentle 0.9-1 km
+   stretch is free: see flipPlace), or the editor's count. */
+const FLIP_O={A:75,B:140,C:85,D0:130,D1:240,G:3,Tk:1.8,wF:0.32,P:0.55};
+/* the two routes' tables (top T0 and under F), the first half drawn, the second its mirror; F.c is the physics centre:
+   the centre's sideways move as seen in the route's own (rolled) frame, added up, so it ends where it began */
+function flipShape(n,nA,nB,nC,W,s){const O=FLIP_O,Tk=O.Tk,wF=W*O.wF,cOut=W/2+O.G+wF,h2=n/2,kA=nA,kB=kA+nB,kC=kB+nC,
+    mk=()=>({c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)}),T0=mk(),F=mk();F.cw=new Float32Array(n+1);F.ph=new Float32Array(n+1);
+  for(let k=0;k<=h2;k++){const eA=ss01(k/nA);T0.c[k]=s*W/4*(eA-1);T0.w[k]=W/4*(1+eA);let cw,w,h=0,ph=0;
+    if(k<=kA){w=W/4+(wF-W/4)*eA;cw=s*((W/2+O.G)*eA+w)}
+    else if(k<=kB){const e=ss01((k-kA)/nB);w=wF;cw=s*cOut;h=-Tk*e;ph=Math.PI*e}
+    else if(k<=kC){const e=ss01((k-kB)/nC);w=wF+(W/2-wF)*e;cw=s*cOut*(1-e);h=-Tk;ph=Math.PI}
+    else{w=W/2;cw=0;h=-Tk;ph=Math.PI}
+    F.cw[k]=cw;F.w[k]=w;F.h[k]=h;F.ph[k]=ph}
+  F.c[0]=F.cw[0];for(let k=1;k<=h2;k++){const m=(F.ph[k]+F.ph[k-1])/2;F.c[k]=F.c[k-1]+(F.cw[k]-F.cw[k-1])*Math.cos(m)-s*(F.h[k]-F.h[k-1])*Math.sin(m)}
+  for(let k=h2+1;k<=n;k++){const q=n-k;for(const B of[T0,F])for(const a of['c','w','h','cw','ph'])if(B[a])B[a][k]=B[a][q]}
+  return{T0,F,cOut,wF,kA,kB,kC}}
+/* a point of the under route at its sample k, l across it and d over it (its own frame), with the base frame r (right) and
+   u (up) at its base sample; fills fr/fu with the route's frame there when given */
+function flipPt(p,r,u,F,k,s,l,d,o,fr,fu){const a=s*F.ph[k],c=Math.cos(a),n=Math.sin(a);
+  if(fr){fr.copy(r).multiplyScalar(c).addScaledVector(u,-n)}if(fu){fu.copy(u).multiplyScalar(c).addScaledVector(r,n)}
+  return o.copy(p).addScaledVector(r,F.cw[k]+l*c+d*n).addScaledVector(u,F.h[k]-l*n+d*c)}
+/* Placing it (roadShape, with the splits): on a gentle stretch (as any split: no bend tighter than 222 m over it and 90 m
+   either side, nothing else there, ending before the last stretch's green strips), and only where every part of the
+   under route and the space a frame rides in is clear of the rest of the track and of the other splits' routes */
+function flipPlace(c){const{seed,N,ds,P,Tg,Cs,busy,spl,splits,gI0,mark,finishB,W}=c,O=FLIP_O;if(!c.want)return 0;
+  const rf=rng((seed^0xF11B5)>>>0),nA=Math.round(O.A/ds),nB=Math.round(O.B/ds),nC=Math.round(O.C/ds),nD=2*Math.round((O.D0+rf()*(O.D1-O.D0))/ds/2),n=2*(nA+nB+nC)+nD,m=Math.round(60/ds),pref=rf()<0.5?1:-1;
+  const starts=[];for(let i=Math.floor(N*0.1);i+n+m<Math.floor(N*0.85);i+=Math.max(1,Math.round(25/ds)))starts.push(i);
+  for(let t=starts.length-1;t>0;t--){const j=Math.floor(rf()*(t+1));[starts[t],starts[j]]=[starts[j],starts[t]]}
+  const V=THREE.Vector3,Y0=new V(0,1,0),rh=new V(),uf=new V(),q=new V(),fr=new V(),fu=new V(),own=[];for(const S1 of splits)for(const p of S1.pts)own.push(p);
+  for(const i0 of starts){if(i0+n+m>gI0)continue;let okS=true;for(let k=i0-m;k<=i0+n+m&&okS;k++){const kk=((k%N)+N)%N;if(busy[kk]||spl[kk]||Math.abs(Cs[kk])>0.007)okS=false}if(!okS)continue;
+    /* and gentler over the rolls (no bend tighter than 222 m): on its side a frame feels the bend as a crest or a dip */
+    for(let k=nA;k<=nA+nB&&okS;k++)if(Math.abs(Cs[(i0+k)%N])>0.0045||Math.abs(Cs[(i0+n-k)%N])>0.0045)okS=false;if(!okS)continue;
+    /* the side the road bends towards over the rolls, if it bends: on its side there, the bend presses a frame onto the
+       face instead of lifting it off */
+    let kS=0;for(let k=nA;k<=nA+nB;k++)kS+=Cs[(i0+k)%N]+Cs[(i0+n-k)%N];kS/=2*(nB+1);const s0=Math.abs(kS)>0.0008?-Math.sign(kS):pref;
+    for(const s of[s0,-s0]){const sh=flipShape(n,nA,nB,nC,W,s),F=sh.F,pts=[];let clear=true;
+      for(let k=0;k<=n&&clear;k+=Math.max(1,Math.round(6/ds))){const i=(i0+k)%N;rh.crossVectors(Tg[i],Y0).normalize();uf.copy(Y0).addScaledVector(Tg[i],-Tg[i].y).normalize();
+        if(k%Math.max(1,Math.round(12/ds))===0)pts.push(flipPt(P[i],rh,uf,F,k,s,0,0,new V()));
+        for(const l of[-F.w[k],0,F.w[k]])for(const d of[0,4]){flipPt(P[i],rh,uf,F,k,s,l,d,q);
+          for(let j=0;j<N&&clear;j+=3){const dj=Math.min(Math.abs(j-i),N-Math.abs(j-i));if(dj<n/2+2*m)continue;if(P[j].distanceToSquared(q)<(W/2+14)**2)clear=false}
+          for(const p of own)if(p.distanceToSquared(q)<(W/2+16)**2){clear=false;break}if(!clear)break}}
+      if(!clear)continue;
+      const B=[sh.T0,F],fb=s>0?1:0;if(fb===0)B.reverse();finishB(B);
+      /* the under route's slope in its own frame (sl) and its roll's rate (dph, for drawing a frame across it) */
+      F.sl=new Float32Array(n+1);F.dph=new Float32Array(n+1);for(let k=0;k<=n;k++){const a=Math.max(0,k-1),b=Math.min(n,k+1),du=(b-a)*ds,p=F.ph[k];
+        F.sl[k]=(s*(F.cw[b]-F.cw[a])*Math.sin(p)+(F.h[b]-F.h[a])*Math.cos(p))/du;F.dph[k]=(F.ph[b]-F.ph[a])/du}
+      F.long=true;sh.T0.long=false;
+      for(let k=0;k<=n;k+=Math.max(1,Math.round(12/ds))){const i=(i0+k)%N;rh.crossVectors(Tg[i],Y0).normalize();q.copy(P[i]).addScaledVector(rh,sh.T0.c[k]);pts.push(q.clone())}
+      mark({kind:'flip',i0,n,u0:i0*ds,u1:(i0+n)*ds,side:s,longB:fb,fB:fb,tB:1-fb,b:B,pts,feat:1,nA,nB,nC,nD,kA:sh.kA,kB:sh.kB,kC:sh.kC,cOut:sh.cOut,wF:sh.wF,Tk:O.Tk});return 1}}
+  return 0}
+/* After the road's curvature is known (roadShape's end): kv, the press along the route's own up on top of the base road's
+   Kn (the base's crest is a dip upside down), and kx, the turn in the route's own frame on top of the base road's K (a
+   bend is the other way round upside down; on its side a crest turns you); both 0 on the top route and off the roll */
+function flipFinish(splits,K,Kn,N,ds){for(const S0 of splits){if(S0.kind!=='flip')continue;const F=S0.b[S0.fB],n=S0.n,s=S0.side;F.kv=new Float32Array(n+1);F.kx=new Float32Array(n+1);
+  for(let k=0;k<=n;k++){const i=(S0.i0+k)%N,a=Math.max(0,k-1),b=Math.min(n,k+1),p=F.ph[k],cs=Math.cos(p),sn=Math.sin(p);
+    F.kv[k]=(F.sl[b]-F.sl[a])/((b-a)*ds)+Kn[i]*(cs-1)-s*K[i]*sn;F.kx[k]=K[i]*(cs-1)+s*Kn[i]*sn}}}
+/* a frame's rolled axes: right r and up u turned by the signed roll a (side times ph) about the road's forward */
+const _flA=new THREE.Vector3(),_flB=new THREE.Vector3();
+function flipRoll(r,u,a){const c=Math.cos(a),n=Math.sin(a);_flA.copy(r).multiplyScalar(c).addScaledVector(u,-n);_flB.copy(u).multiplyScalar(c).addScaledVector(r,n);r.copy(_flA);u.copy(_flB)}
+/* a point on the surface surf() last found (SF): lat across (the physics' own), d over it, with s from sampleAt; on the
+   under route it also turns s.r and s.u into the route's frame, so anything oriented by them sits on its face */
+function onSurf(s,lat,d,o){if(!SF.ph)return o.copy(s.p).addScaledVector(s.r,lat).addScaledVector(s.u,SF.h+d);
+  o.copy(s.p).addScaledVector(s.r,SF.cw).addScaledVector(s.u,SF.h);flipRoll(s.r,s.u,SF.ph*SF.fs);return o.addScaledVector(s.r,lat-SF.c).addScaledVector(s.u,d)}
+/* on the under route (as a ghost's and a remote ship's flag) */
+const onUnder=r=>!!(r.brS&&r.brS.kind==='flip'&&r.br===r.brS.fB&&T.spl[idxAt(r.u)]);
+/* how far round a frame is rolled, signed (for the cameras, which turn with it) */
+function rollOf(r){if(!r||!r.brS||r.brS.kind!=='flip'||r.br!==r.brS.fB||!T.spl[idxAt(r.u)])return 0;const f=surf(modU(r.u),r.lat,{brS:r.brS,br:r.br,u:r.u},true);return f.ph*f.fs}
+
+/* ---- what is drawn (roadBuild): both routes' faces, edges, walls; the slab's sides and underside; the field ---- */
+const FLIP_V=`attribute vec3 aF;varying vec3 vF;varying vec2 vUv;varying vec3 vW;void main(){vF=aF;vUv=uv;vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`;
+/* aF: x the field's amount (0 at the fork, 1 once parted), y its strength, z 0 a face (lanes and bands across, uv.x
+   across it) or 1 a side (a glow from the face, uv.x down it) */
+const FLIP_F=`uniform float uT,uCalm,uKick,uWorld;varying vec3 vF;varying vec2 vUv;varying vec3 vW;
+  void main(){float f=vF.x*vF.y;if(f<0.003)discard;float a=vUv.x,m=vUv.y,sp=1.-0.85*uCalm,g;
+    vec3 c1=vec3(0.25,0.94,1.),c2=vec3(0.78,0.36,1.),col=mix(c1,c2,0.5+0.5*sin(m*0.031-uT*0.7*sp));
+    float b=fract(m/11.-uT*1.4*sp);
+    if(vF.z<0.5){float ln=0.;for(int i=1;i<4;i++)ln+=smoothstep(0.016,0.,abs(a-float(i)*0.25));
+      float cr=smoothstep(0.09,0.,abs(b-0.5))*0.8,ed=smoothstep(0.08,0.,a)+smoothstep(0.92,1.,a);g=0.08+ln*0.5+cr*0.55+ed*0.4;}
+    else{g=(0.25+0.75*smoothstep(0.,1.,1.-a))*(0.45+0.55*smoothstep(0.2,0.,abs(b-0.5)));col=mix(col,c1,0.4);}
+    g*=f*(1.+0.4*uKick*(1.-uCalm))*(1.-0.55*uCalm)*uWorld*(1.-smoothstep(600.,2400.,distance(vW,cameraPosition)));
+    gl_FragColor=vec4(col*g,1.);}`;
+function flipRoad(c){const{group,add,strip,splits,N,ds,edgeCol,roadM,edgeM,pads,zones,padM,pM,sw,eIn,padLen}=c,out=[];
+  for(const S0 of splits){if(S0.kind!=='flip')continue;const k0=S0.i0,n=S0.n,s=S0.side,F=S0.b[S0.fB],T0=S0.b[S0.tB],Tk=S0.Tk,A=S0.adj,
+      ix=i=>Math.max(0,Math.min(n,i-k0)),o={from:k0,to:k0+n+1};
+    /* the field's amount along it: in over the second half of the fork and the first of the roll, out the same way */
+    const fA=k=>{const q=Math.min(k,n-k);return ss01((q-S0.nA*0.35)/(S0.nA*0.65+S0.nB*0.25))};
+    const mat=(st)=>new THREE.ShaderMaterial({uniforms:{uT:SPU.uT,uCalm:SPU.uCalm,uKick:SPU.uKick,uWorld:SPU.uWorld},vertexShader:FLIP_V,fragmentShader:FLIP_F,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4,fog:false});
+    const fieldM=mat(),glassF=new THREE.MeshBasicMaterial({color:0x8a6cff,transparent:true,opacity:.14,side:THREE.DoubleSide,depthWrite:false}),railF=new THREE.MeshBasicMaterial({color:0x3ff0ff,side:THREE.DoubleSide});
+    const uM=roadM.clone();uM.side=THREE.DoubleSide;uM.emissive=new THREE.Color(0x5a5a5a);uM.emissiveMap=roadM.map;
+    const darkF=new THREE.MeshLambertMaterial({color:0x0e1015,side:THREE.DoubleSide});
+    /* a strip with the field's attribute: k -> [amount, strength, kind] */
+    const fStrip=(la,ha,lb,hb,oo,fn)=>{const g=strip(la,ha,lb,hb,{...oo,uv:1,col:i=>fn(ix(i))});g.setAttribute('aF',g.getAttribute('color'));g.deleteAttribute('color');return add(g,fieldM)};
+    /* the edges' colours: the road's amber stripes into cyan and violet ones as the field comes in */
+    const eCol=i=>{const f=fA(ix(i)),a=edgeCol(i),b=Math.floor(i*ds/5)%2?[0.25,0.94,1]:[0.62,0.3,1];return[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,a[2]+(b[2]-a[2])*f]};
+    const runsF=(pred)=>{const r=[];let a=-1;for(let k=0;k<=n+1;k++){const p=k<=n&&pred(Math.min(n,k));if(p&&a<0)a=k;if(!p&&a>=0){if(k-1>a)r.push({from:k0+a,to:k0+k-1});a=-1}}return r};
+    const open=(k,B,O,right)=>!!(A&&A[k]&&((O.c[k]>B.c[k])===right));
+    /* ---- the top route: the road as it is (its face, edges, walls), the slab's sides down to Tk and its underside ---- */
+    {const B=T0,cc=i=>B.c[ix(i)],w=i=>B.w[ix(i)],L=d=>i=>cc(i)-w(i)+d,Rr=d=>i=>cc(i)+w(i)+d;
+      add(strip(L(0),0,Rr(0),0,{...o,uv:1/24}),roadM);
+      add(strip(L(-0.15),0.04,L(0.45),0.04,{...o,col:eCol}),edgeM);add(strip(Rr(-0.45),0.04,Rr(0.15),0.04,{...o,col:eCol}),edgeM);
+      fStrip(L(0),0.03,Rr(0),0.03,o,k=>[fA(k),0.35,0]);
+      for(const right of[false,true]){const E=right?Rr:L;for(const fld of[false,true])for(const oo of runsF(k=>!open(k,B,F,right)&&(fA(k)>=0.5)===fld)){add(strip(E(0),0,E(0),1.5,oo),fld?glassF:c.glass);add(strip(E(0),1.5,E(0),1.68,oo),fld?railF:c.rail)}}
+      for(const E of[L,Rr]){add(strip(E(0),0,E(0),-Tk,o),darkF);fStrip(E(0),-0.02,E(0),-Tk+0.02,o,k=>[fA(k),0.8,1])}
+      /* the underside: its face is the under route's surface where that route runs beneath it */
+      add(strip(L(0),-Tk,Rr(0),-Tk,{...o,uv:1/24}),uM);fStrip(L(0),-Tk-0.03,Rr(0),-Tk-0.03,o,k=>[fA(k),1,0])}
+    /* where the two routes touch at the fork and the join, the road between them */
+    if(A){const la=i=>{const k=ix(i),l=T0.c[k]<F.c[k]?T0:F;return l.c[k]+l.w[k]},lb=i=>{const k=ix(i),r2=T0.c[k]<F.c[k]?F:T0;return Math.max(la(i),r2.c[k]-r2.w[k])};
+      for(const oo of runsF(k=>!!A[k]))add(strip(la,0,lb,0,{...oo,uv:1/24}),roadM)}
+    /* ---- the under route, in its own frame: (l across, d over) to the base frame's (lat, h) ---- */
+    {const cs=k=>Math.cos(s*F.ph[k]),sn=k=>Math.sin(s*F.ph[k]),LA=(lf,df)=>i=>{const k=ix(i);return F.cw[k]+lf(k)*cs(k)+df(k)*sn(k)},HA=(lf,df)=>i=>{const k=ix(i);return F.h[k]-lf(k)*sn(k)+df(k)*cs(k)};
+      const C=v=>()=>v,w=k=>F.w[k],nw=k=>-F.w[k],inv=k=>F.ph[k]>Math.PI-1e-3;
+      /* its face: upside down under the road, only the part outside the road's edge (inside, the underside is its face);
+         lo the outer edge (away from the road), hi the inner or where it meets the road's edge */
+      const lo=k=>-s*F.w[k],hi=k=>inv(k)?s*Math.min(F.w[k],s*F.cw[k]-W/2):s*F.w[k],has=k=>s*(hi(k)-lo(k))>0.02;
+      const back=k=>-(0.25+(Tk-0.25)*(1-fA(k)));
+      for(const oo of runsF(has)){add(strip(LA(lo,C(0)),HA(lo,C(0)),LA(hi,C(0)),HA(hi,C(0)),{...oo,uv:1/24}),uM);
+        add(strip(LA(lo,back),HA(lo,back),LA(hi,back),HA(hi,back),oo),darkF);
+        add(strip(LA(lo,C(0)),HA(lo,C(0)),LA(lo,back),HA(lo,back),oo),darkF);
+        fStrip(LA(lo,C(0.03)),HA(lo,C(0.03)),LA(hi,C(0.03)),HA(hi,C(0.03)),oo,k=>[fA(k),1,0]);
+        fStrip(LA(lo,k=>back(k)-0.03),HA(lo,k=>back(k)-0.03),LA(hi,k=>back(k)-0.03),HA(hi,k=>back(k)-0.03),oo,k=>[fA(k),0.7,0])}
+      /* its inner side while it is out beside the road */
+      for(const oo of runsF(k=>!inv(k)||s*F.cw[k]-F.w[k]>W/2))add(strip(LA(hi,C(0)),HA(hi,C(0)),LA(hi,back),HA(hi,back),oo),darkF);
+      /* its edges, all the way (under the road they run along the underside's two edges) */
+      const ed=(a,b)=>add(strip(LA(a,C(0.04)),HA(a,C(0.04)),LA(b,C(0.04)),HA(b,C(0.04)),{...o,col:eCol}),edgeM);
+      ed(k=>nw(k)-0.15,k=>nw(k)+0.45);ed(k=>w(k)-0.45,k=>w(k)+0.15);
+      /* its walls, standing on its own face (hanging under the road there), open where it touches the top route */
+      for(const right of[false,true]){const E=right?w:nw;for(const fld of[false,true])for(const oo of runsF(k=>!open(k,F,T0,right)&&(fA(k)>=0.5)===fld)){
+        add(strip(LA(E,C(0)),HA(E,C(0)),LA(E,C(1.5)),HA(E,C(1.5)),oo),fld?glassF:c.glass);add(strip(LA(E,C(1.5)),HA(E,C(1.5)),LA(E,C(1.68)),HA(E,C(1.68)),oo),fld?railF:c.rail)}}
+      /* ---- its pickups, in the hold under the road: two boost pads and an ammo strip (the reason to go under) ---- */
+      const at=(u,Ar)=>{const f=clamp((u-S0.u0)/ds,0,n),j=Math.min(n-1,Math.floor(f)),q=f-j;return Ar[j]+(Ar[j+1]-Ar[j])*q},kD=S0.kC,nD=S0.nD;
+      for(const fx of[0.12,0.55]){const a=k0+kD+Math.round(nD*fx),b=a+padLen;add(strip(LA(C(-2.4),C(0.03)),HA(C(-2.4),C(0.03)),LA(C(2.4),C(0.03)),HA(C(2.4),C(0.03)),{from:a,to:b,uv:1/12}),padM);
+        pads.push({u0:a*ds,u1:b*ds,lat:0,latF:u=>at(u,F.c),sp:S0,b:S0.fB})}
+      {const a=k0+kD+Math.round(nD*0.25),b=k0+kD+Math.round(nD*0.85),hw=sw/2,off=k=>s*(F.w[k]-hw-0.8);
+        add(strip(LA(k=>off(k)-hw,C(0.035)),HA(k=>off(k)-hw,C(0.035)),LA(k=>off(k)+hw,C(0.035)),HA(k=>off(k)+hw,C(0.035)),{from:a,to:b,uv:1/6}),pM);
+        zones.push({kind:'ammo',u0:a*ds,u1:b*ds,side:0,edge:eIn,lane:null,hw,laneF:u=>at(u,F.c)+s*(at(u,F.w)-hw-0.8),sp:S0,b:S0.fB,
+          /* (for the map: where across the base road the lane is) */wF:u=>{const p=at(u,F.ph);return at(u,F.cw)+s*(at(u,F.w)-hw-0.8)*Math.cos(p)}})}}
+    out.push(S0)}
+  return out}
+
+/* ---- the Spirit realm's rule round it (004o): the under route's keep-out in its own frame (its face and the space a
+   frame rides in: 16 m over it is under the road there), and the sight lines from chase cameras riding it (12 m behind,
+   4.5 m over it in its frame, three lines across) every 16 m, to its edges and middle 1 m over it every 20 m up to 300 m
+   ahead (past the join, the road's), and from the road's cameras in the 300 m before the fork to it. ---- */
+function flipKeep(ctx,addS,air,O){const{N,ds,P,R,U,splits}=ctx,V=THREE.Vector3;
+  for(const S0 of splits){if(S0.kind!=='flip')continue;const F=S0.b[S0.fB];
+    for(let k=0;k<=S0.n;k++){const i=(S0.i0+k)%N,fr=new V(),fu=new V(),p=flipPt(P[i],R[i],U[i],F,k,S0.side,0,0,new V(),fr,fu);addS(p,fr,fu,ctx.Tg[i],F.w[k],air[i]?O.jumpAbove:O.above)}}}
+function flipWatch(ctx,O){const{N,ds,P,R,U,splits}=ctx,out=[],V=THREE.Vector3,q=new V(),hw=W/2;
+  const st=Math.max(1,Math.round(O.camStep/ds)),tt=Math.max(1,Math.round(O.tgtStep/ds)),nT=Math.round(O.sight/O.tgtStep),back=Math.round(O.camBack/ds);
+  for(const S0 of splits){if(S0.kind!=='flip')continue;const F=S0.b[S0.fB],n=S0.n,s=S0.side;
+    /* a point at offset k of the route (before it: the road; past it: the road), l across, d over */
+    const pt=(k,l,d)=>{const i=((S0.i0+k)%N+N)%N;if(k<0||k>n){q.copy(P[i]).addScaledVector(R[i],l).addScaledVector(U[i],d);return[q.x,q.y,q.z]}flipPt(P[i],R[i],U[i],F,k,s,l,d,q);return[q.x,q.y,q.z]};
+    const wAt=k=>k<0||k>n?hw:F.w[k];
+    for(let k=-Math.round(300/ds);k<=n;k+=st){const kc=k-back;for(const f of[-0.6,0,0.6]){const a=pt(kc,f*wAt(kc),O.camUp+1);
+      for(let j=1;j<=nT;j++){const kt=k+j*tt;if(kt<0)continue;if(k<0&&kt>n)break;for(const g of[-1,0,1]){const b=pt(kt,g*wAt(kt),1);out.push([...a,...b])}}}}}
+  return out}
 /* ---------- maps ---------- */
 function mapper(c,pad){const b=T.bounds,w=c.width,h=c.height;const s=Math.min((w-2*pad)/(b.maxX-b.minX),(h-2*pad)/(b.maxZ-b.minZ));
   const ox=(w-(b.maxX-b.minX)*s)/2,oz=(h-(b.maxZ-b.minZ)*s)/2;return(x,z)=>[ox+(x-b.minX)*s,oz+(z-b.minZ)*s]}
@@ -4106,7 +4309,7 @@ function drawPath(g,m,lw,color){g.beginPath();let pen=false;
   for(const S0 of T.splits)for(const B of S0.b){for(let k=0;k<=S0.n;k+=2){const i=S0.i0+k,p=T.P[i],rr=T.R[i],q=m(p.x+rr.x*B.c[k],p.z+rr.z*B.c[k]);k?g.lineTo(q[0],q[1]):g.moveTo(q[0],q[1])}}
   g.lineWidth=lw;g.strokeStyle=color;g.lineJoin='round';g.stroke();
   if(T.port){g.save();g.setLineDash([lw*1.6,lw*1.6]);g.beginPath();for(const o of T.port){const a=m(o.E.x,o.E.z),b=m(o.X.x,o.X.z);g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1])}g.lineWidth=Math.max(1,lw*0.6);g.stroke();g.restore()}}
-function drawZone(g,m,z,lw){g.beginPath();for(let u=z.u0;u<=z.u1+0.1;u+=6){const uu=Math.min(u,z.u1),S0=sampleAt(uu),lt=z.laneF?z.laneF(uu):0,q=m(S0.p.x+S0.r.x*lt,S0.p.z+S0.r.z*lt);u===z.u0?g.moveTo(q[0],q[1]):g.lineTo(q[0],q[1])}
+function drawZone(g,m,z,lw){g.beginPath();for(let u=z.u0;u<=z.u1+0.1;u+=6){const uu=Math.min(u,z.u1),S0=sampleAt(uu),lt=z.wF?z.wF(uu):z.laneF?z.laneF(uu):0/* (Prototype 63: wF, the underside's lane across the base road) */,q=m(S0.p.x+S0.r.x*lt,S0.p.z+S0.r.z*lt);u===z.u0?g.moveTo(q[0],q[1]):g.lineTo(q[0],q[1])}
   g.strokeStyle=z.kind==='hp'?'#46ff8c':'#be5aff';g.lineWidth=lw;g.lineCap='round';g.stroke()}
 /* ---------- 3D track preview ----------
    A slowly turning 3D sketch of the track in the menu and the lobby: the road as a ribbon (drawn twice as wide as it is,
@@ -4165,7 +4368,7 @@ for(const id of['preview','mpPreview','edPreview']){const cv=$(id);
 /* Called whenever the track changes: rebuilds the 3D sketch and the stats line under it. */
 function drawPreview(cid='preview',sid='stats'){pv3Build();pv3Draw($(cid),0);
   const st=T.stats;$('lenLbl').textContent='';
-  const fc={};for(const f of T.feats){const k=f.rev?'vspire':f.down?'dhelix':f.kind;fc[k]=(fc[k]||0)+1}const FN={vspire:['rising spire','rising spires'],dhelix:['down spiral','down spirals'],drop:['drop','drops'],sjump:['speed jump','speed jumps'],cjump:['long jump','long jumps'],loop:['loop','loops'],corkscrew:['corkscrew','corkscrews'],twist:['twist','twists'],jump:['jump','jumps'],dive:['dive','dives'],sweep:['sweep','sweeps'],climb:['climb','climbs'],helix:['spiral','spirals'],split:['split','splits'],spire:['spire','spires']};
+  const fc={};for(const f of T.feats){const k=f.rev?'vspire':f.down?'dhelix':f.kind;fc[k]=(fc[k]||0)+1}const FN={vspire:['rising spire','rising spires'],dhelix:['down spiral','down spirals'],drop:['drop','drops'],sjump:['speed jump','speed jumps'],cjump:['long jump','long jumps'],loop:['loop','loops'],corkscrew:['corkscrew','corkscrews'],twist:['twist','twists'],jump:['jump','jumps'],dive:['dive','dives'],sweep:['sweep','sweeps'],climb:['climb','climbs'],helix:['spiral','spirals'],split:['split','splits'],spire:['spire','spires'],flip:['underside','undersides']};
   const fl=Object.entries(fc).map(([k,n])=>`${n} ${(FN[k]||[k,k])[n>1?1:0]}`).join(' · ');
   $(sid).innerHTML=`<b>${T.D.name}</b> · ${T.cx?'Complex'+(T.theme?' ('+T.theme+')':''):'Simple'}${T.fig8?' · Figure 8':''} · ${T.LN.name} · ${W} m wide · ${(T.L/1000).toFixed(2)} km<br>${fl?fl+' · ':''}${st.corners} corner${st.corners===1?'':'s'} · ${Math.round(st.climb)} m climb<br>${T.bmInfo||''}`}
 let miniBase=null,miniMap=null;
@@ -8403,21 +8606,21 @@ function updateShots(dt){
     else if(s.type==='bolt'||s.type==='rocket'||s.type==='quake')s.u+=s.v*dt;
     else if(s.type==='decoy'){s.v=Math.max(0,s.v-30*dt);s.u+=s.v*dt;s.utot+=s.v*dt;if(s.owner)decoyPull(s);s.mesh.children[1].material.opacity=0.35+0.3*Math.abs(Math.sin(S.t*23));
       for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3)fizzle(o);
-      if(s.life<=0){for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter'))fizzle(o);s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
+      if(s.life<=0){for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter'))fizzle(o);s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);surf(s.u,s.lat,s);onSurf(sp2,s.lat,0.8,s.mesh.position)}continue}
     else if(s.type==='bounce'){s.u+=s.v*dt;s.lat+=s.vl*dt;const bf=surf(s.u,s.lat,s);if(s.lat<bf.lo+1||s.lat>bf.hi-1){s.lat=s.lat>bf.hi-1?bf.hi-1:bf.lo+1;s.vl=-s.vl;if(Math.abs(wrapU(s.u-player.u))<150)audio.blip(500,0.06,0.05,'square',250)}}
     else if(s.type==='mine')s.arm-=dt;
-    const sh=surf(s.u,s.lat,s).h,sp=sampleAt(s.u);tp.copy(sp.p).addScaledVector(sp.r,s.lat).addScaledVector(sp.u,sh+(s.type==='mine'?0.9:s.type==='quake'?1.3:s.type==='smoke'?0:1.1));s.mesh.position.copy(tp);
+    surf(s.u,s.lat,s);const sp=sampleAt(s.u);onSurf(sp,s.lat,s.type==='mine'?0.9:s.type==='quake'?1.3:s.type==='smoke'?0:1.1,tp);s.mesh.position.copy(tp);/* (Prototype 63: onSurf, on the underside in its rolled frame) */
     if(s.type==='smoke'){s.mesh.quaternion.setFromRotationMatrix(mtx.makeBasis(sp.r,sp.u,sp.t));smokeAnim(s.mesh,dt,s.life)}
     else if(s.type!=='mine'){const k=s.rear?-1:1;s.mesh.up.copy(sp.u);s.mesh.lookAt(tp.x+sp.t.x*k,tp.y+sp.t.y*k,tp.z+sp.t.z*k);if(s.type==='missile'||s.type==='hunter'||s.type==='rocket')s.mesh.rotateY(Math.PI)}
     else{s.mesh.rotation.y+=dt*2;s.mesh.rotation.x+=dt*1.3}
     if(s.type==='quake'){const hgt=2.2+1.6*Math.abs(Math.sin(s.life*11)),gl=s.gap-QGAP,gr=s.gap+QGAP,[L,Rr,EL,ER]=s.mesh.children;
       L.scale.set(Math.max(0.01,gl+W/2),hgt,1);L.position.set((gl-W/2)/2,0,0);Rr.scale.set(Math.max(0.01,W/2-gr),hgt,1);Rr.position.set((gr+W/2)/2,0,0);
       EL.scale.set(0.35,hgt+0.6,1);EL.position.set(gl,0,0.02);ER.scale.set(0.35,hgt+0.6,1);ER.position.set(gr,0,0.02);s.mesh.userData.mat.opacity=0.55*Math.min(1,s.life/0.6);s.mesh.userData.edge.opacity=0.9*Math.min(1,s.life/0.6);
-      for(const r of racers){if(r===s.owner||s.hits.has(r)||!live(r)||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<4){if(Math.abs(r.lat-s.gap)<QGAP-0.4||(r.air&&r.h-HOVER>2.6))continue;
+      for(const r of racers){if(r===s.owner||s.hits.has(r)||!live(r)||r.phase>0||s.brS&&s.brS.kind==='flip'&&r.brS===s.brS&&r.br!==s.br)continue;if(Math.abs(wrapU(r.u-s.u))<4){if(Math.abs(r.lat-s.gap)<QGAP-0.4||(r.air&&r.h-HOVER>2.6))continue;
         s.hits.add(r);LOG.src='quake';LOG.by=s.owner;damage(r,13,r.ship.position.clone(),0.45);LOG.src=LOG.by=null;if(!r.proxy)r.v*=0.85;if(r===player){S.shake=Math.max(S.shake,0.6);audio.hit(0.5)}}}
       for(let j=shots.length-1;j>=0;j--){const o=shots[j];if(o.type==='mine'&&Math.abs(wrapU(o.u-s.u))<4){explode(o.mesh.position.clone(),false);scene.remove(o.mesh);shots.splice(j,1);if(j<i)i--}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();s.mesh.userData.edge.dispose();shots.splice(i,1)}continue}
-    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=1.6}}
+    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0||s.brS&&s.brS.kind==='flip'&&r.brS===s.brS&&r.br!==s.br)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=1.6}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();shots.splice(i,1)}continue}
     let hit=null;const wide=s.type==='bolt'?1.5:s.type==='rocket'?1.6:s.type==='bounce'?2:1.9,len=s.type==='bolt'?2.4:2.6;
     if(s.type==='missile'&&s.dud){explode(tp.clone(),false);scene.remove(s.mesh);shots.splice(i,1);continue}
@@ -8650,6 +8853,7 @@ function aiInput(r,dt){
     if(r.lapT>0&&r.lapK===1)target=clamp(target-r.lapD*W*0.32*r.lapS,-W/2+0.6,W/2-0.6)}
   const desired=ybA!=null?ybA-Math.atan2(target-r.lat,20):-Math.atan2(target-r.lat,look);
   let C=T.Cs[idxAt(r.u)];if(r.brS&&r.brS.kind==='cut'&&r.br===r.brS.longB&&T.spl[idxAt(r.u)]){const y1=surf(uu+4,r.lat,r).yb,y0=surf(uu-4,r.lat,r).yb,g=surf(uu,r.lat,r).g;C=(T.K[idxAt(r.u)]+(y1-y0)/8)*g}
+  else if(r.brS&&r.brS.kind==='flip'&&r.br===r.brS.fB&&T.spl[idxAt(r.u)])C+=surf(uu,r.lat,r).kx;/* (Prototype 63: on the underside the road's bends turn the other way round) */
   const turn=(1.85-0.55*(r.v/VMAX))*r.d.turn*trimTurn(r);
   let steer=(3.2*(r.yaw-desired)-C*r.v)/turn;if(aiSmoked(r))steer+=(Math.sin(S.raceT*9+r.bias*3)+0.5*Math.sin(S.raceT*5.3+r.bias*7))*SMOKE_AI.swing;if(r.lapT>0&&r.lapK===0)steer*=1-r.lapS;
   // brake when the corner needs more turn than the ship has
@@ -8827,7 +9031,7 @@ const drKF=r=>(1.85-0.55*(r.v/VMAX))*r.d.turn*trimTurn(r)/Math.max(r.v,1);
 /* the road's curvature just ahead, the way T.K turns the yaw, with a split route's own bend (read only: a copy of the
    racer's route, so looking ahead never changes it) */
 function drRoadK(r){const v=Math.max(r.v,30);let k=0;for(const f of[0.15,0.4,0.7])k+=T.Cs[idxAt(r.u+v*f)];k/=3;
-  if(r.brS||T.spl[idxAt(r.u+v*0.6)]){const o={brS:r.brS,br:r.br,u:r.u},L=v*0.6,y0=surf(modU(r.u),r.lat,o,true).yb,y1=surf(modU(r.u+L),r.lat,{brS:r.brS,br:r.br,u:r.u},true).yb;k+=(y1-y0)/L}
+  if(r.brS||T.spl[idxAt(r.u+v*0.6)]){const o={brS:r.brS,br:r.br,u:r.u},L=v*0.6,f0=surf(modU(r.u),r.lat,o,true),y0=f0.yb,kx=f0.kx,y1=surf(modU(r.u+L),r.lat,{brS:r.brS,br:r.br,u:r.u},true).yb;k+=(y1-y0)/L+kx}
   return k}
 /* which way a press drifts: the stick's; with a light steer and the road clearly bending, the road's (-sign of its k) */
 function drDir(r,st){const k=drRoadK(r),d=Math.sign(st)||1;return Math.abs(st)>=DR.sure||Math.abs(k)<DR.clear*drKF(r)?d:-Math.sign(k)||d}
@@ -8908,7 +9112,7 @@ function drFxStep(dt){const F=drFx,R=F.R;if(S.state==='paused')return;const race
     if(!F.m)drFxInit();const a=r.d.drift||0,pos=r.ship.position;
     if(!r._dfp){r._dfp=pos.clone();r._dfv=new THREE.Vector3();continue}r._dfv.copy(pos).sub(r._dfp).divideScalar(Math.max(dt,1e-3));r._dfp.copy(pos);if(r._dfv.lengthSq()>90000)r._dfv.set(0,0,0);
     r._df=(r._df||0)+(16+24*a)*(r.driftK||0)*(RES.low?0.5:1)*dt;const nE=Math.min(6,Math.floor(r._df));r._df-=nE;if(!nE)continue;
-    const sp=sampleAt(r.u),z=r.d.size||1,col=drFxCol(F,clamp((r.dB||0)/(DR.cap*(FRAMES.roller.drift||1)),0,1),F.c);
+    const sp=sampleAt(r.u),z=r.d.size||1;if(r._ra)flipRoll(sp.r,sp.u,r._ra);/* (Prototype 63: on the underside, its rolled frame) */const col=drFxCol(F,clamp((r.dB||0)/(DR.cap*(FRAMES.roller.drift||1)),0,1),F.c);
     for(let e=0;e<nE;e++){const o=F.P[F.i];F.i=(F.i+1)%F.n;const side=(F.i&1)?1:-1;
       F.o.set(side*0.7*z,0.05,1.45*z).applyQuaternion(r.ship.quaternion);o.p.copy(pos).add(F.o).addScaledVector(r._dfv,-R()*dt);
       o.v.copy(r._dfv).multiplyScalar(0.985).addScaledVector(sp.t,-(2+R()*2.5)).addScaledVector(sp.r,-r.drift*(1+R()*2)).addScaledVector(sp.u,0.3+R()*0.8);
@@ -9015,7 +9219,7 @@ function physics(r,inp,dt){
   if(man&&!r.air){const hd=(r.build&&r.build.stats&&r.build.stats.handling)||1,a=LANE_A*clamp((hd-1)/4,0,1);
     if(a>0){const vl=-r.v*Math.sin(r.yaw-yb0),d=vl<0?r.lat-lo0:hi0-r.lat,tt=Math.abs(vl)>0.5?Math.max(0,d)/Math.abs(vl):9;
       if(tt<LANE_T)r.yaw-=(r.yaw-yb0)*a*(1-tt/LANE_T)*dt}}
-  const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g*(r.air&&r.air.kind?jArc(r.air,uPrev):1);r.yaw-=T.K[idxAt(r.u+du/2)]*du;r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
+  const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g*(r.air&&r.air.kind?jArc(r.air,uPrev):1);r.yaw-=(T.K[idxAt(r.u+du/2)]+SF.kx)*du;/* (Prototype 63: SF.kx, the underside's turn in its own frame: upside down, a bend is the other way round) */r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
   const uu=modU(r.u),sf=surf(uu,r.lat,r),kvB=sf.kv,ybB=sf.yb,loB=sf.lo,hiB=sf.hi;
   // jumps: leave the lip on a ballistic arc, land past the gap; too slow and you fall in
   /* Height above the road. The hover hold (gE) is stronger nose-down and weaker nose-up. Over a crest the road falls away at
@@ -9109,8 +9313,9 @@ function ghostSave(run){let g=ghostLoad()||{n:0};g.n++;
   while(idx.length>12){const old=idx.pop();try{localStorage.removeItem('hoverline.ghost.'+old)}catch(e){}}
   for(let tries=0;tries<6;tries++){try{localStorage.setItem('hoverline.ghost.'+gt,JSON.stringify(g));break}catch(e){const old=idx.length>1?idx.pop():null;if(!old)break;try{localStorage.removeItem('hoverline.ghost.'+old)}catch(_){}}}
   store.set(ghostIdx,JSON.stringify(idx));return g}
-function recSample(){const r=player;rec.d.push(Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),(r.wreck>0?1:0)|(r.boost>0?2:0)|(r.dN&&r.drift?(r.drift>0?12:4):0)|(onUpper(r)?16:0))}
-/* Prototype 60: on a speed jump's upper road (ghosts and remote ships carry it as a flag, since the two roads lie one over the other) */
+function recSample(){const r=player;rec.d.push(Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),(r.wreck>0?1:0)|(r.boost>0?2:0)|(r.dN&&r.drift?(r.drift>0?12:4):0)|(onUpper(r)?16:0)|(onUnder(r)?32:0))}
+/* Prototype 60: on a speed jump's upper road (ghosts and remote ships carry it as a flag, since the two roads lie one over the other);
+   Prototype 63: and on the Spirit realm's underside (32 here, onUnder in 004t), whose two faces are one over the other too */
 const onUpper=r=>!!(r.brS&&r.brS.kind==='stack'&&r.br===r.brS.upB&&T.spl[idxAt(r.u)]);
 const ghostShips=[null,null];
 function makeGhost(k,run,fac,name){let g=ghostShips[k];
@@ -9121,7 +9326,7 @@ function makeGhost(k,run,fac,name){let g=ghostShips[k];
   Object.assign(g,{name,css:k?'#8a8f98':'#f2efe6',run,fac,n:run.d.length/GF});return g}
 function ghostPose(g,tt){const d=g.run.d,n=g.n,f=clamp(tt*10,0,n-1),i=Math.min(n-2,Math.floor(f)),a=f-i,A=i*GF,B=A+GF,L=(o,sc)=>(d[A+o]+(d[B+o]-d[A+o])*a)/sc;
   g.utot=L(0,10);g.u=g.utot;g.lat=L(1,100);g.yaw=L(2,1000);g.h=L(3,100);g.pitch=L(4,100);g.steerS=L(5,100);
-  const fl=d[(a<0.5?A:B)+6];g.wreck=fl&1?1:0;g.boost=fl&2?1:0;g.stkUp=!!(fl&16);g.drift=fl&4?(fl&8?1:-1):0;g.v=(d[B]-d[A])/10*10*g.fac;g.air=g.h>HOVER+0.15}
+  const fl=d[(a<0.5?A:B)+6];g.wreck=fl&1?1:0;g.boost=fl&2?1:0;g.stkUp=!!(fl&16);g.flipU=!!(fl&32);g.drift=fl&4?(fl&8?1:-1):0;g.v=(d[B]-d[A])/10*10*g.fac;g.air=g.h>HOVER+0.15}
 function ghostReset(g){ghostPose(g,0);Object.assign(g,{finishT:null,laps:[],done:0,brk:0,stun:0,spin:0,inv:0,barrier:0,charging:null,hp:1,ammo:0,vh:0,v:0})}
 function ghostStep(g,dt){g.driftK=clamp((g.driftK||0)+(g.drift?4:-3)*dt,0,1);if(g.drift&&g.d)g.dAng=drOf(g).ang;const tt=S.raceT*g.fac,end=(g.n-1)/10;
   if(tt<end)ghostPose(g,tt);else{if(g.finishT==null){ghostPose(g,end);g.finishT=g.run.T/g.fac;g.vEnd=Math.max(40,g.v)}g.utot+=g.vEnd*0.92*dt;g.u=g.utot;g.wreck=0}}
@@ -9155,10 +9360,11 @@ function setRivals(){const pf=profileGet();if(!pf||pf.n<2)return null;const base
 /* Bends digit: 0 smooth, 1 normal, 2 twisty, 3 figure of eight. Older 7-count codes still load (no spirals or splits). */
 /* Prototype 60: five more counts after the spires: rising spires (up the middle, spiral down), down spirals, drops, speed
    jumps and long jumps. A code only carries them when one is set, so every older editor code reads and writes as before. */
-/* Prototype 63: and a portal count (0 or 1, Spirit tracks only), after the long jumps */
-const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire','vspire','dhelix','drop','sjump','cjump','portal'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2,vspire:2,dhelix:2,drop:3,sjump:2,cjump:2,portal:1};
+/* Prototype 63: and a portal count (0 or 1, Spirit tracks only), after the long jumps; then an underside count (0 or 1,
+   Spirit tracks only: the split that rolls under the road, 004t) */
+const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire','vspire','dhelix','drop','sjump','cjump','portal','flip'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2,vspire:2,dhelix:2,drop:3,sjump:2,cjump:2,portal:1,flip:1};
 const specStr=sp=>{let s=String(sp.b)+FK.map(k=>sp.n[k]||0).join('');while(s.length>11&&s.endsWith('0'))s=s.slice(0,-1);return s};
-const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,9})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
+const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,10})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
 const specCx=sp=>FKG.some(k=>sp.n[k]>0);
 /* Scenery: a letter after a dash (O ocean, F forest, N Stratos, once called Night sky, R reef; urban needs none), then optionally four digits for the
    dials (scenery amount, falls, geysers, tunnels), e.g. S1A2B3C-O or SX1A2B3C-U2102. Scenery doesn't change the road, so
@@ -9167,7 +9373,7 @@ const parseBio=str=>{const m=/^([UOFNRPS])([0-9]{4})?$/.exec(String(str||'').toU
 /* Prototype 60: a track code's seed is six hex digits, or seven starting with 1 for codes made from Prototype 60 on (bit 24
    of the seed, TV1): only those may get the new road pieces (drops, speed jumps, long jumps, spires and spirals the other
    way), so every older code builds exactly the track it always did. */
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,9})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,10})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
   return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x1FFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
 let seed=saved?saved.seed:TV1+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};
@@ -9385,7 +9591,7 @@ $('edBtn').onclick=()=>openEd('menu');
    not fit on the chosen length is listed rather than squeezed in. Opening the editor changes nothing until you do. */
 const FLBL={spire:['Spires','spiral up, drop down the middle'],sweep:['Sweeps','rolling hills'],climb:['Climbs','up to a plateau'],dive:['Dives','a long drop'],jump:['Jumps','a gap to clear'],loop:['Loops','all the way round'],twist:['Twists','a barrel roll'],corkscrew:['Corkscrews','roll and rise'],helix:['Spirals','a rising full circle'],split:['Splits','a long and a short route'],
   /* Prototype 60 */vspire:['Rising spires','up the middle, spiral down'],dhelix:['Down spirals','a falling full circle'],drop:['Drops','the road ends, a lower one catches you'],sjump:['Speed jumps','fast enough reaches the upper road'],cjump:['Long jumps','far, wide and lower: long air'],
-  /* Prototype 63 */portal:['Portals','Spirit only: out beside the road, jump across it']};
+  /* Prototype 63 */portal:['Portals','Spirit only: out beside the road, jump across it'],flip:['Undersides','Spirit only: a route that rolls under the road']};
 const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
   if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats){const k=f.rev?'vspire':f.down?'dhelix':f.kind;if(n[k]!=null)n[k]=Math.min(FMAX[k],n[k]+1)}ed.sp={b:T.fig8?3:1,n}}
@@ -9398,7 +9604,7 @@ function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
     row.innerHTML=`<div class="en">${FLBL[k][0]}<small>${FLBL[k][1]}</small></div><button class="sb" data-d="-1" aria-label="Fewer ${FLBL[k][0]}">−</button><div class="ec"></div><button class="sb" data-d="1" aria-label="More ${FLBL[k][0]}">+</button>`;
     row.querySelectorAll('.sb').forEach(b=>b.onclick=()=>{const v=clamp(ed.sp.n[k]+ +b.dataset.d,0,FMAX[k]);if(v===ed.sp.n[k])return;ed.sp.n[k]=v;audio.blip(+b.dataset.d>0?660:330,0.08,0.06,'triangle');edChange(false)});box.append(row)}
-  for(const row of box.children){const k=row.dataset.k,v=sp.n[k],c=row.querySelector('.ec');if(k==='portal')row.hidden=ed.bm.k!=='S';/* (Prototype 63: portals are the Spirit realm's) */c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=FMAX[k]}
+  for(const row of box.children){const k=row.dataset.k,v=sp.n[k],c=row.querySelector('.ec');if(k==='portal'||k==='flip')row.hidden=ed.bm.k!=='S';/* (Prototype 63: portals and undersides are the Spirit realm's) */c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=FMAX[k]}
   document.querySelectorAll('[data-edw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.edw===ed.wk)));
   document.querySelectorAll('[data-edlen]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.edlen===ed.lk)));
   document.querySelectorAll('[data-edb]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.edb===sp.b)));
@@ -11977,7 +12183,7 @@ function oskOpen(e){if(!e)return;osk.el=e;osk.caps=e.dataset.osk==='code'||!e.va
 function oskClose(){const e=osk.el;$('osk').hidden=true;if(!e)return;osk.el=null;e.dispatchEvent(new Event('change',{bubbles:true}));const b=document.querySelector(`[data-osk-for="${e.id}"]`);if(b&&lastDev!=='touch')navFocus(b)}
 document.querySelectorAll('[data-osk-for]').forEach(b=>b.onclick=()=>oskOpen($(b.dataset.oskFor)));
 /* ---- poses ---- */
-const mpFlags=r=>(r.air?1:0)|(r.wreck>0?2:0)|(r.inv>0?4:0)|(r.barrier>0?8:0)|(r.boost>0||r.selfBoost?16:0)|(r.charging==='hp'?32:0)|(r.charging==='ammo'?64:0)|(r.stun>0?128:0)|(r.finishT!=null?256:0)|(r.od>0?512:0)|(r.emp>0?1024:0)|(r.phase>0?2048:0)|(r.refl>0?16384:0)|(r.dN&&r.drift?(r.drift>0?8192:4096):0)|(onUpper(r)?32768:0);
+const mpFlags=r=>(r.air?1:0)|(r.wreck>0?2:0)|(r.inv>0?4:0)|(r.barrier>0?8:0)|(r.boost>0||r.selfBoost?16:0)|(r.charging==='hp'?32:0)|(r.charging==='ammo'?64:0)|(r.stun>0?128:0)|(r.finishT!=null?256:0)|(r.od>0?512:0)|(r.emp>0?1024:0)|(r.phase>0?2048:0)|(r.refl>0?16384:0)|(r.dN&&r.drift?(r.drift>0?8192:4096):0)|(onUpper(r)?32768:0)|(onUnder(r)?65536:0);/* (Prototype 63: 65536, on the underside) */
 const mpPack=r=>[Math.round(r.utot*10),Math.round(r.lat*100),Math.round(r.yaw*1000),Math.round(r.v*10),Math.round((r.air?r.h:HOVER)*100),Math.round(r.pitch*100),Math.round(r.steerS*100),Math.round(r.brk*100),mpFlags(r),Math.round(r.hp),r.done];
 function mpTick(){const s=mp.sess;if(!s)return;const t=performance.now();if(t-(mp.lastPose||0)<100)return;mp.lastPose=t;
   {const lk=s.state.link,pa=lk&&lk.paths;if(lk&&lk.carrier==='net'&&pa&&!pa.broker&&!pa.direct){if(!mp.lost)mp.lost=t;else if(t-mp.lost>4000&&t-(mp.lostSaid||0)>10000){mp.lostSaid=t;note('Connection lost · pause and tap Reconnect',2600)}}else mp.lost=0}
@@ -11992,7 +12198,7 @@ function proxyStep(r,dt){const n=r.net;if(!n||r.left)return;
   const age=clamp(S.raceT-n.ts,0,0.7),pred=n.utot+n.v*age;
   r.v=n.v;r.utot+=r.v*dt;const e=pred-r.utot;if(Math.abs(e)>40)r.utot=pred;else r.utot+=e*Math.min(1,dt*4);r.u=r.utot;
   const k=Math.min(1,dt*10);r.lat+=(n.lat-r.lat)*k;r.yaw+=(n.yaw-r.yaw)*k;r.h+=(n.h-r.h)*k;r.pitch+=(n.pitch-r.pitch)*k;r.steerS+=(n.steer-r.steerS)*k;r.brk=n.brk;r.vh=0;
-  const f=n.f;r.air=!!(f&1);r.stkUp=!!(f&32768);const wr=!!(f&2);
+  const f=n.f;r.air=!!(f&1);r.stkUp=!!(f&32768);r.flipU=!!(f&65536);const wr=!!(f&2);
   if(wr&&r.wreck<=0){const p=r.ship.position.clone();explode(p,true);explode(p.clone().add(new THREE.Vector3(0,1.2,0)),true);wreckBurst(r);audio.boom(clamp(0.6-Math.abs(wrapU(r.u-player.u))/300,0,0.5))}
   r.wreck=wr?1:0;r.inv=f&4?1:0;r.barrier=f&8?1:0;r.boost=f&16?1:0;r.charging=f&32?'hp':f&64?'ammo':null;
   if(f&128){if(!(r.stun>0)&&!(r.spinD>0))startSpin(r,0.75,false);r.stun=0.1}else r.stun=0;spinStep(r,dt);r.od=f&512?1:0;r.emp=f&1024?1:0;r.phase=f&2048?0.2:0;r.refl=f&16384?0.2:0;{const dd=f&8192?1:f&4096?-1:0,P=drOf(r);if(dd&&!r.drift)r.dT=0;r.drift=dd;r.dN=dd?1:0;if(dd){r.dT=(r.dT||0)+dt;r.dB=P.cap*(1-Math.exp(-r.dT/P.tau));r.dAng=P.ang}else r.dB=0;r.driftK=clamp((r.driftK||0)+(dd?4:-3)*dt,0,1)}r.hp=n.hp;r.done=n.done}
@@ -12040,7 +12246,7 @@ function mpTags(clear){const pool=mpTags.pool||(mpTags.pool=new Map());
 /* ---------- loop ---------- */
 const V3=THREE.Vector3,qP=new THREE.Quaternion(),qT=new THREE.Quaternion(),qY=new THREE.Quaternion(),qR=new THREE.Quaternion(),qS=new THREE.Quaternion(),qJ=new THREE.Quaternion(),mtx=new THREE.Matrix4();
 const AX_X=new V3(1,0,0),AX_Y=new V3(0,1,0),AX_Z=new V3(0,0,1),pos=new V3(),camT=new V3(),look=new V3(),right=new V3(),up=new V3(),back=new V3(),pf=new V3(),pUp=new V3(),pRight=new V3(),pT=new V3(),pPos=new V3();
-let camInit=false,lastT=performance.now(),hudT=0,camU=null;
+let camInit=false,lastT=performance.now(),hudT=0,camU=null,camRA=0;
 /* Chase camera. It sits a fixed distance behind and above the ship in the ship's own frame: only its direction is smoothed,
    never its position, so it cannot fall behind at speed. Cockpit puts it on the nose (the ship itself is hidden). */
 const CAMS=[{n:'Near',d:5.6,h:2.15,l:9},{n:'Standard',d:7.4,h:2.7,l:10},{n:'Far',d:11,h:3.9,l:12},{n:'Cockpit',fpv:true}];
@@ -12166,6 +12372,7 @@ function pvOpen(){PVS.k=null;pvWords();if(!PVS.raf)PVS.raf=requestAnimationFrame
 setCam(camMode,false);
 
 const _ftH=new THREE.Vector3(),_gq=new THREE.Quaternion(),_gE=new THREE.Euler(),_qCam=new THREE.Quaternion();
+const _flP=new V3();
 function placeShip(r,t){
   const s=sampleAt(r.u);
   /* Prototype 60: over a new jump's gap (a drop's is steep) the frame is drawn level, along the ground's heading with the
@@ -12173,10 +12380,15 @@ function placeShip(r,t){
   {const jn=T.jg&&T.jg[idxAt(r.u)],J=jn?T.jumps[jn-1]:null;if(J&&!(J.sp&&!(r.brS===J.sp&&r.br===J.b))){const x=modU(r.u-J.u0),w=ss01(Math.min(x,J.G-x)/25);
     if(w>0){_ftH.set(s.t.x,0,s.t.z).normalize();s.t.lerp(_ftH,w).normalize();s.u.lerp(AX_Y,w).normalize();s.r.crossVectors(s.t,s.u).normalize()}}}
   back.copy(s.t).negate();right.crossVectors(s.u,back).normalize();up.crossVectors(back,right);
+  const sfp=surf(r.u,r.lat,r,!(r.isGhost||r.proxy)),gh=sfp.h,ra=sfp.ph*sfp.fs;let gsl=Math.atan(sfp.sl);
+  /* Prototype 63: on the Spirit realm's underside route (004t) the frame sits on the route's face, in its rolled frame:
+     its centre (cw across the base road, gh over it), then lat across and the hover over it, turned with it; its nose
+     follows the face's slope where it is (a rolling face slopes across) */
+  if(ra){_flP.copy(s.p).addScaledVector(right,sfp.cw).addScaledVector(up,gh);flipRoll(right,up,ra);gsl=Math.atan(sfp.sl-sfp.fs*(r.lat-sfp.c)*sfp.dph)}r._ra=ra;
   mtx.makeBasis(right,up,back);qT.setFromRotationMatrix(mtx);
   qY.setFromAxisAngle(AX_Y,r.yaw-(r.dVa!=null?r.dVa:r.driftK?(r.drift||Math.sign(r.steerS))*(r.dAng||0.42)*r.driftK:0));qS.setFromAxisAngle(AX_Y,r.spin);qR.setFromAxisAngle(AX_Z,-r.steerS*0.45+(r.rollA||0));
-  const sfp=surf(r.u,r.lat,r,!(r.isGhost||r.proxy)),gh=sfp.h,gsl=Math.atan(sfp.sl);
-  pos.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));if(r.isGhost)r.vh=0;
+  if(ra)pos.copy(_flP).addScaledVector(right,r.lat-sfp.c).addScaledVector(up,(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));
+  else pos.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+(r.air?r.h:HOVER+(r.d&&r.d.roll?0:Math.sin(t*5+r.lat)*0.06))+(r.hopY||0));if(r.isGhost)r.vh=0;
   qP.setFromAxisAngle(AX_X,r.pitch*0.25+gsl+(r.air?clamp(r.vh/Math.max(30,r.v),-0.5,0.5)*0.6:0));
   r.ship.position.copy(pos);r.ship.quaternion.copy(qT).multiply(qY).multiply(qS).multiply(qP).multiply(qR);
   /* knocked out of phase: 30 times a second the frame may blink out, or tear sideways and stretch; it shakes all the
@@ -12189,7 +12401,7 @@ function placeShip(r,t){
     _gq.setFromAxisAngle(AX_Y,(Math.random()-0.5)*0.24*e);r.ship.quaternion.multiply(_gq);_gq.setFromAxisAngle(AX_Z,(Math.random()-0.5)*0.22*e);r.ship.quaternion.multiply(_gq)}
   else if(sc.x!==1||sc.y!==1||sc.z!==1)sc.set(1,1,1);
   const fpvMe=r===player&&!SPL.race&&CAMS[camMode].fpv&&S.state!=='menu'&&S.state!=='lab'&&S.state!=='done';r.ship.visible=gv&&r.wreck<=0&&!fpvMe&&!(r.inv>0&&Math.floor(t*12)%2===0)&&!(r.phase>0&&Math.floor(t*30)%3===0);phaseLook(r,t);reflectLook(r,t);r.shadow.visible=gv&&r.wreck<=0&&!fpvMe&&!T.gap[idxAt(r.u)];
-  r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
+  if(ra)r.shadow.position.copy(_flP).addScaledVector(right,r.lat-sfp.c).addScaledVector(up,0.06);else r.shadow.position.copy(s.p).addScaledVector(s.r,r.lat).addScaledVector(up,gh+0.06);r.shadow.quaternion.copy(qT).multiply(qY);
   const ud=r.ship.userData;shipCtl(ud,r.brk,r.steerS,S.state==='menu'||S.state==='lab'?1:r.ammo/(r.d.ammo||100));
   if(ud.extra&&ud.extra.spin){const dt=clamp(t-(r._lt??t),0,0.1);r._lt=t;for(const q of ud.extra.spin)q.o.rotation[q.ax]+=(q.k*r.v+(q.w||0))*dt}/* the flicker is a hash of the time, not Math.random, so drawing never moves the game's random numbers (Prototype 51) */
   if(ud.extra&&(ud.extra.arc||ud.extra.field)){const fl=(Math.sin(t*127.1+(r.bias||0)*311.7)*43758.5453)%1,fz=Math.abs(fl);if(ud.extra.arc)ud.extra.arc.opacity=0.35+0.45*fz*(0.5+r.v/VMAX);if(ud.extra.field)ud.extra.field.opacity=0.16+0.1*fz+(r.air?0.1:0)}
@@ -12288,6 +12500,9 @@ function step(dt){
      disc having been the view after it */
   {const cu=S.state==='menu'?S.fly+dt*55:player.u,pc=T.port&&camU!=null?portalCross(camU,cu):null;camU=cu;
     if(pc){if(S.state==='menu'){camera.position.applyMatrix4(pc.M);camera.up.applyQuaternion(pc.Q)}else{camFwdS.applyQuaternion(pc.Q);camUpS.applyQuaternion(pc.Q)}}}
+  /* Prototype 63: on the underside's roll (004t) the camera turns with the frame, about the road's forward, by as much as
+     it rolled since the last frame, so the roll never runs ahead of the camera (its smoothing is only for the rest) */
+  {const ra=S.state==='menu'?0:player._ra||0;if(camInit&&ra!==camRA){_qCam.setFromAxisAngle(_flA.copy(pT).normalize(),ra-camRA);camUpS.applyQuaternion(_qCam);camFwdS.applyQuaternion(_qCam)}camRA=ra}
   if(S.state==='menu'){
     S.fly+=dt*55;const s=sampleAt(S.fly),a=sampleAt(S.fly+45);
     camT.copy(s.p).addScaledVector(s.u,16).addScaledVector(s.r,Math.sin(S.t*0.3)*10);
@@ -12374,7 +12589,7 @@ const VFX={kick:[],pulse:0,env:null,envT:null,tick:0,
      back as a trail. In every look (they are the hit's cue now), half as many with Low detail. */
   wisps(dt){for(const r of racers){if(!(r.spinD>0)||r.wreck>0||!r.ship||r.isGhost||r.off||Math.abs(wrapU(r.u-player.u))>180)continue;
       const k=Math.min(1,r.spinT/r.spinD),e=Math.pow(1-k,0.6);r._wa=(r._wa||0)+(r.glBig?150:100)*e*(RES.low?0.5:1)*dt;const n=Math.min(10,Math.floor(r._wa));r._wa-=n;if(!n)continue;
-      const s=sampleAt(r.u),z=r.d.size||1;
+      const s=sampleAt(r.u),z=r.d.size||1;if(r._ra)flipRoll(s.r,s.u,r._ra);/* (Prototype 63: the underside's rolled frame) */
       for(let q=0;q<n;q++){_vd.copy(r.ship.position).addScaledVector(s.r,(Math.random()-.5)*2.2*z).addScaledVector(s.u,Math.random()*0.9-0.2).addScaledVector(s.t,(0.6-Math.random()*2.4)*z);
         const f=Math.random()<0.55?0.55+Math.random()*0.4:0.15+Math.random()*0.35;_ve2.copy(s.t).multiplyScalar(r.v*f);rdir(_va);_ve2.addScaledVector(_va,1+Math.random()*3.5).addScaledVector(s.u,0.8+Math.random()*2.2);
         this.emit(this.wisp,_vd,_ve2,null,0.35+Math.random()*0.65,(0.05+0.34*Math.pow(Math.random(),2.2))*(r.glBig?1.25:1),4)}}},
@@ -12807,10 +13022,12 @@ function splPlace(){const W=cw||innerWidth,H=ch||innerHeight,loc=splLocal();if(W
     Object.assign(e.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px',fontSize:clamp(Math.min(r.w*0.55,r.h)*0.05,10,20).toFixed(1)+'px'});box.appendChild(e);return{r,e}})}
 function splSrcName(P){return P.src==='dev'?(coarse?'This device':'Keyboard'):P.src==='pad'?'Pad '+(P.pad+1)+(P.small?' · small':''):'Phone · '+String(P.name||'device').replace(/[<>&]/g,'')}
 /* each pilot's chase camera: the single camera's rules (distances, fov, portrait widening from the view's own shape) */
-const _sv=new THREE.Vector3();
+const _sv=new THREE.Vector3(),_sv2=new THREE.Vector3(),_qSpl=new THREE.Quaternion();
 function splCam(P,dt){const r=P.r,cam=P.cam,C=CAMS[S.state==='done'&&CAMS[P.cm].fpv?1:P.cm],tgtF=_sv.copy(P.pf).lerp(P.pT,C.fpv?0.15:0.35).normalize();
   /* (Prototype 63: through a portal each view's smoothed directions turn with its frame, as the single camera's do) */
   {const pc=T.port&&P._pu!=null?portalCross(P._pu,r.u):null;P._pu=r.u;if(pc&&P.ci0){P.fwd.applyQuaternion(pc.Q);P.up.applyQuaternion(pc.Q)}}
+  /* (and on the underside's roll each view turns with its frame's roll, as the single camera does) */
+  {const ra=r._ra||0;if(P.ci0&&P._ra!=null&&ra!==P._ra){_qSpl.setFromAxisAngle(_sv2.copy(P.pT).normalize(),ra-P._ra);P.fwd.applyQuaternion(_qSpl);P.up.applyQuaternion(_qSpl)}P._ra=ra}
   if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*10)).normalize()}
   const vk=r.v/VMAX,boo=r.boost>0||!!r.selfBoost,pk=cam.aspect<1?clamp((1-cam.aspect)/0.54,0,1):0,sh=r===player?S.shake:0;
   if(C.fpv){cam.position.copy(P.pPos).addScaledVector(P.pUp,0.62).addScaledVector(P.pf,0.7);cam.up.copy(P.up);cam.lookAt(look.copy(cam.position).addScaledVector(P.fwd,40).addScaledVector(P.up,-0.6));cam.fov+=((76+16*vk+(boo?6:0)+12*pk)-cam.fov)*Math.min(1,dt*4)}

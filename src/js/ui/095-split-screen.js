@@ -64,10 +64,12 @@ function splPlace(){const W=cw||innerWidth,H=ch||innerHeight,loc=splLocal();if(W
     Object.assign(e.style,{left:r.x+'px',top:r.y+'px',width:r.w+'px',height:r.h+'px',fontSize:clamp(Math.min(r.w*0.55,r.h)*0.05,10,20).toFixed(1)+'px'});box.appendChild(e);return{r,e}})}
 function splSrcName(P){return P.src==='dev'?(coarse?'This device':'Keyboard'):P.src==='pad'?'Pad '+(P.pad+1)+(P.small?' · small':''):'Phone · '+String(P.name||'device').replace(/[<>&]/g,'')}
 /* each pilot's chase camera: the single camera's rules (distances, fov, portrait widening from the view's own shape) */
-const _sv=new THREE.Vector3();
+const _sv=new THREE.Vector3(),_sv2=new THREE.Vector3(),_qSpl=new THREE.Quaternion();
 function splCam(P,dt){const r=P.r,cam=P.cam,C=CAMS[S.state==='done'&&CAMS[P.cm].fpv?1:P.cm],tgtF=_sv.copy(P.pf).lerp(P.pT,C.fpv?0.15:0.35).normalize();
   /* (Prototype 63: through a portal each view's smoothed directions turn with its frame, as the single camera's do) */
   {const pc=T.port&&P._pu!=null?portalCross(P._pu,r.u):null;P._pu=r.u;if(pc&&P.ci0){P.fwd.applyQuaternion(pc.Q);P.up.applyQuaternion(pc.Q)}}
+  /* (and on the underside's roll each view turns with its frame's roll, as the single camera does) */
+  {const ra=r._ra||0;if(P.ci0&&P._ra!=null&&ra!==P._ra){_qSpl.setFromAxisAngle(_sv2.copy(P.pT).normalize(),ra-P._ra);P.fwd.applyQuaternion(_qSpl);P.up.applyQuaternion(_qSpl)}P._ra=ra}
   if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*10)).normalize()}
   const vk=r.v/VMAX,boo=r.boost>0||!!r.selfBoost,pk=cam.aspect<1?clamp((1-cam.aspect)/0.54,0,1):0,sh=r===player?S.shake:0;
   if(C.fpv){cam.position.copy(P.pPos).addScaledVector(P.pUp,0.62).addScaledVector(P.pf,0.7);cam.up.copy(P.up);cam.lookAt(look.copy(cam.position).addScaledVector(P.fwd,40).addScaledVector(P.up,-0.6));cam.fov+=((76+16*vk+(boo?6:0)+12*pk)-cam.fov)*Math.min(1,dt*4)}

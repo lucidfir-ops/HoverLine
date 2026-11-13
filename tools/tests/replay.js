@@ -21,6 +21,13 @@ const same = (a, b) => JSON.stringify([a.order, a.times, a.wrecks]) === JSON.str
 (async () => {
   const b = await launch();
   const o = { vp: { width: 640, height: 360 }, query: '&bot=1', storage: LAPS2, init: stopLoop };
+  // Prototype 63: a Spirit track with an underside (the route that rolls under the road, track/004t) replays, on two fresh pages (the rivals
+  // Vanta and Pell take their pace from the races a page has logged, so pages with different histories field other rivals)
+  const p3 = await open(b, 'replay3', o), p4 = await open(b, 'replay4', o);
+  const UC = 'W1B85AB4-S', G = await race(p3, 777004, UC), Hh = await race(p4, 777004, UC); await p3.ctx.close(); await p4.ctx.close();
+  console.log('G', JSON.stringify({ ...G, times: G.times.map((x) => x && +x.toFixed(2)) }));
+  ok(G.times.every((x) => x != null) && same(G, Hh), 'an underside track (' + UC + '): the same race on another page');
+  ok(p3.errs.length === 0 && p4.errs.length === 0, 'no page errors on the underside pages');
   const p = await open(b, 'replay', o);
   const A = await race(p, 777001), B = await race(p, 777001), C = await race(p, 777002);
   console.log('A', JSON.stringify({ ...A, times: A.times.map((x) => x && +x.toFixed(2)) }));console.log('B', JSON.stringify({ ...B, times: B.times.map((x) => x && +x.toFixed(2)) }));

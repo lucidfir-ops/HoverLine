@@ -5,7 +5,7 @@
    not fit on the chosen length is listed rather than squeezed in. Opening the editor changes nothing until you do. */
 const FLBL={spire:['Spires','spiral up, drop down the middle'],sweep:['Sweeps','rolling hills'],climb:['Climbs','up to a plateau'],dive:['Dives','a long drop'],jump:['Jumps','a gap to clear'],loop:['Loops','all the way round'],twist:['Twists','a barrel roll'],corkscrew:['Corkscrews','roll and rise'],helix:['Spirals','a rising full circle'],split:['Splits','a long and a short route'],
   /* Prototype 60 */vspire:['Rising spires','up the middle, spiral down'],dhelix:['Down spirals','a falling full circle'],drop:['Drops','the road ends, a lower one catches you'],sjump:['Speed jumps','fast enough reaches the upper road'],cjump:['Long jumps','far, wide and lower: long air'],
-  /* Prototype 63 */portal:['Portals','Spirit only: out beside the road, jump across it']};
+  /* Prototype 63 */portal:['Portals','Spirit only: out beside the road, jump across it'],flip:['Undersides','Spirit only: a route that rolls under the road']};
 const ed={from:'menu',sp:null,wk:'S',lk:'M',t:0,bm:{k:'U',d:[2,1,0,1]}};
 function openEd(from){ed.from=from;ed.wk=wid;ed.lk=lenK;ed.bm={k:bio.k,d:(bio.d||T.bmD).slice()};
   if(spec)ed.sp={b:spec.b,n:{...spec.n}};else{const n={};FK.forEach(k=>n[k]=0);for(const f of T.feats){const k=f.rev?'vspire':f.down?'dhelix':f.kind;if(n[k]!=null)n[k]=Math.min(FMAX[k],n[k]+1)}ed.sp={b:T.fig8?3:1,n}}
@@ -18,7 +18,7 @@ function edUI(){const sp=ed.sp,box=$('edFeats');
   if(!box.children.length)for(const k of FK){const row=document.createElement('div');row.className='erow';row.dataset.k=k;
     row.innerHTML=`<div class="en">${FLBL[k][0]}<small>${FLBL[k][1]}</small></div><button class="sb" data-d="-1" aria-label="Fewer ${FLBL[k][0]}">−</button><div class="ec"></div><button class="sb" data-d="1" aria-label="More ${FLBL[k][0]}">+</button>`;
     row.querySelectorAll('.sb').forEach(b=>b.onclick=()=>{const v=clamp(ed.sp.n[k]+ +b.dataset.d,0,FMAX[k]);if(v===ed.sp.n[k])return;ed.sp.n[k]=v;audio.blip(+b.dataset.d>0?660:330,0.08,0.06,'triangle');edChange(false)});box.append(row)}
-  for(const row of box.children){const k=row.dataset.k,v=sp.n[k],c=row.querySelector('.ec');if(k==='portal')row.hidden=ed.bm.k!=='S';/* (Prototype 63: portals are the Spirit realm's) */c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=FMAX[k]}
+  for(const row of box.children){const k=row.dataset.k,v=sp.n[k],c=row.querySelector('.ec');if(k==='portal'||k==='flip')row.hidden=ed.bm.k!=='S';/* (Prototype 63: portals and undersides are the Spirit realm's) */c.textContent=v;c.classList.toggle('z',!v);row.querySelector('[data-d="-1"]').disabled=v<=0;row.querySelector('[data-d="1"]').disabled=v>=FMAX[k]}
   document.querySelectorAll('[data-edw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.edw===ed.wk)));
   document.querySelectorAll('[data-edlen]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.edlen===ed.lk)));
   document.querySelectorAll('[data-edb]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.edb===sp.b)));

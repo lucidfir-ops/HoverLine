@@ -23,7 +23,8 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
   const addS=(p,r,up,t,h,above)=>{const s={x:p.x,y:p.y,z:p.z,r,up,t,hw:h,ab:above};S.push(s);const k=key(Math.floor(p.x/CELL),Math.floor(p.y/CELL),Math.floor(p.z/CELL));let L=G.get(k);if(!L)G.set(k,L=[]);L.push(s)};
   for(let i=0;i<N;i++){if(ctx.gap&&ctx.gap[i]&&!air[i])continue;addS(P[i],R[i],U[i],Tg[i],hw,air[i]?O.jumpAbove:O.above)}
   const _p=new THREE.Vector3();
-  for(const S0 of splits)for(const B of S0.b)for(let k=0;k<=S0.n;k++){const i=(S0.i0+k)%N;_p.copy(P[i]).addScaledVector(R[i],B.c[k]).addScaledVector(U[i],B.h[k]);addS(_p,R[i],U[i],Tg[i],B.w[k],air[i]?O.jumpAbove:O.above)}
+  for(const S0 of splits)for(const B of S0.b)for(let k=0;k<=S0.n;k++){if(B.ph)break;/* (Prototype 63: the underside's route in its own frame, flipKeep below) */const i=(S0.i0+k)%N;_p.copy(P[i]).addScaledVector(R[i],B.c[k]).addScaledVector(U[i],B.h[k]);addS(_p,R[i],U[i],Tg[i],B.w[k],air[i]?O.jumpAbove:O.above)}
+  flipKeep(ctx,addS,air,O);
   const reachH=Math.max(...S.map(s=>s.hw))+O.margin+ds;
   /* is a ball (x,y,z, radius r) in the keep-out? */
   const keep=(x,y,z,r)=>{const rr=reachH+r,ra=O.jumpAbove+r,c0=Math.floor((x-rr)/CELL),c1=Math.floor((x+rr)/CELL),d0=Math.floor((y-ra)/CELL),d1=Math.floor((y+ra)/CELL),e0=Math.floor((z-rr)/CELL),e1=Math.floor((z+rr)/CELL);
@@ -68,6 +69,8 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
      road and 8 m over it, to 80 m past the main road), and from the ramp and the flight back down to the main road's
      last 300 m (the jumpers looking down on the ones coming): nothing may stand in those lines either (portalWatch, 004s) */
   for(const sg of portalWatch(ctx,O))addSL(sg);
+  /* Prototype 63: and the underside ridden: from chase cameras on it, in its rolled frame, along it (flipWatch, 004t) */
+  for(const sg of flipWatch(ctx,O))addSL(sg);
   /* does a ball touch a sight line? (a little margin for the other camera views) */
   const sight=(x,y,z,r)=>{r+=1.5;const a0=Math.floor((x-r)/SG),a1=Math.floor((x+r)/SG),b0=Math.floor((y-r)/SG),b1=Math.floor((y+r)/SG),c0=Math.floor((z-r)/SG),c1=Math.floor((z+r)/SG);
     for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++){const L=SM.get(skey(a,b,c));if(!L)continue;
