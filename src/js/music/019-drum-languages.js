@@ -260,15 +260,11 @@ const TPD={saw:{voices:3,spread:14,cut:1800,vol:0.03,a:0.35,rel:0.5,rev:0.45},wa
 const TPDB={phonk:'wave',glitch:'warm',techno:'dark',house:'warm',trance:'saw',euro:'bright',dnb:'silk',jungle:'str',psy:'dark',hardcore:'sawS',metal:'str',world:'warm'};
 /* percussion layers: Prototype 45 gave every template one from its family (Eric heard them all as "the shaker");
    Prototype 46 plays a percussion layer only where a template names one (perc), eleven templates in all */
-/* Prototype 45: more percussion layers, so the recordings that never played get a part: sci-fi blips (techno, glitch),
-   glitches and robots (neurofunk, glitch-hop), hand percussion (tambourine, triangle, guiro, frame drum, cowbell: house,
-   liquid, world) and real hand claps (house, funk, hardcore) */
+/* Prototype 45: more percussion layers, so the recordings that never played get a part: hand percussion (tambourine, triangle,
+   guiro, frame drum, cowbell: house, liquid, world) and real hand claps (house, funk, hardcore). Prototype 62 took out the sci-fi blips,
+   bells, glitches and robots (blips, blips2, robots, robots2) with their recordings: no template or older code ever named them */
 {const P=s=>s.split(' ').map(t=>t==='-'?null:t.split('+').map(h=>{const[k,v]=h.split(':');return[(k.startsWith('i_')?'':'x_')+k,+v]}));
-  Object.assign(PERCX,{blips:{n:'electronic blips',p:P('elec_ping:.16 - - elec_plip:.12 - - elec_twip:.14 - elec_beep:.1 - - elec_blip2:.12 - elec_bong:.12 - elec_chime:.1')},
-    blips2:{n:'electronic bells',p:P('elec_bell:.12 - - - elec_triangle:.1 - - elec_twang:.12 - - elec_ping:.12 - elec_plip:.1 - - -')},
-    robots:{n:'glitches and robots',p:P('- - glitch_perc2:.14 - - tbd_perc_hat:.2 - glitch_perc5:.12 - - glitch_robot1:.1 - tbd_voctone:.1 - - vinyl_backspin:.08')},
-    robots2:{n:'robot voices',p:P('glitch_robot2:.1 - - - - - - - - - glitch_perc2:.12 - - tbd_perc_hat:.18 - glitch_perc5:.1')},
-    hand:{n:'hand percussion',p:P('tms:.2 - gui:.18 - tri:.14 - tms:.18 frm:.2 - - gui:.16 - tri:.12 drum_cowbell:.1 tms:.18 -')},
+  Object.assign(PERCX,{hand:{n:'hand percussion',p:P('tms:.2 - gui:.18 - tri:.14 - tms:.18 frm:.2 - - gui:.16 - tri:.12 drum_cowbell:.1 tms:.18 -')},
     hand2:{n:'tambourine and frame drum',p:P('frm:.24 - tms:.14 - - - tms:.14 - frm:.2 - tms:.14 - - tabla_tas1:.14 tms:.14 -')},
     claps:{n:'hand claps',p:P('- - - - i_cl1:.24 - - - - - i_cl2:.14 - i_cl1:.24 - - i_cl2:.12')}})}
 TEXR.shimmer.brk=['x_markd',0.16];TEXR.space={n:'space',pre:['x_woosh',0.32],drop:['x_cine',0.36],brk:['x_ambi_lunar_land',0.22],pad:[['x_tbd_pad_1',7],['x_tbd_pad_3',2]]};

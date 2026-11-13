@@ -70,7 +70,7 @@ An instrument uses `"instrument"` in place of `"kit"`, and `"zones": [{"files": 
 | --- | --- | --- |
 | Get the sources (sparse clones, only the files used) | `prep/fetch_all.sh` | `raw/` |
 | Electronic drums, synthesised (no sources) | `prep/synth_drums.py` | `work/prep/synth/` |
-| Original, tight, electro, tape and gas kits (Sonic Pi) | `prep/prep_sonicpi.py` | `work/prep/sonicpi/` |
+| Original, tight, electro, tape and gas kits (Sonic Pi; their kits/*.json were removed in Prototype 62, nothing asks for them) | `prep/prep_sonicpi.py` | `work/prep/sonicpi/` |
 | Breaks, funk and jazz kits (Virtuosity Drums mic mixes) | `prep/prep_virtuosity.py` | `work/prep/virtuosity/` |
 | Rock and metal kit (MuldjordKit) | `prep/prep_muldjord.py` | `work/prep/muldjord/` |
 | Concert, timpani, latin, hand drums, tabla, didgeridoo | `prep/prep_world.py` | `work/prep/world/` |
