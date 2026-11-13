@@ -114,7 +114,7 @@ function finish(){if(QK.live){qkFinish();return}if(SPL.race){splFinish();return}
   const best=Math.min(...player.laps),prev=getBest();const isRec=prev==null||best<prev;if(isRec)store.set(bestKey(),String(best));
   if(!mp.on&&!S.car){recSample();ghostSave({T:player.finishT,paint:build.paint,lv:build.liv||null,stats:{...build.stats},fr:build.frame,d:rec.d})}
   if(mp.on&&mp.sess)mp.sess.update({st:'results'});
-  const place=rankOf(player)+1,c=$('count'),cr=S.car?carFinish(place):null;c.hidden=false;c.classList.add('go');c.textContent=place===1?'WIN':ord(place);if(place===1)setTimeout(()=>audio.voice('win'),300);else if(place<=3)setTimeout(()=>audio.voice('podium'),300);if(isRec&&prev!=null)setTimeout(()=>audio.voice('record'),1700);setTimeout(()=>{if(S.state==='done')c.hidden=true},1600);
+  const place=rankOf(player)+1,c=$('count'),cr=S.car?carFinish(place):null;c.hidden=false;c.classList.add('go');c.textContent=place===1?'WIN':ord(place);audio.sfx(place===1?'finish_win':place<=3?'finish_pod':'finish');/* (Prototype 64: a cue at the line in the new sound effects) */if(place===1)setTimeout(()=>audio.voice('win'),300);else if(place<=3)setTimeout(()=>audio.voice('podium'),300);if(isRec&&prev!=null)setTimeout(()=>audio.voice('record'),1700);setTimeout(()=>{if(S.state==='done')c.hidden=true},1600);
   music.setMood('results');
   setTimeout(()=>{if(S.state!=='done')return;
     for(const r of racers)if(r.isGhost&&r.finishT==null)r.finishT=r.run.T/r.fac;

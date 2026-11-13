@@ -2,7 +2,7 @@
 /* ---------- loop ---------- */
 const V3=THREE.Vector3,qP=new THREE.Quaternion(),qT=new THREE.Quaternion(),qY=new THREE.Quaternion(),qR=new THREE.Quaternion(),qS=new THREE.Quaternion(),qJ=new THREE.Quaternion(),mtx=new THREE.Matrix4();
 const AX_X=new V3(1,0,0),AX_Y=new V3(0,1,0),AX_Z=new V3(0,0,1),pos=new V3(),camT=new V3(),look=new V3(),right=new V3(),up=new V3(),back=new V3(),pf=new V3(),pUp=new V3(),pRight=new V3(),pT=new V3(),pPos=new V3();
-let camInit=false,lastT=performance.now(),hudT=0,camU=null,camRA=0;
+let camInit=false,lastT=performance.now(),hudT=0,camU=null,camRA=0,rollOn=false;
 /* Chase camera. It sits a fixed distance behind and above the ship in the ship's own frame: only its direction is smoothed,
    never its position, so it cannot fall behind at speed. Cockpit puts it on the nose (the ship itself is hidden). */
 const CAMS=[{n:'Near',d:5.6,h:2.15,l:9},{n:'Standard',d:7.4,h:2.7,l:10},{n:'Far',d:11,h:3.9,l:12},{n:'Cockpit',fpv:true}];
@@ -232,7 +232,7 @@ function step(dt){
   if(S.state==='mpwait'){const c=$('count');c.hidden=false;c.textContent='…';c.classList.remove('go')}
   if(S.state==='countdown'){
     if(mp.on&&mp.go!=null)S.count=(mp.go-performance.now())/1000;else S.count=S.goAt?(S.goAt-performance.now())/1000:S.count-dt;const n=Math.ceil(S.count);
-    if(n<S.lastBeep){S.lastBeep=n;const said=audio.voice(['go','one','two','three'][n]||'');if(!said){if(n>0)audio.sfx('count')||audio.blip(440,0.12);else audio.sfx('go')||audio.blip(880,0.35)}else if(n===0)audio.blip(880,0.2,0.08)}
+    if(n<S.lastBeep){S.lastBeep=n;const said=audio.voice(['go','one','two','three'][n]||'');if(!said){if(n>0)audio.sfx('count')||audio.blip(440,0.12);else audio.sfx('go')||audio.blip(880,0.35)}else if(n===0)(SFX2.on&&audio.sfx('go',0.8))||audio.blip(880,0.2,0.08);else if(SFX2.on)audio.sfx('count',0.5)/* (Prototype 64: with the announcer speaking, the new set adds its tick on the key's root, and the GO chord) */}
     const c=$('count');c.hidden=false;
     if(S.count>0){c.textContent=Math.min(3,n);c.classList.remove('go')}else{c.textContent='GO';c.classList.add('go');S.state='race';S.wl=99;setTimeout(()=>{if(S.state==='race'&&S.raceT<WLOCK-4)note('Modules online after '+WLOCK+' s',1800)},900);music.go();music.setMood('race');S.raceT=mp.on&&mp.go!=null?(performance.now()-mp.go)/1000:0;setTimeout(()=>{if(c.textContent==='GO')c.hidden=true},700)}
   }
@@ -267,10 +267,11 @@ function step(dt){
      its smoothed directions are carried by the portal's transform, so the picture is continuous, the view through the
      disc having been the view after it */
   {const cu=S.state==='menu'?S.fly+dt*55:player.u,pc=T.port&&camU!=null?portalCross(camU,cu):null;camU=cu;
+    if(pc&&S.state!=='menu')audio.sfx('portal');/* (Prototype 64: the new sound effects' portal whoosh) */
     if(pc){if(S.state==='menu'){camera.position.applyMatrix4(pc.M);camera.up.applyQuaternion(pc.Q)}else{camFwdS.applyQuaternion(pc.Q);camUpS.applyQuaternion(pc.Q)}}}
   /* Prototype 63: on the underside's roll (004t) the camera turns with the frame, about the road's forward, by as much as
      it rolled since the last frame, so the roll never runs ahead of the camera (its smoothing is only for the rest) */
-  {const ra=S.state==='menu'?0:player._ra||0;if(camInit&&ra!==camRA){_qCam.setFromAxisAngle(_flA.copy(pT).normalize(),ra-camRA);camUpS.applyQuaternion(_qCam);camFwdS.applyQuaternion(_qCam)}camRA=ra}
+  {const ra=S.state==='menu'?0:player._ra||0;if(camInit&&ra!==camRA){_qCam.setFromAxisAngle(_flA.copy(pT).normalize(),ra-camRA);camUpS.applyQuaternion(_qCam);camFwdS.applyQuaternion(_qCam)}camRA=ra;{const rl=Math.abs(ra)>0.05;if(rl!==rollOn){rollOn=rl;if(S.state!=='menu')audio.sfx(rl?'roll_in':'roll_out')}}/* (Prototype 64: the underside's roll has its own sound in the new set) */}
   if(S.state==='menu'){
     S.fly+=dt*55;const s=sampleAt(S.fly),a=sampleAt(S.fly+45);
     camT.copy(s.p).addScaledVector(s.u,16).addScaledVector(s.r,Math.sin(S.t*0.3)*10);

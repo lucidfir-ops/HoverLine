@@ -242,7 +242,7 @@ function physics(r,inp,dt){
     /* Prototype 37: a frame out of phase, or hit in the last 2.5 s, leaves the lip at least fast enough to clear the gap
        (level nose, with a margin): most falls were frames hit just before the lip that reached it at walking pace. */
     {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'||j.kind==='portal'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them (Prototype 63: and a portal jump, the launch pad) */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
-    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)}}
+    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)(j.kind&&audio.sfx(SFX2.jumpKey[j.kind]))||audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)/* (Prototype 64: the new set has a launch for each kind of jump) */}}
   /* Prototype 60: still in the air from one new jump at the lip of the next (drops in a row): that one carries the flight
      on, from the same height over the road */
   else if(r.air.kind&&modU(uu-r.air.u0)>r.air.G)for(const j of T.jumps)if(j.kind&&j!==r.air&&uPrev<j.u0&&uu>=j.u0&&uu<j.u1&&!(j.sp&&!(r.brS===j.sp&&r.br===j.b))){const ex=r.h-HOVER;r.air=j;r.airX=null;r.hb=HOVER+j.lipH+ex;if(j.stk)r.stkS=null;break}
@@ -275,7 +275,7 @@ function physics(r,inp,dt){
     if(clipped){r.air=false;r.h=HOVER;r.vh=0;r.respawnU=uu+6;r.wreck=1.4;r.boost=0;r.hp=Math.max(1,r.hp-r.d.hp*0.1);
       if(r===player){if(LOG.cur){LOG.cur.acc.clips++;logEv('clip')}flash('rgba(255,74,61,.5)',0);audio.boom(0.6)}lapCheck(r);return}
     const inB=r.lat>=loB+0.4&&r.lat<=hiB-0.4;r.offT=!inB;
-    if(!j&&r.hb<=HOVER&&inB){const imp=-r.vh;r.air=false;r.h=HOVER;r.vh=0;if(!r.d.soft)r.v*=0.985;/* Prototype 60: the new jumps' roads are built to catch a fall of 10-45 m: a landing there costs shield only past 36 m/s down, and less */if(J.kind?imp>36:imp>16)landHit(r,J.kind?(imp-36)*0.6:(imp-16)*1.5);if(r===player){S.shake=Math.min(1,S.shake+imp/40);audio.land(Math.min(1,imp/30))}}
+    if(!j&&r.hb<=HOVER&&inB){const imp=-r.vh;r.air=false;r.h=HOVER;r.vh=0;if(!r.d.soft)r.v*=0.985;/* Prototype 60: the new jumps' roads are built to catch a fall of 10-45 m: a landing there costs shield only past 36 m/s down, and less */if(J.kind?imp>36:imp>16)landHit(r,J.kind?(imp-36)*0.6:(imp-16)*1.5);if(r===player){S.shake=Math.min(1,S.shake+imp/40);audio.land(Math.min(1,imp/30),J.kind)}}
     else if((j||!inB)&&r.hb<(inB?-14:(D.glide||1)<1?-12:-5)||Math.abs(r.lat)>W/2+((D.glide||1)<1?40:20)){const off=!inB;if(off&&r.ship)explode(r.ship.position.clone(),true);r.air=false;r.h=HOVER;r.vh=0;r.respawnU=j?j.u1+8:uu+6;r.wreck=1.4;r.boost=0;r.lat=0;r.offT=false;
       if(r===player){if(LOG.cur){LOG.cur.acc.falls++;logEv('fall',{v:Math.round(r.v),off})}flash('rgba(255,74,61,.5)',0);audio.boom(0.5)}lapCheck(r);return}}
   const lo=loB+1.35,hi=hiB-1.35;
