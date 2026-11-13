@@ -15,14 +15,14 @@
      they play from a handful of nodes, at most SFX2.CAP sources are alive at once and a repeat inside its gap is dropped. */
 const SFX2={
   on:store.get('hoverline.sfx2')==='1',
-  CAP:56,live:[],last:{},cnt:{},forceKey:null,
+  CAP:56,live:[],last:{},forceKey:null,
+  /* effects the old set has no recording for (audio.sfx() of these does nothing with the setting off, as before) */
+  only:{jump_drop:1,jump_sjump:1,jump_cjump:1,jump_portal:1,land_drop:1,flares:1,reflect:1,emp_hit:1,portal:1,roll_in:1,roll_out:1},
   /* the gap before the same effect may play again (s), the most of it at once, its level (1 = the old effect's own loudness,
      set with tools/sfx/render.js --calibrate), whether it sits in the room, and whether it may wait for the beat */
   gap:{ui_move:0.04,ui_ok:0.06,ui_back:0.06,ui_select:0.06,wall:0.13,hit_s:0.05,hit_l:0.08,land:0.1,boom:0.05,cannon:0.05,count:0.2,pad:0.15,boost:0.3,flares:0.1,reflect:0.1,blip:0.03,noise:0.1,chime:0.1},
   mx:{boom:4,hit_s:3,hit_l:3,wall:2,cannon:4,blip:4,wreck:2},
-  lvl:{ui_move:1,ui_ok:1,ui_back:1,ui_select:1,count:1,go:1,lap:1,final:1,boost:1,pad:1,jump:1,jump_drop:1,jump_sjump:1,jump_cjump:1,jump_portal:1,land:1,land_drop:1,deny:1,low:1,
-    shield_full:1,ammo_full:1,hit_s:1,hit_l:1,wall:1,boom:1,wreck:1,missile:1,cannon:1,mines:1,shock:1,turbo:1,barrier:1,rockets:1,swarm:1,quake:1,bouncer:1,hunter:1,phase:1,
-    reflector:1,emp:1,smoke:1,autopilot:1,overdrive:1,flares:1,reflect:1,emp_hit:1,portal:1,roll_in:1,roll_out:1,blip:1,noise:1},
+  lvl:{ui_move:0.187,ui_ok:0.212,ui_back:0.264,ui_select:1,count:0.272,go:0.411,lap:0.557,final:0.546,boost:0.317,pad:0.562,jump:0.229,jump_drop:0.447,jump_sjump:0.319,jump_cjump:0.299,jump_portal:0.377,land:0.505,land_drop:0.334,deny:0.562,low:0.414,shield_full:0.21,ammo_full:0.33,hit_s:0.838,hit_l:0.4,wall:0.834,boom:0.385,wreck:0.394,missile:0.328,cannon:0.156,mines:0.456,shock:0.233,turbo:0.304,barrier:0.19,rockets:0.616,swarm:0.696,quake:0.248,bouncer:0.436,hunter:0.389,phase:0.322,reflector:0.268,emp:0.38,smoke:0.218,autopilot:0.316,overdrive:0.311,flares:0.601,reflect:0.36,emp_hit:0.348,portal:0.428,roll_in:0.346,roll_out:0.309,blip:1,noise:1},
   rev:{go:0.5,final:0.8,lap:0.4,ui_ok:0.25,shield_full:0.5,ammo_full:0.35,boom:0.4,wreck:0.6,quake:0.5,shock:0.4,barrier:0.4,phase:0.5,reflector:0.4,reflect:0.4,portal:0.7,jump_portal:0.6,jump_cjump:0.3,
     roll_in:0.4,roll_out:0.3,hunter:0.3,overdrive:0.2,flares:0.3,land_drop:0.3,emp:0.2},
   beat:{ui_ok:1,ui_back:1,ui_select:1,lap:1,final:1,shield_full:1,ammo_full:1,chime:1},
@@ -57,7 +57,7 @@ const SFX2={
     B.brown=mk(d=>{let y=0;for(let i=0;i<d.length;i++){y=(y+0.02*(this.rnd()*2-1))/1.02;d[i]=y*3.5}});
     B.sat=c.createWaveShaper();B.sat.curve=SL.curve(2.2);B.sat.oversample='2x';return B},
   /* ---- the music bus ducks: depth 0 to 1 (1 = silent) for `hold` s, then comes back over `rel` s ---- */
-  duckV(t){const s=this.dk;if(!s)return 1;if(t<s.th)return s.d+(s.v0-s.d)*Math.exp(-(t-s.t0)/0.012);const vh=s.d+(s.v0-s.d)*Math.exp(-(s.th-s.t0)/0.012);return 1-(1-vh)*Math.exp(-(t-s.th)/(s.rel/3))},
+  duckV(t){const s=this.dk;if(!s||t<s.t0)return 1;if(t<s.th)return s.d+(s.v0-s.d)*Math.exp(-(t-s.t0)/0.012);const vh=s.d+(s.v0-s.d)*Math.exp(-(s.th-s.t0)/0.012);return 1-(1-vh)*Math.exp(-(t-s.th)/(s.rel/3))},
   doDuck(depth,hold,rel){const a=audio,g=a.musD;if(!g||!a.ctx||typeof music==='undefined'||music.style==='off')return;const c=a.ctx,t=c.currentTime,v=this.duckV(t),s=this.dk,d0=1-clamp(depth,0,0.8),
       d=s&&t<s.th?Math.min(d0,s.d):d0,th=Math.max(t+hold,s&&t<s.th?s.th:0),r=Math.max(rel,s&&t<s.th?s.rel:0);
     g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(v,t);g.gain.setTargetAtTime(d,t,0.012);g.gain.setTargetAtTime(1,th,r/3);this.dk={t0:t,v0:v,d,th,rel:r}},
@@ -68,16 +68,16 @@ const SFX2={
     if(n>this.CAP)return true;const mx=this.mx[k];if(mx){let q=0;for(const o of L)if(o.k===k)q++;if(q>=mx)return true}
     this.last[k]=now;const K=this.key(),B=this.bus(c),t=this.beat[k]?this.snap(now+0.005,K,0.06):now+0.005,pg=c.createGain();
     pg.gain.value=Math.min(1.5,vol)*(this.lvl[k]??1);pg.connect(B.in);const rv=this.rev[k];if(rv){const w=c.createGain();w.gain.value=rv;pg.connect(w);w.connect(B.rvIn)}
-    const V=new SfxV(this,c,B,pg,t,K,rate,vol),dur=F(V)||0.3;L.push({end:t+dur+0.1,n:V.n,k});
+    const V=new SfxV(this,c,B,pg,t,K,rate,vol),dur=F(V)||0.3;L.push({end:t+dur+0.1,n:V.cnt,k});
     const dk=this.duck[k];if(dk&&vol>=0.3)this.doDuck(dk[0]*Math.min(1,vol),dk[1],dk[2]);return true},
   /* a plain tone (what audio.blip asks for, in the key; the old one is the same call without the new set) */
   blip(fr,dur,vol,type,to){const a=audio,c=a.ctx;if(!c||!a.on||c.currentTime-(this.last.blip??-9)<0.03)return;const K=this.key(),B=this.bus(c),t=c.currentTime+0.005;this.last.blip=t-0.005;
     const V=new SfxV(this,c,B,B.in,t,K,1,1),f0=this.snapF(fr,K),f1=to?this.snapF(to,K):0,ty=type==='square'||type==='sawtooth'?'triangle':type;
-    V.osc(ty,f0,f1,Math.max(0.05,dur)*1.1,Math.min(0.5,vol*2.2),{a:0.004,lp:[Math.min(9000,f0*5),Math.max(300,f0*1.5)]});V.osc('sine',f0*2,f1?f1*2:0,Math.max(0.05,dur),Math.min(0.2,vol*0.8),{a:0.004});
-    this.live.push({end:t+dur+0.2,n:V.n,k:'blip'})},
+    V.osc(ty,f0,f1,Math.max(0.05,dur)*1.1,Math.min(0.4,vol*1.5),{a:0.004,lp:[Math.min(9000,f0*5),Math.max(300,f0*1.5)]});V.osc('sine',f0*2,f1?f1*2:0,Math.max(0.05,dur),Math.min(0.15,vol*0.55),{a:0.004});
+    this.live.push({end:t+dur+0.2,n:V.cnt,k:'blip'})},
   /* a noise burst (the drift grip, the smoke's ink): band-limited, softer than the old burst */
   noise(vol,freq,dur){const a=audio,c=a.ctx;if(!c||!a.on||vol<0.01||c.currentTime-(this.last.noise??-9)<0.1)return;this.last.noise=c.currentTime;const B=this.bus(c),V=new SfxV(this,c,B,B.in,c.currentTime+0.005,this.key(),1,1);
-    V.nz(Math.max(0.1,dur*0.9),Math.min(0.7,vol*2.2),{f:[freq*0.6,freq*1.5],q:0.9,a:0.02});V.osc('sine',90,60,0.12,Math.min(0.3,vol),{a:0.004});this.live.push({end:c.currentTime+dur+0.2,n:V.n,k:'noise'})},
+    V.nz(Math.max(0.1,dur*0.9),Math.min(0.5,vol*0.7),{f:[freq*0.6,freq*1.5],q:0.9,a:0.02});V.osc('sine',90,60,0.12,Math.min(0.15,vol*0.5),{a:0.004});this.live.push({end:c.currentTime+dur+0.2,n:V.cnt,k:'noise'})},
   /* ---- the engine hum, new: a softer second voice, a third detuned a little, a turbine whine and a thin wind, all
      on the old hum's gain (audio.eg) so it still fades in every menu. Thinned to 20 updates a second. ---- */
   engine(v,boost,fly,fr){const a=audio,c=a.ctx,t=c.currentTime;let E=this.E;if(this.on&&(!E||E.c!==c)){E=this.E={c,t:-1};
@@ -86,13 +86,13 @@ const SFX2={
       o3.connect(f);f.connect(g);g.connect(a.eg);o4.connect(tg);tg.connect(a.eg);wn.connect(wf);wf.connect(wg);wg.connect(a.eg);o3.start();o4.start();wn.start();Object.assign(E,{f,g,o3,o4,tg,wf,wg})}
     if(!E)return;if(!this.on){if(E.g.gain.value>0||E.on){E.g.gain.setTargetAtTime(0,t,0.1);E.tg.gain.setTargetAtTime(0,t,0.1);E.wg.gain.setTargetAtTime(0,t,0.1);a.o2.type='square';E.on=false}return}
     if(t-E.t<0.05)return;E.t=t;if(!E.on){E.on=true;a.o2.type='triangle'}const s=clamp(v/190,0,1.2);
-    E.o3.frequency.setTargetAtTime(fr*1.004,t,0.05);E.f.frequency.setTargetAtTime(220+v*8+boost*700,t,0.08);E.g.gain.setTargetAtTime(fly?0.7:0,t,0.12);
+    E.o3.frequency.setTargetAtTime(fr*1.004,t,0.05);E.f.frequency.setTargetAtTime(220+v*8+boost*700,t,0.08);E.g.gain.setTargetAtTime(fly?1:0,t,0.12);
     E.o4.frequency.setTargetAtTime(fr*5.5+boost*60,t,0.06);E.tg.gain.setTargetAtTime(fly?0.02+0.1*s*s+0.1*boost:0,t,0.1);
     E.wf.frequency.setTargetAtTime(380+v*16+boost*500,t,0.1);E.wg.gain.setTargetAtTime(fly?0.15+1.2*s*s*(1+boost):0,t,0.12)}
 };
 /* One playing effect: the helpers the effect functions use. t is when it starts; every helper takes `at` (s after that). */
 class SfxV{
-  constructor(S,c,B,dst,t,K,rate,vol){this.S=S;this.c=c;this.B=B;this.d=dst;this.t=t;this.K=K;this.rate=rate;this.vol=vol;this.n=0}
+  constructor(S,c,B,dst,t,K,rate,vol){this.S=S;this.c=c;this.B=B;this.d=dst;this.t=t;this.K=K;this.rate=rate;this.vol=vol;this.cnt=0}
   r(a,b){return a+(b-a)*this.S.rnd()}
   /* x spread by +-p (0.05 = 5%) */
   j(x,p){return x*(1+(this.S.rnd()*2-1)*p)}
@@ -103,16 +103,16 @@ class SfxV{
   out(x,pan){if(pan&&this.c.createStereoPanner){const p=this.c.createStereoPanner();p.pan.value=pan;x.connect(p);p.connect(this.d)}else x.connect(this.d)}
   /* an oscillator: type, f0 -> f1 (0 = stay) over `sw` (default the whole length), length dur, peak g.
      o: at, a (attack s), lp [f0,f1] (a low-pass sweep) with q, hp, det (cents), pan, fm [ratio, index], hold (s at the peak) */
-  osc(type,f0,f1,dur,g,o={}){const c=this.c,t=this.t+(o.at||0),n=c.createOscillator(),e=c.createGain(),dt=o.det?Math.pow(2,o.det/1200):1,sw=o.sw||dur;this.n++;
+  osc(type,f0,f1,dur,g,o={}){const c=this.c,t=this.t+(o.at||0),n=c.createOscillator(),e=c.createGain(),dt=o.det?Math.pow(2,o.det/1200):1,sw=o.sw||dur;this.cnt++;
     n.type=type;n.frequency.setValueAtTime(f0*dt,t);if(f1&&f1!==f0)n.frequency.exponentialRampToValueAtTime(Math.max(20,f1*dt),t+sw);
     const a=o.a||0.003;e.gain.setValueAtTime(0.0001,t);e.gain.linearRampToValueAtTime(Math.max(0.0002,g),t+a);if(o.hold)e.gain.setValueAtTime(Math.max(0.0002,g),t+a+o.hold);e.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    let x=n;if(o.fm){const m=c.createOscillator(),mg=c.createGain();this.n++;m.type='sine';m.frequency.setValueAtTime(f0*dt*o.fm[0],t);if(f1&&f1!==f0)m.frequency.exponentialRampToValueAtTime(Math.max(20,f1*dt*o.fm[0]),t+sw);
+    let x=n;if(o.fm){const m=c.createOscillator(),mg=c.createGain();this.cnt++;m.type='sine';m.frequency.setValueAtTime(f0*dt*o.fm[0],t);if(f1&&f1!==f0)m.frequency.exponentialRampToValueAtTime(Math.max(20,f1*dt*o.fm[0]),t+sw);
       mg.gain.setValueAtTime(f0*dt*o.fm[0]*o.fm[1],t);mg.gain.exponentialRampToValueAtTime(Math.max(1,f0*dt*o.fm[0]*0.02),t+dur*0.6);m.connect(mg);mg.connect(n.frequency);m.start(t);m.stop(t+dur+0.05)}
     if(o.lp){const f=c.createBiquadFilter();f.type='lowpass';f.Q.value=o.q||0.7;f.frequency.setValueAtTime(o.lp[0],t);f.frequency.exponentialRampToValueAtTime(Math.max(60,o.lp[1]),t+(o.lps||dur));x.connect(f);x=f}
     if(o.hp){const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=o.hp;x.connect(f);x=f}
     x.connect(e);this.out(e,o.pan);n.start(t);n.stop(t+dur+0.05);return e}
   /* a noise burst: length dur, peak g. o: at, a, f [f0,f1] (the filter sweep), q, type ('bandpass', 'lowpass', 'highpass'), brown (a rumble), pan, hold */
-  nz(dur,g,o={}){const c=this.c,t=this.t+(o.at||0),s=c.createBufferSource(),e=c.createGain(),f=c.createBiquadFilter();this.n++;s.buffer=o.brown?this.B.brown:this.B.white;s.loop=true;
+  nz(dur,g,o={}){const c=this.c,t=this.t+(o.at||0),s=c.createBufferSource(),e=c.createGain(),f=c.createBiquadFilter();this.cnt++;s.buffer=o.brown?this.B.brown:this.B.white;s.loop=true;
     f.type=o.type||'bandpass';f.Q.value=o.q||0.8;const f0=o.f?o.f[0]:2000,f1=o.f?o.f[1]:f0;f.frequency.setValueAtTime(Math.max(40,f0),t);if(f1!==f0)f.frequency.exponentialRampToValueAtTime(Math.max(40,f1),t+(o.sw||dur));
     const a=o.a||0.003;e.gain.setValueAtTime(0.0001,t);e.gain.linearRampToValueAtTime(Math.max(0.0002,g),t+a);if(o.hold)e.gain.setValueAtTime(Math.max(0.0002,g),t+a+o.hold);e.gain.exponentialRampToValueAtTime(0.0001,t+dur);
     s.connect(f);f.connect(e);this.out(e,o.pan);s.start(t,this.S.rnd()*1.5);s.stop(t+dur+0.05);return e}
@@ -123,7 +123,7 @@ class SfxV{
   /* a short pluck on a note: a triangle through a closing low-pass, and a sine an octave up */
   pl(m,dur,g,o={}){const f=this.f(m,3),at=o.at||0;this.osc('triangle',f,0,dur,g,{at,a:0.002,lp:[f*7,f*1.3],q:1,det:o.det});this.osc('sine',f*2,0,dur*0.6,g*0.3,{at,a:0.002})}
   /* a recording from SL.SFX (decoded in audio.fx) as a layer; rate, low-pass/high-pass, offset */
-  smp(key,o={}){const c=this.c,b=audio.fx&&audio.fx[key];if(!b)return;const t=this.t+(o.at||0),s=c.createBufferSource(),e=c.createGain();let x=s;this.n++;s.buffer=b;s.playbackRate.value=(o.rate||1)*this.rate;e.gain.value=o.g||0.5;
+  smp(key,o={}){const c=this.c,b=audio.fx&&audio.fx[key];if(!b)return;const t=this.t+(o.at||0),s=c.createBufferSource(),e=c.createGain();let x=s;this.cnt++;s.buffer=b;s.playbackRate.value=(o.rate||1)*this.rate;e.gain.value=o.g||0.5;
     if(o.lp){const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=o.lp;x.connect(f);x=f}if(o.hp){const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=o.hp;x.connect(f);x=f}x.connect(e);this.out(e,o.pan);s.start(t,o.off||0)}
   /* sparse crackle: n tiny noise ticks over `span` s (debris, sparks, electricity) */
   crackle(n,span,g,o={}){for(let i=0;i<n;i++)this.nz(this.r(0.008,0.03),g*this.r(0.4,1),{at:(o.at||0)+this.S.rnd()*span,f:[this.r(o.f0||2500,o.f1||7000),this.r(o.f0||2500,o.f1||7000)],q:this.r(1,3),a:0.001,pan:this.r(-0.5,0.5)})}
@@ -162,7 +162,7 @@ SFX2.fx={
   /* ---- hits ---- */
   hit_s(V){const f=V.j(1,0.12);V.nz(0.08,0.55,{f:[1900*f,650*f],q:0.9,a:0.001});V.sub(210*f,100*f,0.07,0.5,{noclick:true});V.nz(0.02,0.25,{f:[4500,4500],type:'highpass',a:0.001});return 0.12},
   hit_l(V){const f=V.j(1,0.1);V.nz(0.22,0.6,{f:[1300*f,260*f],q:0.7,a:0.001});V.sub(135*f,52*f,0.26,0.8,{noclick:true});for(const r of[1,1.52,2.13])V.osc('sine',640*r*f,0,0.18,0.1,{a:0.001});V.crackle(3,0.08,0.15,{f0:2000,f1:6000});return 0.3},
-  wall(V){const k=clamp(V.vol,0.15,1.2),f=V.r(1100,2600);V.nz(V.r(0.15,0.24),0.5*Math.min(1,0.4+k),{f:[f,f*V.r(0.5,0.8)],q:V.r(1,2.2),a:0.004});V.osc('sawtooth',V.r(260,520),V.r(170,300),0.16,0.1*k,{a:0.004,lp:[1800,600],q:2});V.crackle(3,0.14,0.2*k,{f0:3000,f1:8000});return 0.25},
+  wall(V){const k=clamp(V.vol,0.15,1.2),f=V.r(1100,2600);V.nz(V.r(0.15,0.24),1.5*Math.min(1,0.4+k),{f:[f,f*V.r(0.5,0.8)],q:V.r(1,2.2),a:0.004});V.osc('sawtooth',V.r(260,520),V.r(170,300),0.16,0.18*k,{a:0.004,lp:[1800,600],q:2});V.crackle(3,0.14,0.2*k,{f0:3000,f1:8000});return 0.25},
   boom(V){const v=V.vol,big=v>=0.6,mid=v>=0.3;
     if(big){V.sub(V.j(75,0.08),V.j(28,0.08),0.7,1);V.nz(0.8,0.5,{f:[V.r(3600,4800),150],q:0.6,a:0.002,sw:0.7});V.nz(0.7,0.45,{brown:true,type:'lowpass',f:[700,80],a:0.004});V.crackle(7,0.5,0.14,{f0:1200,f1:5000});V.smp('boom',{g:0.45,rate:V.r(0.85,1.1),lp:3000});return 0.9}
     if(mid){V.sub(V.j(95,0.08),V.j(38,0.08),0.4,0.9);V.nz(0.4,0.45,{f:[V.r(2800,3800),200],q:0.7,a:0.002,sw:0.35});V.nz(0.35,0.3,{brown:true,type:'lowpass',f:[600,100],a:0.003});V.crackle(3,0.25,0.1);V.smp('boom',{g:0.22,rate:V.r(1.1,1.35),lp:2500});return 0.55}

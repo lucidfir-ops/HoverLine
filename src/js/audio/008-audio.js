@@ -27,7 +27,7 @@ const audio={ctx:null,on:store.get('hoverline.sound')!=='0',
   /* Sound effects (Prototype 32): CC0 recordings in SL.SFX, decoded once the sound starts; each falls back to its old synth
      sound until then (or if a file is missing). SFX_USE plays one recording for another at a different speed. */
   loadFx(){if(this.fx||!this.ctx)return;this.fx={};if(SL.SFX)music.decodeVox.call(music,this.ctx,()=>true,SL.SFX).then(v=>{this.fx=v})},
-  sfx(k,vol=1,rate=1){if(SFX2.on&&SFX2.fx[k]&&this.ctx)return SFX2.play(k,vol,rate);if(!this.ctx||!this.fx||vol<0.01)return false;const u=SFX_USE[k],b=this.fx[u?u[0]:k];if(!b)return false;
+  sfx(k,vol=1,rate=1){if(SFX2.on&&SFX2.fx[k]&&this.ctx)return SFX2.play(k,vol,rate);if(SFX2.only[k])return false;/* (the old set has no recording of that name: don't look one up) */if(!this.ctx||!this.fx||vol<0.01)return false;const u=SFX_USE[k],b=this.fx[u?u[0]:k];if(!b)return false;
     const c=this.ctx,t=c.currentTime;if(t-(this.fxT[k]||-1)<(SFX_GAP[k]||0.03))return true;this.fxT[k]=t;
     const s=c.createBufferSource(),g=c.createGain();s.buffer=b;s.playbackRate.value=rate*(u?u[1]:1);g.gain.value=Math.min(1,vol*(SFX_GAIN[k]||0.2));s.connect(g);g.connect(this.master);s.start();return true},
   fxT:{},land(k,kind){if(!((kind==='drop'||kind==='cjump'||kind==='sjump')&&k>0.35&&this.sfx('land_drop',0.15+k*0.6))&&!this.sfx('land',0.15+k*0.6))this.hit(k)},

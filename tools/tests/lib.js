@@ -8,7 +8,7 @@ const PAGE = process.env.PAGE || require('path').join(__dirname, '..', '..', 'in
 const ORIGIN = 'http://127.0.0.1:8099';
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const HOOK = 'requestAnimationFrame(frame);window.__hl={portalView,PVW,portalCross,makeGhost,ghostPose,rec,placeShip,mpPack,mpApply,proxyStep,RES,S,racers,player,mp,startRace,setHud,store,TS,OR,orNow,get orPick(){return orPick},orShow,CLS,clsCtx,bestKey,ghostTag,getBest,LOG,lbSubmit,QK,qkOn,carSel,carUI,showPage,mpRender,tilt,readInput,qkTilt,orApply,get coarse(){return coarse},togglePause,RACE,rand,canFire,pacifist,tiltCentre,phaseLook,shots,fire,updateShots,WDEF,wrapU,live,aiWants,AIL,ailOf,mpFlags,flareCostOf,REFLECT_T,FLARE_K,FLARE_UNIT,reflectLook,get pacOn(){return pacOn},music,loadTrack,get T(){return T},step,codeStr,specStr,rndSeed,onUpper,openEd,closeEd,ed,surf,FK,FMAX,idxAt,modU,aiInput,aiStripBoost,AI_STRIP,aiSmoked,smokeH,SMOKE_AI,get seed(){return seed},scene,camera,renderer,makeShip,shipCtl,parseCode,QK,qkIn,isMan,TUT,get bioOn(){return bioOn},navDir,navAct,navFocus,navBack,NAV,SPL,splOpen,splGo,splLayoutFor,PADC,roster,ranking,toMenu,get LAPS(){return LAPS},mpTrackInfo,AIL,lbv,get build(){return build},get lastDev(){return lastDev},touchUI,tut,carExists,qkReplay,qkFinish,get car(){return car},get W(){return W},gfxRender,GFX,VFX,fit,sampleAt,SPU,SPMUS,get spCalm(){return spCalm()},setCalm:v=>{SP_CALM=v},spLatDrive,perfApply,musHeard,spGhostSet};' +
-  'window.__nb={Chirp,ChirpIO,chirp,LAN,lan,lanUse,audio,PDG,priestDraw,qrDraw,jsqrLib};\n})();';
+  'window.__nb={Chirp,ChirpIO,chirp,LAN,lan,lanUse,audio,SFX2,PDG,priestDraw,qrDraw,jsqrLib};\n})();';
 const cache = {};
 function html(file) {
   file = file || PAGE; if (cache[file]) return cache[file];
