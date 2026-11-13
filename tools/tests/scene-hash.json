@@ -119,4 +119,10 @@
 "SL19E3779-10000000000000001-S@night":{"road":"d2ee0773","scene":"85e67c13","n":"134/96338","env":"996d4876","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
 "SL19E3779-10000000000000001-S@day":{"road":"d2ee0773","scene":"85e67c13","n":"134/96338","env":"996d4876","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
 "NL19E3779-10000000000000001-S@night":{"road":"e3a74567","scene":"62627220","n":"135/94582","env":"ff809a6f","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
-"NL19E3779-10000000000000001-S@day":{"road":"e3a74567","scene":"62627220","n":"135/94582","env":"ff809a6f","info":"Spirit · the Spirit realm · 1 room · 3 arches"}}
+"NL19E3779-10000000000000001-S@day":{"road":"e3a74567","scene":"62627220","n":"135/94582","env":"ff809a6f","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
+"W1B85AB4-S@night":{"road":"b7dc66b5","scene":"d13844a3","n":"184/86432","env":"acefcf08","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
+"W1B85AB4-S@day":{"road":"b7dc66b5","scene":"d13844a3","n":"184/86432","env":"acefcf08","info":"Spirit · the Spirit realm · 1 room · 3 arches"},
+"NXL128DB8B-S@night":{"road":"33bbf26e","scene":"70693125","n":"349/155686","env":"d6583b0e","info":"Spirit · the Spirit realm · 2 rooms · 3 arches"},
+"NXL128DB8B-S@day":{"road":"33bbf26e","scene":"70693125","n":"349/155686","env":"d6583b0e","info":"Spirit · the Spirit realm · 2 rooms · 3 arches"},
+"S1ABCDE-100000000000000001-S@night":{"road":"bbb32557","scene":"f9d8f78c","n":"142/58948","env":"b9b69264","info":"Spirit · the Spirit realm · 1 room · 2 arches"},
+"S1ABCDE-100000000000000001-S@day":{"road":"bbb32557","scene":"f9d8f78c","n":"142/58948","env":"b9b69264","info":"Spirit · the Spirit realm · 1 room · 2 arches"}}

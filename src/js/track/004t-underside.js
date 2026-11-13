@@ -105,21 +105,21 @@ function rollOf(r){if(!r||!r.brS||r.brS.kind!=='flip'||r.br!==r.brS.fB||!T.spl[i
 const FLIP_V=`attribute vec3 aF;varying vec3 vF;varying vec2 vUv;varying vec3 vW;void main(){vF=aF;vUv=uv;vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}`;
 /* aF: x the field's amount (0 at the fork, 1 once parted), y its strength, z 0 a face (lanes and bands across, uv.x
    across it) or 1 a side (a glow from the face, uv.x down it) */
-const FLIP_F=`uniform float uT,uCalm,uKick;varying vec3 vF;varying vec2 vUv;varying vec3 vW;
+const FLIP_F=`uniform float uT,uCalm,uKick,uWorld;varying vec3 vF;varying vec2 vUv;varying vec3 vW;
   void main(){float f=vF.x*vF.y;if(f<0.003)discard;float a=vUv.x,m=vUv.y,sp=1.-0.85*uCalm,g;
     vec3 c1=vec3(0.25,0.94,1.),c2=vec3(0.78,0.36,1.),col=mix(c1,c2,0.5+0.5*sin(m*0.031-uT*0.7*sp));
     float b=fract(m/11.-uT*1.4*sp);
     if(vF.z<0.5){float ln=0.;for(int i=1;i<4;i++)ln+=smoothstep(0.016,0.,abs(a-float(i)*0.25));
       float cr=smoothstep(0.09,0.,abs(b-0.5))*0.8,ed=smoothstep(0.08,0.,a)+smoothstep(0.92,1.,a);g=0.08+ln*0.5+cr*0.55+ed*0.4;}
     else{g=(0.25+0.75*smoothstep(0.,1.,1.-a))*(0.45+0.55*smoothstep(0.2,0.,abs(b-0.5)));col=mix(col,c1,0.4);}
-    g*=f*(1.+0.4*uKick*(1.-uCalm))*(1.-0.55*uCalm)*(1.-smoothstep(600.,2400.,distance(vW,cameraPosition)));
+    g*=f*(1.+0.4*uKick*(1.-uCalm))*(1.-0.55*uCalm)*uWorld*(1.-smoothstep(600.,2400.,distance(vW,cameraPosition)));
     gl_FragColor=vec4(col*g,1.);}`;
 function flipRoad(c){const{group,add,strip,splits,N,ds,edgeCol,roadM,edgeM,pads,zones,padM,pM,sw,eIn,padLen}=c,out=[];
   for(const S0 of splits){if(S0.kind!=='flip')continue;const k0=S0.i0,n=S0.n,s=S0.side,F=S0.b[S0.fB],T0=S0.b[S0.tB],Tk=S0.Tk,A=S0.adj,
       ix=i=>Math.max(0,Math.min(n,i-k0)),o={from:k0,to:k0+n+1};
     /* the field's amount along it: in over the second half of the fork and the first of the roll, out the same way */
     const fA=k=>{const q=Math.min(k,n-k);return ss01((q-S0.nA*0.35)/(S0.nA*0.65+S0.nB*0.25))};
-    const mat=(st)=>new THREE.ShaderMaterial({uniforms:{uT:SPU.uT,uCalm:SPU.uCalm,uKick:SPU.uKick},vertexShader:FLIP_V,fragmentShader:FLIP_F,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4,fog:false});
+    const mat=(st)=>new THREE.ShaderMaterial({uniforms:{uT:SPU.uT,uCalm:SPU.uCalm,uKick:SPU.uKick,uWorld:SPU.uWorld},vertexShader:FLIP_V,fragmentShader:FLIP_F,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4,fog:false});
     const fieldM=mat(),glassF=new THREE.MeshBasicMaterial({color:0x8a6cff,transparent:true,opacity:.14,side:THREE.DoubleSide,depthWrite:false}),railF=new THREE.MeshBasicMaterial({color:0x3ff0ff,side:THREE.DoubleSide});
     const uM=roadM.clone();uM.side=THREE.DoubleSide;uM.emissive=new THREE.Color(0x5a5a5a);uM.emissiveMap=roadM.map;
     const darkF=new THREE.MeshLambertMaterial({color:0x0e1015,side:THREE.DoubleSide});
