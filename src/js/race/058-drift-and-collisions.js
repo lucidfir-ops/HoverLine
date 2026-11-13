@@ -241,7 +241,7 @@ function physics(r,inp,dt){
   if(!r.air||r.air===true){for(const j of T.jumps)if(uPrev<j.u0&&uu>=j.u0&&uu<j.u1&&!(j.sp&&!(r.brS===j.sp&&r.br===j.b))){const ex=r.air===true?r.h-HOVER:0,v0=r.air===true?r.vh:0;if(j.stk)r.stkS=null;
     /* Prototype 37: a frame out of phase, or hit in the last 2.5 s, leaves the lip at least fast enough to clear the gap
        (level nose, with a margin): most falls were frames hit just before the lip that reached it at walking pace. */
-    {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
+    {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'||j.kind==='portal'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them (Prototype 63: and a portal jump, the launch pad) */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
     r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)}}
   /* Prototype 60: still in the air from one new jump at the lip of the next (drops in a row): that one carries the flight
      on, from the same height over the road */
@@ -264,7 +264,7 @@ function physics(r,inp,dt){
         if(up){r.hb-=J.hu;hb0-=J.hu;if(r.hb<HOVER){r.v*=0.88;r.hb=HOVER;r.vh=Math.max(r.vh,0);if(r===player){S.shake=Math.min(1,S.shake+0.4);audio.hit(0.4)}}}}
       else if(r.stkB===SP.lowB&&T.spl[idxAt(uu)]){const f=Math.min(SP.n,Math.max(0,Math.round((uu-SP.u0)/T.ds))),B=SP.b[SP.upB];if(Math.abs(r.lat-B.c[f])<B.w[f]+1.5){const cap=B.h[f]-SP.b[SP.lowB].h[f]-2.6;if(r.hb>cap){r.hb=cap;r.vh=Math.min(r.vh,0)}}}}
     /* and a hit in the air over one of their gaps doesn't stop a frame short of the road that catches it */
-    if(j&&(J.kind==='sjump'||J.kind==='cjump')&&r.v<(r.jNeed||0))r.v=r.jNeed;
+    if(j&&(J.kind==='sjump'||J.kind==='cjump'||J.kind==='portal')&&r.v<(r.jNeed||0))r.v=r.jNeed;
     r.h=r.hb-(j?(J.kind?jC(J,x/J.G):gapC(x/J.G,J.G)):0);if(x>J.G+400)r.hb=Math.min(r.hb,HOVER);
     /* Past the gap and below the road: only a clipped landing if the ship was already below the far edge when it got there
        (a steep drop that crosses the road level within one step is just a hard landing). */

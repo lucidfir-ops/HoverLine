@@ -14,7 +14,8 @@ const SPC_O={margin:6,below:4,above:16,jumpAbove:40,sight:300,camBack:12,camUp:4
 function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2,drops=ctx.drops||[];
   /* where frames leave the road: every jump (its gap and 80 m after), every drop and every spire's fall */
   const air=new Uint8Array(N),mark=(u0,u1)=>{for(let u=u0;u<=u1;u+=ds){air[(((Math.round(u/ds))%N)+N)%N]=1}};
-  for(const j of jumps||[])mark(j.u0-30,j.u1+80);for(const d of drops)if(d.u0!=null)mark(d.u0-30,(d.u1!=null?d.u1:d.u0)+80);
+  /* (Prototype 63: a portal jump's air from 12 m before its lip, clear of the exit's ring, to where the fastest land, 420 m on) */
+  for(const j of jumps||[])if(j.kind==='portal')mark(j.u0-12,j.u0+420);else mark(j.u0-30,j.u1+80);for(const d of drops)if(d.u0!=null)mark(d.u0-30,(d.u1!=null?d.u1:d.u0)+80);
   for(const f of feats||[])if(f.kind==='drop'||f.kind==='sjump'||f.kind==='cjump')mark(f.u0-30,f.u1+80);
   /* the samples: {p, r, up, t, hw, above}, in a 3D grid of CELL metres (grid keys wrap every 1024 cells, 20 km and more:
      a far cell that shares a key only adds candidates, which the exact tests then turn away) */
@@ -38,10 +39,23 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
      is clear without the exact tests (they are only needed near the road and near the bends' sight lines) */
   const QC=20,qk=(a,b,c)=>((a&1023)<<20)|((b&1023)<<10)|(c&1023),QN=new Set(),QS=new Set();
   for(let n=0;n<S.length;n+=3){const s=S[n],a=Math.floor(s.x/QC),b=Math.floor(s.y/QC),c=Math.floor(s.z/QC);for(let da=-3;da<=3;da++)for(let db=-3;db<=3;db++)for(let dc=-3;dc<=3;dc++)QN.add(qk(a+da,b+db,c+dc))}
-  const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0};let nIn=0;
+  const ca={x:0,y:0,z:0},tb={x:0,y:0,z:0},cm={x:0,y:0,z:0},_c=new THREE.Vector3();let nIn=0;
+  /* Prototype 63: a sight line from before a portal's entrance to the road after it is the view through the portal: from
+     the camera carried by the portal (M) to the road beyond the exit; brkIn finds the portal between two samples */
+  const PT=ctx.port||[],brkIn=(a,b)=>{for(const o of PT)if((o.k-a+N)%N<(b-a+N)%N)return o;return null};
+  const addSL=sg=>{const n=SL.push(sg)-1;
+        const a0=Math.floor(Math.min(sg[0],sg[3])/SG),a1=Math.floor(Math.max(sg[0],sg[3])/SG),b0=Math.floor(Math.min(sg[1],sg[4])/SG),b1=Math.floor(Math.max(sg[1],sg[4])/SG),c0=Math.floor(Math.min(sg[2],sg[5])/SG),c1=Math.floor(Math.max(sg[2],sg[5])/SG);
+        /* long rays cross many cells: put them only in the cells the line passes near (every half cell along it) */
+        const len=Math.hypot(sg[3]-sg[0],sg[4]-sg[1],sg[5]-sg[2]),nn=Math.max(1,Math.ceil(len/(SG*0.5)));const seen=new Set();
+        if((a1-a0+1)*(b1-b0+1)*(c1-c0+1)<=8){for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++)seen.add(skey(a,b,c))}
+        else for(let q=0;q<=nn;q++){const f=q/nn,x=sg[0]+(sg[3]-sg[0])*f,y=sg[1]+(sg[4]-sg[1])*f,z=sg[2]+(sg[5]-sg[2])*f;for(const dx of[-1,0,1])for(const dz of[-1,0,1])seen.add(skey(Math.floor((x+dx*SG*0.3)/SG),Math.floor(y/SG),Math.floor((z+dz*SG*0.3)/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y+SG*0.3)/SG),Math.floor(z/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y-SG*0.3)/SG),Math.floor(z/SG)))}
+        for(let q=0,nq=Math.max(1,Math.ceil(len/10));q<=nq;q++){const f=q/nq;QS.add(qk(Math.floor((sg[0]+(sg[3]-sg[0])*f)/QC),Math.floor((sg[1]+(sg[4]-sg[1])*f)/QC),Math.floor((sg[2]+(sg[5]-sg[2])*f)/QC)))}
+        for(const kk of seen){let L=SM.get(kk);if(!L)SM.set(kk,L=[]);L.push(n)}};
   for(let i=0;i<N;i+=step){if(ctx.gap&&ctx.gap[i])continue;const ic=(i-back+N)%N;
     for(const cl of[-hw*0.6,0,hw*0.6]){ptAt(ic,cl,O.camUp+1,ca);
-      for(let k=1;k<=nT;k++){const it=(i+k*tst)%N;if(ctx.gap&&ctx.gap[it])continue;for(const tl of[-hw,0,hw]){ptAt(it,tl,1,tb);
+      for(let k=1;k<=nT;k++){const it=(i+k*tst)%N;if(ctx.gap&&ctx.gap[it])continue;const po=PT.length?brkIn(ic,it):null;
+        if(po){_c.set(ca.x,ca.y,ca.z).applyMatrix4(po.M);cm.x=_c.x;cm.y=_c.y;cm.z=_c.z}
+        for(const tl of[-hw,0,hw]){ptAt(it,tl,1,tb);if(po){if(portalThrough(po,cm.x,cm.y,cm.z,tb.x,tb.y,tb.z))addSL([cm.x,cm.y,cm.z,tb.x,tb.y,tb.z]);continue}
         /* a sight line that stays inside the keep-out all the way adds nothing (anything on it is already kept out): most
            do, on any road that isn't bending hard, so they are left out (checked at six points, each in the box of a
            road sample near where it should be) */
@@ -49,14 +63,11 @@ function spClear(ctx){const{N,ds,P,R,U,Tg,splits,jumps,feats}=ctx,O=SPC_O,hw=W/2
           for(let dm=-3;dm<=3&&!hit;dm++){const m=((m0+dm)%N+N)%N,dx=x-P[m].x,dy=y-P[m].y,dz=z-P[m].z;if(Math.abs(dx*Tg[m].x+dy*Tg[m].y+dz*Tg[m].z)>ds*0.75)continue;if(Math.abs(dx*R[m].x+dy*R[m].y+dz*R[m].z)>hw+O.margin-0.5)continue;const h=dx*U[m].x+dy*U[m].y+dz*U[m].z;if(h>-O.below+0.5&&h<O.above-0.5)hit=true}
           if(!hit)inside=false}
         if(inside){nIn++;continue}
-        const sg=[ca.x,ca.y,ca.z,tb.x,tb.y,tb.z],n=SL.push(sg)-1;
-        const a0=Math.floor(Math.min(sg[0],sg[3])/SG),a1=Math.floor(Math.max(sg[0],sg[3])/SG),b0=Math.floor(Math.min(sg[1],sg[4])/SG),b1=Math.floor(Math.max(sg[1],sg[4])/SG),c0=Math.floor(Math.min(sg[2],sg[5])/SG),c1=Math.floor(Math.max(sg[2],sg[5])/SG);
-        /* long rays cross many cells: put them only in the cells the line passes near (every half cell along it) */
-        const len=Math.hypot(sg[3]-sg[0],sg[4]-sg[1],sg[5]-sg[2]),nn=Math.max(1,Math.ceil(len/(SG*0.5)));const seen=new Set();
-        if((a1-a0+1)*(b1-b0+1)*(c1-c0+1)<=8){for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++)seen.add(skey(a,b,c))}
-        else for(let q=0;q<=nn;q++){const f=q/nn,x=sg[0]+(sg[3]-sg[0])*f,y=sg[1]+(sg[4]-sg[1])*f,z=sg[2]+(sg[5]-sg[2])*f;for(const dx of[-1,0,1])for(const dz of[-1,0,1])seen.add(skey(Math.floor((x+dx*SG*0.3)/SG),Math.floor(y/SG),Math.floor((z+dz*SG*0.3)/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y+SG*0.3)/SG),Math.floor(z/SG)));seen.add(skey(Math.floor(x/SG),Math.floor((y-SG*0.3)/SG),Math.floor(z/SG)))}
-        for(let q=0,nq=Math.max(1,Math.ceil(len/10));q<=nq;q++){const f=q/nq;QS.add(qk(Math.floor((sg[0]+(sg[3]-sg[0])*f)/QC),Math.floor((sg[1]+(sg[4]-sg[1])*f)/QC),Math.floor((sg[2]+(sg[5]-sg[2])*f)/QC)))}
-        for(const kk of seen){let L=SM.get(kk);if(!L)SM.set(kk,L=[]);L.push(n)}}}}}
+        addSL([ca.x,ca.y,ca.z,tb.x,tb.y,tb.z])}}}}
+  /* and the portal jump watched: from the chase cameras on the 400 m before the entrance to the ramp and the flight (the
+     road and 8 m over it, to 80 m past the main road), and from the ramp and the flight back down to the main road's
+     last 300 m (the jumpers looking down on the ones coming): nothing may stand in those lines either (portalWatch, 004s) */
+  for(const sg of portalWatch(ctx,O))addSL(sg);
   /* does a ball touch a sight line? (a little margin for the other camera views) */
   const sight=(x,y,z,r)=>{r+=1.5;const a0=Math.floor((x-r)/SG),a1=Math.floor((x+r)/SG),b0=Math.floor((y-r)/SG),b1=Math.floor((y+r)/SG),c0=Math.floor((z-r)/SG),c1=Math.floor((z+r)/SG);
     for(let a=a0;a<=a1;a++)for(let b=b0;b<=b1;b++)for(let c=c0;c<=c1;c++){const L=SM.get(skey(a,b,c));if(!L)continue;

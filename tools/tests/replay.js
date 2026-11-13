@@ -6,16 +6,16 @@ const { launch, open, ok, done } = require('./lib.js');
 const CODE = 'WQ12345A', LAPS2 = { 'hoverline.laps': '2' };
 const stopLoop = () => { window.requestAnimationFrame = () => 0 };
 // one race: set the number, start, run the countdown and the race at 1/60 s, give back who finished when
-async function race(p, n) {
-  return p.evaluate(async (n) => {
+async function race(p, n, code = CODE, view = false) {
+  return p.evaluate(async ([n, code, view]) => {
     const H = window.__hl, T0 = Date.now(); H.RACE.force = n;
-    const c = H.parseCode('WQ12345A'); H.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp, c.bm);
+    const c = H.parseCode(code); H.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp, c.bm);
     await H.startRace(); H.S.goAt = null;
     const rn = H.LOG.cur ? H.LOG.cur.rn : null, rnNow = H.RACE.n;
-    let t = 0; while (t < 400) { H.step(1 / 60); t += 1 / 60; if (H.racers.every((r) => r.finishT != null)) break }
+    let t = 0; while (t < 400) { H.step(1 / 60); if (view) H.portalView(H.camera); t += 1 / 60; if (H.racers.every((r) => r.finishT != null)) break }
     const rk = [...H.racers].sort((a, b) => (a.finishT ?? 1e9) - (b.finishT ?? 1e9) || b.utot - a.utot);
     return { rn, rnNow, steps: Math.round(t * 60), order: rk.map((r) => r.name), times: rk.map((r) => r.finishT), wrecks: rk.map((r) => r.stat.wrecks), ms: Date.now() - T0 };
-  }, n);
+  }, [n, code, view]);
 }
 const same = (a, b) => JSON.stringify([a.order, a.times, a.wrecks]) === JSON.stringify([b.order, b.times, b.wrecks]);
 (async () => {
@@ -32,6 +32,11 @@ const same = (a, b) => JSON.stringify([a.order, a.times, a.wrecks]) === JSON.str
   ok(JSON.stringify(A.times) !== JSON.stringify(C.times) && A.times.some((x, i) => x !== C.times[i]), 'the times differ with another number');
   const p2 = await open(b, 'replay2', o); const D = await race(p2, 777001);
   ok(same(A, D), 'a fresh page, same numbers: the same race');
+  // Prototype 63: a Spirit track with a portal jump replays too, and the view through the portal (drawn after every step
+  // here) changes nothing about the race
+  const PC = 'W1234567-' + '1' + '0'.repeat(15) + '1-S', E = await race(p, 777003, PC), F = await race(p2, 777003, PC, true);
+  console.log('E', JSON.stringify({ ...E, times: E.times.map((x) => x && +x.toFixed(2)) }));
+  ok(E.times.every((x) => x != null) && same(E, F), 'a portal track (' + PC + '): the same race on another page, with the view through the portal drawn every step');
   // without forcing, each race gets a number of its own (two races on one track differ, as before)
   const R = await p.evaluate(async () => { const H = window.__hl, ns = []; for (let k = 0; k < 3; k++) { await H.startRace(); ns.push(H.RACE.n); H.S.goAt = null } return ns });
   ok(new Set(R).size === 3 && R.every((x) => x > 0), 'a race started without a forced number draws a new one each time (' + R.join(', ') + ')');

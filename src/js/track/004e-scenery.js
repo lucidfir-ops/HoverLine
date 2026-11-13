@@ -213,7 +213,7 @@ function sceneryCtx(rd,bm){const{seed,N,P,Tg,ds,R,U,gap,kind,feats,Kg,jumps,drop
             for(let a2=0;a2<=n;a2++)for(let b2=0;b2<=n-a2;b2++){const u=a2/n,v=b2/n,w=1-u-v;if(inRoad(ax*u+bx*v+cx*w,ay*u+by*v+cy*w,az*u+bz*v+cz*w))return false}}}}
         return true};
     return{scan,tilt,inRoad,clearTri}};
-  const ctx={seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,drops,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
+  const ctx={port:rd.port||null,seed,N,ds,P,R,U,Tg,kind,gap,spl,splits,feats,jumps,drops,mag,ctop,Kn,Kg,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,cxT,czT,group,add,strip,basis,dark,bk,LK,day,dial,dens,nFall,nGey,nTun,er,lam,BOX,IM,lines,lnA,lnB,lnBio,winTex,lightTex,near,KP,KG,CELL,kk,solid,free,claim,side,pylons,spireFrames,helixMiddles,falls,geysers,dome,daySky,starSky,buildTunnels,roadSpace,pl,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,floorY:minY-70,water:null,sky:null,prism:null,inside:null,clock:[],info:[]};
   return ctx}
 function buildScenery(rd,bm){const ctx=sceneryCtx(rd,bm);SCENERY[ctx.bk](ctx);
   const{bk,LK,day,er,floorY,ds,lam,BOX,group,fallsL,geys,caps,jel,kelp,fish,schools,mantas,tunnels,tun,pl}=ctx;

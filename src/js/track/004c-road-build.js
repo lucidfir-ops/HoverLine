@@ -2,7 +2,7 @@
 /* Prototype 61: the second step of buildTrack: draws the road from rd (roadShape) into a new group and places what races
    use on it (pads, zones, marks, wall heights, catch fences, mag-lock). Returns them, the drawing helpers (strip, add,
    basis, the road's materials) and the road's bounds, for the scenery and T. */
-function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl,splits,feats,jumps,drops,gI0,r}=rd;
+function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl,splits,feats,jumps,drops,gI0,r,brk}=rd;
   const group=new THREE.Group();scene.add(group);
   function strip(latA,hA,latB,hB,o={}){
     const from=o.from||0,to=o.to==null?N:o.to,rows=to-from+1,uvS=o.uv||0;
@@ -23,7 +23,7 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
   const glass=new THREE.MeshBasicMaterial({color:0xffb000,transparent:true,opacity:.10,side:THREE.DoubleSide,depthWrite:false});
   const rail=new THREE.MeshBasicMaterial({color:0xffb000,side:THREE.DoubleSide});
   const dark=new THREE.MeshLambertMaterial({color:0x0e1015,side:THREE.DoubleSide});
-  const skip=new Uint8Array(N);for(let i=0;i<N;i++)skip[i]=gap[i]||spl[i]?1:0;
+  const skip=new Uint8Array(N);for(let i=0;i<N;i++)skip[i]=gap[i]||spl[i]||brk&&brk[i]?1:0;/* (Prototype 63: the road ends at a portal's entrance and starts again at its exit) */
   /* mag-lock: the drop down the middle of a spire, from just before the edge to the bottom of the pull-out */
   const mag=new Uint8Array(N);for(const d of drops){const a=Math.floor((d.u0-30)/ds),b=Math.ceil((d.u1+10)/ds);for(let k=a;k<=b;k++)mag[((k%N)+N)%N]=1}
   {const mM=new THREE.MeshBasicMaterial({map:magTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});let k=0;
@@ -169,7 +169,7 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
   {const railM=rail,fG=new THREE.MeshBasicMaterial({color:0xffb000,transparent:true,opacity:.06,side:THREE.DoubleSide,depthWrite:false}),postM=new THREE.MeshLambertMaterial({color:0x2a2e36});
    const fl=0.12,w0=W/2+0.05,c=i=>ctop[i%N],bot=i=>gap[i%N]?-0.3:wallH[i%N]+0.18,runs=[],posts=[],pE=Math.round(12/ds);
    let k0=0;while(k0<N&&ctop[k0]>0)k0++;
-   for(let k=k0;k<k0+N;k++){if(!(ctop[k%N]>0))continue;let e=k;while(e<k0+N&&ctop[e%N]>0)e++;runs.push([k,e-1]);k=e}
+   for(let k=k0;k<k0+N;k++){if(!(ctop[k%N]>0))continue;let e=k;while(e<k0+N&&ctop[e%N]>0&&!(brk&&brk[(e-1+N)%N]&&e>k))e++;runs.push([k,e-1]);k=e-1}
    for(const[a,b]of runs){
      for(const sd of[-1,1]){const L=h=>sd*(w0+fl*h);
        add(strip(i=>L(bot(i)),bot,i=>L(c(i)),c,{from:a,to:b}),fG);add(strip(i=>L(c(i)),c,i=>L(c(i)+0.2),i=>c(i)+0.2,{from:a,to:b}),railM)}
@@ -216,5 +216,7 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
     const beam=new THREE.Mesh(new THREE.BoxGeometry(W+3.1,k?0.6:1.4,0.7),m);beam.position.set(0,8,0);g.add(beam);
     g.position.copy(P[i]);g.quaternion.copy(basis(i));group.add(g)}
 
+  /* Prototype 63: the portals' rings, discs and signs (004s) */
+  const portFx=rd.port?portalRoad({...rd,group,strip,add,basis,standOK,signI,wallH,ctop}):null;
   let minY=1e9,maxY=-1e9,minX=1e9,maxX=-1e9,minZ=1e9,maxZ=-1e9;for(const p of P){minY=Math.min(minY,p.y);maxY=Math.max(maxY,p.y);minX=Math.min(minX,p.x);maxX=Math.max(maxX,p.x);minZ=Math.min(minZ,p.z);maxZ=Math.max(maxZ,p.z)}
-  return{group,strip,add,basis,dark,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ}}
+  return{group,strip,add,basis,dark,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,signI,gantI,minX,maxX,minY,maxY,minZ,maxZ,portFx}}

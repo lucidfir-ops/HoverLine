@@ -2,7 +2,7 @@
 /* Prototype 61 (the split of 004-track.js): the first step of buildTrack. Returns the road object rd: the centreline P,
    frames R U Tg, headings H, curvature (Cs over 60 m, Kg in the road, Kn over the crest), kind and gap per sample, feats,
    jumps, drops, splits (spl per sample), and what the next steps need (the rng r, gI0 where the green strips start). */
-function roadShape(seed,wk,cx,lk,sp){
+function roadShape(seed,wk,cx,lk,sp,bk){
   const D=DIFF[wk]||DIFF.S,LN=LENS[lk]||LENS.M;W=D.w;
   let r,L,N,ds,P,Tg,H,C,Cs,minR=0;
   /* About a quarter of tracks (or the editor's Figure 8) are a figure of eight: the circuit crosses itself once, the two
@@ -53,7 +53,7 @@ function roadShape(seed,wk,cx,lk,sp){
   {const B=new Float32Array(N);for(let i=0;i<N;i++)B[i]=clamp(-Cs[i]*60,-0.5,0.5);
    for(let i=0;i<N;i++){const t=Tg[i],h=H[i];const right=new THREE.Vector3(-Math.cos(h),0,Math.sin(h));const back=t.clone().negate();const up=new THREE.Vector3().crossVectors(back,right).normalize();
     const b=B[i];R.push(right.clone().multiplyScalar(Math.cos(b)).addScaledVector(up,-Math.sin(b)));U.push(up.clone().multiplyScalar(Math.cos(b)).addScaledVector(right,Math.sin(b)))}}
-  let Kg=C,kind=new Uint8Array(N),gap=new Uint8Array(N),feats=[],jumps=[],drops=[];
+  let Kg=C,kind=new Uint8Array(N),gap=new Uint8Array(N),feats=[],jumps=[],drops=[],brk=null,port=null;
   /* Simple tracks: about half get one or two big vertical sections (rolling sweeps, a long dive, or a steep climb to a
      plateau and back down), and nothing that turns you over. Complex tracks pick from the full set. */
   /* Complex tracks pick a theme (a subset of feature kinds) and pack it in nearly as tightly as a maxed-out custom track,
@@ -67,12 +67,16 @@ function roadShape(seed,wk,cx,lk,sp){
   let fopt=null;if(!cx){const r2=rng((seed^0x5E1DE)>>>0),nv=r2()<0.45?0:r2()<0.65?1:2,sp1=rng((seed^0x5917E)>>>0)()<0.3;if(nv||sp1)fopt={r:r2,pool:[['sweep',2],['dive',1.2],['climb',1.6]],count:nv,avoid};if(sp1)fopt.extra=['spire']}
   else{const rt=rng((seed^0x7E3A5)>>>0),th=TTHEMES[Math.floor(rt()*TTHEMES.length)];fopt={r,lf:LN.f,pool:th.pool,count:14,dense:true,theme:th.n,avoid}}
   /* Custom tracks (the editor): exactly the features asked for, as many as fit. */
-  if(sp)fopt=FKG.some(k=>sp.n[k]>0)?{r,lf:LN.f,want:sp.n,avoid}:null;
+  /* (Prototype 63: a portal only in the Spirit realm; elsewhere its count is ignored) */
+  if(sp)fopt=FKG.some(k=>sp.n[k]>0&&(k!=='portal'||bk==='S'))?{r,lf:LN.f,want:bk==='S'||!sp.n.portal?sp.n:{...sp.n,portal:0},avoid}:null;
   /* Prototype 60: codes from Prototype 60 on (v1) may have the new pieces */
   const v1=seed>=TV1;if(fopt&&v1)fopt.v1=true;
   /* and a complex one may have a drop, a speed jump or a long jump, each on its own draw (14%, 15%, 12%); the long ones
      often don't fit (short tracks, other pieces in the way), so about 10%, 7% and 4% of new complex tracks have one */
   if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.14)ex.push('drop');if(rn()<0.15)ex.push('sjump');if(rn()<0.12)ex.push('cjump');if(ex.length)fopt.extra=ex}
+  /* Prototype 63: about one Spirit track in four gets a portal jump (004s), drawn on its own numbers so the rest of the
+     track is built as it would be without one; where no straight is long enough it is left out */
+  if(bk==='S'&&!sp&&rng((seed^0x9047A1)>>>0)()<0.8){if(!fopt)fopt={r:rng((seed^0x9047A2)>>>0),pool:[['sweep',1]],count:0,avoid};fopt.extra=[...(fopt.extra||[]),'portal']}
   let dropped={};
   if(fopt){let best=null;const ban={};
     /* Try up to six layouts and keep the first with no faults (see trackFaults). If none is clean, leave out one of each
@@ -85,7 +89,7 @@ function roadShape(seed,wk,cx,lk,sp){
       if(!best||c<best.c){best={f,c,o,fl}}if(!c)break;
       if(att>=5){const seen=new Set();for(const x of fl)for(const k of x.in)if(!seen.has(k)){seen.add(k);ban[k]=(ban[k]||0)+1}if(!seen.size&&att>=6&&att<13)att=13}}
     const f=best.f;if(best.o.want)for(const k of FKG){const cut=(fopt.want[k]||0)-(best.o.want[k]||0);if(cut>0)best.o.dropped[k]=(best.o.dropped[k]||0)+cut}
-    Object.assign(fopt,{dropped:best.o.dropped});dropped=fopt.dropped||{};({P,R,U,Tg,H,N,ds,L,kind,gap,feats,jumps}=f);drops=f.drops||[];Kg=f.K;Cs=new Float32Array(N);
+    Object.assign(fopt,{dropped:best.o.dropped});dropped=fopt.dropped||{};({P,R,U,Tg,H,N,ds,L,kind,gap,feats,jumps}=f);drops=f.drops||[];brk=f.brk||null;port=f.port||null;Kg=f.K;Cs=new Float32Array(N);
     const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let s=0;for(let k=-K;k<=K;k++)s+=Kg[(i+k+N)%N];Cs[i]=s/(2*K+1)}}
   /* ---- splits: the road divides into a long route and a short one, then joins again ----
      The long route swings 70-140 m out to one side over a hill and carries two boost pads, an ammo strip and a shield
@@ -180,7 +184,7 @@ function roadShape(seed,wk,cx,lk,sp){
         height, swings out to one side and comes down to join the lower one, which is wider at first to catch the rest;
       - catch: the long jump's landing, one road half as wide again as the track for 300 m, narrowing back.
       Each is checked clear of the rest of the track (routePts) and left out if it isn't: the jump then lands on the road. */
-   for(const f of feats){if(f.kind!=='drop'&&f.kind!=='sjump'&&f.kind!=='cjump')continue;const js=jumps.filter(j=>j.kind===f.kind&&j.u0>=f.u0&&j.u0<=f.u1).sort((a,b)=>a.u0-b.u0);if(!js.length)continue;
+   for(const f of feats){if(f.kind!=='drop'&&f.kind!=='sjump'&&f.kind!=='cjump'&&f.kind!=='portal')continue;const js=jumps.filter(j=>j.kind===f.kind&&j.u0>=f.u0&&j.u0<=f.u1).sort((a,b)=>a.u0-b.u0);if(!js.length)continue;
      const rf=rng((seed^0x60E1^Math.round(f.u0))>>>0),m=Math.round(90/ds),B2=n=>[0,1].map(()=>({c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)})),inGI=(i0,n)=>i0+n+Math.round(20/ds)<gI0;
      if(f.kind==='drop'&&f.tail==='split'){const jl=js[js.length-1],i0=Math.round((jl.u1+15)/ds),n=Math.round(f.Ls/ds);if(!inGI(i0,n))continue;
        const A=45+rf()*45+W*1.1,HL=7+rf()*9,HS=rf()<0.5?-(3+rf()*4):0,Aw=(6+rf()*5)*0.55,kw=rf()<0.5?2:3,wL=W*0.42,wS=Math.max(5.6,W*0.32),pref=rf()<0.5?1:-1;
@@ -205,7 +209,7 @@ function roadShape(seed,wk,cx,lk,sp){
          let sep=true;for(let k=0;k<=n&&sep;k++){const d=side*(Ub.c[k]-Db.c[k]);if(d-(Ub.w[k]+Db.w[k])<-0.01&&Ub.h[k]-Db.h[k]<8.5)sep=false}if(!sep)continue;
          const pts=routePts(i0,n,m,Ub);if(!pts)continue;finishB(B);const lb=bonus==='up'?ub:1-ub;Ub.long=lb===ub;Db.long=!Ub.long;
          const S0={kind:'stack',i0,n,u0:i0*ds,u1:(i0+n)*ds,side,longB:lb,upB:ub,lowB:1-ub,bonus,b:B,pts,feat:1};mark(S0);j.stk=S0;j.hu=Hu;break}}
-     else if(f.kind==='cjump'){const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Lc/ds);if(!inGI(i0,n))continue;
+     else if(f.kind==='cjump'||f.kind==='portal'){/* (Prototype 63: and a portal jump's catch road, the same shape) */const j=js[0],i0=Math.round(j.u1/ds),n=Math.round(f.Lc/ds);if(!inGI(i0,n))continue;
        const B=[{c:new Float32Array(n+1),w:new Float32Array(n+1),h:new Float32Array(n+1)}];for(let k=0;k<=n;k++){const x=k/n;B[0].w[k]=W/2*(1.55-0.55*ss01((x-0.5)/0.42))}
        finishB(B);B[0].long=false;const pts=[];for(let k=0;k<=n;k+=Math.max(1,Math.round(12/ds)))pts.push(P[(i0+k)%N].clone());mark({kind:'catch',i0,n,u0:i0*ds,u1:(i0+n)*ds,side:1,longB:0,b:B,pts,feat:1});j.ctch=1}}
    for(const S0 of splits){if(S0.b.length!==2)continue;const[A0,A1]=S0.b,adj=new Uint8Array(S0.n+1);let any=0;
@@ -219,9 +223,10 @@ function roadShape(seed,wk,cx,lk,sp){
    if(fopt&&splits.length){const K=Math.max(1,Math.round(30/ds));for(let i=0;i<N;i++){let a=0;for(let k=-K;k<=K;k++)a+=Kg[(i+k+N)%N];Cs[i]=a/(2*K+1)}}
    if(sp&&splitDrop)dropped.split=(dropped.split||0)+splitDrop}
   const Kn=new Float32Array(N);{const raw=new Float32Array(N),d=new THREE.Vector3();for(let i=0;i<N;i++){d.subVectors(Tg[(i+1)%N],Tg[(i-1+N)%N]).divideScalar(2*ds);raw[i]=d.dot(U[i])}
+    if(port)for(const o of port){raw[o.k]=raw[(o.k-1+N)%N];raw[(o.k+1)%N]=raw[(o.k+2)%N]}
     for(let i=0;i<N;i++){let a=0;for(let k=-3;k<=3;k++)a+=raw[(i+k+N)%N];Kn[i]=a/7}}
   let corners=0;{let inC=false;for(let i=0;i<N;i++){const c=Math.abs(Cs[i])>1/180&&!kind[i];if(c&&!inC)corners++;inC=c}}
-  return{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,gI0,r,seed,wk,cx,lk,sp}}
+  return{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,gI0,r,seed,wk,cx,lk,sp,brk,port}}
 /* Contiguous index runs that are not jump gaps (the last run wraps past the start line). */
 /* What a road must never have (Prototype 31): two parts of the lap passing through each other or nearly touching (closer than
    a road width side by side and under 9.5 m apart in height at the edges, spirals and spires included), a kink (the direction turning more
@@ -238,6 +243,8 @@ function trackFaults(f,W){const{P,R,Tg,feats,N,ds,gap}=f,own=feats.filter(x=>x.k
       for(const j of a){const dj=j-i;if(dj<sep||N-dj<sep)continue;const q=P[j],ex=p.x-q.x,ez=p.z-q.z;if(ex*ex+ez*ez<w2&&Math.abs(p.y-q.y)-(Math.abs(R[i].y)+Math.abs(R[j].y))*W/2<9.5&&!mine(i*ds,j*ds))add('clash',i*ds,j*ds)}}}
   const skip=new Uint8Array(N);for(const x of own)for(let k=Math.floor((x.u0+10)/ds);k<=Math.ceil((x.u1-10)/ds);k++)skip[((k%N)+N)%N]=1;
   for(const d of f.drops||[])for(let k=Math.floor(d.u0/ds)-2;k<=Math.ceil(d.u1/ds)+2;k++)skip[((k%N)+N)%N]=1;
+  /* (Prototype 63: a portal's break turns the road at once: no kink to find there) */
+  for(const o of f.port||[])for(let k=o.k-Math.ceil(32/ds);k<=o.k+Math.ceil(32/ds);k++)skip[((k%N)+N)%N]=1;
   const k6=Math.max(1,Math.round(6/ds)),k15=Math.max(1,Math.round(15/ds)),ang=(a,b)=>Math.acos(clamp(a.dot(b),-1,1));
   for(let i=0;i<N;i++){if(skip[i]||gap[i]||gap[(i+k15)%N]||gap[(i-k15+N)%N])continue;
     if(ang(Tg[(i-k6+N)%N],Tg[(i+k6)%N])>0.52||ang(Tg[(i-k15+N)%N],Tg[(i+k15)%N])>0.96)add('kink',i*ds);

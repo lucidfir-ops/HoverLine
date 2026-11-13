@@ -46,15 +46,17 @@ function addFeatures(b,r,W,opt={}){
        straight down the middle, pulling out underneath the ring and back onto the line */
     else if(kd==='spire'){s.Rs=clamp(104+W*1.4,120,145);s.Hs=122+r()*22;s.dpt=34;s.dir=r()<0.5?-1:1;s.Lc=2.45*s.Rs;s.len=0}
     else if(kd==='drop'||kd==='sjump'||kd==='cjump')jumpProf(s,kd);
+    /* Prototype 63: the Spirit realm's portal jump (004s) */
+    else if(kd==='portal')portalSite(s,r);
     else s.len={loop:0,twist:200,corkscrew:240,jump:lr+jumpG+12}[kd];
     if(kd==='sweep'&&opt.dense&&s.n>1){s.n=1;s.sg=[1];s.amp=[s.amp[0]];s.len=s.lam}
-    s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
+    if(kd!=='portal')s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
     if(k0==='vspire')s.rev=1;if(k0==='dhelix')s.Hh=-s.Hh;
     /* on a new code, a spire rises up the middle and spirals down half the time, and a spiral falls instead of rising (a fifth of the draws; the falling ones fit more often, so about half the spirals on new tracks fall) */
     if(opt.v1&&!opt.want&&k0==='spire'&&r()<0.5)s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
     if(k0!==kd)s.src=k0;
     return s};
-  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300})[kd]||200;
+  const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300,portal:1720})[kd]||200;
   /* The spire's road, from O heading F: ease out to the side and onto the ring, one and a half turns up round it, a half
      turn in to the middle at the top, over the edge, straight down the middle and out underneath the ring. pts and ups
      are the samples; d0 is where the drop (the mag-lock) starts; q the end, heading Fh. (Prototype 60: a function, so the
@@ -107,7 +109,7 @@ function addFeatures(b,r,W,opt={}){
   for(let i=sites.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[sites[i],sites[j]]=[sites[j],sites[i]]}
   {const free=usable-used,wts=sites.map(()=>0.3+r()),ws=wts.reduce((a,b)=>a+b,0)||1;let cur=0.08*N*ds;
    for(let k=0;k<sites.length;k++){const st=sites[k],gap=free*wts[k]/ws,straight=st.kind!=='sweep'&&st.kind!=='dive'&&st.kind!=='climb';let best=cur+gap*r(),bs=1e9;
-     if(straight)for(let t=0;t<24;t++){const at=cur+gap*r(),i0=Math.floor(at/ds);let m=0;for(let j=0;j<Math.ceil(st.foot/ds);j+=3)m=Math.max(m,Math.abs(Cs[(i0+j)%N]));if(m<bs){bs=m;best=at}}
+     if(straight)for(let t=0;t<24;t++){const at=cur+gap*r(),i0=Math.floor(at/ds);let m=0;for(let j=0;j<Math.ceil((st.cf||st.foot)/ds);j+=3)m=Math.max(m,Math.abs(Cs[(i0+j)%N]));if(m<bs){bs=m;best=at}}
      st.i=Math.floor(best/ds);
      /* keep clear of the figure-eight crossing: push the feature past it */
      for(const[a,b]of opt.avoid||[]){const e=st.i+Math.ceil(st.foot/ds);if(e>a&&st.i<b)st.i=b+1}
@@ -131,7 +133,9 @@ function addFeatures(b,r,W,opt={}){
       pts.push([C0.clone().addScaledVector(Fh,st.Rs*0.42),-st.dpt,st.Hs]);for(let k=1;k<=4;k++)pts.push([C0.clone().addScaledVector(Fh,st.Rs*(0.42+k*0.2)),-st.dpt,-st.dpt]);
       for(const[q,h0,h1]of pts)for(let j=0;j<N;j+=4){const dj=((j-st.i)%N+N)%N;if(dj<=hiN||dj>=N-loN)continue;const p=P[j];if((p.x-q.x)**2+(p.z-q.z)**2<(W+40)**2&&p.y>O.y+h0-38&&p.y<O.y+h1+38)return true}return false};
     if(hits(st.dir)){st.dir=-st.dir;if(hits(st.dir))st.skip=true}}
-  {const dropped=opt.dropped||{};for(let k=sites.length-1;k>=0;k--){const st=sites[k];if(st.skip||st.i+Math.ceil(st.foot/ds)>(st.prof?0.78:0.88)*N){dropped[st.kind]=(dropped[st.kind]||0)+1;sites.splice(k,1)}}if(opt.want)opt.dropped=dropped}
+  /* Prototype 63: a portal needs a straight, nearly level approach (portalCheck) */
+  for(const st of sites)if(st.kind==='portal')portalCheck(st,b);
+  {const dropped=opt.dropped||{};for(let k=sites.length-1;k>=0;k--){const st=sites[k];if(st.skip||st.i+Math.ceil(st.foot/ds)>(st.prof||st.kind==='portal'?0.78:0.88)*N){dropped[st.kind]=(dropped[st.kind]||0)+1;sites.splice(k,1)}}if(opt.want)opt.dropped=dropped}
   sites.sort((a,b)=>a.i-b.i);
   const oP=[],oU=[],marks=[];let blend=null,blendH=null;
   const shiftAt=()=>{if(!blend)return 0;const len=Math.max(170,Math.abs(blend.dx)*5),v=blend.dx*(1-ss01(blend.d/len));blend.d+=ds;if(blend.d>len)blend=null;return v};
@@ -154,18 +158,23 @@ function addFeatures(b,r,W,opt={}){
      the set piece covered are skipped. (Shifting the old line sideways onto the run-out could fold the road back on
      itself, or throw it up and down on a banked bend.) q is where the set piece ends, heading Fh; it returns the base
      sample joined. */
-  const joinBack=(q,Fh,O,i,site)=>{const Y=new V(0,1,0);
-        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds)),A0=q.clone();
-        const herm=(E,m1,ch,x)=>{const x2=x*x,x3=x2*x;return A0.clone().multiplyScalar(2*x3-3*x2+1).addScaledVector(Fh,ch*(x3-2*x2+x)).addScaledVector(E,3*x2-2*x3).addScaledVector(m1,ch*(x3-x2))};
-        /* score a join by how sharply it would bend (the most it turns per metre anywhere along it) and how steep it is */
-        let bj=-1,bc=1e9;
-        for(let j=i+Math.round(adv*0.5);j<=Math.min(N-1,i+Math.round((site.foot+260)/ds));j+=2){const ch=P[j].distanceTo(q);if(ch<90)continue;
-          let prev=herm(P[j],Tg[j],ch,0),pd=null,kmax=0,smax=0;for(let k=1;k<=16;k++){const p=herm(P[j],Tg[j],ch,k/16),d=p.clone().sub(prev),l=d.length();d.divideScalar(l);
+  /* (Prototype 63: split in three, so the portal's road can join from anywhere: the curve, its score over a range of base
+     samples, and its samples; a spire joins exactly as before) */
+  const herm=(A0,Fh,E,m1,ch,x)=>{const x2=x*x,x3=x2*x;return A0.clone().multiplyScalar(2*x3-3*x2+1).addScaledVector(Fh,ch*(x3-2*x2+x)).addScaledVector(E,3*x2-2*x3).addScaledVector(m1,ch*(x3-x2))};
+  /* score a join by how sharply it would bend (the most it turns per metre anywhere along it) and how steep it is */
+  const joinScore=(q,Fh,j0,j1)=>{let bj=-1,bc=1e9;const A0=q.clone();
+        for(let j=j0;j<=j1;j+=2){const ch=P[j].distanceTo(q);if(ch<90)continue;
+          let prev=herm(A0,Fh,P[j],Tg[j],ch,0),pd=null,kmax=0,smax=0;for(let k=1;k<=16;k++){const p=herm(A0,Fh,P[j],Tg[j],ch,k/16),d=p.clone().sub(prev),l=d.length();d.divideScalar(l);
             if(pd)kmax=Math.max(kmax,Math.acos(clamp(d.dot(pd),-1,1))/l);smax=Math.max(smax,Math.abs(d.y));pd=d;prev=p}
           const c=kmax*120+Math.max(0,smax-0.3)*6+ch/5000;if(c<bc){bc=c;bj=j}}
+        return bj};
+  const joinEmit=(q,Fh,bj)=>{const Y=new V(0,1,0),A0=q.clone(),E=P[bj],ch=Math.max(60,E.distanceTo(q)),nC=Math.ceil(ch*1.15/ds);
+          for(let k=0;k<nC;k++){const x=k/nC;emit(herm(A0,Fh,E,Tg[bj],ch,x),Y.clone().lerp(U[bj],ss01(x)).normalize())}};
+  const joinBack=(q,Fh,O,i,site)=>{
+        const adv=Math.max(1,Math.round(q.clone().sub(O).dot(Fh)/ds));
+        let bj=joinScore(q,Fh,i+Math.round(adv*0.5),Math.min(N-1,i+Math.round((site.foot+260)/ds)));
         if(bj<0)bj=Math.min(N-1,i+adv);
-        {const E=P[bj],ch=Math.max(60,E.distanceTo(q)),nC=Math.ceil(ch*1.15/ds);
-          for(let k=0;k<nC;k++){const x=k/nC;emit(herm(E,Tg[bj],ch,x),Y.clone().lerp(U[bj],ss01(x)).normalize())}}
+        joinEmit(q,Fh,bj);
         return bj};
   let si=0,i=0;
   while(i<N){const site=sites[si];
@@ -205,6 +214,8 @@ function addFeatures(b,r,W,opt={}){
         marks.push({kind:'sdrop',a:start,b:start+g.nMag});
         marks.push({kind:kd,a:start,b:oP.length,data:{...g.data,src:site.src}});
         i=joinBack(g.q,g.Fh,O,i,site);blend=null;blendH=null;upB=null}
+      /* Prototype 63: the portal jump (004s): the approach, the break, the exit road, and back onto the line like a spire */
+      else if(kd==='portal'){i=portalEmit({P,U,N,ds,i,site,emit,marks,oP,RH,shiftAt,liftAt,upAt,joinScore,joinEmit,W});blend=null;blendH=null;upB=null}
       else{const n=Math.ceil(site.len/ds);
         /* on a sloping stretch a rise or drop is made smaller, so together they stay under about 35 degrees */
         if(kd==='climb'||kd==='dive'||kd==='sweep'){let sb=0;for(let k=0;k<n;k+=2){const t=Tg[Math.min(N-1,i+k)];sb=Math.max(sb,Math.abs(t.y)/Math.max(0.2,Math.hypot(t.x,t.z)))}const room=Math.max(0.12,0.7-sb);
@@ -238,19 +249,26 @@ function addFeatures(b,r,W,opt={}){
         marks.push({kind:kd,a:start,b:oP.length,data:site.prof?{nd:site.nd,tail:site.tail,Ls:site.Ls,hu:site.hu,bonus:site.bonus,Lc:site.Lc}:null});continue}}
     const s=shiftAt();emit(P[i].clone().addScaledVector(RH(i),s).addScaledVector(Y1,liftAt()),upAt(i));i++}
   // even resampling of the closed polyline
-  const M=oP.length,cum=new Float64Array(M+1);for(let k=1;k<=M;k++)cum[k]=cum[k-1]+oP[k%M].distanceTo(oP[k-1]);
+  /* (Prototype 63: a portal's break, from the entrance to the exit, has no length: u runs straight through it) */
+  const brkA=new Set();for(const m of marks)if(m.kind==='pbrk')brkA.add(m.a);
+  const M=oP.length,cum=new Float64Array(M+1);for(let k=1;k<=M;k++)cum[k]=cum[k-1]+(brkA.size&&brkA.has(k-1)?0:oP[k%M].distanceTo(oP[k-1]));
   const L=cum[M],N2=Math.round(L/2),ds2=L/N2,P2=[],U2=[],map=new Float64Array(M);for(let k=0;k<M;k++)map[k]=cum[k];
   let seg=0;for(let k=0;k<N2;k++){const s=k*ds2;while(seg<M-1&&cum[seg+1]<s)seg++;const a=(s-cum[seg])/Math.max(1e-9,cum[seg+1]-cum[seg]);
     P2.push(new V().lerpVectors(oP[seg],oP[(seg+1)%M],a));U2.push(new V().lerpVectors(oU[seg],oU[(seg+1)%M],a).normalize())}
   const T2=[],R2=[],H2=new Float32Array(N2),K2=new Float32Array(N2),kind=new Uint8Array(N2),gap=new Uint8Array(N2);
-  for(let k=0;k<N2;k++){const t=new V().subVectors(P2[(k+1)%N2],P2[(k-1+N2)%N2]).normalize();T2.push(t);const u=U2[k];u.addScaledVector(t,-u.dot(t)).normalize();R2.push(new V().crossVectors(t,u));H2[k]=Math.atan2(t.x,t.z)}
+  /* the break's sample (the last before the entrance) and the portal's frames; its tangents and curvature are one-sided */
+  let brk=null;const port=[];if(brkA.size){brk=new Uint8Array(N2);for(const m of marks)if(m.kind==='pbrk'){const o=portalFrames(m.d,map[m.a],ds2,N2);brk[o.k]=1;port.push(o)}}
+  for(let k=0;k<N2;k++){const t=brk&&brk[k]?new V().subVectors(P2[k],P2[(k-1+N2)%N2]).normalize():brk&&brk[(k-1+N2)%N2]?new V().subVectors(P2[(k+1)%N2],P2[k]).normalize():new V().subVectors(P2[(k+1)%N2],P2[(k-1+N2)%N2]).normalize();T2.push(t);const u=U2[k];u.addScaledVector(t,-u.dot(t)).normalize();R2.push(new V().crossVectors(t,u));H2[k]=Math.atan2(t.x,t.z)}
   for(let k=0;k<N2;k++){const d=new V().subVectors(T2[(k+1)%N2],T2[(k-1+N2)%N2]).divideScalar(2*ds2);K2[k]=-d.dot(R2[k])}
-  const feats=[],jumps=[],drops=[];let lip=null,lip2=null;const NEWJ={drop:1,sjump:1,cjump:1};
+  if(brk)for(const o of port){const k=o.k;K2[k]=K2[(k-1+N2)%N2];K2[(k+1)%N2]=K2[(k+2)%N2]}
+  const feats=[],jumps=[],drops=[];let lip=null,lip2=null,pk0=null;const NEWJ={drop:1,sjump:1,cjump:1,portal:1};
   for(const m of marks){const u0=map[m.a];
     if(m.kind==='lip2'){lip2=u0;continue}
+    /* Prototype 63: a portal's stretch for the things that keep off features (from 60 m before the jump's line to the turn) */
+    if(m.kind==='pbrk')continue;if(m.kind==='pkind0'){pk0=u0;continue}if(m.kind==='pkind1'){for(let k=Math.floor(pk0/ds2);k<=Math.ceil(u0/ds2);k++)kind[k%N2]=1;continue}
     if(m.kind==='land2'){const d=m.d;jumps.push({u0:lip2,u1:u0,G:u0-lip2,slope:d.slope,lipH:d.lipH,kind:d.kind});for(let k=Math.ceil(lip2/ds2);k<=Math.floor(u0/ds2);k++)gap[k%N2]=1;
       for(let k=Math.floor((lip2-30)/ds2);k<=Math.ceil((u0+30)/ds2);k++)kind[((k%N2)+N2)%N2]=1;continue}
     if(NEWJ[m.kind]){const u1=m.b<M?map[m.b]:L;feats.push({kind:m.kind,u0,u1,...(m.data||{})});continue}
     if(m.kind==='lip')lip=u0;else if(m.kind==='sdrop')drops.push({u0,u1:m.b<M?map[m.b]:L});else if(m.kind==='land'){jumps.push({u0:lip,u1:u0,G:u0-lip,slope:2*1.2/24,lipH:1.2});for(let k=Math.ceil(lip/ds2);k<=Math.floor(u0/ds2);k++)gap[k%N2]=1}
     else{const u1=m.b<M?map[m.b]:L;feats.push({kind:m.kind,u0,u1,...(m.data||{})});if(m.kind!=='sweep'&&m.kind!=='dive'&&m.kind!=='climb')for(let k=Math.floor(u0/ds2);k<=Math.ceil(u1/ds2);k++)kind[k%N2]=1}}
-  return{P:P2,U:U2,R:R2,Tg:T2,H:H2,K:K2,N:N2,ds:ds2,L,kind,gap,feats,jumps,drops}}
+  return{P:P2,U:U2,R:R2,Tg:T2,H:H2,K:K2,N:N2,ds:ds2,L,kind,gap,feats,jumps,drops,brk,port:brk?port:null}}

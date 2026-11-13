@@ -98,8 +98,8 @@ function scenerySpirit(ctx){
   /* ---- knots that untie and tie again as another knot (KNOT: two shapes, one morph) ---- */
   const knotAt=(Lb,c,size,pal,fast)=>{const A=SPS.knot(2,3,size*0.6,size*0.28,fast?120:180,3,size*0.05),B=SPS.knot(3,5,size*0.55,size*0.25,fast?120:180,3,size*0.05);
     Lb.obj({c,m:[1,0.15*sgn(),r()*TAU,0],ax:rax(),pal,br:0.04,ext:size});A.forEach((S,s)=>{for(let i=0;i<S.length-1;i++)Lb.seg(S[i],S[i+1],i/S.length,1,B[s][i],B[s][i+1])})};
-  if(q)for(let n=0,nn=cnt(0.8,[0,0.6,1]);n<nn;n++){const size=R2(14,24);put('knots',6,k=>{const i=Math.floor(r()*N);if(!roadOK(i))return null;const c=at(i,sgn()*R2(55,100),R2(20,50));return{b:[[...c,size*1.0]],add:()=>knotAt(knotL,c,size,pick([1,3,4,5]),q<2)}})}
-  if(q===2)put('knots (huge)',6,k=>{const i=Math.floor(r()*N),c=at(i,sgn()*R2(700,900),R2(250,350));return{b:[[...c,240]],add:()=>knotAt(knotL,c,240,4)}});
+  /* Prototype 63: no longer free in the sky (Eric: "a little out of place"): the knots frame the portals instead (004s) */
+  if(q&&ctx.port)spPortalKnots(ctx,knotL,clr,r,st,why);
 
   /* ---- unfolding solids: a cube opens into its cross and folds back, a tetrahedron into its star (faces hinge on the beat) ---- */
   if(q)for(let n=0,nn=cnt(1.5,[0,0.6,1]);n<nn;n++){const s=R2(8,14),cube=n%2===0;

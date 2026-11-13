@@ -1,4 +1,4 @@
-# Spirit realm: the portal jump, designed (not built in Prototype 62)
+# Spirit realm: the portal jump (designed in Prototype 62, built in Prototype 63: see the end)
 
 The brief's step 6. Portals change the road, which everything in a race reads (the AI's line, laps, positions,
 respawns, ghosts, multiplayer poses, the minimap, the camera). Prototype 62 ships the Spirit realm without them, so
@@ -58,3 +58,45 @@ camera's position relative to the player continuous across the crossing, `sample
 over the ramp and the flight (tools/tests/spirit-clear.js already reads `T.jumps` and adds the extra roads), scene-hash
 and trackfeat60 unchanged for every non-Spirit code. Estimated: L (a week), most of it the camera, the AI's look-ahead
 and the second render on a phone.
+
+## Built in Prototype 63: what changed from this design, and how to hook in the next Spirit road feature
+
+Code: `src/js/track/004s-portals.js` (all of it is there; the other files have a line or two each). Test:
+`tools/tests/portals.js`; clips: `tools/tests/portal-clip.js` (`docs/spirit-p63/portal-last.*`, `portal-jumper.*`).
+
+**Numbers that differ from the design above.** The exit is much closer: B = W/2+14 m back (27/24/21.5 for
+Wide/Standard/Narrow) on the across portal (49), and the diagonal (50) crosses the main centreline Bc = ringR+12+(W/2+7)·√2
+back (67/60/55). The ramp is 30 m (2 m rise, lip W+6 m right of the main centreline), the gap 130 m, the catch road
+230 m at 4 m under the main road's level, then a 110 (49) or 65 (50) degree turn of 170 m radius and a Hermite join onto
+the base line 250-1300 m past the entrance. Why closer: a follower g seconds behind sees the leader cross ahead only
+while it is still short of the jump's line, i.e. when v·g > B + ramp + lip offset + ~40 m; with B = 120 that needed
+1.5-2.3 s (round 2), with B = 27 it is about 0.6-0.7 s on. Measured in bot races (Standard camera): followers 0.6-3 s
+behind see the leader in flight in 25-100% of its flight's frames on 49, from 0.9-1.3 s on 50; jumpers see followers up to
+0.4-0.8 s behind them (the camera looks across the road, so only those near the jump's line are in view). The flight is
+1.5 s at 94 m/s (the launch-pad floor) and about 1.8-1.9 s at race speed. The rings are the realm's keep-out radius
+(not 1.5 road widths), so nothing of them is ever over the road.
+
+**The break as data.** `T.brk[k]=1` on the last sample before an entrance; `T.port` lists the portals and `T.portK[k]`
+finds one by k. A portal: `k`, `uE` (its u; the break has no length in u), `aE` (where in the step k..k+1 the entrance
+is), `E`, `X`, `Fe`, `Fx`, `ME`/`MX` (the two ends' frames), `M` (E to X), `Mi`, `Q` (M's turn), `pv` ('p' across, 'd'
+diagonal), `ringR`, `hc`, `zC`, `Lp`, `yC`.
+
+**How a Spirit-only road feature is hooked in (for the upside-down sections).**
+1. Road shape: `roadShape(seed,wk,cx,lk,sp,bk)` now gets the biome letter. A Spirit feature is drawn on its own random
+   numbers there (`rng(seed^K)`), and added as an `extra` site, so the rest of the track is built as without it;
+   editor counts go in `FK`/`FMAX` (060) and `FKG` (004-track), and roadShape zeroes them outside the realm.
+2. `addFeatures` (004b): `mkSite` calls the feature's site function (sizes, `foot`, and `cf`, the stretch that must be
+   straight); a check after placement may set `st.skip`; the emit loop calls the feature's emitter, which emits samples
+   (`emit(p,up)`), pushes marks (`lip2`/`land2` for a jump, `pkind0`/`pkind1` for the kind[] stretch, `pbrk` for a break,
+   and the feature's own mark with `data` for `feats`) and joins back with `joinScore`/`joinEmit` (the spire's join, split
+   in three so any feature can use it); it returns the base sample it rejoined. The resampling treats a `pbrk` as a
+   zero-length step and makes tangents and curvature one-sided there; nothing changes for a track without one.
+3. Physics: everything is in u. A jump of a new kind is a `jumps` entry with `kind`; the launch-pad floor is the list
+   in `physics()` (058) that has `'sjump','cjump','portal'`; its catch road is a `catch` split (004a, as the long jump's).
+4. Ship placement and anything drawn from u: `sampleAt` (004d) calls `portalSample` at a break; the cameras (088's chase
+   camera and fly-by, 095's split-screen views) call `portalCross(u0,u1)` and turn their smoothed directions by `Q`.
+5. The realm's rule (004o): breaks carry sight lines through `M` (`portalThrough` keeps only those through the opening);
+   `portalWatch` adds the lines along which the jump is watched; a feature's air goes in the `mark` list there.
+   `tools/tests/spirit-clear.js` rebuilds the same volumes independently: change both.
+6. Road drawing (004c): the strips' runs end at a break (`skip`); a feature's meshes come from its own builder
+   (`portalRoad`), called once from `roadBuild`. The minimap (005) and preview (006) break their lines at `T.brk`.

@@ -12,11 +12,13 @@
 // 0.5 m of a sight line, fails. The moving parts posed each frame (heads, colossi's heads, riders) are checked in
 // tools/tests/spirit-race.js, during real bot races.        node tools/tests/spirit-clear.js
 const { launch, open, ok, done } = require('./lib.js');
-const KINDS = { vspire: 10, dhelix: 11, drop: 12, sjump: 13, cjump: 14 };
-const spec = (k, n) => { const c = Array(15).fill(0); c[KINDS[k]] = n; return '1' + c.join('').replace(/0+$/, '') };
+const KINDS = { vspire: 10, dhelix: 11, drop: 12, sjump: 13, cjump: 14, portal: 15 };
+const spec = (k, n) => { const c = Array(16).fill(0); c[KINDS[k]] = n; return '1' + c.join('').replace(/0+$/, '') };
 const CODES = (process.env.CODES || '').split(',').filter(Boolean).length ? process.env.CODES.split(',') : ['W1234567-S', 'NX1ABCDEF-S', 'SL1C0FFEE-S', 'WX1F1F1F-S', 'NQ1777777-S', 'SXL1A0B0C4-' + spec('drop', 2) + '-S',
   'NXL1C0D0E5-' + spec('sjump', 1) + '-S', 'WXL10F1F25-' + spec('cjump', 1) + '-S', 'SXL1A0B0C6-' + spec('vspire', 1) + '-S', 'WXL10F1F26-' + spec('dhelix', 1) + '-S',
-  'NXQ5102B5-33224444222-S', 'WXL641365-23224444222-S'];
+  'NXQ5102B5-33224444222-S', 'WXL641365-23224444222-S',
+  // (P63) portal jumps: across (49) and diagonal (50), Wide, Standard and Narrow
+  'W1234567-' + spec('portal', 1) + '-S', 'WX1ABCDE-' + spec('portal', 1) + '-S', 'SL19E3779-' + spec('portal', 1) + '-S', 'NL19E3779-' + spec('portal', 1) + '-S'];
 
 const CHECK = (code) => {
   const h = window.__hl, c = h.parseCode(code); h.loadTrack(c.seed, c.wk, c.cx, c.lk, c.sp || null, c.bm);
@@ -24,7 +26,7 @@ const CHECK = (code) => {
   if (!sp) return { code, err: 'no realm' };
   /* the keep-out */
   const air = new Uint8Array(N), mark = (u0, u1) => { for (let u = u0; u <= u1; u += ds) air[(((Math.round(u / ds)) % N) + N) % N] = 1 };
-  for (const j of T.jumps || []) mark(j.u0 - 30, j.u1 + 80); for (const d of T.drops || []) if (d.u0 != null) mark(d.u0 - 30, (d.u1 != null ? d.u1 : d.u0) + 80);
+  for (const j of T.jumps || []) if (j.kind === 'portal') mark(j.u0 - 12, j.u0 + 420); else mark(j.u0 - 30, j.u1 + 80); // (P63) a portal jump: from 12 m before its lip to 420 m on for (const d of T.drops || []) if (d.u0 != null) mark(d.u0 - 30, (d.u1 != null ? d.u1 : d.u0) + 80);
   for (const f of T.feats || []) if (f.kind === 'drop' || f.kind === 'sjump' || f.kind === 'cjump') mark(f.u0 - 30, f.u1 + 80);
   const C = 20, G = new Map(), key = (a, b, c) => ((a + 4096) * 8192 + (b + 4096)) * 8192 + (c + 4096), S = [];
   const add = (p, r, u, t, w, ab) => { const s = { x: p.x, y: p.y, z: p.z, r, u, t, w, ab }; S.push(s); const k = key(Math.floor(p.x / C), Math.floor(p.y / C), Math.floor(p.z / C)); let L = G.get(k); if (!L) G.set(k, L = []); L.push(s) };
@@ -38,10 +40,23 @@ const CHECK = (code) => {
   /* every sight line */
   const SG = 30, SL = [], SM = new Map(), sk = (a, b, c) => ((a + 2048) * 4096 + (b + 2048)) * 4096 + (c + 2048), st = Math.round(16 / ds), tt = Math.round(20 / ds), back = Math.round(12 / ds);
   const pt = (i, l, hh) => [P[i].x + R[i].x * l + U[i].x * hh, P[i].y + R[i].y * l + U[i].y * hh, P[i].z + R[i].z * l + U[i].z * hh];
-  for (let i = 0; i < N; i += st) { if (T.gap[i]) continue; const ic = (i - back + N) % N;
-    for (const cl of [-hw * 0.6, 0, hw * 0.6]) { const a = pt(ic, cl, 5.5); for (let k = 1; k <= 15; k++) { const it = (i + k * tt) % N; if (T.gap[it]) continue; for (const tl of [-hw, 0, hw]) { const b = pt(it, tl, 1), n = SL.push([...a, ...b]) - 1, len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]), m = Math.ceil(len / (SG / 2)), seen = new Set();
+  const addL = (a, b) => { const n = SL.push([...a, ...b]) - 1, len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]), m = Math.ceil(len / (SG / 2)), seen = new Set();
       for (let q = 0; q <= m; q++) { const f = q / m; seen.add(sk(Math.floor((a[0] + (b[0] - a[0]) * f) / SG), Math.floor((a[1] + (b[1] - a[1]) * f) / SG), Math.floor((a[2] + (b[2] - a[2]) * f) / SG))) }
-      for (const kk of seen) { let L = SM.get(kk); if (!L) SM.set(kk, L = []); L.push(n) } } } } }
+      for (const kk of seen) { let L = SM.get(kk); if (!L) SM.set(kk, L = []); L.push(n) } };
+  /* (P63) a line from before a portal's entrance to the road after it: from the camera carried through the portal */
+  const PT = T.port || [], across = (a, b) => PT.find((o) => (o.k - a + N) % N < (b - a + N) % N), carry = (a, o) => { const v = new (T.P[0].constructor)(a[0], a[1], a[2]).applyMatrix4(o.M); return [v.x, v.y, v.z] };
+  /* (only the lines that pass through the exit's opening: the rest would pass outside the entrance's rim, not through it) */
+  const through = (o, a, b) => { const V3 = T.P[0].constructor, c = new V3(0, o.hc, 0).applyMatrix4(o.MX), F = o.Fx, A = new V3(...a).sub(c), B = new V3(...b).sub(c), da = A.dot(F), db = B.dot(F);
+    if (da > 0 && db > 0) return true; if (da <= 0 && db <= 0) return false; const x = A.lerp(B, da / (da - db)); return x.length() < o.ringR - 0.6 };
+  for (let i = 0; i < N; i += st) { if (T.gap[i]) continue; const ic = (i - back + N) % N;
+    for (const cl of [-hw * 0.6, 0, hw * 0.6]) { const a = pt(ic, cl, 5.5); for (let k = 1; k <= 15; k++) { const it = (i + k * tt) % N; if (T.gap[it]) continue; const po = across(ic, it), a2 = po ? carry(a, po) : a; for (const tl of [-hw, 0, hw]) { const b = pt(it, tl, 1); if (!po || through(po, a2, b)) addL(a2, b) } } } }
+  /* (P63) the portal jump watched: chase cameras on the 400 m before the entrance to the ramp and the flight (to 80 m past
+     the main road; the road and 8 m over it), and chase cameras on the ramp and in the flight to the main road's 300 m before the jump's line */
+  for (const o of PT) { const zJ = o.zC + (o.pv === 'd' ? o.Lp : 0), nF = Math.round((30 + o.Lp * (o.pv === 'd' ? Math.SQRT2 : 1) + (o.pv === 'd' ? 40 : 80)) / ds), tg = [], mt = [];
+    for (let q = 10; q <= nF; q += 5) for (const hh of [1, 8]) tg.push(pt((o.k + q) % N, 0, hh));
+    for (let d = Math.round(400 / ds); d >= Math.round(zJ / ds); d -= st) for (const cl of [-hw * 0.6, 0, hw * 0.6]) { const a = pt((o.k - d - back + N) % N, cl, 5.5); for (const b of tg) addL(a, b) }
+    for (let d = Math.round(zJ / ds); d <= Math.round((zJ + 300) / ds); d += tt) for (const l of [-hw, 0, hw]) mt.push(pt((o.k - d + N) % N, l, 1));
+    for (let q = back + 1; q <= nF; q += st) { const a = pt((o.k + q - back) % N, 0, 5.5); for (const b of mt) addL(a, b) } }
   const nearSight = (x, y, z) => { const r = 0.5, cx = Math.floor(x / SG), cy = Math.floor(y / SG), cz = Math.floor(z / SG);
     for (let a = cx - 1; a <= cx + 1; a++) for (let b = cy - 1; b <= cy + 1; b++) for (let c2 = cz - 1; c2 <= cz + 1; c2++) { const L = SM.get(sk(a, b, c2)); if (!L) continue;
       for (const n of L) { const s = SL[n], ux = s[3] - s[0], uy = s[4] - s[1], uz = s[5] - s[2], l2 = ux * ux + uy * uy + uz * uz, f = Math.max(0, Math.min(1, ((x - s[0]) * ux + (y - s[1]) * uy + (z - s[2]) * uz) / l2)), dx = s[0] + ux * f - x, dy = s[1] + uy * f - y, dz = s[2] + uz * f - z;

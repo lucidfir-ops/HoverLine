@@ -34,7 +34,7 @@ const BDIAL=[['Scenery','towers, trees, islands or slabs · 0 to 3',3],['Falls',
    geyser or two, the reef a bubble vent or two; the forest and Stratos just their own scenery. */
 function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();return k==='U'?[2,a<0.5?1:2,b<0.35?1:0,c<0.5?1:2]:k==='P'?[2,a<0.5?2:3,b<0.5?2:3,0]:k==='S'?[2,0,0,0]:k==='O'||k==='R'?[2,0,a<0.5?1:2,0]:[2,0,0,0]}
 /* feature kinds built into the road shape (splits are added afterwards, beside it) */
-const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump'];
+const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump','portal'];/* (Prototype 63: portal, Spirit tracks only) */
 /* Prototype 60: bit 24 of a seed marks a code made from Prototype 60 on (seven hex digits, starting with 1). */
 const TV1=0x1000000;
 const KB=k=>k==='vspire'?'spire':k==='dhelix'?'helix':k;
@@ -43,13 +43,15 @@ const KB=k=>k==='vspire'?'spire':k==='dhelix'?'helix':k;
    with one builder per biome after it). Each takes what it needs from the road object rd. */
 function buildTrack(seed,wk,cx,lk,sp,bm){
   if(T)disposeGroup(T.group);
-  const rd=roadShape(seed,wk,cx,lk,sp);Object.assign(rd,roadBuild(rd));
-  const{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,group,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,minY}=rd;let{minX,maxX,minZ,maxZ}=rd;
+  const rd=roadShape(seed,wk,cx,lk,sp,bm&&bm.k);Object.assign(rd,roadBuild(rd));
+  const{D,LN,L,N,ds,P,R,U,Tg,H,Cs,Kg,Kn,kind,gap,feats,jumps,drops,splits,spl,fig8,fopt,dropped,minR,corners,group,roadM,edgeM,glass,rail,mag,wallH,ctop,pads,zones,marks,minY,brk,port}=rd;let{minX,maxX,minZ,maxZ}=rd;
   const{LK,bk,dial,floorY,water,tun,prism,env,bmInfo}=buildScenery(rd,bm);
   headL.visible=!!cx;hemi.color.setHex(LK.hemi?LK.hemi[0]:0x9fb4d0);hemi.groundColor.setHex(LK.hemi?LK.hemi[1]:0x15120c);hemi.intensity=LK.hemi?LK.hemi[2]:0.85;sun.color.setHex(LK.sun?LK.sun[0]:0xfff1d6);sun.intensity=LK.sun?LK.sun[1]:0.7;
   for(const S0 of splits)for(const q of S0.pts){minX=Math.min(minX,q.x);maxX=Math.max(maxX,q.x);minZ=Math.min(minZ,q.z);maxZ=Math.max(maxZ,q.z)}
   /* Prototype 60: which new jump's gap each sample is in (its index + 1), for drawing a frame over it level (placeShip) */
   const jg=new Uint16Array(N);jumps.forEach((j,n)=>{if(j.kind)for(let k=Math.ceil(j.u0/ds);k<=Math.floor(j.u1/ds);k++)jg[k%N]=n+1});
-  T={jg,env,tun,prism,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY}};
+  T={jg,env,tun,prism,look:LK,bm:{k:bk,d:dial},bmD:dial,bmInfo,drops,mats:{edgeM,rail,glass,roadM,water:water&&water.material},seed,wk,cx,lk:lk||'M',sp:sp||null,dropped,LN,D,L,N,ds,P,R,U,Tg,H,K:Kg,Kn,Cs,kind,gap,feats,jumps,pads,zones,marks,wallH,ctop,mag,group,floorY,splits,spl,fig8,theme:fopt&&fopt.theme||null,bounds:{minX,maxX,minZ,maxZ},stats:{minR,corners,climb:P.reduce((m,p)=>Math.max(m,p.y),-1e9)-minY},
+    /* Prototype 63: the portals' breaks (004s): brk[k] on the sample before an entrance, port the portals, portK by k */
+    brk:brk||null,port:port||null,portK:port?Object.fromEntries(port.map(o=>[o.k,o])):null,portFx:rd.portFx||null};
   try{VFX.hz=null}catch(e){}
 }
