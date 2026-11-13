@@ -71,3 +71,6 @@ matches the 3D scene. Anything else that is a raw hex in the UI is a mistake: us
 ## Sound and music
 
 - Music has space: few parts at once, nothing held under the drops unless asked for (see docs/DESIGN.md, Prototype 46).
+- Effects sit under the music, not on it: levelled by measurement against the tune (`tools/sfx/`), pitched on the tune's key, never the
+  same twice, with big hits ducking the music for a moment (Prototype 64, `src/js/audio/008b-sfx-new.js`). A new effect gets a line in
+  `SFX2.fx`, a target level in `tools/sfx/effects.js`, and a place in `tools/tests/sfx.js`'s run (it covers every effect).

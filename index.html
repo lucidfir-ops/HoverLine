@@ -4935,6 +4935,8 @@ const audio={ctx:null,on:store.get('hoverline.sound')!=='0',
 const SFX2={
   on:store.get('hoverline.sfx2')==='1',
   CAP:56,live:[],last:{},forceKey:null,
+  /* the launch sound of each kind of jump (a table, so the old set never looks up a recording by a built name: tools/tests/samples.js) */
+  jumpKey:{drop:'jump_drop',sjump:'jump_sjump',cjump:'jump_cjump',portal:'jump_portal'},
   /* effects the old set has no recording for (audio.sfx() of these does nothing with the setting off, as before) */
   only:{jump_drop:1,jump_sjump:1,jump_cjump:1,jump_portal:1,land_drop:1,flares:1,reflect:1,emp_hit:1,portal:1,roll_in:1,roll_out:1,finish_win:1,finish_pod:1,finish:1},
   /* the gap before the same effect may play again (s), the most of it at once, its level (1 = the old effect's own loudness,
@@ -9447,7 +9449,7 @@ function physics(r,inp,dt){
     /* Prototype 37: a frame out of phase, or hit in the last 2.5 s, leaves the lip at least fast enough to clear the gap
        (level nose, with a margin): most falls were frames hit just before the lip that reached it at walking pace. */
     {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'||j.kind==='portal'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them (Prototype 63: and a portal jump, the launch pad) */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
-    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)(j.kind&&audio.sfx('jump_'+j.kind))||audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)/* (Prototype 64: the new set has a launch for each kind of jump) */}}
+    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)(j.kind&&audio.sfx(SFX2.jumpKey[j.kind]))||audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)/* (Prototype 64: the new set has a launch for each kind of jump) */}}
   /* Prototype 60: still in the air from one new jump at the lip of the next (drops in a row): that one carries the flight
      on, from the same height over the road */
   else if(r.air.kind&&modU(uu-r.air.u0)>r.air.G)for(const j of T.jumps)if(j.kind&&j!==r.air&&uPrev<j.u0&&uu>=j.u0&&uu<j.u1&&!(j.sp&&!(r.brS===j.sp&&r.br===j.b))){const ex=r.h-HOVER;r.air=j;r.airX=null;r.hb=HOVER+j.lipH+ex;if(j.stk)r.stkS=null;break}

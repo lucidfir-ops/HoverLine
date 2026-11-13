@@ -16,6 +16,8 @@
 const SFX2={
   on:store.get('hoverline.sfx2')==='1',
   CAP:56,live:[],last:{},forceKey:null,
+  /* the launch sound of each kind of jump (a table, so the old set never looks up a recording by a built name: tools/tests/samples.js) */
+  jumpKey:{drop:'jump_drop',sjump:'jump_sjump',cjump:'jump_cjump',portal:'jump_portal'},
   /* effects the old set has no recording for (audio.sfx() of these does nothing with the setting off, as before) */
   only:{jump_drop:1,jump_sjump:1,jump_cjump:1,jump_portal:1,land_drop:1,flares:1,reflect:1,emp_hit:1,portal:1,roll_in:1,roll_out:1,finish_win:1,finish_pod:1,finish:1},
   /* the gap before the same effect may play again (s), the most of it at once, its level (1 = the old effect's own loudness,

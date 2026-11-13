@@ -97,5 +97,5 @@ The sound design is the part that needs you.
 
 ## Making these files again
 
-`node tools/sfx/render.js --readme` (about a minute; needs ffmpeg). Files are numbered as in `tools/sfx/effects.js`.
+`node tools/sfx/render.js --readme` (about a minute; needs ffmpeg; it writes the MP3s, `levels.json` and a `table.md` to paste in here). Files are numbered as in `tools/sfx/effects.js`.
 `AUDIT.md` is the audit of every sound in the game.

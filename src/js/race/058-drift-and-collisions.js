@@ -242,7 +242,7 @@ function physics(r,inp,dt){
     /* Prototype 37: a frame out of phase, or hit in the last 2.5 s, leaves the lip at least fast enough to clear the gap
        (level nose, with a margin): most falls were frames hit just before the lip that reached it at walking pace. */
     {const ht=S.t-(r.stunAt??-99);if(r.spinD>0||(ht>=0&&ht<2.5)||j.kind==='sjump'||j.kind==='cjump'||j.kind==='portal'){/* Prototype 60: and anyone at a speed or long jump, whose lower road is there to catch them (Prototype 63: and a portal jump, the launch pad) */const need=1.12*j.G*Math.sqrt(0.5*GRAV*S.cls*S.cls*(D.jumpG||D.glide||1)/(j.lipH+1.5+j.slope*j.G));if(r.v<need)r.v=need;r.jNeed=need}}
-    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)(j.kind&&audio.sfx('jump_'+j.kind))||audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)/* (Prototype 64: the new set has a launch for each kind of jump) */}}
+    r.air=j;r.airX=null;r.vh=r.v*j.slope+v0;r.hb=HOVER+j.lipH+ex;r.h=HOVER+ex;if(r===player)(j.kind&&audio.sfx(SFX2.jumpKey[j.kind]))||audio.sfx('jump')||audio.blip(240,0.3,0.08,'triangle',480)/* (Prototype 64: the new set has a launch for each kind of jump) */}}
   /* Prototype 60: still in the air from one new jump at the lip of the next (drops in a row): that one carries the flight
      on, from the same height over the road */
   else if(r.air.kind&&modU(uu-r.air.u0)>r.air.G)for(const j of T.jumps)if(j.kind&&j!==r.air&&uPrev<j.u0&&uu>=j.u0&&uu<j.u1&&!(j.sp&&!(r.brS===j.sp&&r.br===j.b))){const ex=r.h-HOVER;r.air=j;r.airX=null;r.hb=HOVER+j.lipH+ex;if(j.stk)r.stkS=null;break}
