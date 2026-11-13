@@ -68,7 +68,7 @@ function flaresStep(){for(const s of shots){if(s.type!=='missile'&&s.type!=='hun
     for(let k=0;k<n;k++){const m=shotMesh('decoy'),d={type:'decoy',u:r.u-5-k*2.2,lat:clampLat(r.u,r.lat+(k%2?1:-1)*0.9*Math.ceil(k/2),1.5),v:Math.max(20,r.v*0.55),owner:r,life:FLARE_T,mesh:m,isDecoy:true,wreck:0,utot:r.utot-5-k*2.2,only:k?new Set():new Set([s])};
       scene.add(m);shots.push(d)}
     s.target=shots[n0];
-    const near=r===player||Math.abs(wrapU(r.u-player.u))<120;if(near)audio.blip(1800,0.25,0.08,'triangle',600);
+    const near=r===player||Math.abs(wrapU(r.u-player.u))<120;if(near)audio.sfx('flares',r===player?1:0.6)||audio.blip(1800,0.25,0.08,'triangle',600);
     if(r===player){const k=r.weapons.indexOf('decoy');if(k>=0)slotFx(k,'fired')}
     if(mp.on)mpFired(r,'decoy',n0)}}
 /* ---------- Prototype 60: Reflector ----------
@@ -85,7 +85,7 @@ function reflectShot(s,r,i){const ow=s.owner,fromOw=!!ow&&ow!==r&&live(ow),old=s
   if(homing){s.target=tg;if(!tg)s.life=0}
   s.brS=r.brS||null;s.br=r.brS?r.br:null;
   const m=new THREE.Mesh(boomGeo,new THREE.MeshBasicMaterial({color:0xdff8ff,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));m.position.copy(s.mesh.position);scene.add(m);booms.push({m,t:0,big:false});
-  if(r===player||Math.abs(wrapU(r.u-player.u))<150){audio.blip(2600,0.14,r===player?0.12:0.06,'triangle',900)}
+  if(r===player||Math.abs(wrapU(r.u-player.u))<150){audio.sfx('reflect',r===player?1:0.6)||audio.blip(2600,0.14,r===player?0.12:0.06,'triangle',900)}
   if(r.stat)r.stat.refl=(r.stat.refl||0)+1;
   if(mp.on&&mp.sess&&!r.proxy){if(old)mp.sess.send({t:'boom',n:old});shots.splice(i,1);shots.push(s);mpFired(r,'reflector',shots.length-1)}}
 /* Threats to a ship: each {k:kind, t:seconds to impact, u, lat, gap?, ahead?}. Homing shots chasing it, straight shots in its line,
@@ -178,5 +178,5 @@ function empBlast(r,visualOnly,u0){const u=u0??r.u;const m=new THREE.Mesh(ringGe
 /* Prototype 45: 2 s (it was 4.5) and a gentler slow, easing off over its last half second */
 const EMP_T=2,EMP_K=0.15;
 function applyEmp(o){if(o.proxy||o.barrier>0||o.od>0||o.phase>0)return;o.emp=EMP_T;o.boost=0;o.selfBoost=false;
-  if(o===player){flash('rgba(111,184,255,.28)',0);audio.blip(140,0.4,0.12,'square',70);music.event('hit')}}
+  if(o===player){flash('rgba(111,184,255,.28)',0);audio.sfx('emp_hit')||audio.blip(140,0.4,0.12,'square',70);music.event('hit')}}
 const zaps=[];

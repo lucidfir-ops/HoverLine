@@ -27,6 +27,7 @@ js/track/006-track-preview.js
 js/ships/007-ship-models.js
 js/ships/007-ships-builds.js
 js/audio/008-audio.js
+js/audio/008b-sfx-new.js
 js/music/009-themes-grooves-timbres-codes.js
 js/music/010-theory-helpers.js
 js/music/011-hooks.js

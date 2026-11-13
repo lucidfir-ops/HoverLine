@@ -133,6 +133,9 @@ function rebindPad(i){const a=rebind.act;rebind.on=false;const other=ACTS.find((
 $('bindReset').onclick=()=>{bind.pad={...PAD_DEF};bind.key=JSON.parse(JSON.stringify(KEY_DEF));saveBind();rebind.on=false;$('bindMsg').textContent='Buttons reset';bindUI()};
 {const ac=$('annChip'),sa=()=>{ac.setAttribute('aria-pressed',String(annOn));ac.textContent='Announcer · '+(annOn?'on':'off')};sa();
   ac.onclick=()=>{annOn=!annOn;store.set('hoverline.ann',annOn?'1':'0');sa();if(annOn){audio.init();audio.voice('');setTimeout(()=>audio.voice('go'),300)}}}
+/* Prototype 64: the new sound effects (src/js/audio/008b-sfx-new.js), off until chosen, remembered as hoverline.sfx2. Pressing it on plays a few of them to hear. */
+{const sc=$('sfxChip'),ss=()=>{sc.setAttribute('aria-pressed',String(SFX2.on));sc.textContent='New sound effects · '+(SFX2.on?'on':'off')};ss();
+  sc.onclick=()=>{SFX2.setOn(!SFX2.on);ss();audio.init();if(SFX2.on){audio.sfx('ui_ok');setTimeout(()=>audio.sfx('missile'),400);setTimeout(()=>audio.sfx('boom',0.7),900)}else audio.sfx('ui_ok')}}
 {const rc=$('rumbleChip'),sy=()=>rc.setAttribute('aria-pressed',String(rumbleOn));sy();rc.onclick=()=>{rumbleOn=!rumbleOn;store.set('hoverline.rumble',rumbleOn?'1':'0');sy();if(rumbleOn){lastDev='pad';rumble(0.4,0.6,160)}}}
 $('padInvChip').onclick=()=>{bind.padInvert=!bind.padInvert;store.set('hoverline.padinv',bind.padInvert?'1':'0');bindUI()};
 let ctlFrom=null;
