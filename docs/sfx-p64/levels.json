@@ -3,9 +3,9 @@
   "id": "ui_move",
   "file": "01-ui_move.mp3",
   "oldRms30": 0.0215,
-  "newRms30": 0.0446,
+  "newRms30": 0.0445,
   "oldPeak": 0.127,
-  "newPeak": 0.181
+  "newPeak": 0.172
  },
  {
   "id": "ui_ok",
@@ -21,7 +21,7 @@
   "oldRms30": 0.0211,
   "newRms30": 0.0632,
   "oldPeak": 0.038,
-  "newPeak": 0.221
+  "newPeak": 0.222
  },
  {
   "id": "ui_blip",
@@ -45,39 +45,39 @@
   "oldRms30": 0.1228,
   "newRms30": 0.2289,
   "oldPeak": 0.341,
-  "newPeak": 0.725
+  "newPeak": 0.71
  },
  {
   "id": "lap",
   "file": "07-lap.mp3",
   "oldRms30": 0.1007,
-  "newRms30": 0.1786,
+  "newRms30": 0.1758,
   "oldPeak": 0.169,
-  "newPeak": 0.525
+  "newPeak": 0.528
  },
  {
   "id": "final",
   "file": "08-final.mp3",
   "oldRms30": 0.0986,
-  "newRms30": 0.2642,
+  "newRms30": 0.2607,
   "oldPeak": 0.131,
-  "newPeak": 0.579
+  "newPeak": 0.581
  },
  {
   "id": "finish_win",
   "file": "09-finish_win.mp3",
   "oldRms30": 0,
-  "newRms30": 0.2447,
+  "newRms30": 0.2499,
   "oldPeak": 0,
-  "newPeak": 0.721
+  "newPeak": 0.679
  },
  {
   "id": "finish_pod",
   "file": "10-finish_pod.mp3",
   "oldRms30": 0,
-  "newRms30": 0.1936,
+  "newRms30": 0.1956,
   "oldPeak": 0,
-  "newPeak": 0.558
+  "newPeak": 0.519
  },
  {
   "id": "finish",
@@ -85,13 +85,13 @@
   "oldRms30": 0,
   "newRms30": 0.1277,
   "oldPeak": 0,
-  "newPeak": 0.326
+  "newPeak": 0.324
  },
  {
   "id": "boost",
   "file": "12-boost.mp3",
   "oldRms30": 0.0384,
-  "newRms30": 0.1496,
+  "newRms30": 0.1426,
   "oldPeak": 0.118,
   "newPeak": 0.313
  },
@@ -99,39 +99,39 @@
   "id": "pad",
   "file": "13-pad.mp3",
   "oldRms30": 0.0553,
-  "newRms30": 0.1409,
+  "newRms30": 0.1425,
   "oldPeak": 0.143,
-  "newPeak": 0.443
+  "newPeak": 0.466
  },
  {
   "id": "jump",
   "file": "14-jump.mp3",
   "oldRms30": 0.0385,
-  "newRms30": 0.1412,
+  "newRms30": 0.1398,
   "oldPeak": 0.133,
-  "newPeak": 0.287
+  "newPeak": 0.294
  },
  {
   "id": "jump_drop",
   "file": "15-jump_drop.mp3",
   "oldRms30": 0.0385,
-  "newRms30": 0.1555,
+  "newRms30": 0.1602,
   "oldPeak": 0.133,
-  "newPeak": 0.373
+  "newPeak": 0.327
  },
  {
   "id": "jump_sjump",
   "file": "16-jump_sjump.mp3",
   "oldRms30": 0.0385,
-  "newRms30": 0.2008,
+  "newRms30": 0.2003,
   "oldPeak": 0.133,
-  "newPeak": 0.421
+  "newPeak": 0.427
  },
  {
   "id": "jump_cjump",
   "file": "17-jump_cjump.mp3",
   "oldRms30": 0.0385,
-  "newRms30": 0.1781,
+  "newRms30": 0.1779,
   "oldPeak": 0.133,
   "newPeak": 0.343
  },
@@ -139,7 +139,7 @@
   "id": "jump_portal",
   "file": "18-jump_portal.mp3",
   "oldRms30": 0.0385,
-  "newRms30": 0.1595,
+  "newRms30": 0.1596,
   "oldPeak": 0.133,
   "newPeak": 0.364
  },
@@ -147,25 +147,25 @@
   "id": "land",
   "file": "19-land.mp3",
   "oldRms30": 0.0401,
-  "newRms30": 0.0985,
+  "newRms30": 0.0987,
   "oldPeak": 0.096,
-  "newPeak": 0.223
+  "newPeak": 0.211
  },
  {
   "id": "land_drop",
   "file": "20-land_drop.mp3",
   "oldRms30": 0.0771,
-  "newRms30": 0.1924,
+  "newRms30": 0.1968,
   "oldPeak": 0.184,
-  "newPeak": 0.401
+  "newPeak": 0.432
  },
  {
   "id": "deny",
   "file": "21-deny.mp3",
   "oldRms30": 0.0416,
-  "newRms30": 0.0804,
+  "newRms30": 0.0801,
   "oldPeak": 0.11,
-  "newPeak": 0.267
+  "newPeak": 0.269
  },
  {
   "id": "low",
@@ -179,17 +179,17 @@
   "id": "shield_full",
   "file": "23-shield_full.mp3",
   "oldRms30": 0.0274,
-  "newRms30": 0.1,
+  "newRms30": 0.1001,
   "oldPeak": 0.075,
-  "newPeak": 0.25
+  "newPeak": 0.247
  },
  {
   "id": "ammo_full",
   "file": "24-ammo_full.mp3",
   "oldRms30": 0.0274,
-  "newRms30": 0.0998,
+  "newRms30": 0.0999,
   "oldPeak": 0.05,
-  "newPeak": 0.333
+  "newPeak": 0.332
  },
  {
   "id": "strip_shield",
@@ -219,97 +219,97 @@
   "id": "hit_s",
   "file": "28-hit_s.mp3",
   "oldRms30": 0.0271,
-  "newRms30": 0.0568,
+  "newRms30": 0.0566,
   "oldPeak": 0.082,
-  "newPeak": 0.234
+  "newPeak": 0.236
  },
  {
   "id": "hit_l",
   "file": "29-hit_l.mp3",
   "oldRms30": 0.0521,
-  "newRms30": 0.1256,
+  "newRms30": 0.1277,
   "oldPeak": 0.155,
-  "newPeak": 0.327
+  "newPeak": 0.344
  },
  {
   "id": "wall",
   "file": "30-wall.mp3",
   "oldRms30": 0.0514,
-  "newRms30": 0.1118,
+  "newRms30": 0.0936,
   "oldPeak": 0.179,
-  "newPeak": 0.486
+  "newPeak": 0.496
  },
  {
   "id": "drift",
   "file": "31-drift.mp3",
   "oldRms30": 0.0174,
-  "newRms30": 0.0464,
-  "oldPeak": 0.06,
-  "newPeak": 0.111
+  "newRms30": 0.0471,
+  "oldPeak": 0.08,
+  "newPeak": 0.115
  },
  {
   "id": "boom_s",
   "file": "32-boom_s.mp3",
   "oldRms30": 0.0679,
-  "newRms30": 0.0476,
+  "newRms30": 0.0699,
   "oldPeak": 0.188,
-  "newPeak": 0.117
+  "newPeak": 0.187
  },
  {
   "id": "boom_m",
   "file": "33-boom_m.mp3",
   "oldRms30": 0.1223,
-  "newRms30": 0.1218,
+  "newRms30": 0.1266,
   "oldPeak": 0.339,
-  "newPeak": 0.302
+  "newPeak": 0.307
  },
  {
   "id": "boom_l",
   "file": "34-boom_l.mp3",
   "oldRms30": 0.2174,
-  "newRms30": 0.2419,
+  "newRms30": 0.2568,
   "oldPeak": 0.602,
-  "newPeak": 0.534
+  "newPeak": 0.536
  },
  {
   "id": "wreck",
   "file": "35-wreck.mp3",
   "oldRms30": 0.2563,
-  "newRms30": 0.2818,
+  "newRms30": 0.3027,
   "oldPeak": 0.538,
-  "newPeak": 0.622
+  "newPeak": 0.591
  },
  {
   "id": "w_missile",
   "file": "36-w_missile.mp3",
   "oldRms30": 0.0637,
-  "newRms30": 0.1439,
+  "newRms30": 0.1443,
   "oldPeak": 0.146,
-  "newPeak": 0.385
+  "newPeak": 0.354
  },
  {
   "id": "w_cannon",
   "file": "37-w_cannon.mp3",
   "oldRms30": 0.0341,
-  "newRms30": 0.0788,
+  "newRms30": 0.0796,
   "oldPeak": 0.109,
-  "newPeak": 0.333
+  "newPeak": 0.324
  },
  {
   "id": "w_mines",
   "file": "38-w_mines.mp3",
   "oldRms30": 0.087,
-  "newRms30": 0.125,
+  "newRms30": 0.1261,
   "oldPeak": 0.229,
-  "newPeak": 0.502
+  "newPeak": 0.492
  },
  {
   "id": "w_shock",
   "file": "39-w_shock.mp3",
   "oldRms30": 0.1442,
-  "newRms30": 0.2258,
+  "newRms30": 0.2176,
   "oldPeak": 0.323,
-  "newPeak": 0.406
+  "newPeak": 0.396
  },
  {
   "id": "w_turbo",
@@ -317,7 +317,7 @@
   "oldRms30": 0.0683,
   "newRms30": 0.1585,
   "oldPeak": 0.194,
-  "newPeak": 0.365
+  "newPeak": 0.367
  },
  {
   "id": "w_barrier",
@@ -331,41 +331,41 @@
   "id": "w_rockets",
   "file": "42-w_rockets.mp3",
   "oldRms30": 0.0473,
-  "newRms30": 0.1258,
+  "newRms30": 0.1281,
   "oldPeak": 0.118,
-  "newPeak": 0.408
+  "newPeak": 0.371
  },
  {
   "id": "w_swarm",
   "file": "43-w_swarm.mp3",
   "oldRms30": 0.0441,
-  "newRms30": 0.1129,
+  "newRms30": 0.1177,
   "oldPeak": 0.108,
-  "newPeak": 0.336
+  "newPeak": 0.345
  },
  {
   "id": "w_quake",
   "file": "44-w_quake.mp3",
   "oldRms30": 0.1256,
-  "newRms30": 0.2551,
+  "newRms30": 0.2604,
   "oldPeak": 0.285,
-  "newPeak": 0.494
+  "newPeak": 0.476
  },
  {
   "id": "w_bouncer",
   "file": "45-w_bouncer.mp3",
   "oldRms30": 0.0858,
-  "newRms30": 0.1431,
+  "newRms30": 0.1422,
   "oldPeak": 0.188,
-  "newPeak": 0.358
+  "newPeak": 0.364
  },
  {
   "id": "w_hunter",
   "file": "46-w_hunter.mp3",
   "oldRms30": 0.0668,
-  "newRms30": 0.1591,
+  "newRms30": 0.159,
   "oldPeak": 0.143,
-  "newPeak": 0.338
+  "newPeak": 0.34
  },
  {
   "id": "w_phase",
@@ -373,31 +373,31 @@
   "oldRms30": 0.0591,
   "newRms30": 0.1258,
   "oldPeak": 0.241,
-  "newPeak": 0.234
+  "newPeak": 0.224
  },
  {
   "id": "w_reflector",
   "file": "48-w_reflector.mp3",
   "oldRms30": 0.0467,
-  "newRms30": 0.1114,
+  "newRms30": 0.1117,
   "oldPeak": 0.097,
-  "newPeak": 0.301
+  "newPeak": 0.305
  },
  {
   "id": "w_emp",
   "file": "49-w_emp.mp3",
   "oldRms30": 0.0946,
-  "newRms30": 0.1709,
+  "newRms30": 0.1786,
   "oldPeak": 0.261,
-  "newPeak": 0.504
+  "newPeak": 0.481
  },
  {
   "id": "w_smoke",
   "file": "50-w_smoke.mp3",
   "oldRms30": 0.0244,
-  "newRms30": 0.0784,
+  "newRms30": 0.0787,
   "oldPeak": 0.094,
-  "newPeak": 0.26
+  "newPeak": 0.242
  },
  {
   "id": "w_autopilot",
@@ -405,29 +405,29 @@
   "oldRms30": 0.0461,
   "newRms30": 0.0794,
   "oldPeak": 0.071,
-  "newPeak": 0.268
+  "newPeak": 0.269
  },
  {
   "id": "w_overdrive",
   "file": "52-w_overdrive.mp3",
   "oldRms30": 0.063,
-  "newRms30": 0.1584,
+  "newRms30": 0.1582,
   "oldPeak": 0.196,
-  "newPeak": 0.286
+  "newPeak": 0.28
  },
  {
   "id": "w_flares",
   "file": "53-w_flares.mp3",
   "oldRms30": 0.0363,
-  "newRms30": 0.1141,
+  "newRms30": 0.1095,
   "oldPeak": 0.076,
-  "newPeak": 0.382
+  "newPeak": 0.365
  },
  {
   "id": "w_reflect",
   "file": "54-w_reflect.mp3",
   "oldRms30": 0.0451,
-  "newRms30": 0.112,
+  "newRms30": 0.1122,
   "oldPeak": 0.111,
   "newPeak": 0.275
  },
@@ -435,33 +435,33 @@
   "id": "w_emp_hit",
   "file": "55-w_emp_hit.mp3",
   "oldRms30": 0.0858,
-  "newRms30": 0.2015,
+  "newRms30": 0.2013,
   "oldPeak": 0.115,
-  "newPeak": 0.473
+  "newPeak": 0.475
  },
  {
   "id": "w_smoke_ink",
   "file": "56-w_smoke_ink.mp3",
-  "oldRms30": 0.0118,
-  "newRms30": 0.0536,
-  "oldPeak": 0.041,
-  "newPeak": 0.122
+  "oldRms30": 0.0112,
+  "newRms30": 0.0551,
+  "oldPeak": 0.036,
+  "newPeak": 0.117
  },
  {
   "id": "portal",
   "file": "57-portal.mp3",
   "oldRms30": 0,
-  "newRms30": 0.1747,
+  "newRms30": 0.1886,
   "oldPeak": 0,
-  "newPeak": 0.582
+  "newPeak": 0.543
  },
  {
   "id": "roll_in",
   "file": "58-roll_in.mp3",
   "oldRms30": 0,
-  "newRms30": 0.0999,
+  "newRms30": 0.0998,
   "oldPeak": 0,
-  "newPeak": 0.219
+  "newPeak": 0.218
  },
  {
   "id": "roll_out",
@@ -469,6 +469,6 @@
   "oldRms30": 0,
   "newRms30": 0.1,
   "oldPeak": 0,
-  "newPeak": 0.213
+  "newPeak": 0.212
  }
 ]
