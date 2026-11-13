@@ -41,11 +41,12 @@ const HASH = (code) => { const h = window.__hl, c = h.parseCode(code); if (!c) r
     const s = h.rndSeed(); out.rnd = s >= 0x2000000 && s < 0x3000001; // Prototype 64: new codes are version 2
     h.loadTrack(0x123456, 'S', true, 'M', null, { k: 'U', d: null }); out.old = h.codeStr();
     h.loadTrack(0x1123456, 'S', true, 'M', null, { k: 'U', d: null }); out.v1 = h.codeStr(); const c = h.parseCode(out.v1); out.v1back = c && c.seed === 0x1123456;
-    out.bad = h.parseCode('S2123456') === null && h.parseCode('S11234567') === null;
+    out.bad = h.parseCode('S4123456') === null && h.parseCode('S11234567') === null;
+    h.loadTrack(0x2123456, 'S', true, 'M', null, { k: 'U', d: null }); out.v2 = h.codeStr(); const c2 = h.parseCode(out.v2); out.v2back = c2 && c2.seed === 0x2123456 && h.parseCode('SX3123456').seed === 0x3123456; // Prototype 64: version 2, seven digits from 2
     out.oldSpec = h.specStr({ b: 1, n: { sweep: 1, jump: 2 } }); out.newSpec = h.specStr({ b: 1, n: { drop: 1 } });
     const q = h.parseCode('SX1ABCDEF-' + out.newSpec); out.newBack = q && q.sp && q.sp.n.drop === 1 && q.sp.n.sjump === 0;
     return out });
-  ok(sch.rnd && sch.old === 'SX123456' && sch.v1 === 'SX1123456' && sch.v1back && sch.bad, 'codes: new tracks are version 1, seven hex digits from 1 (' + sch.v1 + '); six-digit codes stay as they were (' + sch.old + ')');
+  ok(sch.rnd && sch.old === 'SX123456' && sch.v1 === 'SX1123456' && sch.v1back && sch.bad && sch.v2 === 'SX2123456' && sch.v2back, 'codes: new tracks are version 2 (SX2123456), older ones version 1, seven hex digits from 1 (' + sch.v1 + '); six-digit codes stay as they were (' + sch.old + ')');
   ok(sch.oldSpec === '11002000000' && sch.newSpec === '1000000000000' + '1' && sch.newBack, 'editor codes: older counts write as before (' + sch.oldSpec + '), a new count adds digits (' + sch.newSpec + ') and reads back');
   // --- each new piece builds from the editor's counts ---
   const KINDS = { vspire: 10, dhelix: 11, drop: 12, sjump: 13, cjump: 14 };
