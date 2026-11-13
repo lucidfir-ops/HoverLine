@@ -19,7 +19,8 @@ const CLOCK = () => { let T = 1000; performance.now = () => T; window.__adv = (m
     const b = route === 'top' ? SP.tB : SP.fB; me.brPick = { SP, b, long: SP.b[b].long };
     /* a few of the field close by, on both faces */
     const others = H.racers.filter((r) => r !== me).sort((a, b2) => Math.abs(a.utot - me.utot) - Math.abs(b2.utot - me.utot)).slice(0, 4);
-    others.forEach((r, i) => { const d = [-30, 25, -60, 55][i]; r.u = me.u + d; r.utot = me.utot + d; r.v = me.v; r.lat = me.lat + (i % 2 ? 2 : -2); r.wreck = 0; const bb = i % 2 ? SP.fB : SP.tB; r.brPick = { SP, b: bb, long: SP.b[bb].long } });
+    others.forEach((r, i) => { const d = [-30, 25, -60, 55][i], bb = i % 2 ? SP.fB : SP.tB; r.u = me.u + d; r.utot = me.utot + d; r.v = me.v; r.lat = SP.b[bb].c[0] + (i < 2 ? 1.5 : -1.5); r.wreck = 0; r.brPick = { SP, b: bb, long: SP.b[bb].long } });
+    me.lat = SP.b[b].c[0];
     return { u0: Math.round(SP.u0), n: SP.n, side: SP.side, L: Math.round(T.L), info: T.bmInfo } }, [code, route]);
   console.log(JSON.stringify(info)); if (info.err) { await b.close(); return }
   const n = Math.round(+secs * +fps), sub = Math.round(60 / +fps), stats = [];
