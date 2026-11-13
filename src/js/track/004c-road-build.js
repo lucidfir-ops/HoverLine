@@ -70,7 +70,7 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
     add(strip(-W/2,0,-W/2,-1.8,o),dark);add(strip(W/2,0,W/2,-1.8,o),dark);add(strip(-W/2,-1.8,W/2,-1.8,o),dark)}
   /* both routes of each split: road, edges, glass walls, rails and the underside, all following the route's line and height */
   const kRuns=(M,pred)=>{const out=[];let a=-1;for(let k=0;k<=M;k++){const p=pred(k);if(p&&a<0)a=k;if((!p||k===M)&&a>=0){const b=p?k:k-1;if(b>a)out.push([a,b]);a=-1}}return out};
-  for(const S0 of splits){const k0=S0.i0,n=S0.n,A=S0.adj,ix=i=>Math.max(0,Math.min(n,i-k0)),o={from:k0,to:k0+n+1};
+  for(const S0 of splits){if(S0.kind==='flip')continue;/* (Prototype 63: the underside draws its own, flipRoad in 004t) */const k0=S0.i0,n=S0.n,A=S0.adj,ix=i=>Math.max(0,Math.min(n,i-k0)),o={from:k0,to:k0+n+1};
     S0.b.forEach((B,bi)=>{const O=S0.b[1-bi],c=i=>B.c[ix(i)],w=i=>B.w[ix(i)],h=i=>B.h[ix(i)],L=d=>i=>c(i)-w(i)+d,Rr=d=>i=>c(i)+w(i)+d,H=d=>i=>h(i)+d;
       /* Prototype 60: a route with a gap of its own (the trunk's drop) is drawn in runs either side of it */
       const gpq=k=>!!(B.gp&&B.gp[Math.min(n,k)]),oR=B.gp?kRuns(n+1,k=>!gpq(k)).map(([a,b2])=>({from:k0+a,to:k0+b2})):[o];
@@ -109,7 +109,9 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
     if(lane){const c=(r()-.5)*W*0.4,hw=sw/2;add(strip(c-hw,0.035,c+hw,0.035,{from:i0,to:i1,uv:1/6}),pM);zones.push({kind:'ammo',u0:i0*ds,u1:i1*ds,side:0,edge:eIn,lane:c,hw})}
     else{edgeStrip(side,i0,i1,pM);zones.push({kind:'ammo',u0:i0*ds,u1:i1*ds,side,edge:eIn})}}}
   /* the long route's pickups: two boost pads, an ammo strip on the outside and a shield strip on the inside */
-  for(const S0 of splits){const B=S0.b[S0.longB],k0=S0.i0,at=(u,A)=>{const f=clamp((u-S0.u0)/ds,0,S0.n),j=Math.min(S0.n-1,Math.floor(f)),q=f-j;return A[j]+(A[j+1]-A[j])*q};
+  /* Prototype 63: the underside's routes, the slab and its field, and its pickups (004t) */
+  flipRoad({group,add,strip,splits,N,ds,edgeCol,roadM,edgeM,glass,rail,pads,zones,padM,pM,sw,eIn,padLen});
+  for(const S0 of splits){if(S0.kind==='flip')continue;const B=S0.b[S0.longB],k0=S0.i0,at=(u,A)=>{const f=clamp((u-S0.u0)/ds,0,S0.n),j=Math.min(S0.n-1,Math.floor(f)),q=f-j;return A[j]+(A[j+1]-A[j])*q};
     if(S0.kind==='cut'){for(const fx of[0.2,0.55]){const a=k0+Math.round(S0.n*fx),b=a+padLen;add(strip(i=>B.c[i-k0]-2.4,i=>B.h[i-k0]+0.03,i=>B.c[i-k0]+2.4,i=>B.h[i-k0]+0.03,{from:a,to:b,uv:1/12}),padM);pads.push({u0:a*ds,u1:b*ds,lat:0,latF:u=>at(u,B.c),sp:S0,b:S0.longB})}continue}
     /* Prototype 60: the long jump's catch road has none; a speed jump's bonus road two boost pads and an ammo strip once the roads part */
     if(S0.kind==='catch')continue;
@@ -144,15 +146,16 @@ function roadBuild(rd){const{seed,wk,cx,sp,LN,L,N,ds,P,R,U,Tg,Cs,Kn,kind,gap,spl
   for(const S0 of splits)for(const ahead of[500,250,80]){if(S0.kind==='cut'||S0.kind==='catch'||S0.kind==='dsplit')break;
     /* Prototype 60: a speed jump gets the signs too, about 500 and 250 m before its lip, saying which road holds the bonus */
     if(S0.kind==='stack'&&ahead===80)break;const stk=S0.kind==='stack';const SW=W+3.1,SH=SW*340/1024,top=7.2+SH,at=signAt(S0,ahead,SW,top,stk?150:0);if(!at)continue;
-    const pit=S0.kind==='pit',i=at.i,g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffb000});
+    const pit=S0.kind==='pit',flp=S0.kind==='flip',i=at.i,g=new THREE.Group(),m=new THREE.MeshBasicMaterial({color:0xffb000});
     for(const sd of[-1,1]){const pl=new THREE.Mesh(new THREE.BoxGeometry(0.7,top,0.7),m);pl.position.set(sd*(W/2+1.2),top/2,0);g.add(pl)}
     const cv=document.createElement('canvas');cv.width=1024;cv.height=340;const cg=cv.getContext('2d');cg.fillStyle='#0b0e14';cg.fillRect(0,0,1024,340);cg.strokeStyle='#ffb000';cg.lineWidth=8;cg.strokeRect(4,4,1016,332);
-    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((stk?'SPEED JUMP · ':pit?'PIT LANE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
+    cg.fillStyle='#ffb000';cg.fillRect(4,4,1016,62);cg.fillStyle='#0b0e14';cg.textBaseline='middle';cg.textAlign='center';cg.font="700 44px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText((stk?'SPEED JUMP · ':pit?'PIT LANE · ':flp?'UNDERSIDE · ':S0.cross?'CROSSOVER · ':'ROAD SPLITS · ')+at.d+' M',512,37);
     cg.beginPath();cg.moveTo(512,92);cg.lineTo(512,316);cg.strokeStyle='#ffb000';cg.lineWidth=4;cg.stroke();
     const lL=S0.side<0,side=(x,long,arrow)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990;
-      cg.fillStyle=long?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";const nm=pit?(long?'PIT':'RACE'):(long?'LONG':'SHORT');cg.fillText(arrow&&x<512?'◀ '+nm:nm+' ▶',x0,150);
+      cg.fillStyle=flp?(long?'#3ff0ff':'#ffb000'):long?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";const nm=pit?(long?'PIT':'RACE'):flp?(long?'UNDER':'TOP'):(long?'LONG':'SHORT');cg.fillText(arrow&&x<512?'◀ '+nm:nm+' ▶',x0,150);
       cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';
-      if(pit){if(long){cg.fillText('FULL REPAIR',x0,230);cg.fillText('AMMO · LIMITER',x0,282)}else cg.fillText('KEEP RACING',x0,230)}
+      if(flp){if(long){cg.fillText('UPSIDE DOWN',x0,230);cg.fillText('2 BOOST PADS · AMMO',x0,282)}else{cg.fillText('STAY ON TOP',x0,230);cg.fillText('NO PICKUPS',x0,282)}}
+      else if(pit){if(long){cg.fillText('FULL REPAIR',x0,230);cg.fillText('AMMO · LIMITER',x0,282)}else cg.fillText('KEEP RACING',x0,230)}
       else if(long){cg.fillText('2 BOOST PADS',x0,230);cg.fillText('AMMO · SHIELD',x0,282)}else{cg.fillText('TIGHT LINE',x0,230);cg.fillText('NO PICKUPS',x0,282)}};
     if(stk){const half=(x,up)=>{cg.textAlign=x<512?'left':'right';const x0=x<512?34:990,bon=(S0.bonus==='up')===up;cg.fillStyle=bon?'#46ff8c':'#ffb000';cg.font="700 96px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillText(up?'▲ UPPER':'LOWER ▼',x0,150);
         cg.font="700 40px 'Chakra Petch','Arial Narrow',sans-serif";cg.fillStyle='#f2efe6';cg.fillText(up?'172 M/S AT THE LIP':'EVERYONE ELSE',x0,230);cg.fillText(bon?'2 BOOST PADS · AMMO':'NO PICKUPS',x0,282)};half(0,true);half(1024,false)}

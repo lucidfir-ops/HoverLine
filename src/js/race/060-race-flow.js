@@ -6,10 +6,11 @@
 /* Bends digit: 0 smooth, 1 normal, 2 twisty, 3 figure of eight. Older 7-count codes still load (no spirals or splits). */
 /* Prototype 60: five more counts after the spires: rising spires (up the middle, spiral down), down spirals, drops, speed
    jumps and long jumps. A code only carries them when one is set, so every older editor code reads and writes as before. */
-/* Prototype 63: and a portal count (0 or 1, Spirit tracks only), after the long jumps */
-const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire','vspire','dhelix','drop','sjump','cjump','portal'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2,vspire:2,dhelix:2,drop:3,sjump:2,cjump:2,portal:1};
+/* Prototype 63: and a portal count (0 or 1, Spirit tracks only), after the long jumps; then an underside count (0 or 1,
+   Spirit tracks only: the split that rolls under the road, 004t) */
+const FK=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','split','spire','vspire','dhelix','drop','sjump','cjump','portal','flip'],FMAX={sweep:3,climb:2,dive:2,jump:4,loop:4,twist:4,corkscrew:4,helix:2,split:2,spire:2,vspire:2,dhelix:2,drop:3,sjump:2,cjump:2,portal:1,flip:1};
 const specStr=sp=>{let s=String(sp.b)+FK.map(k=>sp.n[k]||0).join('');while(s.length>11&&s.endsWith('0'))s=s.slice(0,-1);return s};
-const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,9})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
+const parseSpec=str=>{if(!/^[0-3][0-9]{7}([0-9]{2,10})?$/.test(str||''))return null;const n={};FK.forEach((k,i)=>n[k]=Math.min(FMAX[k],+(str[i+1]||0)));return{b:+str[0],n}};
 const specCx=sp=>FKG.some(k=>sp.n[k]>0);
 /* Scenery: a letter after a dash (O ocean, F forest, N Stratos, once called Night sky, R reef; urban needs none), then optionally four digits for the
    dials (scenery amount, falls, geysers, tunnels), e.g. S1A2B3C-O or SX1A2B3C-U2102. Scenery doesn't change the road, so
@@ -18,7 +19,7 @@ const parseBio=str=>{const m=/^([UOFNRPS])([0-9]{4})?$/.exec(String(str||'').toU
 /* Prototype 60: a track code's seed is six hex digits, or seven starting with 1 for codes made from Prototype 60 on (bit 24
    of the seed, TV1): only those may get the new road pieces (drops, speed jumps, long jumps, spires and spirals the other
    way), so every older code builds exactly the track it always did. */
-const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,9})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
+const parseCode=str=>{const m=/^([WSNEMH])?(X)?([LQ])?(1[0-9A-F]{6}|[0-9A-F]{1,6})(?:-([0-3][0-9]{7}(?:[0-9]{2,10})?))?(?:-([UOFNRPS](?:[0-9]{4})?))?$/.exec((str||'').trim().toUpperCase().replace(/\s+/g,''));if(!m)return null;const v=parseInt(m[4],16),sp=m[5]?parseSpec(m[5]):null;
   return v>0?{wk:{E:'W',M:'S',H:'N'}[m[1]]||m[1]||'S',cx:sp?specCx(sp):!!m[2],lk:m[3]||'M',seed:v&0x1FFFFFF,sp,bm:parseBio(m[6])}:null};
 const saved=parseCode(store.get('hoverline.code'));
 let seed=saved?saved.seed:TV1+Math.floor(Math.random()*0xFFFFFF)+1,wid=saved?saved.wk:'W',cplx=saved?saved.cx:false,lenK=saved?saved.lk:'M',spec=saved?saved.sp:null,bio=saved?saved.bm:{k:'U',d:null};

@@ -87,21 +87,21 @@ function updateShots(dt){
     else if(s.type==='bolt'||s.type==='rocket'||s.type==='quake')s.u+=s.v*dt;
     else if(s.type==='decoy'){s.v=Math.max(0,s.v-30*dt);s.u+=s.v*dt;s.utot+=s.v*dt;if(s.owner)decoyPull(s);s.mesh.children[1].material.opacity=0.35+0.3*Math.abs(Math.sin(S.t*23));
       for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter')&&Math.abs(wrapU(o.u-s.u))<3)fizzle(o);
-      if(s.life<=0){for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter'))fizzle(o);s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);s.mesh.position.copy(sp2.p).addScaledVector(sp2.r,s.lat).addScaledVector(sp2.u,surf(s.u,s.lat,s).h+0.8)}continue}
+      if(s.life<=0){for(const o of shots)if(o.target===s&&(o.type==='missile'||o.type==='hunter'))fizzle(o);s.wreck=1;explode(s.mesh.position.clone(),false);scene.remove(s.mesh);shots.splice(i,1)}else{const sp2=sampleAt(s.u);surf(s.u,s.lat,s);onSurf(sp2,s.lat,0.8,s.mesh.position)}continue}
     else if(s.type==='bounce'){s.u+=s.v*dt;s.lat+=s.vl*dt;const bf=surf(s.u,s.lat,s);if(s.lat<bf.lo+1||s.lat>bf.hi-1){s.lat=s.lat>bf.hi-1?bf.hi-1:bf.lo+1;s.vl=-s.vl;if(Math.abs(wrapU(s.u-player.u))<150)audio.blip(500,0.06,0.05,'square',250)}}
     else if(s.type==='mine')s.arm-=dt;
-    const sh=surf(s.u,s.lat,s).h,sp=sampleAt(s.u);tp.copy(sp.p).addScaledVector(sp.r,s.lat).addScaledVector(sp.u,sh+(s.type==='mine'?0.9:s.type==='quake'?1.3:s.type==='smoke'?0:1.1));s.mesh.position.copy(tp);
+    surf(s.u,s.lat,s);const sp=sampleAt(s.u);onSurf(sp,s.lat,s.type==='mine'?0.9:s.type==='quake'?1.3:s.type==='smoke'?0:1.1,tp);s.mesh.position.copy(tp);/* (Prototype 63: onSurf, on the underside in its rolled frame) */
     if(s.type==='smoke'){s.mesh.quaternion.setFromRotationMatrix(mtx.makeBasis(sp.r,sp.u,sp.t));smokeAnim(s.mesh,dt,s.life)}
     else if(s.type!=='mine'){const k=s.rear?-1:1;s.mesh.up.copy(sp.u);s.mesh.lookAt(tp.x+sp.t.x*k,tp.y+sp.t.y*k,tp.z+sp.t.z*k);if(s.type==='missile'||s.type==='hunter'||s.type==='rocket')s.mesh.rotateY(Math.PI)}
     else{s.mesh.rotation.y+=dt*2;s.mesh.rotation.x+=dt*1.3}
     if(s.type==='quake'){const hgt=2.2+1.6*Math.abs(Math.sin(s.life*11)),gl=s.gap-QGAP,gr=s.gap+QGAP,[L,Rr,EL,ER]=s.mesh.children;
       L.scale.set(Math.max(0.01,gl+W/2),hgt,1);L.position.set((gl-W/2)/2,0,0);Rr.scale.set(Math.max(0.01,W/2-gr),hgt,1);Rr.position.set((gr+W/2)/2,0,0);
       EL.scale.set(0.35,hgt+0.6,1);EL.position.set(gl,0,0.02);ER.scale.set(0.35,hgt+0.6,1);ER.position.set(gr,0,0.02);s.mesh.userData.mat.opacity=0.55*Math.min(1,s.life/0.6);s.mesh.userData.edge.opacity=0.9*Math.min(1,s.life/0.6);
-      for(const r of racers){if(r===s.owner||s.hits.has(r)||!live(r)||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<4){if(Math.abs(r.lat-s.gap)<QGAP-0.4||(r.air&&r.h-HOVER>2.6))continue;
+      for(const r of racers){if(r===s.owner||s.hits.has(r)||!live(r)||r.phase>0||s.brS&&s.brS.kind==='flip'&&r.brS===s.brS&&r.br!==s.br)continue;if(Math.abs(wrapU(r.u-s.u))<4){if(Math.abs(r.lat-s.gap)<QGAP-0.4||(r.air&&r.h-HOVER>2.6))continue;
         s.hits.add(r);LOG.src='quake';LOG.by=s.owner;damage(r,13,r.ship.position.clone(),0.45);LOG.src=LOG.by=null;if(!r.proxy)r.v*=0.85;if(r===player){S.shake=Math.max(S.shake,0.6);audio.hit(0.5)}}}
       for(let j=shots.length-1;j>=0;j--){const o=shots[j];if(o.type==='mine'&&Math.abs(wrapU(o.u-s.u))<4){explode(o.mesh.position.clone(),false);scene.remove(o.mesh);shots.splice(j,1);if(j<i)i--}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();s.mesh.userData.edge.dispose();shots.splice(i,1)}continue}
-    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=1.6}}
+    if(s.type==='smoke'){for(const r of racers){if(r===s.owner||!live(r)||r.proxy||r.phase>0||s.brS&&s.brS.kind==='flip'&&r.brS===s.brS&&r.br!==s.br)continue;if(Math.abs(wrapU(r.u-s.u))<14&&Math.abs(r.lat-s.lat)<5.2){if(!(r.ink>0.3)){r.v*=0.92;if(r===player)audio.noiseHit(0.15,400,0.4)}r.ink=1.6}}
       if(s.life<=0){scene.remove(s.mesh);s.mesh.userData.mat.dispose();shots.splice(i,1)}continue}
     let hit=null;const wide=s.type==='bolt'?1.5:s.type==='rocket'?1.6:s.type==='bounce'?2:1.9,len=s.type==='bolt'?2.4:2.6;
     if(s.type==='missile'&&s.dud){explode(tp.clone(),false);scene.remove(s.mesh);shots.splice(i,1);continue}

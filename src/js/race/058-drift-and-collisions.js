@@ -44,7 +44,7 @@ const drKF=r=>(1.85-0.55*(r.v/VMAX))*r.d.turn*trimTurn(r)/Math.max(r.v,1);
 /* the road's curvature just ahead, the way T.K turns the yaw, with a split route's own bend (read only: a copy of the
    racer's route, so looking ahead never changes it) */
 function drRoadK(r){const v=Math.max(r.v,30);let k=0;for(const f of[0.15,0.4,0.7])k+=T.Cs[idxAt(r.u+v*f)];k/=3;
-  if(r.brS||T.spl[idxAt(r.u+v*0.6)]){const o={brS:r.brS,br:r.br,u:r.u},L=v*0.6,y0=surf(modU(r.u),r.lat,o,true).yb,y1=surf(modU(r.u+L),r.lat,{brS:r.brS,br:r.br,u:r.u},true).yb;k+=(y1-y0)/L}
+  if(r.brS||T.spl[idxAt(r.u+v*0.6)]){const o={brS:r.brS,br:r.br,u:r.u},L=v*0.6,f0=surf(modU(r.u),r.lat,o,true),y0=f0.yb,kx=f0.kx,y1=surf(modU(r.u+L),r.lat,{brS:r.brS,br:r.br,u:r.u},true).yb;k+=(y1-y0)/L+kx}
   return k}
 /* which way a press drifts: the stick's; with a light steer and the road clearly bending, the road's (-sign of its k) */
 function drDir(r,st){const k=drRoadK(r),d=Math.sign(st)||1;return Math.abs(st)>=DR.sure||Math.abs(k)<DR.clear*drKF(r)?d:-Math.sign(k)||d}
@@ -232,7 +232,7 @@ function physics(r,inp,dt){
   if(man&&!r.air){const hd=(r.build&&r.build.stats&&r.build.stats.handling)||1,a=LANE_A*clamp((hd-1)/4,0,1);
     if(a>0){const vl=-r.v*Math.sin(r.yaw-yb0),d=vl<0?r.lat-lo0:hi0-r.lat,tt=Math.abs(vl)>0.5?Math.max(0,d)/Math.abs(vl):9;
       if(tt<LANE_T)r.yaw-=(r.yaw-yb0)*a*(1-tt/LANE_T)*dt}}
-  const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g*(r.air&&r.air.kind?jArc(r.air,uPrev):1);r.yaw-=T.K[idxAt(r.u+du/2)]*du;r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
+  const uPrev=modU(r.u),du=r.v*Math.cos(r.yaw)*dt*surf(uPrev,r.lat,r).g*(r.air&&r.air.kind?jArc(r.air,uPrev):1);r.yaw-=(T.K[idxAt(r.u+du/2)]+SF.kx)*du;/* (Prototype 63: SF.kx, the underside's turn in its own frame: upside down, a bend is the other way round) */r.u+=du;r.utot+=du;r.lat+=-r.v*Math.sin(r.yaw)*dt;
   const uu=modU(r.u),sf=surf(uu,r.lat,r),kvB=sf.kv,ybB=sf.yb,loB=sf.lo,hiB=sf.hi;
   // jumps: leave the lip on a ballistic arc, land past the gap; too slow and you fall in
   /* Height above the road. The hover hold (gE) is stronger nose-down and weaker nose-up. Over a crest the road falls away at
