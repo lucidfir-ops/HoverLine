@@ -7,6 +7,7 @@
 // road's up: the vertical probes over the main road alone missed rock through split routes (NX130F38-P at 2.3 km,
 // NXL7D6FF6-33224444222-P3443 at 3.7 to 6.8 km) and in mouths placed on splits (SLC32957-P, NXL1FDB51-...-P3443).
 // The lake and pool skirts count as rock.
+// Prototype 64: so do the cave-mouth gates (hewn now), the rubble at their feet, the river banks and the spirals' columns.
 // node tools/tests/prism-clear.js [seeds, default 30 of them and five of Eric's codes] [codes...]   (WK=N CX=1 for Narrow complex seeds)
 const { launch, open, ok, done } = require('./lib.js');
 const args = process.argv.slice(2);
@@ -28,7 +29,8 @@ const seeds = args.length ? args : Array.from({ length: 30 }, (_, k) => String(1
         for (let gx = Math.floor(x0 / CS); gx <= Math.floor(x1 / CS); gx++) for (let gz = Math.floor(z0 / CS); gz <= Math.floor(z1 / CS); gz++) { const L = G.get(key(gx, gz)); if (!L) continue;
           for (const k of L) { const px = pr[k], pz = pr[k + 1]; const u = ((b2.z - c2.z) * (px - c2.x) + (c2.x - b2.x) * (pz - c2.z)) / den, v = ((c2.z - a.z) * (px - c2.x) + (a.x - c2.x) * (pz - c2.z)) / den, w = 1 - u - v;
             if (u < 0 || v < 0 || w < 0) continue; const y = a.y * u + b2.y * v + c2.y * w; if (y > pr[k + 2] && y < pr[k + 3]) { const L2 = hits[what] = hits[what] || []; L2.push(pr[k + 4]) } } } };
-      const rock = new Set(PR.meshes.concat(PR.skirts || []));
+      // (Prototype 64: and the cave-mouth gates, the rubble at their feet and the spirals' columns outside)
+      const rock = new Set(PR.meshes.concat(PR.skirts || [], PR.gates || [], PR.rubble || [], PR.cols || []));
       sc.traverse((o) => { if (!o.isMesh || !o.geometry || !o.material) return; const m = o.material; const liq = m.uniforms && m.uniforms.uW, cyl = m.isMeshBasicMaterial && o.geometry.type === 'CylinderGeometry' && o.geometry.parameters.radiusTop > 8;
         if (!rock.has(o) && !liq && !cyl) return; const what = rock.has(o) ? 'rock' : liq ? 'liquid' : 'pool'; o.updateMatrixWorld();
         const A = o.geometry.attributes.position, I = o.geometry.index, n = I ? I.count : A.count, va = new V3(), vb = new V3(), vc = new V3();

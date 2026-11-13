@@ -24,9 +24,14 @@ function prismSkirts(pz){const{group,PR,clearTri,scan,skirts,rivers,rockMat,glow
        well down (3 m under the road at most), and a triangle that would still reach into the road's space is left out,
        as round the lakes. */
     PR.bankCut=0;for(const pts of rivers){const n=pts.length;if(n<2)continue;
-      const Lp=[],side=(j,sd)=>{const q=pts[j];Lp.push({x:q.x+sd*q.rx*q.w,z:q.z+sd*q.rz*q.w,y:q.y,nx:sd*q.rx,nz:sd*q.rz})},
+      /* (on the inside of a bend tighter than the river is wide, its edge there lies in the liquid of the stretch beside it,
+         and a bank there stood across the river: such a point of the loop is left out, so the bank runs along the edge of
+         all the liquid; likewise where the crest would) */
+      const wet=(x,z,j)=>{for(const L of rivers)for(let j2=0;j2<L.length;j2++){if(L===pts&&Math.abs(j2-j)<3)continue;const p=L[j2];if((p.x-x)**2+(p.z-z)**2<(p.w-1)**2)return true}return false},
+        add=(q,j,nx,nz)=>{const x=q.x+nx*q.w,z=q.z+nz*q.w;if(wet(x,z,j)||wet(x+nx*5,z+nz*5,j)){PR.bankDry=(PR.bankDry||0)+1;return}Lp.push({x,z,y:q.y,nx,nz})};
+      const Lp=[],side=(j,sd)=>{const q=pts[j];add(q,j,sd*q.rx,sd*q.rz)},
         cap=(j,e)=>{const q=pts[j],o=pts[j-e]||q;let fx=q.x-o.x,fz=q.z-o.z;const l=Math.hypot(fx,fz)||1;fx/=l;fz/=l;
-          for(let k=1;k<8;k++){const t=k/8*Math.PI,a=Math.cos(t),b=Math.sin(t),nx=-e*a*q.rx+b*fx,nz=-e*a*q.rz+b*fz;Lp.push({x:q.x+nx*q.w,z:q.z+nz*q.w,y:q.y,nx,nz})}};
+          for(let k=1;k<8;k++){const t=k/8*Math.PI,a=Math.cos(t),b=Math.sin(t);add(q,j,-e*a*q.rx+b*fx,-e*a*q.rz+b*fz)}};
       const js=[];for(let j=0;j<n-1;j+=2)js.push(j);js.push(n-1);
       for(const j of js)side(j,-1);cap(n-1,1);for(let k=js.length-1;k>=0;k--)side(js[k],1);cap(0,-1);
       /* the bank's cross-section (out from the sheet's edge, up from the liquid), its crest wandering in height round the loop */
@@ -68,9 +73,12 @@ function prismGates(pz){const{seed,N,ds,P,R,U,group,PR,mode,ins,Mh,bil,glowAt,he
     /* each profile point's outward normal (the profile runs clockwise) and its distance round the profile (for the noise) */
     const nrm=pr=>pr.map((q,a)=>{const p0=pr[(a-1+nr)%nr],p1=pr[(a+1)%nr];let nx=0,ny=0;for(const[A,B]of[[p0,q],[q,p1]]){const dx=B[0]-A[0],dy=B[1]-A[1],l=Math.hypot(dx,dy)||1;nx+=-dy/l;ny+=dx/l}const l=Math.hypot(nx,ny)||1;return[nx/l,ny/l]}),
       nI=nrm(pI),nO=nrm(pO),arc=[0];for(let a=1;a<nr;a++)arc.push(arc[a-1]+Math.hypot(pI[a][0]-pI[a-1][0],pI[a][1]-pI[a-1][1]));
-    /* how far the inner face may go out: to 0.15 m inside the room the rock is kept out of (W/2+2 across, 26 m up), at most
-       1.6 m; 0.6 m under the road */
-    const capI=pI.map(([x,y],a)=>{const[nx,ny]=nI[a];if(y<=-1)return 0.6;let c=1.6;if(Math.abs(nx)>1e-3)c=Math.min(c,(W/2+1.85-Math.abs(x))/Math.abs(nx));if(ny>1e-3)c=Math.min(c,(25.85-y)/ny);return Math.max(0,c)});
+    /* the inner face at sample i: its walls stand W/2+0.8 m out, or on a banked road, on the high side, out past the road's
+       own up 6.5 m over its edge (so a ship near the edge never meets the wall), but never past W/2+1.85; and how far each
+       point may go out from there: to 0.15 m inside the room the rock is kept out of (W/2+2 across, 26 m up), at most 1.6
+       m; 0.6 m under the road */
+    const h0=W/2+0.8,inner=(i)=>{const r=R[i],u=U[i],rl=Math.hypot(r.x,r.z)||1,hw=[-1,1].map(sd=>{let e=0;for(const y of[0,6.5])e=Math.max(e,sd*((r.x*sd*W/2+u.x*y)*r.x+(r.z*sd*W/2+u.z*y)*r.z)/rl);return clamp(e+0.5,h0,W/2+1.85)});
+      return pI.map(([x0,y],a)=>{const x=x0*(x0<0?hw[0]:hw[1])/h0,[nx,ny]=nI[a];let c=1.6;if(y<=-1)c=0.6;else{if(Math.abs(nx)>1e-3)c=Math.min(c,(W/2+1.85-Math.abs(x))/Math.abs(nx));if(ny>1e-3)c=Math.min(c,(25.85-y)/ny)}return[x,y,Math.max(0,c)]})};
     const mouth=(i0,dir)=>{let s0=Math.round(8/ds);for(let s=s0;s<Math.round(240/ds);s++){const q=P[((i0-s*dir)%N+N)%N];if(bil(Mh,q.x,q.z)>q.y+28)s0=s;else if(s>s0+Math.round(12/ds))break}
       const pad=Math.round(18/ds),iF=i0-(s0+pad)*dir,L=s0+pad+Math.round(34/ds),st=Math.max(1,Math.round(3/ds)),rows=[];for(let s=0;s<L;s+=st)rows.push(s);rows.push(L);
       const v0=gP.length/3,nR=rows.length,isIn=rows.map(s=>!!ins[((iF+s*dir)%N+N)%N]),K=nMouth*57+3,ix=s=>((iF+s*dir)%N+N)%N;
@@ -80,10 +88,10 @@ function prismGates(pz){const{seed,N,ds,P,R,U,group,PR,mode,ins,Mh,bil,glowAt,he
       const put=(s,x,y)=>{const i=ix(s),p=P[i],r=R[i],rl=Math.hypot(r.x,r.z)||1,b=clamp(x*r.y/rl,-W*0.4,W*0.4);gP.push(p.x+r.x/rl*x,p.y+y+b,p.z+r.z/rl*x)};
       /* the ragged lip: how many samples further out each point of each end reaches */
       const ext=[0,1].map(e=>pI.map((_,a)=>Math.round((1+5*vn(a+K+e*31,e*7+2))/ds)));
-      const D2=[[],[]];/* the moved profile points of the end rows, for the lip's middle ring */
+      const IN=new Map(),D2=[[],[]];/* the moved profile points of the end rows, for the lip's middle ring */
       for(const o of[0,1])for(let j=0;j<nR;j++)for(let a=0;a<nr;a++){const end=j===0?0:j===nR-1?1:-1,s=rows[j]+(end===0?-ext[0][a]:end===1?ext[1][a]:0),m=s*ds,c=arc[a];
-        const[x,y]=(o?pO:pI)[a],[nx,ny]=(o?nO:nI)[a];
-        const d=o?-1.5+6*(0.6*vn(m/13+K+40,c/9+3)+0.4*vn(m/3+K+80,c/2.7+5)):capI[a]*(0.15+0.6*vn(m/9+K,c/7)+0.25*vn(m/2.3+K+20,c/2.1+9));
+        const i=ix(s),pr=o?pO:(IN.get(i)||(IN.set(i,inner(i)),IN.get(i))),[x,y]=pr[a],[nx,ny]=(o?nO:nI)[a];
+        const d=o?-1.5+6*(0.6*vn(m/13+K+40,c/9+3)+0.4*vn(m/3+K+80,c/2.7+5)):pr[a][2]*(0.15+0.6*vn(m/9+K,c/7)+0.25*vn(m/2.3+K+20,c/2.1+9));
         put(s,x+nx*d,y+ny*d);if(end>=0)(D2[end][a]=D2[end][a]||[])[o]=[x+nx*d,y+ny*d,s]}
       /* the lip's middle rings: halfway through the wall, jutting 0.5 to 3 m further out again */
       const vM=gP.length/3;for(const e of[0,1])for(let a=0;a<nr;a++){const[A,B]=D2[e][a],j2=vn(a+K+60,e*5+11)-0.5,mx=(A[0]+B[0])/2,my=(A[1]+B[1])/2,[nx,ny]=nO[a];

@@ -326,7 +326,7 @@ void main(){vec3 n=normalize(vN);if(!gl_FrontFacing)n=-n;vec3 v=normalize(vV);
     /* columns under the road, down to the mountainside or the cavern floor */
     pylons(PR.ground,3.4,lam(0x4a4558,0x0c0a12),60);
     const caves=[];for(let i=0;i<N;){if(!ins[i]){i++;continue}let n=0;while(i+n<N&&ins[i+n])n++;caves.push({i0:i,n});i+=n}
-    PR.caveL=caves;PR.caves=mode==='in'?1:caves.length;PR.cal=cal.length;PR.calL=cal;PR.fallL=fallsL;PR.geyL=geys;PR.pools=pools;PR.spikes=nSpk;PR.lakes=lakes;PR.rivers=rivers.length;PR.mouths=nMouth;PR.cut=Math.round(cutA)
+    PR.caveL=caves;PR.caves=mode==='in'?1:caves.length;PR.cal=cal.length;PR.calL=cal;PR.fallL=fallsL;PR.geyL=geys;PR.pools=pools;PR.spikes=nSpk;PR.lakes=lakes;PR.rivers=rivers.length;PR.riverL=rivers;PR.mouths=nMouth;PR.cut=Math.round(cutA)
   /* (the materials whose shimmer moves: their time is set each frame) */
   for(const m of prismM)ctx.clock.push(m.uniforms.uT);
   ctx.prism=PR;ctx.inside=PR.inside;ctx.plainFx=true;ctx.gCol=[0xb8b0cc,0x9a8cb8,0xd8d0e8];
