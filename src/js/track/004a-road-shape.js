@@ -70,7 +70,7 @@ function roadShape(seed,wk,cx,lk,sp,bk){
   /* (Prototype 63: a portal only in the Spirit realm; elsewhere its count is ignored) */
   if(sp)fopt=FKG.some(k=>sp.n[k]>0&&(k!=='portal'||bk==='S'))?{r,lf:LN.f,want:bk==='S'||!sp.n.portal?sp.n:{...sp.n,portal:0},avoid}:null;
   /* Prototype 60: codes from Prototype 60 on (v1) may have the new pieces */
-  const v1=seed>=TV1;if(fopt&&v1)fopt.v1=true;
+  const v1=seed>=TV1;if(fopt&&v1){fopt.v1=true;if(seed>=TV2)fopt.v2=true}
   /* and a complex one may have a drop, a speed jump or a long jump, each on its own draw (14%, 15%, 12%); the long ones
      often don't fit (short tracks, other pieces in the way), so about 10%, 7% and 4% of new complex tracks have one */
   if(v1&&cx&&!sp&&fopt){const rn=rng((seed^0x60D0)>>>0),ex=[];if(rn()<0.14)ex.push('drop');if(rn()<0.15)ex.push('sjump');if(rn()<0.12)ex.push('cjump');if(ex.length)fopt.extra=ex}

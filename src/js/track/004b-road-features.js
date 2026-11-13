@@ -2,6 +2,7 @@
 /* Complex tracks: insert 3D features into the base loop, then resample to even spacing and rebuild the frames.
    Each output sample carries a position and a designed "up"; the tangent comes from the positions, so loops,
    corkscrews and rolls get exact frames. K is the curvature within the road surface, which steers the physics. */
+const REV_SPIRE=0.4;/* the share of version 2 spires drawn reversed (Prototype 64; tools/tests/spire-mix.js) */
 function addFeatures(b,r,W,opt={}){
   const{P,R,U,Tg,Cs,N,ds}=b;const V=THREE.Vector3;
   const jumpG=45+0.6*W,lr=24,rc=10+0.15*W;
@@ -52,8 +53,12 @@ function addFeatures(b,r,W,opt={}){
     if(kd==='sweep'&&opt.dense&&s.n>1){s.n=1;s.sg=[1];s.amp=[s.amp[0]];s.len=s.lam}
     if(kd!=='portal')s.foot=(kd==='loop'?260:kd==='helix'?520:kd==='spire'?s.Lc+s.Rs+170:s.len)+40;if(s.prof)s.foot=s.len+60;
     if(k0==='vspire')s.rev=1;if(k0==='dhelix')s.Hh=-s.Hh;
-    /* on a new code, a spire rises up the middle and spirals down half the time, and a spiral falls instead of rising (a fifth of the draws; the falling ones fit more often, so about half the spirals on new tracks fall) */
-    if(opt.v1&&!opt.want&&k0==='spire'&&r()<0.5)s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
+    /* on a new code, a spire is the reversed one (up the middle, spiral down) half the time (version 1) and a spiral falls
+       instead of rising on a fifth of the draws (about 18% of the spirals on new tracks, measured over 1500 codes).
+       Prototype 64: version 2 codes (seed >= TV2) draw the reversed spire REV_SPIRE of the time instead. Version 1 was a
+       coin toss (measured 51% reversed, and both spires Eric met in his logs were reversed), but the original, up round
+       the ring and down the middle, is meant to be the more common. Version 1 codes keep the coin toss. */
+    if(opt.v1&&!opt.want&&k0==='spire'&&r()<(opt.v2?REV_SPIRE:0.5))s.rev=1;if(opt.v1&&!opt.want&&k0==='helix'&&r()<0.2)s.Hh=-s.Hh;
     if(k0!==kd)s.src=k0;
     return s};
   const mkFoot=kd=>({sweep:1100,dive:740,climb:640,loop:300,twist:240,corkscrew:280,jump:140,helix:560,spire:700,vspire:700,dhelix:560,drop:900,sjump:1700,cjump:1300,portal:1720})[kd]||200;

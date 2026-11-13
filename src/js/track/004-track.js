@@ -37,6 +37,9 @@ function bioDefaults(seed,k){const r=rng((seed^0xB10D)>>>0),a=r(),b=r(),c=r();re
 const FKG=['sweep','climb','dive','jump','loop','twist','corkscrew','helix','spire','vspire','dhelix','drop','sjump','cjump','portal'];/* (Prototype 63: portal, Spirit tracks only) */
 /* Prototype 60: bit 24 of a seed marks a code made from Prototype 60 on (seven hex digits, starting with 1). */
 const TV1=0x1000000;
+/* Prototype 64: bit 25 marks a code made from Prototype 64 on (seven hex digits, starting with 2 or 3): version 2, which has
+   everything version 1 has and draws the reversed spire less often (REV_SPIRE). Version 1 codes build as they did. */
+const TV2=0x2000000;
 const KB=k=>k==='vspire'?'spire':k==='dhelix'?'helix':k;
 /* Prototype 61: a track is built in three steps, each in its own part: the road's shape (roadShape, 004a, with addFeatures
    in 004b), the road as drawn and everything races use on it (roadBuild, 004c), then the scenery (buildScenery, 004e,
