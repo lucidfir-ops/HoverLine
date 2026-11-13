@@ -70,7 +70,8 @@ function splCam(P,dt){const r=P.r,cam=P.cam,C=CAMS[S.state==='done'&&CAMS[P.cm].
   {const pc=T.port&&P._pu!=null?portalCross(P._pu,r.u):null;P._pu=r.u;if(pc&&P.ci0){P.fwd.applyQuaternion(pc.Q);P.up.applyQuaternion(pc.Q)}}
   /* (and on the underside's roll each view turns with its frame's roll, as the single camera does) */
   {const ra=r._ra||0;if(P.ci0&&P._ra!=null&&ra!==P._ra){_qSpl.setFromAxisAngle(_sv2.copy(P.pT).normalize(),ra-P._ra);P.fwd.applyQuaternion(_qSpl);P.up.applyQuaternion(_qSpl)}P._ra=ra}
-  if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*10)).normalize()}
+  const kUp=camUpRate(P.rs||(P.rs={}),P.pUp,P.pT,dt,P.ci0);/* (Prototype 64: the up follows faster while the road rolls fast, as the single camera's does) */
+  if(!P.ci0){P.fwd.copy(tgtF);P.up.copy(P.pUp);P.ci0=true}else{P.fwd.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();P.up.lerp(P.pUp,1-Math.exp(-dt*kUp)).normalize()}
   const vk=r.v/VMAX,boo=r.boost>0||!!r.selfBoost,pk=cam.aspect<1?clamp((1-cam.aspect)/0.54,0,1):0,sh=r===player?S.shake:0;
   if(C.fpv){cam.position.copy(P.pPos).addScaledVector(P.pUp,0.62).addScaledVector(P.pf,0.7);cam.up.copy(P.up);cam.lookAt(look.copy(cam.position).addScaledVector(P.fwd,40).addScaledVector(P.up,-0.6));cam.fov+=((76+16*vk+(boo?6:0)+12*pk)-cam.fov)*Math.min(1,dt*4)}
   else{const d=(C.d+0.9*vk+(boo?0.5:0))*(1+0.3*pk);cam.position.copy(P.pPos).addScaledVector(P.fwd,-d).addScaledVector(P.up,C.h*(1+0.2*pk));

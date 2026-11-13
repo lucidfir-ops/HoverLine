@@ -7,7 +7,19 @@ let camInit=false,lastT=performance.now(),hudT=0,camU=null,camRA=0;
    never its position, so it cannot fall behind at speed. Cockpit puts it on the nose (the ship itself is hidden). */
 const CAMS=[{n:'Near',d:5.6,h:2.15,l:9},{n:'Standard',d:7.4,h:2.7,l:10},{n:'Far',d:11,h:3.9,l:12},{n:'Cockpit',fpv:true}];
 let camMode=(()=>{const v=parseInt(store.get('hoverline.cam'),10);return v>=0&&v<CAMS.length?v:1})();
-const camFwdS=new V3(0,0,-1),camUpS=new V3(0,1,0),finCam={t0:null,dir:1};
+const camFwdS=new V3(0,0,-1),camUpS=new V3(0,1,0),finCam={t0:null,dir:1},camRS={};
+/* Prototype 64: the chase camera's up followed the frame's up at a rate of 10 a second, so on a corkscrew or twist, where
+   the road rolls at 4 to 6 radians a second at Redline, it fell 24 to 32 degrees behind (the picture rolled against the
+   road: "sometimes on corkscrews the camera can't keep up"). The rate now rises with how fast the frame's up is turning
+   about the road's forward (smoothed, so a one-frame jump from a landing or a respawn doesn't count), by CAM_ROLL.g for
+   each radian a second above CAM_ROLL.w0: nothing changes in corners or over crests (they turn at under 0.8), and at 5
+   radians a second the lag is about 6 degrees. st holds one camera's last up and smoothed rate (the single camera's, or a
+   split-screen pilot's), keep is false on the first frame. Returns the rate for the up's lerp. */
+const CAM_ROLL={k0:10,w0:0.8,g:9,kmax:60,jump:0.8,wmax:9},_cuR=new V3();
+function camUpRate(st,pUp,pT,dt,keep){if(!st.pu)st.pu=new V3();let w=0;
+  if(keep&&dt>0){const a=Math.atan2(_cuR.crossVectors(st.pu,pUp).dot(pT),st.pu.dot(pUp));if(Math.abs(a)<CAM_ROLL.jump)w=Math.min(CAM_ROLL.wmax,Math.abs(a)/dt);else st.w=0}else st.w=0;
+  st.pu.copy(pUp);st.w+=(w-(st.w||0))*(1-Math.exp(-dt*25));
+  return Math.min(CAM_ROLL.kmax,CAM_ROLL.k0+CAM_ROLL.g*Math.max(0,st.w-CAM_ROLL.w0))}
 function setCam(i,say){camMode=((i%CAMS.length)+CAMS.length)%CAMS.length;store.set('hoverline.cam',String(camMode));camInit=false;
   document.querySelectorAll('[data-cam]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.cam===camMode)));if(say)note('Camera · '+CAMS[camMode].n,900)}
 document.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>setCam(+b.dataset.cam,false));
@@ -265,7 +277,8 @@ function step(dt){
     camera.position.lerp(camT,camInit?1-Math.exp(-dt*2.5):1);camera.up.lerp(s.u,camInit?1-Math.exp(-dt*3):1).normalize();camera.lookAt(look.copy(a.p).addScaledVector(a.u,2));camera.fov=62;
   }else{
     const C=CAMS[S.state==='done'&&CAMS[camMode].fpv?1:camMode],tgtF=pf.clone().lerp(pT,C.fpv?0.15:0.35).normalize();
-    if(!camInit){camFwdS.copy(tgtF);camUpS.copy(pUp)}else{camFwdS.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();camUpS.lerp(pUp,1-Math.exp(-dt*10)).normalize()}
+    const kUp=camUpRate(camRS,pUp,pT,dt,camInit);
+    if(!camInit){camFwdS.copy(tgtF);camUpS.copy(pUp)}else{camFwdS.lerp(tgtF,1-Math.exp(-dt*(C.fpv?14:8))).normalize();camUpS.lerp(pUp,1-Math.exp(-dt*kUp)).normalize()}
     const vk=player.v/VMAX,boo=player.boost>0||!!player.selfBoost,pk=camera.aspect<1?clamp((1-camera.aspect)/0.54,0,1):0;/* 0 on a landscape screen, 1 on a tall phone held upright (Prototype 40) */
     if(S.state==='done'&&finCam.t0!=null){/* finish: swing round to the front of the ship and look back at it */
       const k=clamp((S.t-finCam.t0)/2.2,0,1),e=k*k*(3-2*k),a=Math.PI*e*0.85+(S.t-finCam.t0)*0.12,side=new V3().crossVectors(camFwdS,camUpS).normalize();
